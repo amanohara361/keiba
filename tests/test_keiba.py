@@ -776,3 +776,46 @@ def test_final_mode_email_shows_changes(tmp_path, monkeypatch, capsys):
     assert '◆ 前回からの変化' in output
     assert '馬場が 良 → 重 に変わりました' in output
     assert '馬場:重' in output
+
+
+def test_odds_request_uses_action_update(monkeypatch):
+    """action=init はキャッシュされた古い値を返すため update を使うこと。
+
+    直前配信で朝のオッズを掴んだままになる不具合を防ぐ。
+    """
+    captured = {}
+
+    s = NetkeibaScraper()
+    monkeypatch.setattr(s, 'fetch', lambda url, params=None: soup_of(SHUTUBA_HTML))
+
+    def fake_json(url, params=None):
+        captured.update(params or {})
+        return {'status': 'result', 'data': {'official_datetime': '15:38',
+                'odds': {'1': {'01': ['2.9', '3.1', '1'], '02': ['-3.0', '0', '0']}}}}
+
+    monkeypatch.setattr(s, 'fetch_json', fake_json)
+    card = s.get_race_card({'race_id': 'x', 'name': 'テスト',
+                            'url': 'https://race.netkeiba.com/race/shutuba.html?race_id=x'})
+
+    assert captured['action'] == 'update'
+    assert card['horses'][0]['odds'] == 2.9
+    # -3.0 は出走取消。オッズとして扱わないこと。
+    assert card['horses'][1]['scratched'] is True
+    assert card['horses'][1]['odds'] is None
+
+
+def test_scratched_horse_is_excluded_from_picks(monkeypatch, tmp_path, capsys):
+    """取消馬を予想に載せないこと。"""
+    import main
+
+    class ScratchScraper(FakeScraper):
+        def get_race_card(self, race):
+            card = FakeScraper.get_race_card(self, race)
+            card['horses'][1]['scratched'] = True
+            return card
+
+    monkeypatch.setattr(main, 'NetkeibaScraper', ScratchScraper)
+    monkeypatch.setattr(store, 'PREDICTIONS_DIR', str(tmp_path / 'predictions'))
+
+    assert main.main(['--today', '2026-08-07T08:00', '--no-email']) == 0
+    assert 'パンサラッサ' not in capsys.readouterr().out

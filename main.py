@@ -115,6 +115,8 @@ def predict_race(scraper, analyzer, race):
     logger.info('[%s] %d頭を評価します', race['name'], len(horses))
     evaluated = []
     for horse in horses:
+        if horse.get('scratched'):
+            continue
         if not horse['horse_id']:
             logger.warning('%s は horse_id が取れないため除外します', horse['name'])
             continue

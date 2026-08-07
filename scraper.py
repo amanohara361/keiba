@@ -314,6 +314,7 @@ class NetkeibaScraper:
                 'weight_diff': weight_diff,
                 'odds': None,
                 'ninki': None,
+                'scratched': False,
             })
 
         self._attach_odds(race['race_id'], horses)
@@ -323,23 +324,51 @@ class NetkeibaScraper:
         """出走馬の一覧だけが欲しいとき用。"""
         return self.get_race_card(race)['horses']
 
+    # オッズ配信の状態。直前配信では 'middle' 以降でないと値が古い。
+    ODDS_STATUS_LABELS = {
+        'yoso': '予想オッズ（発売前）',
+        'middle': '発売中の途中経過',
+        'result': '確定オッズ',
+    }
+
+    # 出走取消・除外の馬に API が返す値
+    ODDS_SCRATCHED = '-3.0'
+
     def _attach_odds(self, race_id, horses):
         """単勝オッズと人気を付与する。取得できなくても処理は続行する。
 
         出馬表ページのオッズ欄は JavaScript で後から埋まるため、
         ページ側の HTML ではなく netkeiba のオッズ API を参照する。
+
+        action=update を使うこと。init はキャッシュされた古い値を返すため、
+        直前配信で朝のオッズを掴んだままになる。
         """
         payload = self.fetch_json(
             f'{self.RACE_HOST}/api/api_get_jra_odds.html',
-            params={'race_id': race_id, 'type': '1', 'action': 'init'},
+            params={
+                'race_id': race_id,
+                'type': '1',
+                'locale': 'ja',
+                'action': 'update',
+            },
         )
         if not payload:
             return
 
+        status = payload.get('status')
         odds_table = (payload.get('data') or {}).get('odds', {}).get('1', {})
         if not isinstance(odds_table, dict) or not odds_table:
-            logger.info('レース %s のオッズがまだ配信されていません', race_id)
+            logger.info(
+                'レース %s のオッズがまだ配信されていません (status=%s, reason=%s)',
+                race_id, status, payload.get('reason'),
+            )
             return
+
+        official = (payload.get('data') or {}).get('official_datetime')
+        logger.info(
+            'レース %s のオッズ: %s (%s時点)',
+            race_id, self.ODDS_STATUS_LABELS.get(status, status), official or '不明',
+        )
 
         for horse in horses:
             if not horse['umaban'].isdigit():
@@ -350,6 +379,10 @@ class NetkeibaScraper:
             if not entry:
                 continue
             # entry は ["3.5", "3.9", "1", ...] のような配列（先頭=オッズ, 3番目=人気）
+            if str(entry[0]) == self.ODDS_SCRATCHED:
+                horse['scratched'] = True
+                logger.info('%s は出走取消・除外です', horse['name'])
+                continue
             horse['odds'] = _to_float(entry[0]) if len(entry) > 0 else None
             horse['ninki'] = _to_int(entry[2]) if len(entry) > 2 else None
 
