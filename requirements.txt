@@ -1,3 +1,4 @@
-requests==2.32.3
-beautifulsoup4==4.12.3
-lxml==5.3.0
+# 実行に必要な外部ライブラリはありません（Python 3.x の標準ライブラリだけで動きます）。
+# jra_bias.py / nar_csv.py と同じ方針です。
+# 下記はテストを走らせるときだけ必要です。
+pytest==8.3.3

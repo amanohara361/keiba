@@ -1,4 +1,9 @@
-"""予想と答え合わせの結果をテキストに整形し、メールで送る。"""
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""メール送信だけを担当する。整形は呼び出し側が行う。
+
+外部ライブラリは使わない（smtplib は標準ライブラリ）。
+"""
 
 import logging
 import os
@@ -8,19 +13,17 @@ from email.utils import formatdate
 
 logger = logging.getLogger(__name__)
 
-DIVIDER = '-' * 44
 
-
-class ResultsMailer:
+class Mailer:
     def __init__(self):
-        self.smtp_server = os.environ.get('SMTP_SERVER', 'smtp.gmail.com')
-        self.smtp_port = int(os.environ.get('SMTP_PORT', '587'))
-        self.sender_email = os.environ.get('SENDER_EMAIL')
-        self.sender_password = os.environ.get('SENDER_PASSWORD')
-        self.receiver_email = os.environ.get('RECEIVER_EMAIL')
+        self.server = os.environ.get('SMTP_SERVER', 'smtp.gmail.com')
+        self.port = int(os.environ.get('SMTP_PORT', '587'))
+        self.sender = os.environ.get('SENDER_EMAIL')
+        self.password = os.environ.get('SENDER_PASSWORD')
+        self.receiver = os.environ.get('RECEIVER_EMAIL')
 
     def is_configured(self):
-        return all([self.sender_email, self.sender_password, self.receiver_email])
+        return all([self.sender, self.password, self.receiver])
 
     def send(self, subject, body):
         if not self.is_configured():
@@ -28,160 +31,25 @@ class ResultsMailer:
             return False
 
         message = MIMEText(body, 'plain', 'utf-8')
-        message['From'] = self.sender_email
-        message['To'] = self.receiver_email
+        message['From'] = self.sender
+        message['To'] = self.receiver
         message['Subject'] = subject
         message['Date'] = formatdate(localtime=True)
 
         try:
             # 465 は SMTPS、587 は STARTTLS。どちらの設定でも動くようにする。
-            if self.smtp_port == 465:
-                server = smtplib.SMTP_SSL(self.smtp_server, self.smtp_port, timeout=30)
+            if self.port == 465:
+                connection = smtplib.SMTP_SSL(self.server, self.port, timeout=30)
             else:
-                server = smtplib.SMTP(self.smtp_server, self.smtp_port, timeout=30)
-                server.starttls()
+                connection = smtplib.SMTP(self.server, self.port, timeout=30)
+                connection.starttls()
 
-            with server:
-                server.login(self.sender_email, self.sender_password)
-                server.send_message(message)
+            with connection:
+                connection.login(self.sender, self.password)
+                connection.send_message(message)
 
-            logger.info('メールを送信しました -> %s', self.receiver_email)
+            logger.info('メールを送信しました -> %s', self.receiver)
             return True
         except Exception as exc:
             logger.error('メール送信に失敗しました: %s', exc)
             return False
-
-    def notify_no_races(self, dates_label, send=True):
-        body = (
-            f'{dates_label} に該当する重賞レースはありませんでした。\n'
-            'プログラムは正常に動作しています。\n'
-        )
-        logger.info(body.strip())
-        if send and self.is_configured():
-            self.send('【自動配信】今週末の重賞はありません', body)
-
-
-def _odds_label(pick):
-    odds, ninki = pick.get('odds'), pick.get('ninki')
-    if odds and ninki:
-        return f'{odds:.1f}倍/{ninki}人気'
-    if odds:
-        return f'{odds:.1f}倍'
-    return 'オッズ未発表'
-
-
-def _weight_label(pick):
-    """馬体重と増減。当日朝まで未発表なので空文字を返すこともある。"""
-    weight, diff = pick.get('weight'), pick.get('weight_diff')
-    if not weight:
-        return ''
-    return f' {weight}kg({diff:+d})' if diff is not None else f' {weight}kg'
-
-
-def _format_pick(pick):
-    lines = [
-        f"{pick['mark']} {pick['umaban']}番 {pick['name']}"
-        f"（{pick['jockey']}） {_odds_label(pick)}{_weight_label(pick)}"
-        f" スコア {pick['score']}"
-    ]
-    if pick.get('is_value'):
-        lines.append(f"   ★妙味あり: 評価{pick['score_rank']}位に対して{pick['ninki']}人気")
-    lines.append('   ' + ' / '.join(pick['reasons']))
-    return lines
-
-
-def _conditions_label(conditions):
-    """「馬場:重 / 天候:雨 / 芝2000m」のような1行。未発表の項目は省く。"""
-    if not conditions:
-        return ''
-    parts = []
-    if conditions.get('going'):
-        parts.append(f"馬場:{conditions['going']}")
-    if conditions.get('weather'):
-        parts.append(f"天候:{conditions['weather']}")
-    if conditions.get('surface') and conditions.get('distance'):
-        parts.append(f"{conditions['surface']}{conditions['distance']}m")
-    return ' / '.join(parts)
-
-
-def format_predictions(predictions, failures, method_version, mode_label='朝の予想'):
-    lines = [
-        f'🏇 中央競馬 重賞予想 — {mode_label} 🏇',
-        f'（予想メソッド: {method_version}）',
-        DIVIDER,
-    ]
-
-    for race in predictions:
-        grade = f"[{race['grade']}] " if race.get('grade') else ''
-        start = f" {race['start_time']}発走" if race.get('start_time') else ''
-        lines.append(
-            f"\n【{grade}{race['name']}】{race.get('date', '')}{start} "
-            f"{race['field_size']}頭立て"
-        )
-
-        conditions = _conditions_label(race.get('conditions'))
-        if conditions:
-            lines.append(conditions)
-
-        # 前回配信からの変化を先頭に出す。ここが追加配信を見る理由になる。
-        changes = race.get('changes') or []
-        if changes:
-            lines.append('◆ 前回からの変化')
-            lines.extend(f'  ・{change}' for change in changes)
-            lines.append('')
-
-        for pick in race['picks']:
-            lines.extend(_format_pick(pick))
-
-        longshot = race.get('longshot')
-        if longshot:
-            lines.append('\n  ▼ 高配当ねらいの穴候補')
-            lines.extend('  ' + line for line in _format_pick(longshot))
-
-        lines.append(race['url'])
-        lines.append(DIVIDER)
-
-    if failures:
-        lines.append('\n※ 以下は予想を出せませんでした:')
-        lines.extend(f'  - {name}' for name in failures)
-
-    lines.append(
-        '\n※ 血統・騎手・戦績・人気に基づく自動算出です。'
-        '\n※ 馬券の購入は自己責任でお願いします。'
-    )
-    return '\n'.join(lines)
-
-
-def format_review(reviewed_races, totals):
-    lines = ['🏁 先週の予想 答え合わせ 🏁', DIVIDER]
-
-    for race in reviewed_races:
-        if not race.get('settled'):
-            lines.append(f"\n【{race['name']}】結果がまだ確定していません")
-            continue
-
-        result_marks = []
-        for pick in race['picks']:
-            rank = pick.get('actual_rank')
-            result_marks.append(
-                f"{pick['mark']}{pick['name']}: {rank}着" if rank else
-                f"{pick['mark']}{pick['name']}: 着外/除外"
-            )
-
-        lines.append(f"\n【{race['name']}】")
-        lines.extend('  ' + m for m in result_marks)
-        lines.append(
-            f"  投資 {race['staked']}円 / 回収 {race['returned']}円"
-            f"（収支 {race['returned'] - race['staked']:+,}円）"
-        )
-
-    if totals['staked']:
-        roi = totals['returned'] / totals['staked'] * 100
-        lines += [
-            DIVIDER,
-            f"今回の合計: 投資 {totals['staked']:,}円 / 回収 {totals['returned']:,}円"
-            f"（回収率 {roi:.1f}%）",
-        ]
-
-    lines.append('\n通算成績は data/accuracy.md を参照してください。')
-    return '\n'.join(lines)
