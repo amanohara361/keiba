@@ -1,0 +1,63 @@
+name: 予想の答え合わせ
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # 月00:00 UTC = 月09:00 JST
+  workflow_dispatch:
+    inputs:
+      recheck:
+        description: '答え合わせ済みのぶんもやり直す'
+        type: boolean
+        default: false
+
+concurrency:
+  group: keiba-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: 依存をインストール
+        run: pip install -r requirements.txt
+
+      - name: 答え合わせを実行
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+          RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
+          INPUT_RECHECK: ${{ inputs.recheck }}
+        run: |
+          args=()
+          if [ "$INPUT_RECHECK" = 'true' ]; then
+            args+=(--recheck)
+          fi
+          python review.py "${args[@]}"
+
+      - name: 結果と成績表をコミット
+        if: success()
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/
+          if git diff --staged --quiet; then
+            echo '更新はありません'
+          else
+            git commit -m "答え合わせを反映: $(date -u +%Y-%m-%d)"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

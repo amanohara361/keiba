@@ -1,0 +1,75 @@
+name: 週末重賞の予想
+
+on:
+  schedule:
+    # cron は UTC 指定。日本時間の土曜・日曜 08:00 に実行する。
+    - cron: '0 23 * * 5'  # 金23:00 UTC = 土08:00 JST
+    - cron: '0 23 * * 6'  # 土23:00 UTC = 日08:00 JST
+  workflow_dispatch:
+    inputs:
+      today:
+        description: '基準日 (YYYY-MM-DD)。空なら実行日。'
+        required: false
+      no_email:
+        description: 'メールを送らずログだけ出す'
+        type: boolean
+        default: false
+
+# 予想をコミットして戻すため、同時実行を1本に絞る
+concurrency:
+  group: keiba-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: 依存をインストール
+        run: pip install -r requirements.txt
+
+      - name: 予想を実行
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+          RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
+          # run: に直接埋め込まず環境変数経由で渡す
+          INPUT_TODAY: ${{ inputs.today }}
+          INPUT_NO_EMAIL: ${{ inputs.no_email }}
+        run: |
+          args=()
+          if [ -n "$INPUT_TODAY" ]; then
+            args+=(--today "$INPUT_TODAY")
+          fi
+          if [ "$INPUT_NO_EMAIL" = 'true' ]; then
+            args+=(--no-email)
+          fi
+          python main.py "${args[@]}"
+
+      - name: 予想をコミット
+        if: success()
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/
+          if git diff --staged --quiet; then
+            echo '保存すべき新しい予想はありません'
+          else
+            git commit -m "予想を追加: $(date -u +%Y-%m-%d)"
+            # 答え合わせジョブが先にコミットしている場合に備えて取り込んでから push
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
