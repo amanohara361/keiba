@@ -26,9 +26,14 @@ import discipline
 import odds as odds_module
 from mailer import Mailer
 
-EXIT_OK = 0
-EXIT_ERROR = 1
-EXIT_BLOCKED = 3   # 発注を止めた買い目がある（異常ではないが目立たせる）
+# 終了コードは「このジョブが役目を果たせたか」で決める。
+#
+# 「朝の買い目が無い」「発注を止めた」は、検知して知らせた時点で役目は果たしている。
+# これを失敗扱いにすると買い目を出さない日は毎回赤くなり、本当の障害
+# （SMTPが落ちた、netkeibaの構造が変わった）が同じ色に埋もれて気づけなくなる。
+EXIT_OK = 0                # 検算完了・規律クリア
+EXIT_NEEDS_ATTENTION = 3   # 要確認の事象を検知し、正常に通知した（ジョブは成功）
+EXIT_ERROR = 1             # 知らせられなかった（送信失敗・設定不備）
 
 # mailer など各モジュールのログを実行ログへ出す。
 # これが無いとメール送信の成否が一切表示されず、SMTPが落ちても気づけない。
@@ -218,9 +223,13 @@ def main(argv=None):
         body = format_missing_sheet(day, now)
         print(body)
         write_job_summary(body)
-        if not args.no_email:
-            deliver(mailer, '【要確認】朝の買い目が届いていません', body)
-        return EXIT_ERROR
+        if args.no_email:
+            return EXIT_NEEDS_ATTENTION
+        # 知らせられたかどうかで結果を分ける。
+        # 知らせられたなら役目は果たしている（＝ジョブとしては成功）。
+        return (EXIT_NEEDS_ATTENTION
+                if deliver(mailer, '【要確認】朝の買い目が届いていません', body)
+                else EXIT_ERROR)
 
     verdicts = review_sheet(sheet, now)
     body = format_report(sheet, verdicts, now)
@@ -241,7 +250,7 @@ def main(argv=None):
         if not deliver(mailer, subject, body):
             return EXIT_ERROR
 
-    return EXIT_BLOCKED if any(v.blocked for v in verdicts) else EXIT_OK
+    return EXIT_NEEDS_ATTENTION if any(v.blocked for v in verdicts) else EXIT_OK
 
 
 if __name__ == '__main__':

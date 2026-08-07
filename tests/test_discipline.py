@@ -370,7 +370,7 @@ def test_missing_morning_sheet_alerts_and_fails(tmp_path, monkeypatch, capsys):
     exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30',
                             '--no-email', '--no-save'])
 
-    assert exit_code == check.EXIT_ERROR
+    assert exit_code == check.EXIT_NEEDS_ATTENTION
     output = capsys.readouterr().out
     assert '朝の買い目が届いていません' in output
     assert '2026-08-01' in output      # 何が起きたかの説明が入っている
@@ -405,7 +405,7 @@ def test_end_to_end_blocks_the_queen_stakes_bet(tmp_path, monkeypatch, capsys):
     exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30',
                             '--no-email'])
 
-    assert exit_code == check.EXIT_BLOCKED
+    assert exit_code == check.EXIT_NEEDS_ATTENTION
     output = capsys.readouterr().out
     assert '発注を止めました' in output
     assert '○11番' in output
@@ -471,3 +471,35 @@ def test_deliver_reports_missing_credentials(caplog):
     with caplog.at_level('ERROR'):
         assert check.deliver(Unconfigured(), '件名', '本文') is False
     assert 'GitHub Secrets' in caplog.text
+
+
+# ----------------------------------------------------------------------
+# 終了コードの意味
+# ----------------------------------------------------------------------
+
+def test_missing_sheet_is_not_a_failure_when_the_alert_was_delivered(tmp_path, monkeypatch):
+    """買い目が無い日を「ジョブの失敗」にしないこと。
+
+    毎回赤くなると赤に慣れてしまい、本当の障害が同じ色に埋もれる。
+    検知して知らせられたなら、このジョブは役目を果たしている。
+    """
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path))
+    monkeypatch.setattr(check.Mailer, 'is_configured', lambda self: True)
+    monkeypatch.setattr(check.Mailer, 'send', lambda self, subject, body: True)
+
+    exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30',
+                            '--no-save'])
+
+    assert exit_code == check.EXIT_NEEDS_ATTENTION
+
+
+def test_missing_sheet_is_a_failure_when_the_alert_could_not_be_sent(tmp_path, monkeypatch):
+    """知らせられなかったときだけ赤くすること。"""
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path))
+    monkeypatch.setattr(check.Mailer, 'is_configured', lambda self: True)
+    monkeypatch.setattr(check.Mailer, 'send', lambda self, subject, body: False)
+
+    exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30',
+                            '--no-save'])
+
+    assert exit_code == check.EXIT_ERROR
