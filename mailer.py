@@ -70,10 +70,19 @@ def _odds_label(pick):
     return 'オッズ未発表'
 
 
+def _weight_label(pick):
+    """馬体重と増減。当日朝まで未発表なので空文字を返すこともある。"""
+    weight, diff = pick.get('weight'), pick.get('weight_diff')
+    if not weight:
+        return ''
+    return f' {weight}kg({diff:+d})' if diff is not None else f' {weight}kg'
+
+
 def _format_pick(pick):
     lines = [
         f"{pick['mark']} {pick['umaban']}番 {pick['name']}"
-        f"（{pick['jockey']}） {_odds_label(pick)} スコア {pick['score']}"
+        f"（{pick['jockey']}） {_odds_label(pick)}{_weight_label(pick)}"
+        f" スコア {pick['score']}"
     ]
     if pick.get('is_value'):
         lines.append(f"   ★妙味あり: 評価{pick['score_rank']}位に対して{pick['ninki']}人気")
@@ -81,16 +90,46 @@ def _format_pick(pick):
     return lines
 
 
-def format_predictions(predictions, failures, method_version):
+def _conditions_label(conditions):
+    """「馬場:重 / 天候:雨 / 芝2000m」のような1行。未発表の項目は省く。"""
+    if not conditions:
+        return ''
+    parts = []
+    if conditions.get('going'):
+        parts.append(f"馬場:{conditions['going']}")
+    if conditions.get('weather'):
+        parts.append(f"天候:{conditions['weather']}")
+    if conditions.get('surface') and conditions.get('distance'):
+        parts.append(f"{conditions['surface']}{conditions['distance']}m")
+    return ' / '.join(parts)
+
+
+def format_predictions(predictions, failures, method_version, mode_label='朝の予想'):
     lines = [
-        '🏇 今週末の中央競馬 重賞予想 🏇',
+        f'🏇 中央競馬 重賞予想 — {mode_label} 🏇',
         f'（予想メソッド: {method_version}）',
         DIVIDER,
     ]
 
     for race in predictions:
         grade = f"[{race['grade']}] " if race.get('grade') else ''
-        lines.append(f"\n【{grade}{race['name']}】{race.get('date', '')} {race['field_size']}頭立て")
+        start = f" {race['start_time']}発走" if race.get('start_time') else ''
+        lines.append(
+            f"\n【{grade}{race['name']}】{race.get('date', '')}{start} "
+            f"{race['field_size']}頭立て"
+        )
+
+        conditions = _conditions_label(race.get('conditions'))
+        if conditions:
+            lines.append(conditions)
+
+        # 前回配信からの変化を先頭に出す。ここが追加配信を見る理由になる。
+        changes = race.get('changes') or []
+        if changes:
+            lines.append('◆ 前回からの変化')
+            lines.extend(f'  ・{change}' for change in changes)
+            lines.append('')
+
         for pick in race['picks']:
             lines.extend(_format_pick(pick))
 

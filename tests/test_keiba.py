@@ -6,7 +6,7 @@ netkeiba の HTML 構造が変わると予想が静かに壊れるため、
 
 import os
 import sys
-from datetime import date
+from datetime import date, datetime
 
 import pytest
 from bs4 import BeautifulSoup
@@ -30,6 +30,7 @@ RACE_LIST_HTML = """
           <span class="ItemTitle">天皇賞(秋)</span>
           <span class="Icon_GradeType Icon_GradeType1">G1</span>
         </div>
+        <span class="RaceList_Itemtime">15:40</span>
       </a>
     </li>
     <li class="RaceList_DataItem">
@@ -38,6 +39,7 @@ RACE_LIST_HTML = """
           <span class="ItemTitle">アルテミスステークス</span>
           <span class="Icon_GradeType Icon_GradeType3">GIII</span>
         </div>
+        <span class="RaceList_Itemtime">14:25</span>
       </a>
     </li>
     <li class="RaceList_DataItem">
@@ -45,25 +47,48 @@ RACE_LIST_HTML = """
         <div class="RaceList_ItemTitle">
           <span class="ItemTitle">3歳以上1勝クラス</span>
         </div>
+        <span class="RaceList_Itemtime">13:50</span>
       </a>
     </li>
   </dd>
 </dl>
 """
 
+# 当日。馬体重も馬場状態も発表済み。
 SHUTUBA_HTML = """
+<div class="RaceData01">
+  15:40発走 / 芝2000m (右 A) / 天候:雨 / 馬場:重
+</div>
 <table class="Shutuba_Table">
   <tr class="HorseList">
     <td class="Waku1">1</td>
     <td class="Umaban Umaban1">1</td>
     <td class="HorseInfo"><span><a href="https://db.netkeiba.com/horse/2019105219/">イクイノックス</a></span></td>
     <td class="Jockey"><a href="/jockey/result/recent/05339/">ルメール</a></td>
+    <td class="Weight">484<small>(+2)</small></td>
   </tr>
   <tr class="HorseList">
     <td class="Waku2">2</td>
     <td class="Umaban Umaban2">2</td>
     <td class="HorseInfo"><span><a href="https://db.netkeiba.com/horse/2018104963/">パンサラッサ</a></span></td>
     <td class="Jockey"><a href="/jockey/result/recent/01014/">吉田豊</a></td>
+    <td class="Weight">508<small>(-22)</small></td>
+  </tr>
+</table>
+"""
+
+# 前日。馬体重も馬場状態もまだ出ていない。
+SHUTUBA_HTML_BEFORE_RACE_DAY = """
+<div class="RaceData01">
+  15:40発走 / 芝2000m (右 A)
+</div>
+<table class="Shutuba_Table">
+  <tr class="HorseList">
+    <td class="Waku1">1</td>
+    <td class="Umaban Umaban1">1</td>
+    <td class="HorseInfo"><span><a href="https://db.netkeiba.com/horse/2019105219/">イクイノックス</a></span></td>
+    <td class="Jockey"><a href="/jockey/result/recent/05339/">ルメール</a></td>
+    <td class="Weight">--</td>
   </tr>
 </table>
 """
@@ -423,13 +448,34 @@ def test_save_and_load_predictions_round_trip(tmp_path, monkeypatch):
     monkeypatch.setattr(store, 'PREDICTIONS_DIR', str(tmp_path / 'predictions'))
 
     races = [sample_prediction_race()]
-    path = store.save_predictions(races, 'v2')
+    path = store.save_predictions(races, 'v3', '2026-08-08')
     loaded = store.load_predictions(path)
 
-    assert loaded['method_version'] == 'v2'
+    assert loaded['method_version'] == 'v3'
     assert loaded['races'][0]['name'] == '天皇賞(秋)'
     # 日本語がエスケープされずに保存されていること
     assert '天皇賞' in open(path, encoding='utf-8').read()
+
+
+def test_save_predictions_merges_into_one_file_per_weekend(tmp_path, monkeypatch):
+    """土曜の朝に出した日曜ぶんの予想を、直前予想の保存で消さないこと。"""
+    monkeypatch.setattr(store, 'PREDICTIONS_DIR', str(tmp_path / 'predictions'))
+
+    saturday = {'race_id': '111', 'name': '土曜の重賞', 'date': '2026-08-08',
+                'picks': [{'mark': '◎', 'umaban': '1', 'name': '朝の本命'}]}
+    sunday = {'race_id': '222', 'name': '日曜の重賞', 'date': '2026-08-09',
+              'picks': [{'mark': '◎', 'umaban': '3', 'name': '日曜の本命'}]}
+
+    store.save_predictions([saturday, sunday], 'v3', '2026-08-08')
+
+    # 直前予想で土曜ぶんだけ差し替える
+    updated_saturday = dict(saturday, picks=[{'mark': '◎', 'umaban': '5', 'name': '直前の本命'}])
+    path = store.save_predictions([updated_saturday], 'v3', '2026-08-08')
+
+    races = {r['race_id']: r for r in store.load_predictions(path)['races']}
+    assert len(races) == 2                                    # 日曜ぶんが残っている
+    assert races['111']['picks'][0]['name'] == '直前の本命'    # 土曜ぶんは更新された
+    assert races['222']['picks'][0]['name'] == '日曜の本命'
 
 
 # ----------------------------------------------------------------------
@@ -447,14 +493,14 @@ class FakeScraper:
         graded = [r for r in races if r['grade'] in {'G1', 'G2', 'G3'}]
         return graded, [date(2026, 8, 8), date(2026, 8, 9)]
 
-    def get_horses_for_race(self, race):
+    def get_race_card(self, race):
         self.calls.append(race['race_id'])
         s = NetkeibaScraper()
         s.fetch = lambda url, params=None: soup_of(SHUTUBA_HTML)
         s.fetch_json = lambda url, params=None: {
             'data': {'odds': {'1': {'1': ['1.3', '1.4', '1'], '2': ['42.2', '45.0', '12']}}}
         }
-        return s.get_horses_for_race(race)
+        return s.get_race_card(race)
 
     def get_horse_details(self, horse_id):
         return {'sire': 'キタサンブラック', 'broodmare_sire': '', 'past_runs': 8,
@@ -467,7 +513,7 @@ def test_main_end_to_end_writes_predictions(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(main, 'NetkeibaScraper', FakeScraper)
     monkeypatch.setattr(store, 'PREDICTIONS_DIR', str(tmp_path / 'predictions'))
 
-    exit_code = main.main(['--today', '2026-08-07', '--no-email'])
+    exit_code = main.main(['--today', '2026-08-07T08:00', '--no-email'])
     assert exit_code == 0
 
     saved = sorted((tmp_path / 'predictions').iterdir())
@@ -483,7 +529,7 @@ def test_main_end_to_end_writes_predictions(tmp_path, monkeypatch, capsys):
     assert race['picks'][0]['score'] > 0
 
     output = capsys.readouterr().out
-    assert '今週末の中央競馬 重賞予想' in output
+    assert '中央競馬 重賞予想 — 朝の予想' in output
     assert '◎' in output
 
 
@@ -515,8 +561,218 @@ def test_main_reports_failure_when_no_shutuba_published(monkeypatch):
     import main
 
     class NoEntriesScraper(FakeScraper):
-        def get_horses_for_race(self, race):
-            return []
+        def get_race_card(self, race):
+            return {'horses': [], 'conditions': {}}
 
     monkeypatch.setattr(main, 'NetkeibaScraper', NoEntriesScraper)
-    assert main.main(['--today', '2026-08-07', '--no-email', '--no-save']) == 1
+    assert main.main(['--today', '2026-08-07T08:00', '--no-email', '--no-save']) == 1
+
+
+# ----------------------------------------------------------------------
+# 当日情報（馬場状態・馬体重・発走時刻）
+# ----------------------------------------------------------------------
+
+def test_start_time_is_parsed_from_race_list():
+    races = NetkeibaScraper()._parse_race_list(soup_of(RACE_LIST_HTML), date(2026, 8, 8))
+    by_id = {r['race_id']: r for r in races}
+    assert by_id['202405050811']['start_time'] == '15:40'
+    assert by_id['202405050810']['start_time'] == '14:25'
+
+
+def test_conditions_are_parsed_on_race_day():
+    conditions = scraper_module._parse_conditions(soup_of(SHUTUBA_HTML))
+    assert conditions['going'] == '重'
+    assert conditions['weather'] == '雨'
+    assert conditions['surface'] == '芝'
+    assert conditions['distance'] == 2000
+
+
+def test_conditions_are_empty_before_race_day():
+    """前日は馬場状態が出ていないので None のままになること。"""
+    conditions = scraper_module._parse_conditions(soup_of(SHUTUBA_HTML_BEFORE_RACE_DAY))
+    assert conditions['going'] is None
+    assert conditions['weather'] is None
+    assert conditions['distance'] == 2000  # コースは前日でも分かる
+
+
+@pytest.mark.parametrize('cell_html,expected', [
+    ('<td class="Weight">484<small>(+2)</small></td>', (484, 2)),
+    ('<td class="Weight">508<small>(-22)</small></td>', (508, -22)),
+    ('<td class="Weight">460<small>(0)</small></td>', (460, 0)),
+    ('<td class="Weight">--</td>', (None, None)),          # 当日朝まで未発表
+    ('<td class="Weight">計不</td>', (None, None)),         # 計量不能
+])
+def test_parse_weight(cell_html, expected):
+    cell = soup_of(cell_html).select_one('td.Weight')
+    assert scraper_module._parse_weight(cell) == expected
+
+
+def test_race_card_returns_horses_and_conditions(monkeypatch):
+    s = NetkeibaScraper()
+    monkeypatch.setattr(s, 'fetch', lambda url, params=None: soup_of(SHUTUBA_HTML))
+    monkeypatch.setattr(s, 'fetch_json', lambda url, params=None: None)
+
+    card = s.get_race_card({'race_id': 'x', 'name': 'テスト',
+                            'url': 'https://race.netkeiba.com/race/shutuba.html?race_id=x'})
+
+    assert card['conditions']['going'] == '重'
+    assert card['horses'][0]['weight'] == 484
+    assert card['horses'][0]['weight_diff'] == 2
+    assert card['horses'][1]['weight_diff'] == -22
+
+
+# ----------------------------------------------------------------------
+# 当日情報をスコアに反映する
+# ----------------------------------------------------------------------
+
+def test_heavy_going_boosts_mud_suited_sire():
+    """雨で馬場が渋ったら、道悪向きの血統に加点されること。"""
+    a = RaceAnalyzer()
+    horse = {'name': 'パワー型', 'jockey': '騎手', 'umaban': '1'}
+    details = {'sire': 'ゴールドシップ', 'past_runs': 10, 'wins': 2, 'top3': 5,
+               'recent_ranks': [2, 3, 1]}
+
+    good = a.evaluate_horse(horse, details, {'going': '良'})
+    heavy = a.evaluate_horse(horse, details, {'going': '重'})
+
+    assert heavy['total_score'] > good['total_score']
+    assert any('道悪(重)向きの血統' in r for r in heavy['reasons'])
+    assert not any('道悪' in r for r in good['reasons'])
+
+
+def test_non_mud_sire_gets_no_boost_on_heavy_going():
+    a = RaceAnalyzer()
+    horse = {'name': 'スピード型', 'jockey': '騎手', 'umaban': '1'}
+    details = {'sire': 'ロードカナロア', 'past_runs': 10, 'wins': 2, 'top3': 5,
+               'recent_ranks': [2, 3, 1]}
+
+    good = a.evaluate_horse(horse, details, {'going': '良'})
+    heavy = a.evaluate_horse(horse, details, {'going': '重'})
+
+    assert heavy['total_score'] == good['total_score']
+
+
+def test_large_weight_swing_is_penalised():
+    """馬体重が大きく増減した馬は減点されること。"""
+    a = RaceAnalyzer()
+    details = {'sire': 'キズナ', 'past_runs': 10, 'wins': 3, 'top3': 6, 'recent_ranks': [1, 2]}
+
+    steady = a.evaluate_horse({'name': '順調', 'jockey': '騎手', 'weight_diff': 2}, details, {})
+    mild = a.evaluate_horse({'name': 'やや増', 'jockey': '騎手', 'weight_diff': 16}, details, {})
+    big = a.evaluate_horse({'name': '大幅減', 'jockey': '騎手', 'weight_diff': -24}, details, {})
+
+    assert steady['total_score'] > mild['total_score'] > big['total_score']
+    assert any('馬体重-24kg' in r for r in big['reasons'])
+
+
+def test_weight_is_ignored_before_it_is_published():
+    """前日の時点（馬体重 None）では減点も加点もしないこと。"""
+    a = RaceAnalyzer()
+    details = {'sire': 'キズナ', 'past_runs': 10, 'wins': 3, 'top3': 6, 'recent_ranks': [1, 2]}
+
+    unpublished = a.evaluate_horse({'name': '前日', 'jockey': '騎手', 'weight_diff': None},
+                                   details, {})
+    steady = a.evaluate_horse({'name': '当日', 'jockey': '騎手', 'weight_diff': 2}, details, {})
+
+    assert unpublished['total_score'] == steady['total_score']
+    assert not any('馬体重' in r for r in unpublished['reasons'])
+
+
+# ----------------------------------------------------------------------
+# 配信対象の絞り込みと変化の検知
+# ----------------------------------------------------------------------
+
+def jst(year, month, day, hour, minute):
+    return datetime(year, month, day, hour, minute, tzinfo=store.JST)
+
+
+@pytest.mark.parametrize('now,expected', [
+    (jst(2026, 8, 8, 8, 0), True),    # 朝：まだ先
+    (jst(2026, 8, 8, 15, 0), True),   # 40分前：間に合う
+    (jst(2026, 8, 8, 15, 35), False),  # 5分前：届いても遅い
+    (jst(2026, 8, 8, 16, 0), False),  # 発走済み
+])
+def test_is_upcoming(now, expected):
+    import main
+    race = {'date': '2026-08-08', 'start_time': '15:40'}
+    assert main.is_upcoming(race, now) is expected
+
+
+def test_is_upcoming_includes_race_with_unknown_start_time():
+    """発走時刻が取れなかったら、落とさず配信する側に倒す。"""
+    import main
+    assert main.is_upcoming({'date': '2026-08-08', 'start_time': None},
+                            jst(2026, 8, 8, 15, 0)) is True
+
+
+def test_update_mode_only_covers_todays_remaining_races():
+    import main
+    races = [
+        {'race_id': '1', 'date': '2026-08-08', 'start_time': '15:40'},  # 今日これから
+        {'race_id': '2', 'date': '2026-08-08', 'start_time': '10:00'},  # 今日もう終わった
+        {'race_id': '3', 'date': '2026-08-09', 'start_time': '15:40'},  # 明日
+    ]
+    now = jst(2026, 8, 8, 11, 0)
+
+    morning = [r['race_id'] for r in main.select_races(races, 'morning', now)]
+    update = [r['race_id'] for r in main.select_races(races, 'update', now)]
+
+    assert morning == ['1', '3']  # 朝は週末ぶん全部（発走済みは除く）
+    assert update == ['1']        # 追加配信は当日のこれからのぶんだけ
+
+
+def test_detect_changes_reports_going_odds_and_honmei():
+    import main
+    previous = {
+        'conditions': {'going': '良'},
+        'picks': [
+            {'mark': '◎', 'name': '馬A', 'odds': 2.0, 'is_value': False},
+            {'mark': '○', 'name': '馬B', 'odds': 20.0, 'is_value': False},
+        ],
+    }
+    current = {
+        'conditions': {'going': '重'},
+        'picks': [
+            {'mark': '◎', 'name': '馬B', 'odds': 8.0, 'is_value': True,
+             'score_rank': 1, 'ninki': 5},
+            {'mark': '○', 'name': '馬A', 'odds': 2.1, 'is_value': False},
+        ],
+    }
+
+    changes = main.detect_changes(previous, current)
+    joined = ' / '.join(changes)
+
+    assert '馬場が 良 → 重 に変わりました' in changes
+    assert '◎が 馬A → 馬B に替わりました' in changes
+    assert '馬B のオッズが 20.0 → 8.0 倍に下落' in joined
+    assert '馬B が新たに妙味ありになりました' in changes
+    # 2.0→2.1 はわずかな動きなので報告しない
+    assert '馬A のオッズ' not in joined
+
+
+def test_detect_changes_is_empty_without_a_previous_send():
+    import main
+    assert main.detect_changes(None, {'picks': [], 'conditions': {}}) == []
+
+
+def test_final_mode_email_shows_changes(tmp_path, monkeypatch, capsys):
+    """直前配信で、前回からの変化が本文に出ること。"""
+    import main
+
+    monkeypatch.setattr(main, 'NetkeibaScraper', FakeScraper)
+    monkeypatch.setattr(store, 'PREDICTIONS_DIR', str(tmp_path / 'predictions'))
+
+    # 朝の予想を作っておく（馬場・オッズがまだ違う状態を模す）
+    store.save_predictions([{
+        'race_id': '202405050811', 'name': '天皇賞(秋)', 'date': '2026-08-08',
+        'conditions': {'going': '良'},
+        'picks': [{'mark': '◎', 'name': 'イクイノックス', 'odds': 1.3, 'is_value': False}],
+    }], 'v3', '2026-08-08')
+
+    assert main.main(['--mode', 'final', '--today', '2026-08-08T14:30', '--no-email']) == 0
+
+    output = capsys.readouterr().out
+    assert '直前の最終予想' in output
+    assert '◆ 前回からの変化' in output
+    assert '馬場が 良 → 重 に変わりました' in output
+    assert '馬場:重' in output

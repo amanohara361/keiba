@@ -34,17 +34,36 @@ def _read_json(path):
         return json.load(f)
 
 
-def save_predictions(races, method_version):
-    """今回の予想を data/predictions/YYYY-MM-DD.json に保存する。"""
-    stamp = now_jst()
+def weekend_path(weekend_key):
+    """週末（土曜の日付）ごとの予想ファイルのパス。"""
+    return os.path.join(PREDICTIONS_DIR, f'{weekend_key}.json')
+
+
+def load_weekend_predictions(weekend_key):
+    """その週末の保存済み予想。まだ無ければ None。"""
+    path = weekend_path(weekend_key)
+    return _read_json(path) if os.path.exists(path) else None
+
+
+def save_predictions(races, method_version, weekend_key):
+    """予想を週末ごとの1ファイルにまとめて保存する。
+
+    1日に複数回（朝・馬体重発表後・直前）配信するため、レース単位で上書きする。
+    こうすると土曜の朝に出した日曜ぶんの予想を消さずに、
+    直前予想だけを差し替えられる。答え合わせは最終版に対して行われる。
+    """
+    existing = load_weekend_predictions(weekend_key) or {}
+    merged = {r['race_id']: r for r in existing.get('races', [])}
+    for race in races:
+        merged[race['race_id']] = race
+
     payload = {
-        'generated_at': stamp.isoformat(),
+        'weekend': weekend_key,
+        'generated_at': now_jst().isoformat(),
         'method_version': method_version,
-        'races': races,
+        'races': sorted(merged.values(), key=lambda r: (r.get('date', ''), r['race_id'])),
     }
-    return _write_json(
-        os.path.join(PREDICTIONS_DIR, f"{stamp.strftime('%Y-%m-%d')}.json"), payload
-    )
+    return _write_json(weekend_path(weekend_key), payload)
 
 
 def list_prediction_files():

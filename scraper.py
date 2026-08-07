@@ -197,11 +197,28 @@ class NetkeibaScraper:
                 'name': name,
                 'grade': grade,
                 'date': target_date.isoformat(),
+                'start_time': self._extract_start_time(anchor),
                 'url': f'{self.RACE_HOST}/race/shutuba.html?race_id={race_id}',
                 'result_url': f'{self.DB_HOST}/race/{race_id}/',
             }
 
         return list(races.values())
+
+    @staticmethod
+    def _extract_start_time(anchor):
+        """発走時刻を "HH:MM" で返す。取れなければ None。
+
+        当日の追加配信で「もう発走したレースを送らない」ために使う。
+        """
+        cell = anchor.select_one('.RaceList_Itemtime, .RaceData_Item01, .Race_Time')
+        text = cell.get_text(strip=True) if cell else anchor.get_text(' ', strip=True)
+        match = re.search(r'(\d{1,2}):(\d{2})', text)
+        if not match:
+            return None
+        hour, minute = int(match.group(1)), int(match.group(2))
+        if 0 <= hour <= 23 and 0 <= minute <= 59:
+            return f'{hour:02d}:{minute:02d}'
+        return None
 
     @staticmethod
     def _extract_grade(element):
@@ -264,13 +281,18 @@ class NetkeibaScraper:
     # 出馬表
     # ------------------------------------------------------------------
 
-    def get_horses_for_race(self, race):
-        """出馬表から出走馬の一覧を取得する。未発表なら空リスト。"""
+    def get_race_card(self, race):
+        """出馬表を取得して、出走馬と当日の条件をまとめて返す。
+
+        戻り値は {'horses': [...], 'conditions': {...}}。
+        馬体重と馬場状態は当日にならないと出ないため、
+        取れなかった項目は None のままにして呼び出し側で扱えるようにする。
+        """
         soup = self.fetch(race['url'])
         rows = soup.select('.Shutuba_Table tr.HorseList')
         if not rows:
             logger.info('[%s] 出馬表がまだ公開されていないようです', race['name'])
-            return []
+            return {'horses': [], 'conditions': {}}
 
         horses = []
         for row in rows:
@@ -281,18 +303,25 @@ class NetkeibaScraper:
             horse_id_match = re.search(r'/horse/(\d+)', horse_link.get('href', ''))
             jockey_link = row.select_one('td.Jockey a')
             umaban_cell = row.select_one('td.Umaban, td[class*="Umaban"]')
+            weight, weight_diff = _parse_weight(row.select_one('td.Weight'))
 
             horses.append({
                 'umaban': _clean(umaban_cell),
                 'name': _clean(horse_link),
                 'horse_id': horse_id_match.group(1) if horse_id_match else '',
                 'jockey': _clean(jockey_link),
+                'weight': weight,
+                'weight_diff': weight_diff,
                 'odds': None,
                 'ninki': None,
             })
 
         self._attach_odds(race['race_id'], horses)
-        return horses
+        return {'horses': horses, 'conditions': _parse_conditions(soup)}
+
+    def get_horses_for_race(self, race):
+        """出走馬の一覧だけが欲しいとき用。"""
+        return self.get_race_card(race)['horses']
 
     def _attach_odds(self, race_id, horses):
         """単勝オッズと人気を付与する。取得できなくても処理は続行する。
@@ -434,6 +463,51 @@ class NetkeibaScraper:
 
 def _clean(element):
     return element.get_text(strip=True) if element else ''
+
+
+def _parse_weight(cell):
+    """馬体重セルを (体重, 増減) に分解する。当日朝まで未発表なので (None, None) もありうる。"""
+    text = _clean(cell)
+    if not text:
+        return None, None
+
+    weight_match = re.match(r'(\d{3})', text)
+    diff_match = re.search(r'\(([-+±]?\d+)\)', text)
+
+    weight = int(weight_match.group(1)) if weight_match else None
+    diff = _to_int(diff_match.group(1).replace('±', '')) if diff_match else None
+    return weight, diff
+
+
+def _parse_conditions(soup):
+    """出馬表ヘッダから天候・馬場状態・コースを読む。
+
+    「直前に雨が降って馬場が重くなった」を検知するのがこの関数の役目。
+    当日にならないと馬場状態は出ないので、取れない項目は None を入れる。
+    """
+    header = soup.select_one('.RaceData01')
+    text = header.get_text(' ', strip=True) if header else ''
+    text = text.replace('\xa0', ' ')
+
+    # 「馬場:良」「芝 : 稍重」どちらの書き方でも拾えるようにする
+    going_match = re.search(
+        r'(?:馬場|芝|ダート|ダ)\s*[:：]\s*(良|稍重|重|不良)', text
+    )
+    weather_match = re.search(r'天候\s*[:：]\s*(\S+?)(?:\s|/|$)', text)
+    distance_match = re.search(r'(\d{3,4})\s*m', text)
+
+    surface = None
+    if re.search(r'ダート|ダ\s*\d', text):
+        surface = 'ダート'
+    elif '芝' in text:
+        surface = '芝'
+
+    return {
+        'going': going_match.group(1) if going_match else None,
+        'weather': weather_match.group(1) if weather_match else None,
+        'surface': surface,
+        'distance': int(distance_match.group(1)) if distance_match else None,
+    }
 
 
 def _first_link_text(row):

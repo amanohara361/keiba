@@ -6,7 +6,7 @@
 """
 
 # メソッドを変更したら必ず上げる。結果の集計はこのバージョン単位で行う。
-METHOD_VERSION = 'v2'
+METHOD_VERSION = 'v3'
 
 WEIGHTS = {
     'top_sire': 15.0,
@@ -21,7 +21,24 @@ WEIGHTS = {
     'career_veteran': 15.0,    # 10戦以上
     'career_middle': 10.0,     # 5戦以上
     'career_light': 5.0,
+    'mud_suited': 10.0,        # 道悪でパワー型の血統に加点
+    'big_weight_swing': -8.0,  # 馬体重が大きく増減した馬を減点
+    'mild_weight_swing': -3.0,
 }
+
+# 道悪（重・不良）でこなせる傾向のある種牡馬
+MUD_SIRES = [
+    'キングカメハメハ', 'ハーツクライ', 'ゴールドシップ', 'オルフェーヴル',
+    'ドレフォン', 'ヘニーヒューズ', 'シニスターミニスター', 'パイロ',
+    'ルーラーシップ', 'スクリーンヒーロー',
+]
+
+# 馬場が渋っているとみなす状態
+HEAVY_GOING = {'重', '不良'}
+
+# 馬体重の増減がこれ以上なら減点（仕上がりの不安とみなす）
+BIG_SWING_KG = 20
+MILD_SWING_KG = 14
 
 TOP_SIRES = [
     'ディープインパクト', 'ロードカナロア', 'エピファネイア', 'キズナ',
@@ -45,8 +62,13 @@ class RaceAnalyzer:
         self.weights = {**WEIGHTS, **(weights or {})}
         self.method_version = METHOD_VERSION
 
-    def evaluate_horse(self, horse, details):
-        """1頭ぶんのスコアと、その内訳の説明を返す。"""
+    def evaluate_horse(self, horse, details, conditions=None):
+        """1頭ぶんのスコアと、その内訳の説明を返す。
+
+        conditions には当日の馬場状態などを渡す。当日情報が無い朝の時点では
+        None のままでよく、その場合は道悪・馬体重の項目を単に飛ばす。
+        """
+        conditions = conditions or {}
         w = self.weights
         score = 0.0
         reasons = []
@@ -105,6 +127,23 @@ class RaceAnalyzer:
         else:
             score += w['career_light']
             reasons.append(f"キャリア浅 (+{w['career_light']:.0f})")
+
+        # --- 当日の馬場状態（雨で渋ったときだけ効く） ---
+        going = conditions.get('going')
+        if going in HEAVY_GOING and any(m in sire for m in MUD_SIRES):
+            score += w['mud_suited']
+            reasons.append(f"道悪({going})向きの血統 (+{w['mud_suited']:.0f})")
+
+        # --- 当日の馬体重増減 ---
+        weight_diff = horse.get('weight_diff')
+        if weight_diff is not None:
+            swing = abs(weight_diff)
+            if swing >= BIG_SWING_KG:
+                score += w['big_weight_swing']
+                reasons.append(f'馬体重{weight_diff:+d}kg ({w["big_weight_swing"]:+.0f})')
+            elif swing >= MILD_SWING_KG:
+                score += w['mild_weight_swing']
+                reasons.append(f'馬体重{weight_diff:+d}kg ({w["mild_weight_swing"]:+.0f})')
 
         return {
             'horse': horse,
