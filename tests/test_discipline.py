@@ -503,3 +503,75 @@ def test_missing_sheet_is_a_failure_when_the_alert_could_not_be_sent(tmp_path, m
                             '--no-save'])
 
     assert exit_code == check.EXIT_ERROR
+
+
+# ----------------------------------------------------------------------
+# 手動作成ツール（Claudeが動かないときの代替経路）
+# ----------------------------------------------------------------------
+
+def test_make_bets_output_is_valid_for_the_checker(tmp_path, monkeypatch):
+    """make_bets.py が作ったJSONを check.py がそのまま読めること。
+
+    アプリが固まった日でも、この経路だけで検算まで繋がる必要がある。
+    """
+    import make_bets
+
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path))
+
+    sheet = BetSheet(
+        date=date(2026, 8, 8),
+        races=[RaceBets(
+            race_id='202601020811', name='クイーンステークス', start_time='15:25',
+            marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11}],
+            bets=[Bet('馬連', [7, 11], 100)],
+            confidence='B', subjective_hit_rate=0.35,
+            venue='札幌', race_no=11,
+        )],
+        generated_at=bets.now_jst().isoformat(),
+        source='manual',
+    )
+    bets.save_sheet(sheet)
+
+    loaded = bets.load_sheet(date(2026, 8, 8))
+    assert loaded.source == 'manual'          # 朝タスク作成分と区別できる
+    assert loaded.races[0].subjective_hit_rate == 0.35
+    assert make_bets.VENUES['01'] == '札幌'
+
+
+@pytest.mark.parametrize('line,expected_type,expected_horses', [
+    ('馬連 7-11 100', '馬連', [7, 11]),
+    ('3連複 1-3-8', '3連複', [1, 3, 8]),
+    ('３連複 1-3-8', '3連複', [1, 3, 8]),   # 全角の3も受ける
+    ('単勝 16 200', '単勝', [16]),
+])
+def test_make_bets_parses_bet_lines(line, expected_type, expected_horses, monkeypatch):
+    import make_bets
+
+    supplied = iter([line, ''])
+    monkeypatch.setattr('builtins.input', lambda _: next(supplied))
+
+    entries = make_bets.ask_bets()
+    assert entries[0].type == expected_type
+    assert entries[0].horses == expected_horses
+
+
+def test_make_bets_parses_marks(monkeypatch):
+    import make_bets
+
+    monkeypatch.setattr('builtins.input', lambda _: '◎7 ○11 ▲2 △3 △14')
+    marks = make_bets.ask_marks()
+
+    assert [m['mark'] for m in marks] == ['◎', '○', '▲', '△', '△']
+    assert [m['umaban'] for m in marks] == [7, 11, 2, 3, 14]
+
+
+@pytest.mark.parametrize('raw,expected', [
+    ('0.16', 0.16),
+    ('16%', 0.16),
+    ('35', 0.35),      # 1より大きければ百分率とみなす
+])
+def test_make_bets_accepts_hit_rate_in_either_form(raw, expected, monkeypatch):
+    import make_bets
+
+    monkeypatch.setattr('builtins.input', lambda _: raw)
+    assert make_bets.ask_rate() == pytest.approx(expected)
