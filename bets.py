@@ -21,6 +21,10 @@ from datetime import datetime, timedelta, timezone
 
 JST = timezone(timedelta(hours=9))
 
+
+def now_jst():
+    return datetime.now(JST)
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 BETS_DIR = os.path.join(ROOT, 'data', 'bets')
 CHECKS_DIR = os.path.join(ROOT, 'data', 'checks')
