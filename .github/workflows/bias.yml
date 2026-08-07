@@ -1,0 +1,83 @@
+name: バイアス蓄積
+
+# jra_bias.py fetch を開催終了後に回して data_jra/ を貯める。
+#
+# CLAUDE.md にあるとおり、Claudeのサンドボックスは db.netkeiba.com に到達できず
+# （403 Tunnel connection failed）、スポーツナビの結果ページを手で web_fetch して
+# data_snav\ に保存する運用でしのいでいた。
+# **GitHub Actions のランナーは netkeiba に到達できる**ため、この経路では
+# fetch がそのまま使える。手動保存の運用は不要になる。
+#
+# 蓄積が増えるほどバイアス判定の精度が上がる（100レース程度で平常値が安定する）。
+# 現在は「蓄積不足のため1.00を仮基準」の状態なので、まずここを埋める。
+
+on:
+  schedule:
+    # 開催が終わってから回す。土日 21:00 JST = 12:00 UTC。
+    - cron: '0 12 * * 6'
+    - cron: '0 12 * * 0'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '対象日 (YYYYMMDD)。空なら実行日。'
+        required: false
+      venue:
+        description: '競馬場。空なら all（その日の開催全場）。'
+        required: false
+
+concurrency:
+  group: keiba-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: レース結果を取得して蓄積
+        env:
+          INPUT_DATE: ${{ inputs.date }}
+          INPUT_VENUE: ${{ inputs.venue }}
+        run: |
+          date_arg="${INPUT_DATE:-$(TZ=Asia/Tokyo date +%Y%m%d)}"
+          venue_arg="${INPUT_VENUE:-all}"
+          echo "対象: $date_arg $venue_arg"
+          # レース間に1.5秒のウェイトが入る（jra_bias.py 側の配慮）
+          python jra_bias.py fetch "$date_arg" "$venue_arg"
+
+      - name: バイアスを判定して実行ログに残す
+        env:
+          INPUT_DATE: ${{ inputs.date }}
+          INPUT_VENUE: ${{ inputs.venue }}
+        run: |
+          date_arg="${INPUT_DATE:-$(TZ=Asia/Tokyo date +%Y%m%d)}"
+          venue_arg="${INPUT_VENUE:-all}"
+          {
+            echo '```'
+            python jra_bias.py bias "$date_arg" "$venue_arg" || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 蓄積をコミット
+        if: always()
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data_jra/ 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo '新しい蓄積はありません（開催なし、または取得できず）'
+          else
+            git commit -m "バイアスデータを蓄積: $(TZ=Asia/Tokyo date +%Y-%m-%d)"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
