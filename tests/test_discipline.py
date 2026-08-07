@@ -18,7 +18,7 @@ import bets  # noqa: E402
 import check  # noqa: E402
 import discipline  # noqa: E402
 import odds as odds_module  # noqa: E402
-from bets import JST, Bet, BetSheet, RaceBets, parse_sheet  # noqa: E402
+from bets import JST, Bet, BetSheet, BetsError, RaceBets, parse_sheet  # noqa: E402
 
 
 def make_race(**kwargs):
@@ -575,3 +575,98 @@ def test_make_bets_accepts_hit_rate_in_either_form(raw, expected, monkeypatch):
 
     monkeypatch.setattr('builtins.input', lambda _: raw)
     assert make_bets.ask_rate() == pytest.approx(expected)
+
+
+# ----------------------------------------------------------------------
+# まとめて貼り付ける経路
+# ----------------------------------------------------------------------
+
+PASTED = """202601020811 クイーンステークス 15:25 B 35%
+◎7 ○11 ▲2 △3 △14
+馬連 7-11 100
+ワイド 7-14 100
+
+202604020207 アイビスサマーダッシュ 15:45 A 29%
+◎16 ○6
+単勝 16 200
+"""
+
+
+def test_parse_text_reads_multiple_races():
+    import make_bets
+
+    races = make_bets.parse_text(PASTED)
+
+    assert len(races) == 2
+    first, second = races
+    assert first.name == 'クイーンステークス'
+    assert first.venue == '札幌' and first.race_no == 11
+    assert first.start_time == '15:25'
+    assert first.confidence == 'B'
+    assert first.subjective_hit_rate == 0.35
+    assert first.horses_for('◎') == [7]
+    assert [str(b) for b in first.bets] == ['馬連 7-11', 'ワイド 7-14']
+    assert second.bets[0].stake == 200
+
+
+@pytest.mark.parametrize('header', [
+    '202601020811 クイーンステークス 15:25 B 35%',
+    '15:25 202601020811 B 35% クイーンステークス',   # 並び順は自由
+    'クイーンステークス 35% B 202601020811 15:25',
+    '202601020811 クイーンステークス 15:25 B 0.35',  # 小数でも可
+])
+def test_header_fields_are_recognised_in_any_order(header):
+    import make_bets
+
+    parsed = make_bets.parse_header(header)
+
+    assert parsed['race_id'] == '202601020811'
+    assert parsed['start_time'] == '15:25'
+    assert parsed['confidence'] == 'B'
+    assert parsed['subjective_hit_rate'] == pytest.approx(0.35)
+    assert parsed['name'] == 'クイーンステークス'
+
+
+def test_header_defaults_to_confidence_b():
+    import make_bets
+    parsed = make_bets.parse_header('202601020811 テスト 15:25 20%')
+    assert parsed['confidence'] == 'B'
+
+
+def test_stake_defaults_to_100():
+    import make_bets
+    assert make_bets.parse_bet_line('馬連 7-11').stake == 100
+    assert make_bets.parse_bet_line('馬連 7-11 300円').stake == 300
+
+
+@pytest.mark.parametrize('text,expected', [
+    ('クイーンステークス 15:25 B 35%', 'race_id'),          # race_id が無い
+    ('202601020811 クイーンステークス B 35%', '発走時刻'),   # 発走時刻が無い
+])
+def test_bad_header_is_rejected_with_a_reason(text, expected):
+    import make_bets
+    with pytest.raises(BetsError) as excinfo:
+        make_bets.parse_header(text)
+    assert expected in str(excinfo.value)
+
+
+def test_unreadable_line_reports_which_race(monkeypatch):
+    import make_bets
+    bad = '202601020811 テスト 15:25 B 20%\n◎7\nよくわからない行\n'
+    with pytest.raises(BetsError) as excinfo:
+        make_bets.parse_text(bad)
+    assert '1件目のレース' in str(excinfo.value)
+    assert 'よくわからない行' in str(excinfo.value)
+
+
+def test_pasted_sheet_survives_a_round_trip(tmp_path, monkeypatch):
+    """貼り付けたものが check.py の読める JSON になること。"""
+    import make_bets
+
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path))
+    races = make_bets.parse_text(PASTED)
+    bets.save_sheet(BetSheet(date=date(2026, 8, 8), races=races, source='manual'))
+
+    loaded = bets.load_sheet(date(2026, 8, 8))
+    assert [r.name for r in loaded.races] == ['クイーンステークス', 'アイビスサマーダッシュ']
+    assert loaded.races[1].subjective_hit_rate == 0.29
