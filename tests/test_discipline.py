@@ -447,3 +447,27 @@ def test_end_to_end_passes_a_clean_sheet(tmp_path, monkeypatch, capsys):
 
     assert exit_code == check.EXIT_OK
     assert '規律をクリア' in capsys.readouterr().out
+
+
+def test_deliver_logs_failure(caplog, monkeypatch):
+    """メール送信の成否が必ずログに残ること。
+
+    実行ログに出ないと、SMTPが落ちても気づけない。
+    """
+    class Broken:
+        def is_configured(self): return True
+        def send(self, subject, body): return False
+
+    with caplog.at_level('ERROR'):
+        assert check.deliver(Broken(), '件名', '本文') is False
+    assert 'メール送信に失敗' in caplog.text
+
+
+def test_deliver_reports_missing_credentials(caplog):
+    class Unconfigured:
+        def is_configured(self): return False
+        def send(self, subject, body): return True
+
+    with caplog.at_level('ERROR'):
+        assert check.deliver(Unconfigured(), '件名', '本文') is False
+    assert 'GitHub Secrets' in caplog.text

@@ -16,6 +16,7 @@
 """
 
 import argparse
+import logging
 import os
 import sys
 from datetime import date, datetime
@@ -28,6 +29,23 @@ from mailer import Mailer
 EXIT_OK = 0
 EXIT_ERROR = 1
 EXIT_BLOCKED = 3   # 発注を止めた買い目がある（異常ではないが目立たせる）
+
+# mailer など各モジュールのログを実行ログへ出す。
+# これが無いとメール送信の成否が一切表示されず、SMTPが落ちても気づけない。
+logging.basicConfig(level=logging.INFO, format='%(levelname)s %(message)s')
+logger = logging.getLogger(__name__)
+
+
+def deliver(mailer, subject, body):
+    """メールを送り、結果を必ず実行ログに残す。"""
+    if not mailer.is_configured():
+        logger.error('メールの認証情報が未設定です。GitHub Secrets を確認してください。')
+        return False
+    if not mailer.send(subject, body):
+        logger.error('メール送信に失敗しました（件名: %s）', subject)
+        return False
+    logger.info('メールを送信しました（件名: %s）', subject)
+    return True
 
 
 def resolve_now(override=None):
@@ -201,7 +219,7 @@ def main(argv=None):
         print(body)
         write_job_summary(body)
         if not args.no_email:
-            mailer.send('【要確認】朝の買い目が届いていません', body)
+            deliver(mailer, '【要確認】朝の買い目が届いていません', body)
         return EXIT_ERROR
 
     verdicts = review_sheet(sheet, now)
@@ -220,10 +238,7 @@ def main(argv=None):
         blocked = sum(1 for v in verdicts if v.blocked)
         subject = ('【要確認】直前検算で発注を止めた買い目があります'
                    if blocked else '【自動配信】直前検算 完了')
-        if not mailer.is_configured():
-            print('メールの認証情報が未設定です。GitHub Secrets を確認してください。')
-            return EXIT_ERROR
-        if not mailer.send(subject, body):
+        if not deliver(mailer, subject, body):
             return EXIT_ERROR
 
     return EXIT_BLOCKED if any(v.blocked for v in verdicts) else EXIT_OK
