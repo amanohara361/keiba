@@ -894,3 +894,90 @@ def test_form_is_not_fetched_on_good_going(tmp_path, monkeypatch):
                 '--no-email', '--no-save'])
 
     assert called == []
+
+
+# ----------------------------------------------------------------------
+# 馬場状態の読み取り（2026-08-08 に札幌だけ読めなかった件）
+# ----------------------------------------------------------------------
+
+@pytest.mark.parametrize('text,expected', [
+    ('15:25発走 / ダ右1700m / 天候:曇 / 馬場:良', '良'),
+    ('15:35発走 / 芝左外1800m / 天候:晴 / 芝:稍重', '稍重'),
+    ('ダート : 重 天候 : 雨', '重'),
+    ('馬場状態:不良', '不良'),          # 「馬場状態」でも拾う
+    ('馬場 重', '重'),                  # 区切りが無くても拾う
+    ('15:25発走 / ダ右1700m / 天候:曇', None),   # 未発表なら None
+])
+def test_find_going_handles_variations(text, expected):
+    assert conditions_module.find_going(text) == expected
+
+
+def test_furyo_is_not_misread_as_ryo():
+    """「不良」を「良」と読み違えないこと。"""
+    assert conditions_module.find_going('馬場:不良') == '不良'
+    assert conditions_module.find_going('ダート:不良 天候:雨') == '不良'
+
+
+def test_falls_back_to_db_page_when_shutuba_has_no_going():
+    """出馬表で馬場が読めなければ db.netkeiba.com に当たること。
+
+    2026-08-08、札幌は天候だけ読めて馬場が読めなかった。
+    """
+    shutuba = '<div class="RaceData01">15:25発走 / ダ右1700m / 天候:曇</div>'
+    db_page = '<div class="data_intro">ダ右1700m / 天候 : 曇 / ダート : 稍重</div>'
+    fetched = []
+
+    def fake_get(url, timeout=30, opener=None):
+        fetched.append(url)
+        return db_page if 'db.netkeiba.com' in url else shutuba
+
+    original = conditions_module._get
+    try:
+        conditions_module._get = fake_get
+        result = conditions_module.fetch('202601010511')
+    finally:
+        conditions_module._get = original
+
+    assert len(fetched) == 2                    # 予備にも当たった
+    assert result['going'] == '稍重'             # 予備から補えた
+    assert result['surface'] == 'ダート'         # 先に取れていた項目は残る
+    assert result['distance'] == 1700
+
+
+def test_does_not_hit_the_fallback_when_the_going_is_already_known():
+    shutuba = '<div class="RaceData01">15:35発走 / 芝左外1800m / 天候:晴 / 馬場:良</div>'
+    fetched = []
+
+    def fake_get(url, timeout=30, opener=None):
+        fetched.append(url)
+        return shutuba
+
+    original = conditions_module._get
+    try:
+        conditions_module._get = fake_get
+        result = conditions_module.fetch('202604020507')
+    finally:
+        conditions_module._get = original
+
+    assert len(fetched) == 1                    # 余計なアクセスをしない
+    assert result['going'] == '良'
+
+
+def test_keeps_what_it_has_when_the_fallback_also_fails():
+    shutuba = '<div class="RaceData01">15:25発走 / ダ右1700m / 天候:曇</div>'
+
+    def fake_get(url, timeout=30, opener=None):
+        if 'db.netkeiba.com' in url:
+            raise conditions_module.ConditionsError('予備も駄目')
+        return shutuba
+
+    original = conditions_module._get
+    try:
+        conditions_module._get = fake_get
+        result = conditions_module.fetch('202601010511')
+    finally:
+        conditions_module._get = original
+
+    assert result['going'] is None
+    assert result['weather'] == '曇'             # 取れているぶんは返す
+    assert result['distance'] == 1700
