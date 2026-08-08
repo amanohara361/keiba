@@ -22,6 +22,7 @@ import sys
 from datetime import date, datetime
 
 import bets
+import conditions as conditions_module
 import discipline
 import odds as odds_module
 from mailer import Mailer
@@ -66,9 +67,10 @@ def resolve_now(override=None):
     return datetime.now(bets.JST)
 
 
-def review_sheet(sheet, now, fetcher=None):
+def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None):
     """買い目ファイル全体を検算して、レースごとの判定を返す。"""
     fetcher = fetcher or odds_module.fetch
+    conditions_fetcher = conditions_fetcher or conditions_module.fetch
     verdicts = []
     for race in sheet.races:
         # 発走済みなら実オッズを取りに行かない（netkeibaは朝の値しか返さない）
@@ -78,9 +80,16 @@ def review_sheet(sheet, now, fetcher=None):
                 race, [], {}, {'skipped': '発走済みのため取得せず'}, now, sheet.date))
             continue
 
+        # 馬場状態は朝は未発表のことが多い。取れなくても検算は続ける。
+        try:
+            track = conditions_fetcher(race.race_id)
+        except conditions_module.ConditionsError as exc:
+            logger.warning('%s の馬場状態を取得できませんでした: %s', race.name, exc)
+            track = {}
+
         bet_odds, win_table, meta = odds_module.collect(race, fetcher=fetcher)
-        verdicts.append(
-            discipline.review_race(race, bet_odds, win_table, meta, now, sheet.date))
+        verdicts.append(discipline.review_race(
+            race, bet_odds, win_table, meta, now, sheet.date, track))
     return verdicts
 
 
@@ -118,6 +127,10 @@ def format_verdict(verdict):
         header += f' {race.start_time}発走'
     header += f' 勝負度{race.confidence}'
     lines.append(header)
+
+    track = conditions_module.label(verdict.conditions)
+    if track:
+        lines.append(f'  {track}')
 
     marks = ' '.join(f"{m['mark']}{m['umaban']}" for m in race.marks)
     if marks:
