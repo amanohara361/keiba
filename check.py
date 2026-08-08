@@ -24,6 +24,7 @@ from datetime import date, datetime
 import bets
 import conditions as conditions_module
 import discipline
+import form as form_module
 import odds as odds_module
 from mailer import Mailer
 
@@ -67,10 +68,12 @@ def resolve_now(override=None):
     return datetime.now(bets.JST)
 
 
-def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None):
+def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
+                 forms_fetcher=None):
     """買い目ファイル全体を検算して、レースごとの判定を返す。"""
     fetcher = fetcher or odds_module.fetch
     conditions_fetcher = conditions_fetcher or conditions_module.fetch
+    forms_fetcher = forms_fetcher or form_module.collect
     verdicts = []
     for race in sheet.races:
         # 発走済みなら実オッズを取りに行かない（netkeibaは朝の値しか返さない）
@@ -87,9 +90,18 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None):
             logger.warning('%s の馬場状態を取得できませんでした: %s', race.name, exc)
             track = {}
 
+        # 馬場が渋ったときだけ各馬の実績を引く。良馬場なら不要なアクセスをしない。
+        forms = {}
+        if conditions_module.is_heavy(track):
+            marked = sorted(race.marked_horses)
+            try:
+                forms = forms_fetcher(race.race_id, marked)
+            except form_module.FormError as exc:
+                logger.warning('%s の各馬の戦績を取得できませんでした: %s', race.name, exc)
+
         bet_odds, win_table, meta = odds_module.collect(race, fetcher=fetcher)
         verdicts.append(discipline.review_race(
-            race, bet_odds, win_table, meta, now, sheet.date, track))
+            race, bet_odds, win_table, meta, now, sheet.date, track, forms))
     return verdicts
 
 
@@ -135,6 +147,20 @@ def format_verdict(verdict):
     marks = ' '.join(f"{m['mark']}{m['umaban']}" for m in race.marks)
     if marks:
         lines.append(f'  印: {marks}')
+
+    going = (verdict.conditions or {}).get('going')
+    for entry in race.marks:
+        detail = verdict.forms.get(entry['umaban'])
+        if not detail:
+            continue
+        bits = []
+        if detail.get('weight'):
+            diff = detail.get('weight_diff')
+            bits.append(f"{detail['weight']}kg"
+                        + (f'({diff:+d})' if diff is not None else ''))
+        bits.append(form_module.summarise(detail.get('record') or {}, going))
+        lines.append(f"    {entry['mark']}{entry['umaban']} "
+                     f"{detail.get('name', '')} " + ' / '.join(bits))
 
     if race.bets:
         lines.append('  買い目:')
