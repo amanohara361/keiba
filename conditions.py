@@ -92,3 +92,51 @@ def label(conditions):
 
 def is_heavy(conditions):
     return bool(conditions) and conditions.get('going') in HEAVY_GOING
+
+
+def probe(race_id, opener=None):
+    """馬場が読めないときに、実際のページの中身を確認するための調査コマンド。
+
+    2026-08-08、新潟は「良」が取れたのに札幌は取れず、天候だけ読めるという
+    症状が出た。推測で正規表現をいじる前に、まず生のテキストを見る。
+    （jra_bias.py の probe と同じ考え方）
+    """
+    url = SHUTUBA_URL.format(race_id=race_id)
+    print(f'  URL: {url}')
+    request = urllib.request.Request(url, headers={'User-Agent': UA})
+    open_url = opener or urllib.request.urlopen
+    with open_url(request, timeout=30) as response:
+        page = response.read().decode('utf-8', errors='replace')
+
+    print(f'  ページ長: {len(page)}')
+    for name in ('RaceData01', 'RaceData02'):
+        block = re.search(rf'<div class="{name}"[^>]*>(.*?)</div>', page, re.S)
+        if block:
+            print(f'\n  --- {name} の生HTML ---')
+            print('  ' + block.group(1).strip()[:600].replace('\n', '\n  '))
+            print(f'  --- {name} のテキスト ---')
+            print('  ' + repr(strip_tags(block.group(1))))
+        else:
+            print(f'\n  --- {name} は見つかりません ---')
+
+    # 馬場状態らしき語がページのどこにあるかを探す
+    print('\n  --- 「馬場」「良/稍重/重/不良」の出現箇所 ---')
+    for match in re.finditer(r'.{60}(?:馬場|稍重|不良).{60}', page, re.S):
+        print('  ' + repr(match.group(0)))
+
+    print(f'\n  --- parse() の結果 ---\n  {parse(page)}')
+
+
+def main(argv=None):
+    import sys
+    argv = argv if argv is not None else sys.argv[1:]
+    if len(argv) >= 2 and argv[0] == 'probe':
+        probe(argv[1])
+        return 0
+    print(__doc__)
+    print('  python conditions.py probe <race_id>')
+    return 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
