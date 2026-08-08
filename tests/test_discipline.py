@@ -17,6 +17,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import bets  # noqa: E402
 import check  # noqa: E402
 import discipline  # noqa: E402
+import conditions as conditions_module  # noqa: E402
 import odds as odds_module  # noqa: E402
 from bets import JST, Bet, BetSheet, BetsError, RaceBets, parse_sheet  # noqa: E402
 
@@ -401,6 +402,9 @@ def test_end_to_end_blocks_the_queen_stakes_bet(tmp_path, monkeypatch, capsys):
                 'official_datetime': '14:28:00', 'odds': tables[bet_type]}
 
     monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
+    monkeypatch.setattr(conditions_module, 'fetch',
+                        lambda rid, **kw: {'going': '良', 'weather': '晴',
+                                          'surface': '芝', 'distance': 1800})
 
     exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30',
                             '--no-email'])
@@ -441,6 +445,9 @@ def test_end_to_end_passes_a_clean_sheet(tmp_path, monkeypatch, capsys):
                 'official_datetime': '14:28:00', 'odds': tables[bet_type]}
 
     monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
+    monkeypatch.setattr(conditions_module, 'fetch',
+                        lambda rid, **kw: {'going': '良', 'weather': '晴',
+                                          'surface': '芝', 'distance': 1800})
 
     exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30',
                             '--no-email', '--no-save'])
@@ -670,3 +677,89 @@ def test_pasted_sheet_survives_a_round_trip(tmp_path, monkeypatch):
     loaded = bets.load_sheet(date(2026, 8, 8))
     assert [r.name for r in loaded.races] == ['クイーンステークス', 'アイビスサマーダッシュ']
     assert loaded.races[1].subjective_hit_rate == 0.29
+
+
+# ----------------------------------------------------------------------
+# 馬場状態（朝の予想ログが「直前タスクで要確認」と名指しする項目）
+# ----------------------------------------------------------------------
+
+RACE_DATA_HEAVY = """
+<div class="RaceData01">
+  <span>15:25発走</span> / <span>ダ右1700m</span> / 天候:雨 / 馬場:重
+</div>
+"""
+
+RACE_DATA_MORNING = """
+<div class="RaceData01">
+  <span>15:25発走</span> / <span>ダ右1700m</span>
+</div>
+"""
+
+
+def test_conditions_are_parsed_on_race_day():
+    parsed = conditions_module.parse(RACE_DATA_HEAVY)
+    assert parsed['going'] == '重'
+    assert parsed['weather'] == '雨'
+    assert parsed['surface'] == 'ダート'
+    assert parsed['distance'] == 1700
+
+
+def test_conditions_are_empty_before_they_are_published():
+    """朝は馬場状態が出ていないので None のままになること。"""
+    parsed = conditions_module.parse(RACE_DATA_MORNING)
+    assert parsed['going'] is None
+    assert parsed['distance'] == 1700     # コースは朝でも分かる
+
+
+@pytest.mark.parametrize('going,heavy', [
+    ('良', False), ('稍重', True), ('重', True), ('不良', True),
+])
+def test_is_heavy(going, heavy):
+    assert conditions_module.is_heavy({'going': going}) is heavy
+
+
+def test_heavy_going_is_warned_but_not_judged():
+    """馬場が渋っていたら知らせる。ただしどの馬を上げ下げするかは判断しない。"""
+    race = make_race(name='エルムステークス', bets=[Bet('馬連', [2, 11])],
+                     marks=marks_of(items=[('◎', 2), ('○', 11)]))
+    verdict = discipline.review_race(
+        race, [35.2], {}, {}, datetime(2026, 8, 8, 14, 10, tzinfo=JST),
+        date(2026, 8, 8),
+        {'going': '重', 'weather': '雨', 'surface': 'ダート', 'distance': 1700})
+
+    finding = next(f for f in verdict.warnings if f.code == 'heavy_going')
+    assert '馬場が「重」です' in finding.message
+    assert '第5章' in finding.remedy and '第10章' in finding.remedy
+    # 知らせるだけで発注は止めない（判断は人がする）
+    assert not verdict.blocked
+
+
+def test_good_going_is_reported_without_a_warning():
+    race = make_race(bets=[Bet('馬連', [2, 11])])
+    verdict = discipline.review_race(
+        race, [35.2], {}, {}, datetime(2026, 8, 8, 14, 10, tzinfo=JST),
+        date(2026, 8, 8), {'going': '良', 'surface': 'ダート', 'distance': 1700})
+
+    assert 'heavy_going' not in [f.code for f in verdict.warnings]
+    assert verdict.conditions['going'] == '良'
+
+
+def test_check_continues_when_conditions_cannot_be_fetched(tmp_path, monkeypatch):
+    """馬場が取れなくても検算は続くこと。"""
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+    bets.save_sheet(BetSheet(
+        date=date(2026, 8, 8),
+        races=[make_race(bets=[Bet('馬連', [2, 11])], subjective_hit_rate=0.30)],
+    ))
+
+    def broken(race_id, **kwargs):
+        raise conditions_module.ConditionsError('取得できません')
+
+    monkeypatch.setattr(conditions_module, 'fetch', broken)
+    monkeypatch.setattr(odds_module, 'fetch', lambda rid, bt: {
+        'status': 'middle', 'reason': None, 'official_datetime': '14:10:00',
+        'odds': {'0211': ['35.2', '36.0', '9'], '02': ['16.4', '17.0', '7']}})
+
+    assert check.main(['--date', '2026-08-08', '--now', '2026-08-08T14:10',
+                       '--no-email', '--no-save']) == check.EXIT_OK
