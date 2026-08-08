@@ -107,5 +107,114 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-08T12:25:22.517633+09:00",
+    "races": [
+      {
+        "race_id": "202601010511",
+        "name": "エルムステークス",
+        "blocked": false,
+        "composite_odds": 15.97,
+        "expected_value": 1.92,
+        "bet_odds": [
+          {
+            "bet": "馬連 2-11",
+            "odds": 34.2
+          },
+          {
+            "bet": "馬連 2-9",
+            "odds": 77.3
+          },
+          {
+            "bet": "馬連 2-3",
+            "odds": 48.9
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "エルムステークス: 合成オッズ 15.97倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "エルムステークス: 期待値 1.92（合成 15.97倍 × 主観的中率 12%）",
+            "remedy": ""
+          }
+        ],
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-08 12:22:43"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-08 12:22:43"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-08 12:22:43"
+        }
+      },
+      {
+        "race_id": "202604020507",
+        "name": "関越ステークス",
+        "blocked": false,
+        "composite_odds": 7.73,
+        "expected_value": 1.22,
+        "bet_odds": [
+          {
+            "bet": "馬連 4-7",
+            "odds": 12.2
+          },
+          {
+            "bet": "馬連 4-15",
+            "odds": 26.3
+          },
+          {
+            "bet": "馬連 4-12",
+            "odds": 105.9
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "関越ステークス: 合成オッズ 7.73倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "関越ステークス: 期待値 1.22（合成 7.73倍 × 主観的中率 16%）",
+            "remedy": ""
+          }
+        ],
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-08 12:22:58"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-08 12:22:58"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-08 12:22:58"
+        }
+      }
+    ]
   }
 ]
