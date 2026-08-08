@@ -349,5 +349,138 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-08T14:50:22.027314+09:00",
+    "races": [
+      {
+        "race_id": "202601010511",
+        "name": "エルムステークス",
+        "blocked": false,
+        "composite_odds": 16.14,
+        "expected_value": 1.94,
+        "bet_odds": [
+          {
+            "bet": "馬連 2-11",
+            "odds": 34.4
+          },
+          {
+            "bet": "馬連 2-9",
+            "odds": 83.9
+          },
+          {
+            "bet": "馬連 2-3",
+            "odds": 47.7
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "エルムステークス: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "エルムステークス: 合成オッズ 16.14倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "エルムステークス: 期待値 1.94（合成 16.14倍 × 主観的中率 12%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": null,
+          "weather": "曇",
+          "surface": "ダート",
+          "distance": 1700
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-08 14:49:39"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-08 14:49:39"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-08 14:49:39"
+        }
+      },
+      {
+        "race_id": "202604020507",
+        "name": "関越ステークス",
+        "blocked": true,
+        "composite_odds": 7.51,
+        "expected_value": 1.18,
+        "bet_odds": [
+          {
+            "bet": "馬連 4-7",
+            "odds": 11.8
+          },
+          {
+            "bet": "馬連 4-15",
+            "odds": 25.6
+          },
+          {
+            "bet": "馬連 4-12",
+            "odds": 106.9
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "関越ステークス: 芝1800m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "関越ステークス: 合成オッズ 7.51倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "BLOCK",
+            "code": "expected_value_below_minimum",
+            "message": "関越ステークス: 期待値 1.18 < 1.2（合成 7.51倍 × 主観的中率 16%）",
+            "remedy": "買い目セットを組み直してください。なお期待値が印と食い違うときは、まず主観的中率の見積りを疑うこと（第13章）。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1800
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-08 14:49:09"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-08 14:49:09"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-08 14:49:09"
+        }
+      }
+    ]
   }
 ]
