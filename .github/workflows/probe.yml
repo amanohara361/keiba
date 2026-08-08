@@ -1,0 +1,46 @@
+name: ページ構造の調査
+
+# 取得がおかしいときに、実際のページの中身を確認するための調査用。
+# 推測で正規表現をいじる前に生のテキストを見る（jra_bias.py の probe と同じ考え方）。
+#
+# Claude のサンドボックスからは netkeiba に到達できないため、
+# 調査もランナー側で行う必要がある。
+
+on:
+  workflow_dispatch:
+    inputs:
+      race_id:
+        description: '調べる race_id（12桁）'
+        required: true
+      target:
+        description: '調べる対象'
+        type: choice
+        options: [conditions, bias]
+        default: conditions
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 調査を実行
+        env:
+          RACE_ID: ${{ inputs.race_id }}
+          TARGET: ${{ inputs.target }}
+        run: |
+          {
+            echo '```'
+            if [ "$TARGET" = 'bias' ]; then
+              python jra_bias.py probe "${RACE_ID:0:8}" all || true
+            else
+              python conditions.py probe "$RACE_ID" || true
+            fi
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"

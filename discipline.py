@@ -274,6 +274,38 @@ def check_going(race, conditions):
     )
 
 
+def check_going_experience(race, conditions, forms):
+    """馬場が渋ったとき、印を打った馬にその馬場の実績があるかを照会する。
+
+    第12章の分析シートは「馬場適性（良・稍重・重・不良）」を必須項目に挙げており、
+    第6章も「適性不明な馬は軸にしない」としている。実績の有無は事実の照会なので
+    機械が引く。**上げ下げの判断はしない。**
+    """
+    import form as form_module
+
+    going = (conditions or {}).get('going')
+    if not going or going not in form_module.GOING_LEVELS[1:] or not forms:
+        return []
+
+    findings = []
+    for mark in SENIOR_MARKS:
+        for umaban in race.horses_for(mark):
+            entry = forms.get(umaban) or {}
+            record = entry.get('record') or {}
+            if not record:
+                continue
+            if not form_module.has_experience(record, going):
+                findings.append(Finding(
+                    WARN, 'no_going_experience',
+                    f'{race.name}: {mark}{umaban}番 {entry.get("name", "")} は'
+                    f'「{going}」での出走がありません'
+                    f'（{form_module.summarise(record, going)}）',
+                    '当該馬場の適性が未知数です。'
+                    '軸に据えてよいかを第6章・第12章に照らして確認してください。',
+                ))
+    return findings
+
+
 def check_confidence(race):
     """勝負度Cは印だけ記録して購入しない（第13章）。"""
     if race.confidence == 'C' and race.bets:
@@ -291,7 +323,7 @@ def check_confidence(race):
 
 class RaceVerdict:
     def __init__(self, race, findings, composite, bet_odds, win_table, meta,
-                 conditions=None):
+                 conditions=None, forms=None):
         self.race = race
         self.findings = findings
         self.composite = composite
@@ -299,6 +331,7 @@ class RaceVerdict:
         self.win_table = win_table
         self.meta = meta
         self.conditions = conditions or {}
+        self.forms = forms or {}
 
     @property
     def blocked(self):
@@ -335,7 +368,8 @@ class RaceVerdict:
         }
 
 
-def review_race(race, bet_odds, win_table, meta, now, day, conditions=None):
+def review_race(race, bet_odds, win_table, meta, now, day, conditions=None,
+                forms=None):
     """1レースに第13章の規律を全部あてる。"""
     findings = []
 
@@ -345,10 +379,11 @@ def review_race(race, bet_odds, win_table, meta, now, day, conditions=None):
         if started.severity == BLOCK:
             # 発走済みなら以降の検算に意味がない
             return RaceVerdict(race, findings, None, bet_odds, win_table, meta,
-                               conditions)
+                               conditions, forms)
 
     # 馬場は買い目の有無に関わらず知らせる（朝は未発表のことが多いため）
     findings.append(check_going(race, conditions))
+    findings.extend(check_going_experience(race, conditions, forms))
 
     confidence = check_confidence(race)
     if confidence:
@@ -358,7 +393,7 @@ def review_race(race, bet_odds, win_table, meta, now, day, conditions=None):
         findings.append(Finding(
             INFO, 'no_bets', f'{race.name}: 買い目なし（勝負度{race.confidence}）'))
         return RaceVerdict(race, findings, None, bet_odds, win_table, meta,
-                           conditions)
+                           conditions, forms)
 
     composite = composite_odds(bet_odds)
     findings.append(check_composite_odds(race, composite))
@@ -377,4 +412,4 @@ def review_race(race, bet_odds, win_table, meta, now, day, conditions=None):
     findings.extend(check_win_odds_range(race, win_table))
 
     return RaceVerdict(race, findings, composite, bet_odds, win_table, meta,
-                       conditions)
+                       conditions, forms)
