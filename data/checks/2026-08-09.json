@@ -292,5 +292,152 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-09T14:30:44.840253+09:00",
+    "races": [
+      {
+        "race_id": "202601010611",
+        "name": "UHB賞",
+        "blocked": false,
+        "composite_odds": 8.3,
+        "expected_value": 1.41,
+        "bet_odds": [
+          {
+            "bet": "単勝 14",
+            "odds": 8.3
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "UHB賞: 芝1200m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "UHB賞: 合成オッズ 8.30倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "UHB賞: 期待値 1.41（合成 8.30倍 × 主観的中率 17%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-09 14:30:21"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-09 14:30:21"
+        }
+      },
+      {
+        "race_id": "202604020607",
+        "name": "レパードステークス",
+        "blocked": false,
+        "composite_odds": 5.6,
+        "expected_value": 1.34,
+        "bet_odds": [
+          {
+            "bet": "単勝 6",
+            "odds": 5.6
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "レパードステークス: ダート1800m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "レパードステークス: 合成オッズ 5.60倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "レパードステークス: 期待値 1.34（合成 5.60倍 × 主観的中率 24%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1800
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-09 14:29:46"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-09 14:29:46"
+        }
+      },
+      {
+        "race_id": "202607020607",
+        "name": "CBC賞",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "CBC賞: 芝1200m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "CBC賞: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "曇",
+          "surface": "芝",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-09 14:30:01"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-09 14:30:01"
+        }
+      }
+    ]
   }
 ]
