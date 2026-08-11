@@ -346,6 +346,19 @@ def save_card(card):
     return path
 
 
+def card_age_hours(day, now=None):
+    """保存済みカードが何時間前のものか。無ければ None。"""
+    card = load_card(day)
+    if not card or not card.get('generated_at'):
+        return None
+    try:
+        made = datetime.fromisoformat(card['generated_at'])
+    except ValueError:
+        return None
+    now = now or bets.now_jst()
+    return (now - made).total_seconds() / 3600.0
+
+
 def load_card(day):
     path = os.path.join(CARDS_DIR, f'{day.isoformat()}.json')
     if not os.path.exists(path):
@@ -445,6 +458,9 @@ def main(argv=None):
                        help=f'詳細を集める候補レース数（既定{DEFAULT_CANDIDATES}）')
     build.add_argument('--no-entries', action='store_true',
                        help='一覧とスクリーニングまでで止める（動作確認用）')
+    build.add_argument('--skip-if-fresh', type=float, metavar='時間',
+                       help='この時間以内に作ったカードがあれば何もしない。'
+                            '定時実行を二重にかけても取得が二度走らないようにする')
 
     probe = sub.add_parser('probe', help='ページ構造を調べる')
     probe.add_argument('target', choices=['list', 'entries', 'horse'])
@@ -463,6 +479,15 @@ def main(argv=None):
         return EXIT_OK
 
     day = date.fromisoformat(args.date) if getattr(args, 'date', None) else bets.now_jst().date()
+
+    # 定時実行を二重にかけておくための逃げ道。1本目が済んでいれば2本目は何もしない。
+    # 前夜に作れば遅延は無害なので、朝に間に合わないという事故を構造的に消せる。
+    if args.skip_if_fresh:
+        age = card_age_hours(day)
+        if age is not None and age <= args.skip_if_fresh:
+            logger.info('%s のカードは%.1f時間前に作成済みです。何もしません。', day, age)
+            return EXIT_OK
+
     try:
         card = build_card(day, limit=args.limit, with_entries=not args.no_entries)
     except CardError as exc:

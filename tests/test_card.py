@@ -194,6 +194,31 @@ def test_候補は点数の高い順に選ぶ():
 
 
 # ----------------------------------------------------------------------
+# カードの鮮度
+# ----------------------------------------------------------------------
+
+def test_作りたてのカードは作り直さない(tmp_path, monkeypatch):
+    """定時実行を二重にかけても取得が二度走らないための逃げ道。"""
+    from datetime import date, datetime, timedelta
+    import bets
+
+    monkeypatch.setattr(card, 'CARDS_DIR', str(tmp_path))
+    day = date(2026, 8, 15)
+    made = datetime(2026, 8, 14, 21, 30, tzinfo=bets.JST)
+    card.save_card({'date': day.isoformat(),
+                    'generated_at': made.isoformat(), 'races': []})
+
+    now = made + timedelta(hours=4)
+    assert card.card_age_hours(day, now=now) == pytest.approx(4.0)
+
+
+def test_カードが無ければ鮮度は分からない(tmp_path, monkeypatch):
+    from datetime import date
+    monkeypatch.setattr(card, 'CARDS_DIR', str(tmp_path))
+    assert card.card_age_hours(date(2026, 8, 15)) is None
+
+
+# ----------------------------------------------------------------------
 # 馬ごとの事実（近走・血統）
 # ----------------------------------------------------------------------
 
