@@ -1,0 +1,75 @@
+name: カード作成
+
+# 方針B の取得側。netkeiba から当日の事実を集めて data/cards/ に置く。
+# 判断はしない（第14章の1次スクリーニングまで）。
+#
+# **判断側は手動実行（workflow_dispatch）で呼ぶことを前提にしている。**
+# 定時実行は85分・119分の遅れを実測しており、朝の予想に間に合う保証がない。
+# 手動実行は数秒で始まるので、判断側のセッションがここを起こしてから
+# 出来上がりを待つほうが確実。schedule は保険として前夜に置く。
+
+on:
+  schedule:
+    # cron は UTC 指定。日本時間は +9 時間。
+    # 12:07 UTC = 21:07 JST（金・土の夜）。翌日の出馬表は前日夜に出ている。
+    # 馬体重と馬場状態は当日にならないと出ないので、当日朝に取り直す。
+    - cron: '7 12 * * 5,6'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '対象日 (YYYY-MM-DD)。空なら実行日。'
+        required: false
+      limit:
+        description: '詳細を集める候補レース数（既定6）'
+        required: false
+      no_entries:
+        description: '一覧とスクリーニングまでで止める（動作確認用）'
+        type: boolean
+        default: false
+
+concurrency:
+  group: keiba-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  card:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45      # 1頭1.5秒 × 候補6レース分の余裕を見る
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 依存のインストールは不要（標準ライブラリだけで動く）。
+
+      - name: カードを作成
+        env:
+          INPUT_DATE: ${{ inputs.date }}
+          INPUT_LIMIT: ${{ inputs.limit }}
+          INPUT_NO_ENTRIES: ${{ inputs.no_entries }}
+        run: |
+          args=(build)
+          if [ -n "$INPUT_DATE" ];  then args+=(--date "$INPUT_DATE"); fi
+          if [ -n "$INPUT_LIMIT" ]; then args+=(--limit "$INPUT_LIMIT"); fi
+          if [ "$INPUT_NO_ENTRIES" = 'true' ]; then args+=(--no-entries); fi
+          python card.py "${args[@]}" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: カードをコミット
+        if: always()
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/ 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo '更新はありません'
+          else
+            git commit -m "カードを作成: $(date -u +%Y-%m-%d)"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

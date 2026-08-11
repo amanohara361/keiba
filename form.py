@@ -160,6 +160,119 @@ def fetch_going_record(horse_id, opener=None):
 
 
 # ----------------------------------------------------------------------
+# 近走と血統（方針B・カード作成で使う）
+# ----------------------------------------------------------------------
+
+# 競走成績の列。第2章の減点方式チェックリストと第8章の7つの視点が
+# 必要とする事実は、ほぼこの1つの表から取れる。
+#   前走着順（4〜6着ゾーン）／距離の延長短縮／騎手の乗り替わり／
+#   休み明けの期間（日付の間隔）／脚質（通過順）／前走がローカル場か
+RUN_COLUMNS = {
+    '日付': 'date', '開催': 'meeting', '天気': 'weather', 'R': 'race_no',
+    'レース名': 'race', '頭数': 'field_size', '枠番': 'waku', '馬番': 'umaban',
+    'オッズ': 'odds', '人気': 'ninki', '着順': 'rank', '騎手': 'jockey',
+    '斤量': 'kinryo', '距離': 'distance', '馬場': 'going', 'タイム': 'time',
+    '着差': 'margin', '通過': 'passing', 'ペース': 'pace', '上り': 'last3f',
+    '馬体重': 'weight', '勝ち馬': 'winner', '勝ち馬(2着馬)': 'winner',
+}
+
+NUMERIC_RUN_FIELDS = {'field_size', 'waku', 'umaban', 'ninki', 'rank', 'race_no'}
+FLOAT_RUN_FIELDS = {'odds', 'kinryo', 'last3f'}
+
+
+def _run_columns(header_cells):
+    index = {}
+    for position, cell in enumerate(header_cells):
+        key = re.sub(r'\s+', '', cell)
+        field = RUN_COLUMNS.get(key)
+        if field:
+            index.setdefault(field, position)
+    return index
+
+
+def parse_recent_runs(page, limit=5):
+    """競走成績から直近の走りを取り出す。新しい順。
+
+    表の列順は netkeiba 側でよく変わるので、位置ではなく見出しで引く
+    （jra_bias.py の col_index と同じ考え方）。
+    """
+    table = re.search(
+        r'<table[^>]*class="[^"]*db_h_race_results[^"]*"[^>]*>(.*?)</table>', page, re.S)
+    if not table:
+        return []
+
+    rows = []
+    for tr in re.findall(r'<tr[^>]*>(.*?)</tr>', table.group(1), re.S):
+        cells = [strip_tags(c) for c in
+                 re.findall(r'<t[hd][^>]*>(.*?)</t[hd]>', tr, re.S)]
+        if cells:
+            rows.append(cells)
+    if len(rows) < 2:
+        return []
+
+    index = _run_columns(rows[0])
+    runs = []
+    for cells in rows[1:]:
+        if not index or len(cells) <= max(index.values()):
+            continue
+        run = {}
+        for field, position in index.items():
+            value = cells[position].strip()
+            if not value:
+                continue
+            if field in NUMERIC_RUN_FIELDS and value.isdigit():
+                run[field] = int(value)
+            elif field in FLOAT_RUN_FIELDS:
+                try:
+                    run[field] = float(value)
+                except ValueError:
+                    run[field] = value
+            else:
+                run[field] = value
+        # 距離は「芝1200」の形。コースと数字に割る。
+        distance = run.get('distance', '')
+        matched = re.match(r'(芝|ダ|障)\s*(\d{3,4})', distance)
+        if matched:
+            run['surface'] = {'ダ': 'ダート'}.get(matched.group(1), matched.group(1))
+            run['distance'] = int(matched.group(2))
+        # 馬体重は「424(-2)」の形。
+        weight = str(run.get('weight', ''))
+        matched = re.match(r'(\d{3})\(([-+±]?\d+)\)', weight)
+        if matched:
+            run['weight'] = int(matched.group(1))
+            try:
+                run['weight_diff'] = int(matched.group(2).replace('±', ''))
+            except ValueError:
+                pass
+        if run:
+            runs.append(run)
+        if len(runs) >= limit:
+            break
+    return runs
+
+
+def parse_pedigree(page):
+    """血統表から父・母・母父を取る。
+
+    第5章（ダート適性の父系）と第12章（血統分析）が使う。
+    表の作りに深く踏み込むと壊れやすいので、血統表の中に現れる
+    馬名リンクの順序だけを使う。netkeiba の blood_table は
+    父・父父・父母・母・母父・母母 の順に並ぶ。
+    """
+    table = re.search(
+        r'<table[^>]*class="[^"]*blood_table[^"]*"[^>]*>(.*?)</table>', page, re.S)
+    if not table:
+        return {}
+    names = [strip_tags(n) for n in
+             re.findall(r'<a[^>]*href="[^"]*/horse/[^"]*"[^>]*>(.*?)</a>',
+                        table.group(1), re.S)]
+    names = [n for n in names if n]
+    if len(names) < 5:
+        return {}
+    return {'sire': names[0], 'dam': names[3], 'broodmare_sire': names[4]}
+
+
+# ----------------------------------------------------------------------
 # 表示
 # ----------------------------------------------------------------------
 
