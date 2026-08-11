@@ -1,88 +1,41 @@
-# card-list 2026-08-09  (2026-08-11T13:47:23Z)
-取得サイズ: 54758 文字
-  RaceList_DataItem: 36 箇所
-  race_id=: 72 箇所
-  ItemTitle: 72 箇所
-  Icon_GradeType: 28 箇所
-  RaceList_Itemtime: 36 箇所
-  ItemLong: 35 箇所
+# card-build 2026-08-09  (2026-08-11T13:49:11Z)
+## 2026-08-09 のカード（全36レース / 候補2）
 
---- 1レース目の生HTML（先頭1200文字）---
- ">
-<a href="../race/result.html?race_id=202604020601&rf=race_list" class="">
-<!-- <div class="RaceList_Item01"> -->
-
-<div class="Race_Num Race_Fixed">
-<span>
-<span class="MyRace_List_Item" id="myrace_202604020601" style="display: none;"></span>
-1R
-</span>
-</div>
-
-<!-- </div> --><!-- /.RaceList_Item01 -->
-<div class="RaceList_ItemContent">
-<div class="RaceList_ItemTitle">
-<span class="ItemTitle">2歳未勝利</span>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-<div class="RaceData">
-
-<span class="RaceList_Itemtime">09:40 </span>
-<span class="RaceList_ItemLong Turf">芝2000m</span>
-
-
-<span class="RaceList_Itemnumber">16頭 </span>
-<span class="RaceList_ItemSubscribe">
-<img id="myhorse_202604020601" src="https://cdnv2.netkeiba.com/img.race/common/img/icon/icon_horse02.png?2019073001" alt="" width="18" class="disp_none FavHorse_Icon" />
-<img id="note_202604020601" src="https://cdnv2.netkeiba.com/img.race/common/img/icon/icon_note.png?2019073001" alt="" width="13" class="disp_none Note_Icon" />
-</span>
-</div><!-- /.RaceData -->
-</div><!-- /.RaceList_Item02 -->
-</a>
-<a href="../race/movie.html?race_id=202604020601&rf=race_list" class="LinkIconRaceMovie" id="movie_202604020601" style="display: none">
-<img  src="https://cd
-
---- 佐渡S のアイコン ---
-  <span class="Icon_GradeType Icon_GradeType16 Icon_GradePos01"></span>
-  <span class="Icon_GradeType Icon_GradeType13"></span>
-
---- レパードS のアイコン ---
-  <span class="Icon_GradeType Icon_GradeType3 Icon_GradePos01"></span>
-  <span class="Icon_GradeType Icon_GradeType13"></span>
-
---- 驀進特別 のアイコン ---
-  <span class="Icon_GradeType Icon_GradeType17 Icon_GradePos01"></span>
-
---- 浜名湖特別 のアイコン ---
-  <span class="Icon_GradeType Icon_GradeType17 Icon_GradePos01"></span>
-  <span class="Icon_GradeType Icon_GradeType13"></span>
-
---- CBC賞 のアイコン ---
-  <span class="Icon_GradeType Icon_GradeType3 Icon_GradePos01"></span>
-  <span class="Icon_GradeType Icon_GradeType13"></span>
-
---- 揖斐川特別 のアイコン ---
-  <span class="Icon_GradeType Icon_GradeType17 Icon_GradePos01"></span>
-
---- パース結果 36件（先頭5件）---
-{"race_id": "202607020601", "venue": "中京", "race_no": 1, "name": "3歳未勝利", "start_time": "09:50", "surface": "芝", "distance": 2000, "turn": null, "field_size": 16, "grade": null}
-{"race_id": "202607020602", "venue": "中京", "race_no": 2, "name": "2歳新馬", "start_time": "10:20", "surface": "芝", "distance": 1600, "turn": null, "field_size": 9, "grade": null}
-{"race_id": "202607020603", "venue": "中京", "race_no": 3, "name": "2歳新馬", "start_time": "10:50", "surface": "芝", "distance": 2000, "turn": null, "field_size": 8, "grade": null}
-{"race_id": "202607020604", "venue": "中京", "race_no": 4, "name": "3歳未勝利", "start_time": "11:20", "surface": "ダート", "distance": 1800, "turn": null, "field_size": 16, "grade": null}
-{"race_id": "202607020605", "venue": "中京", "race_no": 5, "name": "3歳以上1勝クラス", "start_time": "11:50", "surface": "ダート", "distance": 1400, "turn": null, "field_size": 16, "grade": null}
-
-読めなかった項目: なし
+| 場 | R | レース | クラス | 点 | 判定 |
+|---|---|---|---|---|---|
+| 中京 | 1 | 3歳未勝利 | 未勝利 | -2 | — |
+| 中京 | 2 | 2歳新馬 | 新馬 | 0 | 2歳新馬戦（情報不足のため無理に買わない） |
+| 中京 | 3 | 2歳新馬 | 新馬 | 0 | 2歳新馬戦（情報不足のため無理に買わない） |
+| 中京 | 4 | 3歳未勝利 | 未勝利 | -2 | — |
+| 中京 | 5 | 3歳以上1勝クラス | 1勝 | -2 | — |
+| 中京 | 6 | 浜名湖特別 | 2勝 | 0 | — |
+| 中京 | 7 | CBC賞 | G3 | 3 | 候補 |
+| 中京 | 8 | 揖斐川特別 | 2勝 | 0 | — |
+| 中京 | 9 | 3歳以上障害未勝利 | 未勝利 | 0 | 障害レース（メソッドが平地競走を前提にしている） |
+| 中京 | 10 | 3歳以上1勝クラス | 1勝 | -2 | — |
+| 中京 | 11 | 3歳以上1勝クラス | 1勝 | -2 | — |
+| 中京 | 12 | 3歳未勝利 | 未勝利 | -2 | — |
+| 新潟 | 1 | 2歳未勝利 | 未勝利 | -2 | — |
+| 新潟 | 2 | 2歳新馬 | 新馬 | 0 | 2歳新馬戦（情報不足のため無理に買わない） |
+| 新潟 | 3 | 3歳未勝利 | 未勝利 | -2 | — |
+| 新潟 | 4 | 3歳未勝利 | 未勝利 | -2 | — |
+| 新潟 | 5 | 3歳以上1勝クラス | 1勝 | -2 | — |
+| 新潟 | 6 | 佐渡S | 3勝 | -1 | — |
+| 新潟 | 7 | レパードS | G3 | 3 | 候補 |
+| 新潟 | 8 | 驀進特別 | 2勝 | 0 | — |
+| 新潟 | 9 | 3歳以上2勝クラス | 2勝 | 0 | — |
+| 新潟 | 10 | 3歳以上1勝クラス | 1勝 | -2 | — |
+| 新潟 | 11 | 3歳未勝利 | 未勝利 | -2 | — |
+| 新潟 | 12 | 3歳未勝利 | 未勝利 | -2 | — |
+| 札幌 | 1 | 2歳未勝利 | 未勝利 | -2 | — |
+| 札幌 | 2 | 3歳未勝利 | 未勝利 | -2 | — |
+| 札幌 | 3 | 3歳以上1勝クラス | 1勝 | -2 | — |
+| 札幌 | 4 | 3歳未勝利 | 未勝利 | -2 | — |
+| 札幌 | 5 | 2歳新馬 | 新馬 | 0 | 2歳新馬戦（情報不足のため無理に買わない） |
+| 札幌 | 6 | 3歳未勝利 | 未勝利 | -2 | — |
+| 札幌 | 7 | 3歳未勝利 | 未勝利 | -2 | — |
+| 札幌 | 8 | 3歳以上1勝クラス | 1勝 | -2 | — |
+| 札幌 | 9 | 3歳以上1勝クラス | 1勝 | -2 | — |
+| 札幌 | 10 | 富良野特別 | 2勝 | 0 | — |
+| 札幌 | 11 | UHB賞 | OP | 2 | — |
+| 札幌 | 12 | 石狩特別 | 1勝 | -2 | — |
