@@ -20,11 +20,29 @@ Excel3ファイルの更新が終わったら、**Drive投稿やGmail下書き�
 #買い目JSONのコミット（朝タスク・毎回・txt を書いた直後）
 `買い目_YYYYMMDD.txt` を書いたら、続けて **同じ内容を機械可読な JSON にして GitHub にコミットする**。
 
-- 保存先：`data/bets/YYYY-MM-DD.json`（ローカルの作業コピーは `E:\Claude\keiba-repo`）
+- 保存先：`E:\Claude\keiba-repo\data\bets\YYYY-MM-DD.json`
 - 形式：`data/bets/README.md` に定義。txt と内容は同じで、機械が読める形にしただけ。
-- コミットしたら `git push` まで済ませること。**push されて初めてクラウド側から見える。**
-- push したら `git log --oneline -1 origin/main` で**反映を確認してから終える**。
-  push が失敗しても気づかずに終わると、14:30の検算は「届いていません」を出す。
+- **朝タスクがやるのはファイルを書くところまで。git は実行しない。**
+  コミットと push は Windows 側の `github_push.bat`（土日08:00・12:00にタスク
+  スケジューラで起動）が行う。
+
+**なぜ朝タスクが git を実行しないのか（2026-08-09に判明）**
+Coworkのサンドボックスは、マウントしたフォルダに対して**作成と更新はできるが
+削除（unlink）ができない**。gitはコミットのたびに `.git/index.lock` を作って
+消すため、この制約下では commit も push も通らない。実際、8/8 19:39 に残った
+`index.lock` を消せず `Operation not permitted` で止まっている。
+あわせて `api.github.com` はサンドボックスのプロキシで遮断されており（403）、
+GitHubコネクタも無く、git の認証情報も無い。**書き込み経路は
+「ローカルにファイルを書く」の一択**である。
+なお読み取りは通る（`git ls-remote` は成功する）。github.com の git
+エンドポイント自体はホワイトリストに入っており、遮断は api.github.com だけ。
+
+ブラウザ（Claude in Chrome）経由でWeb UIからコミットする案もあるが**採らない**。
+この案件はそもそも「壊れやすい自動化が止まって機会を失う」ことへの対策であり、
+毎週の必須経路にブラウザ自動化を置くと、セッション切れ・UI変更・Chrome未起動で
+同じ失敗に戻る。8/1に13時間止まった原因も「配信の一手」だった。
+`github_push.bat` は既に認証済みのGit Credential Managerを使うため、
+トークンの受け渡しも不要で、新しい依存も増えない（朝タスク自体がPCを要する）。
 
 **メソッド系のファイルは keiba-repo 側を正とする。** `CLAUDE.md`・`予想メソッド.md`・
 `検証ノート.md`・`jra_bias.py` は同じ名前のファイルが作業フォルダにも残っているが、
