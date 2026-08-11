@@ -347,6 +347,20 @@ def probe_list(day):
     print(f'\n--- 1レース目の生HTML（先頭1200文字）---')
     print(blocks[0][:1200] if blocks else '(切り分けできませんでした)')
 
+    # グレードアイコンの意味は推測できない。実物のマークアップを見る。
+    shown = 0
+    for block in blocks:
+        if 'Icon_GradeType' not in block:
+            continue
+        title = re.search(r'class="ItemTitle"[^>]*>\s*([^<]+?)\s*<', block)
+        icons = re.findall(r'<span[^>]*Icon_GradeType[^>]*>.*?</span>', block, re.S)
+        print(f'\n--- {title.group(1) if title else "?"} のアイコン ---')
+        for icon in icons:
+            print(' ', icon.strip()[:200])
+        shown += 1
+        if shown >= 6:
+            break
+
     races = parse_race_list(page)
     print(f'\n--- パース結果 {len(races)}件（先頭5件）---')
     for race in races[:5]:
