@@ -373,6 +373,22 @@ def probe_entries(race_id):
 
 
 def probe_horse(horse_id):
+    for label, url in [('トップ', form_module.HORSE_URL),
+                       ('競走成績', form_module.RESULT_URL),
+                       ('血統', form_module.PED_URL)]:
+        page = form_module._fetch(url.format(horse_id=horse_id))
+        print(f'\n=== {label}: {url.format(horse_id=horse_id)} ({len(page)}文字) ===')
+        for name in re.findall(r'<table[^>]*class="([^"]*)"', page):
+            print('  table:', name)
+        table = re.search(
+            r'<table[^>]*class="[^"]*(?:db_h_race_results|blood_table)[^"]*"[^>]*>(.*?)</table>',
+            page, re.S)
+        if table:
+            rows = re.findall(r'<tr[^>]*>(.*?)</tr>', table.group(1), re.S)
+            for row in rows[:2]:
+                print('  行:', [form_module.strip_tags(c) for c in
+                                re.findall(r'<t[hd][^>]*>(.*?)</t[hd]>', row, re.S)])
+
     page = form_module._fetch(form_module.HORSE_URL.format(horse_id=horse_id))
     print(f'取得サイズ: {len(page)} 文字')
     for marker in ['db_h_race_results', 'blood_table', 'db_prof_table']:

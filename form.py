@@ -21,7 +21,15 @@ import urllib.error
 import urllib.request
 
 SHUTUBA_URL = 'https://race.netkeiba.com/race/shutuba.html?race_id={race_id}'
+
+# 馬の情報は3ページに分かれている。
+# 2026-08-11、トップページ（/horse/{id}/）から競走成績と血統表が消えて
+# いることを Actions 側の probe で確認した（table は db_prof_table 1つだけ）。
+# それまで競走成績をトップページから読もうとしていたため、
+# **道悪実績の照会は本番でずっと空を返していた**。
 HORSE_URL = 'https://db.netkeiba.com/horse/{horse_id}/'
+RESULT_URL = 'https://db.netkeiba.com/horse/result/{horse_id}/'
+PED_URL = 'https://db.netkeiba.com/horse/ped/{horse_id}/'
 
 UA = ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
       '(KHTML, like Gecko) Chrome/124.0 Safari/537.36')
@@ -156,7 +164,7 @@ def parse_going_record(page):
 
 
 def fetch_going_record(horse_id, opener=None):
-    return parse_going_record(_fetch(HORSE_URL.format(horse_id=horse_id), opener=opener))
+    return parse_going_record(_fetch(RESULT_URL.format(horse_id=horse_id), opener=opener))
 
 
 # ----------------------------------------------------------------------
