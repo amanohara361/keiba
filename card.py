@@ -378,6 +378,21 @@ def probe_horse(horse_id):
     for marker in ['db_h_race_results', 'blood_table', 'db_prof_table']:
         print(f'  {marker}: {page.count(marker)} 箇所')
 
+    # 目印が見つからないときは、ページにある表とクラス名をそのまま見る。
+    # 推測でクラス名を書き換えると、当たるまで何往復もすることになる。
+    classes = re.findall(r'<table[^>]*class="([^"]*)"', page)
+    print(f'\n--- ページ内の table のクラス名（{len(classes)}個）---')
+    for name in classes:
+        print(' ', name)
+    heads = re.findall(r'<(h\d)[^>]*>(.*?)</\1>', page, re.S)
+    print('--- 見出し ---')
+    for _, text in heads[:12]:
+        cleaned = form_module.strip_tags(text)
+        if cleaned:
+            print(' ', cleaned[:60])
+    for word in ('競走成績', '全成績', '/horse/result/', '/horse/ped/'):
+        print(f'  「{word}」: {page.count(word)} 箇所')
+
     table = re.search(r'<table[^>]*class="[^"]*db_h_race_results[^"]*"[^>]*>(.*?)</table>',
                       page, re.S)
     if table:
