@@ -18,6 +18,13 @@ on:
         options: [conditions, bias, card-list, card-entries, card-horse]
         default: conditions
 
+concurrency:
+  group: keiba-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
 jobs:
   probe:
     runs-on: ubuntu-latest
@@ -35,8 +42,9 @@ jobs:
           RACE_ID: ${{ inputs.race_id }}
           TARGET: ${{ inputs.target }}
         run: |
+          mkdir -p data/probe
           {
-            echo '```'
+            echo "# $TARGET $RACE_ID  ($(date -u +%Y-%m-%dT%H:%M:%SZ))"
             case "$TARGET" in
               bias)       python jra_bias.py probe "${RACE_ID:0:8}" all || true ;;
               card-list)  python card.py probe list "$RACE_ID" || true ;;
@@ -44,5 +52,24 @@ jobs:
               card-horse) python card.py probe horse "$RACE_ID" || true ;;
               *)          python conditions.py probe "$RACE_ID" || true ;;
             esac
-            echo '```'
-          } | tee -a "$GITHUB_STEP_SUMMARY"
+          } | tee data/probe/last.txt
+          { echo '```'; cat data/probe/last.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      # 調査結果をリポジトリに残す。実行ログのAPIから読むより、
+      # git pull して読むほうが確実で軽い（ログは巨大なJSONに包まれてくる）。
+      - name: 調査結果をコミット
+        if: always()
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/probe/ 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo '更新はありません'
+          else
+            git commit -m "調査結果: ${TARGET} ${RACE_ID}"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+        env:
+          RACE_ID: ${{ inputs.race_id }}
+          TARGET: ${{ inputs.target }}
