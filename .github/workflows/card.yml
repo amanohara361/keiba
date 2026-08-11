@@ -3,27 +3,38 @@ name: カード作成
 # 方針B の取得側。netkeiba から当日の事実を集めて data/cards/ に置く。
 # 判断はしない（第14章の1次スクリーニングまで）。
 #
-# **判断側は手動実行（workflow_dispatch）で呼ぶことを前提にしている。**
-# 定時実行は85分・119分の遅れを実測しており、朝の予想に間に合う保証がない。
-# 手動実行は数秒で始まるので、判断側のセッションがここを起こしてから
-# 出来上がりを待つほうが確実。schedule は保険として前夜に置く。
+# **前夜の定時実行が主経路。誰も起動しなくてよい。**
+# 定時実行は85分・119分の遅れを実測しているが、それが問題になるのは
+# 直前検算のような時刻の決まった処理だけで、前夜なら2時間遅れても
+# その晩のうちに終わる。翌日の出馬表・オッズは前日夜には出揃っている。
+#
+# 馬体重は発走の約60分前まで発表されないので、朝に取り直しても入らない。
+# 馬体重と馬場状態は 13:07 / 14:07 の直前検算が見るので、カードは前夜で足りる。
+#
+# workflow_dispatch は自己修復用。カードが無い・古いことに判断側が気づいたら、
+# セッションが API で起こす（手動実行は遅延しないので数秒で始まる）。人手は要らない。
 
 on:
   schedule:
-    # cron は UTC 指定。日本時間は +9 時間。
-    # 12:07 UTC = 21:07 JST（金・土の夜）。翌日の出馬表は前日夜に出ている。
-    # 馬体重と馬場状態は当日にならないと出ないので、当日朝に取り直す。
-    - cron: '7 12 * * 5,6'
+    # cron は UTC 指定。日本時間は +9 時間。金=5・土=6。
+    # 落ちたときのために2本かけておく。1本目が済んでいれば2本目は
+    # --skip-if-fresh で何もせずに終わるので、取得が二度走ることはない。
+    - cron: '7 12 * * 5,6'   # 12:07 UTC = 21:07 JST（前夜・本命）
+    - cron: '7 16 * * 5,6'   # 16:07 UTC = 翌 01:07 JST（前夜・予備）
   workflow_dispatch:
     inputs:
       date:
-        description: '対象日 (YYYY-MM-DD)。空なら実行日。'
+        description: '対象日 (YYYY-MM-DD)。空なら次の開催日（夕方以降なら翌日）。'
         required: false
       limit:
         description: '詳細を集める候補レース数（既定6）'
         required: false
       no_entries:
         description: '一覧とスクリーニングまでで止める（動作確認用）'
+        type: boolean
+        default: false
+      force:
+        description: '作りたてのカードがあっても作り直す'
         type: boolean
         default: false
 
@@ -53,11 +64,15 @@ jobs:
           INPUT_DATE: ${{ inputs.date }}
           INPUT_LIMIT: ${{ inputs.limit }}
           INPUT_NO_ENTRIES: ${{ inputs.no_entries }}
+          INPUT_FORCE: ${{ inputs.force }}
         run: |
+          # 定時実行と手動実行で同じ道を通す。対象日の決定は card.py が持つ
+          # （既定は次の開催日＝夕方以降なら翌日）ので、ここでは何も足さない。
           args=(build)
           if [ -n "$INPUT_DATE" ];  then args+=(--date "$INPUT_DATE"); fi
           if [ -n "$INPUT_LIMIT" ]; then args+=(--limit "$INPUT_LIMIT"); fi
           if [ "$INPUT_NO_ENTRIES" = 'true' ]; then args+=(--no-entries); fi
+          if [ "$INPUT_FORCE" != 'true' ]; then args+=(--skip-if-fresh 8); fi
           python card.py "${args[@]}" | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: カードをコミット
