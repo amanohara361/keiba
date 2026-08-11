@@ -15,6 +15,8 @@ import pytest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from datetime import date  # noqa: E402
+
 import card  # noqa: E402
 import form as form_module  # noqa: E402
 
@@ -197,9 +199,25 @@ def test_候補は点数の高い順に選ぶ():
 # カードの鮮度
 # ----------------------------------------------------------------------
 
+def test_夕方以降なら翌日を対象にする():
+    """前夜に走らせるため。金曜21時に金曜（開催なし）のカードを作らない。"""
+    from datetime import datetime
+    import bets
+    friday_night = datetime(2026, 8, 14, 21, 7, tzinfo=bets.JST)
+    assert card.target_day(friday_night) == date(2026, 8, 15)
+
+
+def test_夕方より前なら当日を対象にする():
+    """予備の01:07と、朝の取り直しの両方がこの枝を通る。"""
+    from datetime import datetime
+    import bets
+    assert card.target_day(datetime(2026, 8, 15, 1, 7, tzinfo=bets.JST)) == date(2026, 8, 15)
+    assert card.target_day(datetime(2026, 8, 15, 7, 0, tzinfo=bets.JST)) == date(2026, 8, 15)
+
+
 def test_作りたてのカードは作り直さない(tmp_path, monkeypatch):
     """定時実行を二重にかけても取得が二度走らないための逃げ道。"""
-    from datetime import date, datetime, timedelta
+    from datetime import datetime, timedelta
     import bets
 
     monkeypatch.setattr(card, 'CARDS_DIR', str(tmp_path))
@@ -213,7 +231,6 @@ def test_作りたてのカードは作り直さない(tmp_path, monkeypatch):
 
 
 def test_カードが無ければ鮮度は分からない(tmp_path, monkeypatch):
-    from datetime import date
     monkeypatch.setattr(card, 'CARDS_DIR', str(tmp_path))
     assert card.card_age_hours(date(2026, 8, 15)) is None
 

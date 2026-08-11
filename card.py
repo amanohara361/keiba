@@ -32,7 +32,7 @@ import os
 import re
 import sys
 import time
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 import bets
 import form as form_module
@@ -346,6 +346,21 @@ def save_card(card):
     return path
 
 
+# 前夜に走らせるので、日付を指定しなければ「次の開催日」を対象にする。
+# 夕方以降なら翌日、そうでなければ当日。この1行の規則で全部の呼ばれ方を賄える。
+#   21:07 金 → 翌日=土 ／ 01:07 土 → 当日=土
+#   07:00 土（取り直し）→ 当日=土 ／ 21:07 土 → 翌日=日
+# 分岐をワークフロー側の if に置くと、手動実行でその枝を通れず、
+# 定時実行でしか動かないコードが本番の経路に残る。
+EVENING_HOUR = 18
+
+
+def target_day(now=None):
+    now = now or bets.now_jst()
+    day = now.date()
+    return day + timedelta(days=1) if now.hour >= EVENING_HOUR else day
+
+
 def card_age_hours(day, now=None):
     """保存済みカードが何時間前のものか。無ければ None。"""
     card = load_card(day)
@@ -453,7 +468,8 @@ def main(argv=None):
     sub = parser.add_subparsers(dest='command')
 
     build = sub.add_parser('build', help='カードを作る')
-    build.add_argument('--date', help='対象日 (YYYY-MM-DD)。既定は今日')
+    build.add_argument('--date',
+                       help='対象日 (YYYY-MM-DD)。既定は次の開催日（夕方以降なら翌日）')
     build.add_argument('--limit', type=int, default=DEFAULT_CANDIDATES,
                        help=f'詳細を集める候補レース数（既定{DEFAULT_CANDIDATES}）')
     build.add_argument('--no-entries', action='store_true',
@@ -478,7 +494,7 @@ def main(argv=None):
             probe_horse(args.value)
         return EXIT_OK
 
-    day = date.fromisoformat(args.date) if getattr(args, 'date', None) else bets.now_jst().date()
+    day = date.fromisoformat(args.date) if getattr(args, 'date', None) else target_day()
 
     # 定時実行を二重にかけておくための逃げ道。1本目が済んでいれば2本目は何もしない。
     # 前夜に作れば遅延は無害なので、朝に間に合わないという事故を構造的に消せる。

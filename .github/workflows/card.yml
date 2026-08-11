@@ -24,13 +24,17 @@ on:
   workflow_dispatch:
     inputs:
       date:
-        description: '対象日 (YYYY-MM-DD)。空なら実行日。'
+        description: '対象日 (YYYY-MM-DD)。空なら次の開催日（夕方以降なら翌日）。'
         required: false
       limit:
         description: '詳細を集める候補レース数（既定6）'
         required: false
       no_entries:
         description: '一覧とスクリーニングまでで止める（動作確認用）'
+        type: boolean
+        default: false
+      force:
+        description: '作りたてのカードがあっても作り直す'
         type: boolean
         default: false
 
@@ -55,27 +59,20 @@ jobs:
 
       # 依存のインストールは不要（標準ライブラリだけで動く）。
 
-      # 前夜に走るので、既定の対象日は「翌日」。ここを取り違えると
-      # 金曜の夜に金曜（開催なし）のカードを作って空振りする。
-      - name: 対象日を決める
-        if: github.event.schedule != ''
-        run: echo "INPUT_DATE_DEFAULT=$(date -u -d '+1 day' +%Y-%m-%d)" >> "$GITHUB_ENV"
-
       - name: カードを作成
         env:
           INPUT_DATE: ${{ inputs.date }}
           INPUT_LIMIT: ${{ inputs.limit }}
           INPUT_NO_ENTRIES: ${{ inputs.no_entries }}
-          SCHEDULE: ${{ github.event.schedule }}
+          INPUT_FORCE: ${{ inputs.force }}
         run: |
+          # 定時実行と手動実行で同じ道を通す。対象日の決定は card.py が持つ
+          # （既定は次の開催日＝夕方以降なら翌日）ので、ここでは何も足さない。
           args=(build)
-          DATE="${INPUT_DATE:-$INPUT_DATE_DEFAULT}"
-          if [ -n "$DATE" ]; then args+=(--date "$DATE"); fi
+          if [ -n "$INPUT_DATE" ];  then args+=(--date "$INPUT_DATE"); fi
           if [ -n "$INPUT_LIMIT" ]; then args+=(--limit "$INPUT_LIMIT"); fi
           if [ "$INPUT_NO_ENTRIES" = 'true' ]; then args+=(--no-entries); fi
-          # 定時実行のときだけ、既にあるカードを尊重する。
-          # 手動実行は「作り直したい」という意思表示なので必ず作り直す。
-          if [ -n "$SCHEDULE" ]; then args+=(--skip-if-fresh 8); fi
+          if [ "$INPUT_FORCE" != 'true' ]; then args+=(--skip-if-fresh 8); fi
           python card.py "${args[@]}" | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: カードをコミット
