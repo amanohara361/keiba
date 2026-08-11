@@ -257,13 +257,15 @@ def build_entries(race_id, opener=None, interval=HORSE_INTERVAL, sleep=time.slee
     for umaban in sorted(entries):
         entry = dict(entries[umaban])
         entry['umaban'] = umaban
+        # 競走成績と血統は別ページに分かれている（2026-08-11に確認）。
         sleep(interval)
         try:
-            page = form_module._fetch(
-                form_module.HORSE_URL.format(horse_id=entry['horse_id']), opener=opener)
-            entry['going_record'] = form_module.parse_going_record(page)
-            entry['recent'] = form_module.parse_recent_runs(page)
-            entry['pedigree'] = form_module.parse_pedigree(page)
+            results_page = form_module._fetch(
+                form_module.RESULT_URL.format(horse_id=entry['horse_id']), opener=opener)
+            entry['going_record'] = form_module.parse_going_record(results_page)
+            entry['recent'] = form_module.parse_recent_runs(results_page)
+            sleep(interval)
+            entry['pedigree'] = form_module.fetch_pedigree(entry['horse_id'], opener=opener)
             entry['error'] = None
         except Exception as exc:
             # 1頭失敗しても残りは集める。欠けたことは残す。

@@ -263,21 +263,44 @@ def parse_pedigree(page):
     """血統表から父・母・母父を取る。
 
     第5章（ダート適性の父系）と第12章（血統分析）が使う。
-    表の作りに深く踏み込むと壊れやすいので、血統表の中に現れる
-    馬名リンクの順序だけを使う。netkeiba の blood_table は
-    父・父父・父母・母・母父・母母 の順に並ぶ。
+
+    血統表は5代分あり、セルは rowspan で縦に結合されている。
+    **rowspan の大きさが世代そのもの**なので、それだけを使う。
+    いちばん大きい2つが父と母、その半分の4つが祖父母で、3番目が母父。
+    リンクの出現順に頼ると、深さ優先で父系を潜っていくため
+    4つ目が母になるとは限らず、静かに違う馬を拾う。
     """
     table = re.search(
         r'<table[^>]*class="[^"]*blood_table[^"]*"[^>]*>(.*?)</table>', page, re.S)
     if not table:
         return {}
-    names = [strip_tags(n) for n in
-             re.findall(r'<a[^>]*href="[^"]*/horse/[^"]*"[^>]*>(.*?)</a>',
-                        table.group(1), re.S)]
-    names = [n for n in names if n]
-    if len(names) < 5:
+
+    cells = re.findall(r'<td[^>]*rowspan="?(\d+)"?[^>]*>(.*?)</td>',
+                       table.group(1), re.S)
+    if not cells:
         return {}
-    return {'sire': names[0], 'dam': names[3], 'broodmare_sire': names[4]}
+
+    def name_of(cell_html):
+        # セルには「キタサンブラック 2012 鹿毛 [ 血統 ][ 産駒 ] Halo系」と入る。
+        # 先頭のリンク文字列が馬名。
+        link = re.search(r'<a[^>]*>(.*?)</a>', cell_html, re.S)
+        text = strip_tags(link.group(1) if link else cell_html)
+        return text.split()[0] if text else ''
+
+    widest = max(int(span) for span, _ in cells)
+    parents = [name_of(html) for span, html in cells if int(span) == widest]
+    grands = [name_of(html) for span, html in cells if int(span) == widest // 2]
+
+    pedigree = {}
+    if len(parents) >= 2:
+        pedigree['sire'], pedigree['dam'] = parents[0], parents[1]
+    if len(grands) >= 3:
+        pedigree['broodmare_sire'] = grands[2]
+    return pedigree
+
+
+def fetch_pedigree(horse_id, opener=None):
+    return parse_pedigree(_fetch(PED_URL.format(horse_id=horse_id), opener=opener))
 
 
 # ----------------------------------------------------------------------

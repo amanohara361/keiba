@@ -166,26 +166,31 @@ def test_候補は点数の高い順に選ぶ():
 
 HORSE_PAGE = '''
 <table class="db_h_race_results nk_tb_common">
-<tr><th>日付</th><th>開催</th><th>天気</th><th>R</th><th>レース名</th><th>頭数</th>
-    <th>枠番</th><th>馬番</th><th>オッズ</th><th>人気</th><th>着順</th><th>騎手</th>
-    <th>斤量</th><th>距離</th><th>馬場</th><th>タイム</th><th>着差</th><th>通過</th>
-    <th>ペース</th><th>上り</th><th>馬体重</th><th>勝ち馬(2着馬)</th></tr>
+<tr><th>日付</th><th>開催</th><th>天 気</th><th>R</th><th>レース名</th><th>頭 数</th>
+    <th>枠 番</th><th>馬 番</th><th>オ ッ ズ</th><th>人 気</th><th>着 順</th><th>騎手</th>
+    <th>斤 量</th><th>距離</th><th>馬 場</th><th>馬場 指数</th><th>タイム</th><th>着差</th>
+    <th>上 が り 指 数</th><th>通過</th><th>ペース</th><th>上り</th><th>馬体重</th>
+    <th>勝ち馬 (2着馬)</th></tr>
 <tr><td>2026/07/19</td><td>2札幌2</td><td>晴</td><td>11</td><td>羊ヶ丘特別</td><td>14</td>
     <td>3</td><td>5</td><td>8.4</td><td>4</td><td>1</td><td>横山武</td>
-    <td>54.0</td><td>芝1200</td><td>良</td><td>1:08.4</td><td>-0.2</td><td>3-3</td>
-    <td>34.1-34.3</td><td>34.2</td><td>424(-2)</td><td>(ウマニ)</td></tr>
+    <td>54.0</td><td>芝1200</td><td>良</td><td></td><td>1:08.4</td><td>-0.2</td>
+    <td></td><td>3-3</td><td>34.1-34.3</td><td>34.2</td><td>424(-2)</td>
+    <td>(ウマニ)</td></tr>
 <tr><td>2026/06/07</td><td>3東京4</td><td>雨</td><td>9</td><td>むらさき賞</td><td>18</td>
     <td>8</td><td>17</td><td>21.0</td><td>9</td><td>12</td><td>戸崎</td>
-    <td>55.0</td><td>芝1400</td><td>重</td><td>1:22.9</td><td>1.4</td><td>15-14</td>
-    <td>35.0-36.1</td><td>36.8</td><td>426(+2)</td><td>ウマサン</td></tr>
+    <td>55.0</td><td>芝1400</td><td>重</td><td></td><td>1:22.9</td><td>1.4</td>
+    <td></td><td>15-14</td><td>35.0-36.1</td><td>36.8</td><td>426(+2)</td>
+    <td>ウマサン</td></tr>
 </table>
-<table class="blood_table">
-<tr><td><a href="/horse/ped/2015104123/">キズナ</a></td>
-    <td><a href="/horse/ped/2005103228/">ディープインパクト</a></td>
-    <td><a href="/horse/ped/1999110099/">キャットクイル</a></td></tr>
-<tr><td><a href="/horse/2012104555/">ウマノハハ</a></td>
-    <td><a href="/horse/ped/2003100234/">クロフネ</a></td>
-    <td><a href="/horse/ped/2000100111/">ウマノソボ</a></td></tr>
+<table class="blood_table detail">
+<tr><td rowspan="16"><a href="/horse/ped/2015104123/">キズナ</a> 2010 青鹿毛</td>
+    <td rowspan="8"><a href="/horse/ped/2005103228/">ディープインパクト</a> 2002</td>
+    <td rowspan="4"><a href="/horse/ped/1999110099/">サンデーサイレンス</a> 1986</td></tr>
+<tr><td rowspan="8"><a href="/horse/ped/1996100011/">キャットクイル</a> 1990</td></tr>
+<tr><td rowspan="16"><a href="/horse/2012104555/">ウマノハハ</a> 2012 鹿毛</td>
+    <td rowspan="8"><a href="/horse/ped/2003100234/">クロフネ</a> 1998</td>
+    <td rowspan="4"><a href="/horse/ped/1993100022/">フレンチデピュティ</a> 1992</td></tr>
+<tr><td rowspan="8"><a href="/horse/ped/2000100111/">ウマノソボ</a> 2000</td></tr>
 </table>
 '''
 
@@ -222,11 +227,25 @@ def test_通過順と上がりを残す():
 def test_列の順が変わっても見出しで引く():
     """netkeiba は列を入れ替える。位置で読むと静かに間違った値が入る。"""
     swapped = HORSE_PAGE.replace(
-        '<th>着順</th><th>騎手</th>', '<th>騎手</th><th>着順</th>').replace(
+        '<th>着 順</th><th>騎手</th>', '<th>騎手</th><th>着 順</th>').replace(
         '<td>1</td><td>横山武</td>', '<td>横山武</td><td>1</td>')
     runs = form_module.parse_recent_runs(swapped)
     assert runs[0]['rank'] == 1
     assert runs[0]['jockey'] == '横山武'
+
+
+def test_見出しに空白が混ざっていても読む():
+    """実物の見出しは「着 順」「オ ッ ズ」と1文字ずつ割れている。"""
+    runs = form_module.parse_recent_runs(HORSE_PAGE)
+    assert runs[0]['ninki'] == 4
+    assert runs[0]['odds'] == 8.4
+    assert runs[0]['field_size'] == 14
+
+
+def test_馬場指数を馬場と取り違えない():
+    """「馬 場」と「馬場 指数」は空白を詰めると紛らわしい。"""
+    record = form_module.parse_going_record(HORSE_PAGE)
+    assert record == {'良': [1, 0, 0, 0], '重': [0, 0, 0, 1]}
 
 
 def test_近走の件数を絞れる():
