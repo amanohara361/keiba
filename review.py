@@ -162,10 +162,17 @@ def honmei_only_wipeout(race, settlement, result):
     現行の規律（lone_partner）はこの形を検知できない——相手は広げてあり、
     軸が1頭に集中していることを見ていないため。
 
+    **単勝1点買いは数えない。** 買い目が1点しかないレースに
+    「軸を分散すれば拾えた」は言いがかりで、第8章はむしろ
+    「思考の集中と資金の持ち」を理由に単勝1点を選んでいる。
+    軸の置き方を問えるのは、複数点に分けるという選択があった場合だけ。
+    最初この条件を入れておらず、2026-08-09のUHB賞とレパードS
+    （どちらも単勝1点）まで数えて3件と出た。本当は1件である。
+
     検証ノートの改訂候補として件数だけ数えておく。規律に足すかどうかは
     人が決めることなので、ここでは判定も警告もしない。
     """
-    if not race.bets or settlement['hit']:
+    if len(race.bets) < 2 or settlement['hit']:
         return False
     honmei = set(race.horses_for('◎'))
     if not honmei:
