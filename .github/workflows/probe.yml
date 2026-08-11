@@ -10,12 +10,12 @@ on:
   workflow_dispatch:
     inputs:
       race_id:
-        description: '調べる対象。conditions/bias は race_id（12桁）、card-list は YYYY-MM-DD、card-horse は horse_id'
+        description: '調べる対象。conditions/bias は race_id（12桁）、card-list は YYYY-MM-DD、card-entries は race_id、card-horse は horse_id'
         required: true
       target:
         description: '調べる対象'
         type: choice
-        options: [conditions, bias, card-list, card-horse]
+        options: [conditions, bias, card-list, card-entries, card-horse]
         default: conditions
 
 jobs:
@@ -40,6 +40,7 @@ jobs:
             case "$TARGET" in
               bias)       python jra_bias.py probe "${RACE_ID:0:8}" all || true ;;
               card-list)  python card.py probe list "$RACE_ID" || true ;;
+              card-entries) python card.py probe entries "$RACE_ID" || true ;;
               card-horse) python card.py probe horse "$RACE_ID" || true ;;
               *)          python conditions.py probe "$RACE_ID" || true ;;
             esac

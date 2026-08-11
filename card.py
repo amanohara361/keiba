@@ -358,6 +358,20 @@ def probe_list(day):
     print(f'\n読めなかった項目: {missing or "なし"}')
 
 
+def probe_entries(race_id):
+    """出馬表を読み、その先頭の馬について競走成績まで通しで確かめる。"""
+    entries = form_module.fetch_entries(race_id)
+    print(f'出馬表: {len(entries)}頭')
+    for umaban in sorted(entries)[:5]:
+        print(' ', umaban, json.dumps(entries[umaban], ensure_ascii=False))
+    if not entries:
+        print('出馬表を読めませんでした')
+        return
+    first = entries[sorted(entries)[0]]
+    print(f"\n=== {first['name']}（{first['horse_id']}）の馬ページ ===")
+    probe_horse(first['horse_id'])
+
+
 def probe_horse(horse_id):
     page = form_module._fetch(form_module.HORSE_URL.format(horse_id=horse_id))
     print(f'取得サイズ: {len(page)} 文字')
@@ -404,14 +418,17 @@ def main(argv=None):
                        help='一覧とスクリーニングまでで止める（動作確認用）')
 
     probe = sub.add_parser('probe', help='ページ構造を調べる')
-    probe.add_argument('target', choices=['list', 'horse'])
-    probe.add_argument('value', help='list なら YYYY-MM-DD、horse なら horse_id')
+    probe.add_argument('target', choices=['list', 'entries', 'horse'])
+    probe.add_argument('value',
+                       help='list なら YYYY-MM-DD、entries なら race_id、horse なら horse_id')
 
     args = parser.parse_args(argv)
 
     if args.command == 'probe':
         if args.target == 'list':
             probe_list(date.fromisoformat(args.value))
+        elif args.target == 'entries':
+            probe_entries(args.value)
         else:
             probe_horse(args.value)
         return EXIT_OK
