@@ -15,7 +15,7 @@ on:
       target:
         description: '調べる対象'
         type: choice
-        options: [conditions, bias, card-list, card-entries, card-horse]
+        options: [conditions, bias, card-list, card-entries, card-horse, card-build]
         default: conditions
 
 concurrency:
@@ -28,7 +28,7 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
@@ -48,6 +48,8 @@ jobs:
             case "$TARGET" in
               bias)       python jra_bias.py probe "${RACE_ID:0:8}" all || true ;;
               card-list)  python card.py probe list "$RACE_ID" || true ;;
+              # card.yml が既定ブランチに入るまでの通し確認用。RACE_ID に日付を渡す。
+              card-build) python card.py build --date "$RACE_ID" --limit 2 || true ;;
               card-entries) python card.py probe entries "$RACE_ID" || true ;;
               card-horse) python card.py probe horse "$RACE_ID" || true ;;
               *)          python conditions.py probe "$RACE_ID" || true ;;
