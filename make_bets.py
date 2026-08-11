@@ -40,6 +40,7 @@ import sys
 from datetime import date
 
 import bets
+import nar
 from bets import Bet, BetSheet, BetsError, RaceBets
 
 VENUES = {
@@ -184,6 +185,14 @@ def parse_header(line):
     """
     rest = line
 
+    # 主催者は書いてあればそれに従う。書いていなければ後で推測するが、
+    # 推測は保険であって根拠ではない（地方を混ぜるなら書いたほうが確実）。
+    org = None
+    found_org = re.search(r'\borg\s*[:：]\s*(jra|nar)\b', rest, re.I)
+    if found_org:
+        org = found_org.group(1).lower()
+        rest = rest.replace(found_org.group(0), ' ', 1)
+
     race_id = re.search(r'\b(\d{12})\b', rest)
     if not race_id:
         raise BetsError(f'12桁の race_id が見つかりません: {line}')
@@ -210,6 +219,7 @@ def parse_header(line):
     hour, minute = (int(x) for x in start.group(1).split(':'))
     return {
         'race_id': race_id.group(1),
+        'org': org,
         'name': name or '（レース名なし）',
         'start_time': f'{hour:02d}:{minute:02d}',
         'confidence': confidence,
@@ -233,11 +243,38 @@ def parse_block(block):
             raise BetsError(f'読み取れない行があります: {line}')
         entries.append(bet)
 
-    venue = VENUES.get(header['race_id'][4:6])
+    # **場は org を決めてから引く。** 中央も地方も race_id は12桁の数字で、
+    # 桁を見ても区別が付かない。地方の 202608124711（笠松11R）を中央として
+    # 読むと [4:6] が '08' なので**京都と表示される**。黙って別の場になる。
+    rid = header['race_id']
+    org = header.pop('org', None) or _guess_org(rid)
+    if org == 'nar':
+        _, venue, race_no = nar.split_race_id(rid)
+    else:
+        venue, race_no = VENUES.get(rid[4:6]), int(rid[-2:])
+
     return RaceBets(
-        marks=marks, bets=entries, venue=venue,
-        race_no=int(header['race_id'][-2:]), **header,
+        marks=marks, bets=entries, venue=venue, race_no=race_no,
+        org=org, **header,
     )
+
+
+def _guess_org(race_id):
+    """race_id から主催者を判定する。貼り付け経路の保険。
+
+    9〜10桁目を見れば足りる。中央はそこが**開催何日目**で 01〜12 にしかならず、
+    地方はそこが**場コード**で 30 以上しかない（`nar.VENUE_CODES`）。
+    範囲が重ならないので取り違えようがない。
+
+    - 中央 `202601020811` → 9〜10桁目 '08'（8日目）→ jra
+    - 地方 `202608124711` → 9〜10桁目 '47'（笠松）  → nar
+
+    それでも1行目に `org:nar` と書けるようにしてあるのは、
+    **将来どちらかの採番が変わったときに、推測より書いたものを優先させるため**。
+    """
+    if len(race_id) == 12 and race_id[8:10] in nar.CODE_VENUES:
+        return 'nar'
+    return 'jra'
 
 
 def parse_text(text):

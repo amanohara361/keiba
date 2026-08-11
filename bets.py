@@ -77,9 +77,16 @@ class Bet:
 class RaceBets:
     """1レース分の印・勝負度・買い目。"""
 
+    # 主催者。オッズの取得先がここで決まる。
+    #   jra … netkeiba API（odds.py）
+    #   nar … 地方競馬公式のオッズCSV（nar.py）
+    # **race_id は両方とも12桁の数字で、数字だけでは見分けが付かない。**
+    # 判別はこのフィールドだけで行い、race_id の中身から推測しない。
+    ORGS = ['jra', 'nar']
+
     def __init__(self, race_id, name, start_time, marks, bets,
                  confidence='B', subjective_hit_rate=None, venue=None, race_no=None,
-                 note=''):
+                 note='', org='jra'):
         self.race_id = str(race_id)
         self.name = name
         self.start_time = start_time          # "15:25"
@@ -90,7 +97,10 @@ class RaceBets:
         self.venue = venue
         self.race_no = race_no
         self.note = note
+        self.org = org
 
+        if org not in self.ORGS:
+            raise BetsError(f'org は {"／".join(self.ORGS)} のいずれかです: {org}')
         if confidence not in CONFIDENCE_LEVELS:
             raise BetsError(f'勝負度は A/B/C のいずれかです: {confidence}')
         if not re.fullmatch(r'\d{12}', self.race_id):
@@ -131,6 +141,7 @@ class RaceBets:
     def to_dict(self):
         return {
             'race_id': self.race_id,
+            'org': self.org,
             'name': self.name,
             'venue': self.venue,
             'race_no': self.race_no,
@@ -209,6 +220,9 @@ def parse_sheet(payload):
             venue=raw.get('venue'),
             race_no=raw.get('race_no'),
             note=raw.get('note', ''),
+            # 既定は中央。**このリポジトリが先に中央だけで動いていたので、
+            # org の無い過去の買い目ファイルはすべて中央である。**
+            org=raw.get('org', 'jra'),
         ))
 
     return BetSheet(

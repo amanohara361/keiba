@@ -1,0 +1,137 @@
+name: 地方の直前検算
+
+# check.yml と同じ check.py を呼ぶ。違うのは**いつ回すか**と**回すかどうか**の2点。
+#
+# いつ ── 地方はナイターがあり、重賞の発走は 16:35〜20:55 に散らばる
+#          （2026年8月の実測）。中央の 13:07 / 14:07 では全部間に合わない。
+#
+# 回すかどうか ── 地方は毎日開催しているが、重賞は毎日ない。
+#          何も無い日に回すと「朝の買い目が届いていません」が毎日鳴り、
+#          **2026-08-01 を捕まえるための警報が意味を失う。**
+#          そこで nar_card.py --gate でカードを見て、対象レースがある日だけ回す。
+#          gate は3つの状態を区別する:
+#            run     … 重賞・準重賞がある → 検算する
+#            none    … 取得できて該当なし → 何もしない（正常。無音）
+#            missing … カードが無い → 取得側が転んでいる → 知らせる
+#          「該当なし」と「取得できていない」を同じ扱いにしないのがここの肝。
+
+on:
+  schedule:
+    # cron は UTC 指定。日本時間は +9 時間。毎日。
+    # 定時実行の遅れ（85分・119分を実測）を見込んで前倒しし、毎時00分を避ける。
+    - cron: '7 5 * * *'    # 05:07 UTC = 14:07 JST  買い目の到着確認＋夕方の早い重賞
+    - cron: '7 7 * * *'    # 07:07 UTC = 16:07 JST  夕方の便
+    - cron: '37 9 * * *'   # 09:37 UTC = 18:37 JST  夜の便
+    - cron: '37 10 * * *'  # 10:37 UTC = 19:37 JST  ナイター最終便（20時台の発走向け）
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '対象日 (YYYY-MM-DD)。空なら実行日。'
+        required: false
+      now:
+        description: '現在時刻の上書き (YYYY-MM-DDTHH:MM)。動作確認用。'
+        required: false
+      no_email:
+        description: 'メールを送らずログだけ出す'
+        type: boolean
+        default: false
+      force:
+        description: 'カードの状態を見ずに必ず検算する'
+        type: boolean
+        default: false
+
+concurrency:
+  group: keiba-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 対象の有無を確認
+        id: gate
+        env:
+          INPUT_DATE: ${{ inputs.date }}
+          INPUT_FORCE: ${{ inputs.force }}
+        run: |
+          if [ "$INPUT_FORCE" = 'true' ]; then
+            echo 'state=run' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          args=(--gate)
+          if [ -n "$INPUT_DATE" ]; then args+=(--date "$INPUT_DATE"); fi
+          state=$(python nar_card.py "${args[@]}" | tail -n 1)
+          echo "state=$state" >> "$GITHUB_OUTPUT"
+          echo "gate: $state" >> "$GITHUB_STEP_SUMMARY"
+
+      # カードが作れていない日は、検算そのものが成り立たない。
+      # ここを黙って通すと「重賞があったのに誰も見ていない」が起きる。
+      - name: カードが無いことを知らせる
+        if: steps.gate.outputs.state == 'missing'
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+          RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
+          INPUT_DATE: ${{ inputs.date }}
+        run: |
+          args=(--notify-missing)
+          if [ -n "$INPUT_DATE" ]; then args+=(--date "$INPUT_DATE"); fi
+          set +e
+          python nar_card.py "${args[@]}"
+          code=$?
+          set -e
+          # 3 は「知らせられた」。赤にするのは通知そのものに失敗したときだけ。
+          if [ "$code" -eq 3 ]; then exit 0; fi
+          exit "$code"
+
+      - name: 検算を実行
+        if: steps.gate.outputs.state == 'run'
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+          RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
+          INPUT_DATE: ${{ inputs.date }}
+          INPUT_NOW: ${{ inputs.now }}
+          INPUT_NO_EMAIL: ${{ inputs.no_email }}
+        run: |
+          args=()
+          if [ -n "$INPUT_DATE" ];  then args+=(--date "$INPUT_DATE"); fi
+          if [ -n "$INPUT_NOW" ];   then args+=(--now "$INPUT_NOW"); fi
+          if [ "$INPUT_NO_EMAIL" = 'true' ]; then args+=(--no-email); fi
+          # 終了コード3＝要確認だが通知できた。役目は果たしているので緑にする。
+          # 赤は「知らせられなかった」ときだけ（check.yml と同じ規約）。
+          set +e
+          python check.py "${args[@]}"
+          code=$?
+          set -e
+          if [ "$code" -eq 0 ] || [ "$code" -eq 3 ]; then exit 0; fi
+          exit "$code"
+
+      - name: 検算の記録をコミット
+        if: always()
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/ 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo '記録の更新はありません'
+          else
+            git commit -m "地方の検算結果を記録: $(TZ=Asia/Tokyo date +%Y-%m-%d)"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
