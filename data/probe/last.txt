@@ -1,4 +1,12 @@
-# card-horse 2023103919  (2026-08-11T13:39:43Z)
+# card-entries 202604020607  (2026-08-11T13:42:12Z)
+出馬表: 12頭
+  1 {"horse_id": "2023103919", "name": "オオツカ", "weight": 446, "weight_diff": 2}
+  2 {"horse_id": "2023101154", "name": "ファイアマン", "weight": 500, "weight_diff": 4}
+  3 {"horse_id": "2023107091", "name": "ヒシアムルーズ", "weight": 482, "weight_diff": 8}
+  4 {"horse_id": "2023104387", "name": "チェリヴェント", "weight": 504, "weight_diff": 4}
+  5 {"horse_id": "2023106821", "name": "マクリール", "weight": 472, "weight_diff": 8}
+
+=== オオツカ（2023103919）の馬ページ ===
 
 === トップ: https://db.netkeiba.com/horse/2023103919/ (64951文字) ===
   table: db_prof_table no_OwnerUnit
@@ -14,7 +22,7 @@
   table: nk_tb_common race_table_01
   行: ['キタサンブラック 2012 鹿毛 [ 血統 ][ 産駒 ] Halo系', 'ブラックタイド 2001 黒鹿毛 [ 血統 ][ 産駒 ]', 'サンデーサイレンス Sunday Silence(米) 1986 青鹿毛 [ 血統 ][ 産駒 ]', 'Halo 1969 黒鹿毛', 'Hail to Reason']
   行: ['Cosmah']
-取得サイズ: 65089 文字
+取得サイズ: 64930 文字
   db_h_race_results: 0 箇所
   blood_table: 0 箇所
   db_prof_table: 1 箇所
