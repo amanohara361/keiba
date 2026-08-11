@@ -1,0 +1,91 @@
+name: 地方カード作成
+
+# 地方競馬（NAR）の取得側。card.yml と役割は同じだが、前提がだいぶ違う。
+#
+# **平日にも重賞がある。** 中央は土日だけなので土日固定で足りたが、
+# 地方は毎日どこかで開催していて、重賞も平日に組まれる
+# （2026年8月の12日間で重賞・準重賞16鞍。うち平日が大半）。
+# だからこのワークフローは毎日走る。
+#
+# 取得元は keiba.go.jp の公式データダウンロード（ZIP内のCSV）。
+# **netkeiba は使わない。** 主催者自身が `競走種類名称` に 重賞／準重賞 と
+# 書いているので、中央でやったアイコン番号からのクラス推定が要らない
+# （浜名湖特別がG2に化けた事故が、地方では構造的に起きない）。
+#
+# なお公式CSVは Claude のセッションからも取得できる（netkeiba と違って
+# egress で遮断されていない）。それでもここを Actions に置くのは、
+# 取得と判断を分ける線を中央と揃えるため。取得の記録がリポジトリに残り、
+# 判断側は「読むだけ」でよくなる。
+
+on:
+  schedule:
+    # cron は UTC 指定。日本時間は +9 時間。毎日。
+    # 朝の予想セッション（08:00 JST）より前に置く。定時実行は85分・119分の
+    # 遅れを実測しているので、2本かけて間に合わなかった日をなくす。
+    - cron: '7 19 * * *'   # 19:07 UTC = 翌 04:07 JST（本命）
+    - cron: '7 21 * * *'   # 21:07 UTC = 翌 06:07 JST（予備・--skip-if-fresh で二度取得しない）
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '対象日 (YYYY-MM-DD)。空なら実行日（JST）。'
+        required: false
+      levels:
+        description: '拾う競走種類。既定は 重賞,準重賞'
+        required: false
+      no_entries:
+        description: '一覧だけ作る（動作確認用）'
+        type: boolean
+        default: false
+      force:
+        description: '作りたてのカードがあっても作り直す'
+        type: boolean
+        default: false
+
+concurrency:
+  group: keiba-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  card:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20      # 実測15秒。公式CSVを数本落とすだけなので短い
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 依存のインストールは不要（標準ライブラリだけで動く）。
+
+      - name: カードを作成
+        env:
+          INPUT_DATE: ${{ inputs.date }}
+          INPUT_LEVELS: ${{ inputs.levels }}
+          INPUT_NO_ENTRIES: ${{ inputs.no_entries }}
+          INPUT_FORCE: ${{ inputs.force }}
+        run: |
+          args=()
+          if [ -n "$INPUT_DATE" ];   then args+=(--date "$INPUT_DATE"); fi
+          if [ -n "$INPUT_LEVELS" ]; then args+=(--levels "$INPUT_LEVELS"); fi
+          if [ "$INPUT_NO_ENTRIES" = 'true' ]; then args+=(--no-entries); fi
+          if [ "$INPUT_FORCE" != 'true' ]; then args+=(--skip-if-fresh 3); fi
+          python nar_card.py "${args[@]}" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: カードをコミット
+        if: always()
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/cards/nar/ 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo '更新はありません'
+          else
+            git commit -m "地方カードを作成: $(TZ=Asia/Tokyo date +%Y-%m-%d)"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

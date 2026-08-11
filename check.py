@@ -25,6 +25,7 @@ import bets
 import conditions as conditions_module
 import discipline
 import form as form_module
+import nar as nar_module
 import odds as odds_module
 from mailer import Mailer
 
@@ -69,11 +70,21 @@ def resolve_now(override=None):
 
 
 def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
-                 forms_fetcher=None):
-    """買い目ファイル全体を検算して、レースごとの判定を返す。"""
+                 forms_fetcher=None, nar_fetcher=None):
+    """買い目ファイル全体を検算して、レースごとの判定を返す。
+
+    中央と地方が同じファイルに混ざっていてよい。**違うのはオッズと馬場の
+    取得先だけで、第13章の規律をあてる部分は完全に同じコードが通る。**
+    """
     fetcher = fetcher or odds_module.fetch
     conditions_fetcher = conditions_fetcher or conditions_module.fetch
     forms_fetcher = forms_fetcher or form_module.collect
+
+    # 地方の公式CSVは1回のダウンロードで全場・全レース・全券種が入る。
+    # レースごとに叩き直さない（サーバへの配慮であり、速度の話ではない）。
+    nar_data = _NarDay(sheet, nar_fetcher) if any(
+        r.org == 'nar' for r in sheet.races) else None
+
     verdicts = []
     for race in sheet.races:
         # 発走済みなら実オッズを取りに行かない（netkeibaは朝の値しか返さない）
@@ -81,6 +92,17 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
         if start and now >= start:
             verdicts.append(discipline.review_race(
                 race, [], {}, {'skipped': '発走済みのため取得せず'}, now, sheet.date))
+            continue
+
+        if race.org == 'nar':
+            # 地方は馬場状態もオッズも同じ公式CSVに入っている。
+            # 各馬の道悪実績は netkeiba 側の仕組み（form.py）なので使えないが、
+            # 出馬表CSVに当競馬場成績・ダート左右別成績があり、それは
+            # カードの段階で判断側に渡っている。ここで引き直す必要はない。
+            track = nar_data.conditions(race.race_id)
+            bet_odds, win_table, meta = nar_data.odds(race)
+            verdicts.append(discipline.review_race(
+                race, bet_odds, win_table, meta, now, sheet.date, track, {}))
             continue
 
         # 馬場状態は朝は未発表のことが多い。取れなくても検算は続ける。
@@ -103,6 +125,59 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
         verdicts.append(discipline.review_race(
             race, bet_odds, win_table, meta, now, sheet.date, track, forms))
     return verdicts
+
+
+class _NarDay:
+    """その日の地方データを1度だけ取って、レースごとに配る。
+
+    公式CSVは全場・全レースぶんが1ファイルなので、レースの数だけ
+    ダウンロードするのは無意味にサーバを叩くことになる。
+    """
+
+    def __init__(self, sheet, fetcher=None):
+        self.errors = []
+        self._odds_rows = None
+        self._odds_error = None
+        self._fetcher = fetcher
+        self._races = {}
+        try:
+            rows = nar_module.parse_races(
+                nar_module.race_data(nar_module.DAILY)['racelist'], sheet.date)
+            self._races = {r['race_id']: r for r in rows}
+        except nar_module.NarError as exc:
+            logger.warning('地方のレース情報を取得できませんでした: %s', exc)
+            self.errors.append(str(exc))
+
+    def conditions(self, race_id):
+        """馬場・天候・距離。conditions.py と同じ形にして label() に渡せるようにする。"""
+        race = self._races.get(str(race_id))
+        if not race:
+            return {}
+        return {
+            'surface': race['surface'],
+            'distance': race['distance'],
+            'weather': race['weather'] or None,
+            'going': race['going'] or None,
+        }
+
+    def odds(self, race):
+        if self._odds_rows is None and self._odds_error is None:
+            fetch = self._fetcher or (lambda: nar_module.odds_data(nar_module.DAILY))
+            try:
+                self._odds_rows = fetch()
+            except nar_module.NarError as exc:
+                logger.warning('地方のオッズを取得できませんでした: %s', exc)
+                self.errors.append(str(exc))
+                self._odds_error = exc
+
+        def replay():
+            # 取得に失敗したことを空リストで隠さない。1回の失敗を
+            # レースの数だけ持ち回れるよう、例外そのものを取っておく。
+            if self._odds_error is not None:
+                raise self._odds_error
+            return self._odds_rows
+
+        return nar_module.collect(race, fetcher=replay)
 
 
 # ----------------------------------------------------------------------

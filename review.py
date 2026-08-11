@@ -29,6 +29,7 @@ import sys
 from datetime import date, timedelta
 
 import bets
+import nar as nar_module
 import results as results_module
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s %(message)s')
@@ -100,13 +101,24 @@ def save_result(result):
     return path
 
 
-def get_result(race_id, fetcher=None, use_cache=True):
-    """確定結果を返す。まだ出ていなければ None。"""
+def get_result(race_id, fetcher=None, use_cache=True, org='jra'):
+    """確定結果を返す。まだ出ていなければ None。
+
+    取得元は主催者で決まる。中央は netkeiba の結果ページ、地方は
+    公式CSVの払戻金・出馬表。**着順と払戻の形は同じ**なので、
+    その先の精算（results.settle）も集計も分岐しない。
+
+    org は race_id からは判別できない（どちらも12桁）。買い目ファイルの
+    org をそのまま渡すこと。
+    """
     if use_cache:
         hit = cached_result(race_id)
         if hit:
             return hit
-    result = results_module.fetch(race_id, fetcher=fetcher)
+    if org == 'nar':
+        result = nar_module.results_for(race_id)
+    else:
+        result = results_module.fetch(race_id, fetcher=fetcher)
     if result:
         save_result(result)
     return result
@@ -304,8 +316,9 @@ def collect(days, fetcher=None, use_cache=True):
         entries = []
         for race in sheet.races:
             try:
-                result = get_result(race.race_id, fetcher=fetcher, use_cache=use_cache)
-            except results_module.ResultsError as exc:
+                result = get_result(race.race_id, fetcher=fetcher,
+                                    use_cache=use_cache, org=race.org)
+            except (results_module.ResultsError, nar_module.NarError) as exc:
                 logger.warning('%s: %s', race.race_id, exc)
                 result = None
             entries.append(review_race(race, result, checks.get(race.race_id)))
