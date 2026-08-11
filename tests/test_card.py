@@ -34,7 +34,7 @@ RACE_LIST = '''
 <li class="RaceList_DataItem">
   <a href="../race/shutuba.html?race_id=202601010611&amp;rf=race_list">
     <span class="RaceList_Itemtime">15:25</span>
-    <span class="RaceData_Icon Icon_GradeType5">OP</span>
+    <span class="Icon_GradeType Icon_GradeType5 Icon_GradePos01"></span>
     <span class="ItemTitle">UHB賞</span>
     <span class="ItemLong">芝・右 1200m</span>
     <span class="RaceList_Itemtime">16頭</span>
@@ -43,7 +43,8 @@ RACE_LIST = '''
 <li class="RaceList_DataItem">
   <a href="../race/shutuba.html?race_id=202604020607&amp;rf=race_list">
     <span class="RaceList_Itemtime">15:35</span>
-    <span class="RaceData_Icon Icon_GradeType3">G3</span>
+    <span class="Icon_GradeType Icon_GradeType3 Icon_GradePos01"></span>
+    <span class="Icon_GradeType Icon_GradeType13"></span>
     <span class="ItemTitle">レパードステークス</span>
     <span class="ItemLong">ダ・左 1800m</span>
     <span class="RaceList_Itemtime">12頭</span>
@@ -84,6 +85,38 @@ def test_ダは表記をダートに揃える():
     leopard = [r for r in races if r['race_id'] == '202604020607'][0]
     assert leopard['surface'] == 'ダート'
     assert leopard['grade'] == 'G3'
+
+
+def test_クラス表示のアイコンだけを読む():
+    """同じ塊に Icon_GradeType13（別の意味）が入る。位置で選び分ける。"""
+    races = card.parse_race_list(RACE_LIST)
+    leopard = [r for r in races if r['race_id'] == '202604020607'][0]
+    assert leopard['grade'] == 'G3'
+
+
+def test_16から18は重賞ではなくクラス():
+    """浜名湖特別（2勝クラス）をG2と読み違えて素通りさせた実例がある。"""
+    block = ('<li class="RaceList_DataItem"><a href="?race_id=202607020606">'
+             '<span class="ItemTitle">浜名湖特別</span>'
+             '<span class="Icon_GradeType Icon_GradeType17 Icon_GradePos01"></span>'
+             '</a></li>')
+    race = card.parse_race_list(block)[0]
+    assert race['grade'] == '2勝'
+    assert card.screen(race)['score'] == 0      # 重賞のような加点はしない
+
+
+def test_知らないアイコン番号は重賞に化けさせない():
+    block = ('<li class="RaceList_DataItem"><a href="?race_id=202607020606">'
+             '<span class="Icon_GradeType Icon_GradeType99 Icon_GradePos01"></span>'
+             '</a></li>')
+    assert card.parse_race_list(block)[0]['grade'] is None
+
+
+def test_特別戦はアイコンでしかクラスが分からない():
+    """「3歳以上2勝クラス」は名前から読めるが、特別戦は名前に入らない。"""
+    assert card.race_class({'name': '3歳以上2勝クラス', 'grade': None}) == '2勝'
+    assert card.race_class({'name': '富良野特別', 'grade': None}) is None
+    assert card.race_class({'name': '富良野特別', 'grade': '2勝'}) == '2勝'
 
 
 def test_同じレースを二重に数えない():

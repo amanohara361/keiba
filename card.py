@@ -53,9 +53,22 @@ VENUES = {
 # 中央のローカル場。第2章の「前走ローカル場」判定に使う。
 LOCAL_VENUES = {'小倉', '福島', '新潟', '函館', '札幌', '中京'}
 
-# netkeiba のグレードアイコン。数字が振られている。
+# netkeiba のクラス表示アイコン。2026-08-09の実物で確認した対応。
+#
+# **16〜18は重賞ではなくクラス**である。ここを重賞と読み違えると、
+# 浜名湖特別（2勝クラス）がG2に化けて1次スクリーニングを素通りする。
+# 実際に一度そうなった。番号の意味は推測せず、実物を見て決めること。
+#   3 → レパードS・CBC賞（本物のGIII）
+#   5 → UHB賞（オープン特別）
+#   16 → 佐渡S（3勝クラス）  17 → 浜名湖特別・驀進特別（2勝クラス）
+#   18 → 石狩特別（1勝クラス）
+# 知らない番号は None にする（重賞に化けるより、印が付かないほうが安全）。
 GRADE_ICONS = {'1': 'G1', '2': 'G2', '3': 'G3', '4': '重賞', '5': 'OP',
-               '15': 'L', '16': 'G1', '17': 'G2', '18': 'G3'}
+               '15': 'L', '16': '3勝', '17': '2勝', '18': '1勝'}
+
+# クラス表示は Icon_GradePos01 が付いた方。同じ塊にもう1つ
+# Icon_GradeType13（別の意味の印）が入るので、位置で選び分ける。
+GRADE_PATTERN = r'Icon_GradeType(\d+)\s+Icon_GradePos01'
 
 REQUEST_INTERVAL = 1.0
 HORSE_INTERVAL = 1.5
@@ -110,7 +123,7 @@ def parse_race_list(page):
         course = re.search(r'(芝|ダート|ダ|障)[・\s右左直外内]{0,6}(\d{3,4})\s*m', text)
         turn = re.search(r'(?:芝|ダート|ダ|障)\s*・?\s*(右|左|直線?)', text)
         field = re.search(r'(\d{1,2})\s*頭', text)
-        grade = re.search(r'Icon_GradeType(\d+)', block)
+        grade = re.search(GRADE_PATTERN, block)
 
         surface = course.group(1) if course else None
         if surface == 'ダ':
@@ -145,17 +158,26 @@ def fetch_race_list(day, opener=None):
 # 1次スクリーニング（第14章・機械的な絞り込み）
 # ----------------------------------------------------------------------
 
+# 上位クラスほど条件好転・危険な人気馬の判定がしやすい（第14章）
+SENIOR_CLASSES = ('G1', 'G2', 'G3', '重賞', 'L')
+JUNIOR_CLASSES = ('未勝利', '1勝')
+
+
 def race_class(race):
-    """レース名からクラスを判定する。"""
-    name = race.get('name') or ''
-    if race.get('grade') in ('G1', 'G2', 'G3', '重賞', 'L'):
+    """クラスを判定する。アイコンを優先し、無ければレース名から読む。
+
+    特別戦（浜名湖特別など）は名前にクラスが入らないので、アイコンが
+    唯一の手がかりになる。逆に「3歳以上2勝クラス」のような名前の
+    レースは名前から読める。"""
+    if race.get('grade'):
         return race['grade']
+    name = race.get('name') or ''
     for keyword, label in [('新馬', '新馬'), ('未勝利', '未勝利'),
                            ('1勝クラス', '1勝'), ('2勝クラス', '2勝'),
                            ('3勝クラス', '3勝'), ('オープン', 'OP')]:
         if keyword in name:
             return label
-    return 'OP' if race.get('grade') == 'OP' else None
+    return None
 
 
 def screen(race, odds_view=None):
@@ -179,7 +201,7 @@ def screen(race, odds_view=None):
     score = 0
 
     # --- 優先度を上げる材料 ---
-    if klass in ('G1', 'G2', 'G3', '重賞', 'L'):
+    if klass in SENIOR_CLASSES:
         score += 3
         reasons.append(f'{klass}（データが厚く条件好転・危険な人気馬を判定しやすい）')
     elif klass in ('OP', '3勝'):
@@ -189,12 +211,12 @@ def screen(race, odds_view=None):
     if 'ハンデ' in name:
         score += 1
         reasons.append('ハンデ戦（第13章の高配当条件）')
-    if '牝' in name and klass in ('G1', 'G2', 'G3', '重賞', 'L'):
+    if '牝' in name and klass in SENIOR_CLASSES:
         score += 1
         reasons.append('牝馬限定重賞（第5章・第9章が働きやすい）')
 
     # --- 優先度を下げる材料 ---
-    if klass in ('未勝利', '1勝'):
+    if klass in JUNIOR_CLASSES:
         score -= 2
         reasons.append(f'{klass}（戦績が薄く比較材料に乏しい）')
 
