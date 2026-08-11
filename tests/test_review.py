@@ -184,6 +184,16 @@ def test_本命が走っていれば一極集中とは数えない():
     assert review.honmei_only_wipeout(race, settlement, result) is False
 
 
+def test_単勝1点買いは一極集中とは数えない():
+    """第8章は「思考の集中と資金の持ち」を理由に単勝1点を選んでいる。
+    1点しかない買い目に「分散すれば拾えた」は言いがかり。"""
+    race = make_race(marks=[('◎', 6), ('○', 12), ('△', 4)],
+                     bet_list=[('単勝', [6], 200)])
+    result = make_result([(1, 4), (2, 11), (3, 12), (4, 6)])
+    settlement = results_module.settle(race, result)
+    assert review.honmei_only_wipeout(race, settlement, result) is False
+
+
 def test_軸を分散していれば一極集中とは数えない():
     race = make_race(marks=[('◎', 2), ('○', 11), ('▲', 9)],
                      bet_list=[('馬連', [2, 11], 100), ('馬連', [11, 9], 100)])
