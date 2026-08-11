@@ -375,66 +375,26 @@ def probe_entries(race_id):
 
 
 def probe_horse(horse_id):
+    """馬の3ページを順に見て、パーサーが実際に読めるか確かめる。"""
+    pages = {}
     for label, url in [('トップ', form_module.HORSE_URL),
                        ('競走成績', form_module.RESULT_URL),
                        ('血統', form_module.PED_URL)]:
         page = form_module._fetch(url.format(horse_id=horse_id))
+        pages[label] = page
         print(f'\n=== {label}: {url.format(horse_id=horse_id)} ({len(page)}文字) ===')
         for name in re.findall(r'<table[^>]*class="([^"]*)"', page):
             print('  table:', name)
-        table = re.search(
-            r'<table[^>]*class="[^"]*(?:db_h_race_results|blood_table)[^"]*"[^>]*>(.*?)</table>',
-            page, re.S)
-        if table:
-            rows = re.findall(r'<tr[^>]*>(.*?)</tr>', table.group(1), re.S)
-            for row in rows[:2]:
-                print('  行:', [form_module.strip_tags(c) for c in
-                                re.findall(r'<t[hd][^>]*>(.*?)</t[hd]>', row, re.S)])
-
-    page = form_module._fetch(form_module.HORSE_URL.format(horse_id=horse_id))
-    print(f'取得サイズ: {len(page)} 文字')
-    for marker in ['db_h_race_results', 'blood_table', 'db_prof_table']:
-        print(f'  {marker}: {page.count(marker)} 箇所')
-
-    # 目印が見つからないときは、ページにある表とクラス名をそのまま見る。
-    # 推測でクラス名を書き換えると、当たるまで何往復もすることになる。
-    classes = re.findall(r'<table[^>]*class="([^"]*)"', page)
-    print(f'\n--- ページ内の table のクラス名（{len(classes)}個）---')
-    for name in classes:
-        print(' ', name)
-    heads = re.findall(r'<(h\d)[^>]*>(.*?)</\1>', page, re.S)
-    print('--- 見出し ---')
-    for _, text in heads[:12]:
-        cleaned = form_module.strip_tags(text)
-        if cleaned:
-            print(' ', cleaned[:60])
-    for word in ('競走成績', '全成績', '/horse/result/', '/horse/ped/'):
-        print(f'  「{word}」: {page.count(word)} 箇所')
-
-    table = re.search(r'<table[^>]*class="[^"]*db_h_race_results[^"]*"[^>]*>(.*?)</table>',
-                      page, re.S)
-    if table:
-        rows = re.findall(r'<tr[^>]*>(.*?)</tr>', table.group(1), re.S)
-        print(f'\n--- 競走成績のヘッダー ---')
-        print([form_module.strip_tags(c) for c in
-               re.findall(r'<t[hd][^>]*>(.*?)</t[hd]>', rows[0], re.S)])
-        if len(rows) > 1:
-            print('--- 1行目 ---')
-            print([form_module.strip_tags(c) for c in
-                   re.findall(r'<t[hd][^>]*>(.*?)</t[hd]>', rows[1], re.S)])
-
-    blood = re.search(r'<table[^>]*class="[^"]*blood_table[^"]*"[^>]*>(.*?)</table>',
-                      page, re.S)
-    print(f'\n--- 血統表の生HTML（先頭800文字）---')
-    print(blood.group(1)[:800] if blood else '(見つかりません)')
 
     print('\n--- パース結果 ---')
-    print('血統:', json.dumps(form_module.parse_pedigree(page), ensure_ascii=False))
-    print('馬場別:', json.dumps(form_module.parse_going_record(page), ensure_ascii=False))
-    runs = form_module.parse_recent_runs(page)
+    runs = form_module.parse_recent_runs(pages['競走成績'])
     print(f'近走 {len(runs)}件:')
     for run in runs[:3]:
         print(' ', json.dumps(run, ensure_ascii=False))
+    print('馬場別:', json.dumps(
+        form_module.parse_going_record(pages['競走成績']), ensure_ascii=False))
+    print('血統:', json.dumps(
+        form_module.parse_pedigree(pages['血統']), ensure_ascii=False))
 
 
 # ----------------------------------------------------------------------
