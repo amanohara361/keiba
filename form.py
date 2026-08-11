@@ -21,7 +21,15 @@ import urllib.error
 import urllib.request
 
 SHUTUBA_URL = 'https://race.netkeiba.com/race/shutuba.html?race_id={race_id}'
+
+# 馬の情報は3ページに分かれている。
+# 2026-08-11、トップページ（/horse/{id}/）から競走成績と血統表が消えて
+# いることを Actions 側の probe で確認した（table は db_prof_table 1つだけ）。
+# それまで競走成績をトップページから読もうとしていたため、
+# **道悪実績の照会は本番でずっと空を返していた**。
 HORSE_URL = 'https://db.netkeiba.com/horse/{horse_id}/'
+RESULT_URL = 'https://db.netkeiba.com/horse/result/{horse_id}/'
+PED_URL = 'https://db.netkeiba.com/horse/ped/{horse_id}/'
 
 UA = ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
       '(KHTML, like Gecko) Chrome/124.0 Safari/537.36')
@@ -156,7 +164,143 @@ def parse_going_record(page):
 
 
 def fetch_going_record(horse_id, opener=None):
-    return parse_going_record(_fetch(HORSE_URL.format(horse_id=horse_id), opener=opener))
+    return parse_going_record(_fetch(RESULT_URL.format(horse_id=horse_id), opener=opener))
+
+
+# ----------------------------------------------------------------------
+# 近走と血統（方針B・カード作成で使う）
+# ----------------------------------------------------------------------
+
+# 競走成績の列。第2章の減点方式チェックリストと第8章の7つの視点が
+# 必要とする事実は、ほぼこの1つの表から取れる。
+#   前走着順（4〜6着ゾーン）／距離の延長短縮／騎手の乗り替わり／
+#   休み明けの期間（日付の間隔）／脚質（通過順）／前走がローカル場か
+RUN_COLUMNS = {
+    '日付': 'date', '開催': 'meeting', '天気': 'weather', 'R': 'race_no',
+    'レース名': 'race', '頭数': 'field_size', '枠番': 'waku', '馬番': 'umaban',
+    'オッズ': 'odds', '人気': 'ninki', '着順': 'rank', '騎手': 'jockey',
+    '斤量': 'kinryo', '距離': 'distance', '馬場': 'going', 'タイム': 'time',
+    '着差': 'margin', '通過': 'passing', 'ペース': 'pace', '上り': 'last3f',
+    '馬体重': 'weight', '勝ち馬': 'winner', '勝ち馬(2着馬)': 'winner',
+}
+
+NUMERIC_RUN_FIELDS = {'field_size', 'waku', 'umaban', 'ninki', 'rank', 'race_no'}
+FLOAT_RUN_FIELDS = {'odds', 'kinryo', 'last3f'}
+
+
+def _run_columns(header_cells):
+    index = {}
+    for position, cell in enumerate(header_cells):
+        key = re.sub(r'\s+', '', cell)
+        field = RUN_COLUMNS.get(key)
+        if field:
+            index.setdefault(field, position)
+    return index
+
+
+def parse_recent_runs(page, limit=5):
+    """競走成績から直近の走りを取り出す。新しい順。
+
+    表の列順は netkeiba 側でよく変わるので、位置ではなく見出しで引く
+    （jra_bias.py の col_index と同じ考え方）。
+    """
+    table = re.search(
+        r'<table[^>]*class="[^"]*db_h_race_results[^"]*"[^>]*>(.*?)</table>', page, re.S)
+    if not table:
+        return []
+
+    rows = []
+    for tr in re.findall(r'<tr[^>]*>(.*?)</tr>', table.group(1), re.S):
+        cells = [strip_tags(c) for c in
+                 re.findall(r'<t[hd][^>]*>(.*?)</t[hd]>', tr, re.S)]
+        if cells:
+            rows.append(cells)
+    if len(rows) < 2:
+        return []
+
+    index = _run_columns(rows[0])
+    runs = []
+    for cells in rows[1:]:
+        if not index or len(cells) <= max(index.values()):
+            continue
+        run = {}
+        for field, position in index.items():
+            value = cells[position].strip()
+            if not value:
+                continue
+            if field in NUMERIC_RUN_FIELDS and value.isdigit():
+                run[field] = int(value)
+            elif field in FLOAT_RUN_FIELDS:
+                try:
+                    run[field] = float(value)
+                except ValueError:
+                    run[field] = value
+            else:
+                run[field] = value
+        # 距離は「芝1200」の形。コースと数字に割る。
+        distance = run.get('distance', '')
+        matched = re.match(r'(芝|ダ|障)\s*(\d{3,4})', distance)
+        if matched:
+            run['surface'] = {'ダ': 'ダート'}.get(matched.group(1), matched.group(1))
+            run['distance'] = int(matched.group(2))
+        # 馬体重は「424(-2)」の形。
+        weight = str(run.get('weight', ''))
+        matched = re.match(r'(\d{3})\(([-+±]?\d+)\)', weight)
+        if matched:
+            run['weight'] = int(matched.group(1))
+            try:
+                run['weight_diff'] = int(matched.group(2).replace('±', ''))
+            except ValueError:
+                pass
+        if run:
+            runs.append(run)
+        if len(runs) >= limit:
+            break
+    return runs
+
+
+def parse_pedigree(page):
+    """血統表から父・母・母父を取る。
+
+    第5章（ダート適性の父系）と第12章（血統分析）が使う。
+
+    血統表は5代分あり、セルは rowspan で縦に結合されている。
+    **rowspan の大きさが世代そのもの**なので、それだけを使う。
+    いちばん大きい2つが父と母、その半分の4つが祖父母で、3番目が母父。
+    リンクの出現順に頼ると、深さ優先で父系を潜っていくため
+    4つ目が母になるとは限らず、静かに違う馬を拾う。
+    """
+    table = re.search(
+        r'<table[^>]*class="[^"]*blood_table[^"]*"[^>]*>(.*?)</table>', page, re.S)
+    if not table:
+        return {}
+
+    cells = re.findall(r'<td[^>]*rowspan="?(\d+)"?[^>]*>(.*?)</td>',
+                       table.group(1), re.S)
+    if not cells:
+        return {}
+
+    def name_of(cell_html):
+        # セルには「キタサンブラック 2012 鹿毛 [ 血統 ][ 産駒 ] Halo系」と入る。
+        # 先頭のリンク文字列が馬名。
+        link = re.search(r'<a[^>]*>(.*?)</a>', cell_html, re.S)
+        text = strip_tags(link.group(1) if link else cell_html)
+        return text.split()[0] if text else ''
+
+    widest = max(int(span) for span, _ in cells)
+    parents = [name_of(html) for span, html in cells if int(span) == widest]
+    grands = [name_of(html) for span, html in cells if int(span) == widest // 2]
+
+    pedigree = {}
+    if len(parents) >= 2:
+        pedigree['sire'], pedigree['dam'] = parents[0], parents[1]
+    if len(grands) >= 3:
+        pedigree['broodmare_sire'] = grands[2]
+    return pedigree
+
+
+def fetch_pedigree(horse_id, opener=None):
+    return parse_pedigree(_fetch(PED_URL.format(horse_id=horse_id), opener=opener))
 
 
 # ----------------------------------------------------------------------

@@ -1,0 +1,82 @@
+name: 週次レビュー
+
+on:
+  schedule:
+    # cron は UTC 指定。日本時間は +9 時間。月=1。
+    #
+    # 00:17 UTC = 月曜 09:17 JST。日曜の全レースが確定したあとで回す。
+    # 直前検算と違って時刻の厳密さは要らない（数十分遅れても困らない）ので、
+    # 前倒しの細工はしていない。毎時00分だけは混むので避ける。
+    - cron: '17 0 * * 1'
+  workflow_dispatch:
+    inputs:
+      end:
+        description: '集計の終わり (YYYY-MM-DD)。空なら実行日。'
+        required: false
+      days:
+        description: 'さかのぼる日数（既定7）'
+        required: false
+      no_email:
+        description: 'メールを送らずログだけ出す'
+        type: boolean
+        default: false
+
+# 検算タスクと同じグループにして、data/ への書き込みが衝突しないようにする。
+concurrency:
+  group: keiba-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 依存のインストールは不要（標準ライブラリだけで動く）。
+
+      - name: レビューを作成
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+          RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
+          INPUT_END: ${{ inputs.end }}
+          INPUT_DAYS: ${{ inputs.days }}
+          INPUT_NO_EMAIL: ${{ inputs.no_email }}
+        run: |
+          args=()
+          if [ -n "$INPUT_END" ];  then args+=(--end "$INPUT_END"); fi
+          if [ -n "$INPUT_DAYS" ]; then args+=(--days "$INPUT_DAYS"); fi
+          if [ "$INPUT_NO_EMAIL" != 'true' ]; then args+=(--mail); fi
+          # 終了コード3＝要確認（結果が1件も取れない等）だが通知はできた状態。
+          # check.yml と同じ扱いにして、赤くするのは「知らせられなかった」ときだけにする。
+          set +e
+          python review.py "${args[@]}" | tee "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          set -e
+          if [ "$code" -eq 0 ] || [ "$code" -eq 3 ]; then exit 0; fi
+          exit "$code"
+
+      - name: レビューと確定結果をコミット
+        if: always()
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/ 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo '更新はありません'
+          else
+            git commit -m "週次レビュー: $(date -u +%Y-%m-%d)"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
