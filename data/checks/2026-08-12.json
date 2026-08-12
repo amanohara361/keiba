@@ -270,5 +270,108 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-12T17:36:32.134670+09:00",
+    "races": [
+      {
+        "race_id": "202608124711",
+        "name": "第５５回 くろゆり賞３歳以上・オープン",
+        "blocked": true,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "BLOCK",
+            "code": "already_started",
+            "message": "第５５回 くろゆり賞３歳以上・オープン: 既に発走しています（発走 16:35 / 現在 17:36）",
+            "remedy": "購入できません。このレースの買い目は出しません。"
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608124211",
+        "name": "’２６ヴィーナスサマースプリント（準重賞）３上牝馬オープン",
+        "blocked": true,
+        "composite_odds": 1.96,
+        "expected_value": 0.68,
+        "bet_odds": [
+          {
+            "bet": "馬連 1-4",
+            "odds": 5.4
+          },
+          {
+            "bet": "ワイド 1-2",
+            "odds": 4.1
+          },
+          {
+            "bet": "ワイド 1-9",
+            "odds": 12.2
+          }
+        ],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "’２６ヴィーナスサマースプリント（準重賞）３上牝馬オープン: 馬場が「不良」です（ダート1400m / 天候:雨 / 馬場:不良）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "BLOCK",
+            "code": "composite_below_minimum",
+            "message": "’２６ヴィーナスサマースプリント（準重賞）３上牝馬オープン: 合成オッズ 1.96倍 < 3.0倍",
+            "remedy": "点数を減らす・券種を絞る・重複した保険を外す。当たっても負ける構造です。"
+          },
+          {
+            "severity": "BLOCK",
+            "code": "expected_value_below_minimum",
+            "message": "’２６ヴィーナスサマースプリント（準重賞）３上牝馬オープン: 期待値 0.68 < 1.2（合成 1.96倍 × 主観的中率 35%）",
+            "remedy": "買い目セットを組み直してください。なお期待値が印と食い違うときは、まず主観的中率の見積りを疑うこと（第13章）。"
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "雨",
+          "going": "不良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 9
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 9
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 36
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 72
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 36
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 84
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-12 17:36:34"
+        }
+      }
+    ]
   }
 ]
