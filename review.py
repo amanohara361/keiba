@@ -49,6 +49,17 @@ UNSETTLED = '結果未確定'
 # しきい値。ここを超えたらメソッド側の見直しを検討する（第13章）。
 COUNTER_THRESHOLD = 10
 
+# (見出し, summarize() のキー, 到達時にすること)。render() とメールの両方が
+# ここを見る。**片方だけ書き換えて対応が崩れる、という事故を構造的に防ぐ。**
+THRESHOLD_COUNTERS = [
+    ('減点・原則で切った馬の好走（3着以内の無印馬）', 'unmarked_good_runs',
+     '原則が厳しすぎないかを検討する'),
+    ('規律遵守により逃した上振れ（止めたが的中していた）', 'missed_upside',
+     '基準値（合成3.0倍・期待値1.2）が厳しすぎないかを検討する'),
+    ('◎一極集中で全滅（◎着外・他の印は3着以内）', 'honmei_wipeout',
+     '**規律未実装の候補**。軸の分散を規律に足すかを検討する'),
+]
+
 # 終了コードの意味は check.py と揃える。
 EXIT_OK = 0
 EXIT_ERROR = 1             # 知らせられなかった（送信失敗・設定不備）
@@ -428,15 +439,7 @@ def render(collected, week_summary, total_summary, period):
     # --- しきい値カウンタ ---
     lines.append(f'## カウンタ（通算{COUNTER_THRESHOLD}件でメソッド見直しを検討）')
     lines.append('')
-    counters = [
-        ('減点・原則で切った馬の好走（3着以内の無印馬）', 'unmarked_good_runs',
-         '原則が厳しすぎないかを検討する'),
-        ('規律遵守により逃した上振れ（止めたが的中していた）', 'missed_upside',
-         '基準値（合成3.0倍・期待値1.2）が厳しすぎないかを検討する'),
-        ('◎一極集中で全滅（◎着外・他の印は3着以内）', 'honmei_wipeout',
-         '**規律未実装の候補**。軸の分散を規律に足すかを検討する'),
-    ]
-    for label, key, note in counters:
+    for label, key, note in THRESHOLD_COUNTERS:
         count = total_summary[key]
         flag = ' ← **しきい値到達**' if count >= COUNTER_THRESHOLD else ''
         lines.append(f'- {label}：今週{week_summary[key]}件／通算{count}件{flag}')
@@ -453,7 +456,14 @@ def render(collected, week_summary, total_summary, period):
     return '\n'.join(lines)
 
 
-def render_mail(week_summary, period, path):
+def render_mail(week_summary, period, path, total_summary=None):
+    """メール本文。**しきい値に達したカウンタがあれば、ここで一言で言い切る。**
+
+    通算の件数や「10件」という基準そのものは、レビューの .md ファイルには
+    出ているがメールには出ていなかった。メールしか見ない運用だと、
+    しきい値を超えても誰も気づかない。数字を読んで判断するのではなく、
+    「見直しどき」かどうかだけを機械が言い切る形にする。
+    """
     start, end = period
     v, d = week_summary['virtual'], week_summary['disciplined']
     diff = d['profit'] - v['profit']
@@ -467,6 +477,17 @@ def render_mail(week_summary, period, path):
         lines.append(f"※ {week_summary['unsettled']}レースの結果を取得できていない。"
                      '集計はその分欠けている。')
         lines.append('')
+
+    if total_summary:
+        reached = [label for label, key, _note in THRESHOLD_COUNTERS
+                  if total_summary[key] >= COUNTER_THRESHOLD]
+        if reached:
+            lines.append('■ メソッド見直しの検討どきです')
+            for label in reached:
+                lines.append(f'  - {label}')
+            lines.append('  （通算10件が目安。検証ノート.md へ転記して判断してください）')
+            lines.append('')
+
     lines += [
         f"仮想成績   {v['races']}R 的中{v['hits']} 収支{v['profit']:+,}円 回収率{_roi(v)}",
         f"規律適用後 {d['races']}R 的中{d['hits']} 収支{d['profit']:+,}円 回収率{_roi(d)}",
@@ -532,7 +553,8 @@ def main(argv=None):
             return EXIT_ERROR
         subject = f'週次レビュー {start.isoformat()}〜{end.isoformat()}'
         rel = os.path.relpath(path, ROOT)
-        if not mailer.send(subject, render_mail(week_summary, (start, end), rel)):
+        body = render_mail(week_summary, (start, end), rel, total_summary=total_summary)
+        if not mailer.send(subject, body):
             logger.error('メール送信に失敗しました')
             return EXIT_ERROR
         logger.info('メールを送信しました')
