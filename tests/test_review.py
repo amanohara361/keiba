@@ -294,3 +294,27 @@ def test_メール本文に収支と差引が入る():
     assert '仮想成績' in body
     assert '規律適用後' in body
     assert '差引' in body
+
+
+def test_しきい値到達はメール本文にも出す():
+    # .md ファイルにしか出ないと、メールしか見ない運用では気づけない。
+    week = review.summarize([])
+    total = review.summarize(
+        [entry(wipeout=True) for _ in range(review.COUNTER_THRESHOLD)])
+    body = review.render_mail(week, (date(2026, 8, 3), date(2026, 8, 9)), 'x.md',
+                              total_summary=total)
+    assert 'メソッド見直しの検討どきです' in body
+    assert '◎一極集中で全滅' in body
+
+
+def test_しきい値未満ならメール本文に検討どき欄を出さない():
+    week = total = review.summarize([entry(wipeout=True)])
+    body = review.render_mail(week, (date(2026, 8, 3), date(2026, 8, 9)), 'x.md',
+                              total_summary=total)
+    assert 'メソッド見直しの検討どきです' not in body
+
+
+def test_total_summaryを渡さなければ従来どおり静か():
+    week = review.summarize([entry(wipeout=True)])
+    body = review.render_mail(week, (date(2026, 8, 3), date(2026, 8, 9)), 'x.md')
+    assert 'メソッド見直しの検討どきです' not in body
