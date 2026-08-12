@@ -1,79 +1,42 @@
 @echo off
 rem ---------------------------------------------------------------
-rem  Commit and push data/ to GitHub.
+rem  DISABLED 2026-08-12. Do not commit or push data/ to GitHub.
 rem
-rem  The Cowork sandbox can create and update files on the mounted
-rem  folder but cannot unlink them, so git cannot run there
-rem  (git needs to create and remove .git/index.lock on every commit).
-rem  The morning task therefore only writes the JSON, and this script
-rem  performs the commit and push on the Windows side, where the
-rem  credential manager is already authenticated.
+rem  Cowork and the cloud pipeline (Claude Code Remote Routines +
+rem  GitHub Actions) now both write data/bets/YYYY-MM-DD.json
+rem  independently. When this script pushed Cowork's local copy on
+rem  top of the cloud copy, git pull --rebase hit a real conflict on
+rem  the same file and could leave the repo on this PC stuck mid
+rem  rebase until someone ran git rebase --abort by hand. The NAR
+rem  routine also merges its races into the existing file; a Cowork
+rem  push that skipped that merge could silently drop them.
 rem
-rem  Register in Task Scheduler for Sat and Sun, 08:00 and 12:00.
-rem  Running it when there is nothing to commit is harmless.
+rem  The fix is to keep the two systems fully separate instead of
+rem  reconciling them: Cowork stays local only (buy-list txt, Excel,
+rem  Drive, Gmail - easier to skim than digging through GitHub commit
+rem  history), the cloud pipeline stays on GitHub only. Neither reads
+rem  or writes the other's files, so there is nothing left to
+rem  conflict. See the repo's decision log (docs folder, Japanese
+rem  filename) for the full account.
+rem
+rem  This script is kept as a stub, not deleted, so a Task Scheduler
+rem  entry still pointing at it fails loudly in the log instead of
+rem  silently doing nothing. Remove the Sat/Sun 08:00 and 12:00
+rem  Task Scheduler entries on this PC; this file no longer needs to
+rem  run at all.
 rem
 rem  ASCII only and CRLF line endings, per CLAUDE.md.
-rem  No goto: 2026-08-02 an LF-saved batch failed to resolve labels
-rem  and the window closed instantly with no message.
 rem ---------------------------------------------------------------
 
 setlocal
-set REPO=E:\Claude\keiba-repo
 set LOG=E:\Claude\github_push_log.txt
 
 for /f %%i in ('powershell -NoProfile -Command "Get-Date -Format yyyy-MM-dd_HH:mm"') do set NOW=%%i
-for /f %%i in ('powershell -NoProfile -Command "Get-Date -Format yyyy-MM-dd"') do set TODAY=%%i
 
 echo. >> "%LOG%"
 echo ===== %NOW% ===== >> "%LOG%"
-
-if not exist "%REPO%\.git" (
-    echo ERROR: %REPO% is not a git repository >> "%LOG%"
-    echo ERROR: %REPO% is not a git repository
-    endlocal
-    exit /b 1
-)
-
-cd /d "%REPO%"
-
-rem A stale lock left by a crashed process blocks everything. Clear it.
-if exist ".git\index.lock" (
-    echo Removing stale .git\index.lock >> "%LOG%"
-    del ".git\index.lock"
-)
-
-git add data/ >> "%LOG%" 2>&1
-
-git diff --staged --quiet
-if not errorlevel 1 (
-    echo Nothing to commit >> "%LOG%"
-    echo Nothing to commit
-    endlocal
-    exit /b 0
-)
-
-git commit -m "Add bets: %TODAY%" >> "%LOG%" 2>&1
-if errorlevel 1 (
-    echo ERROR: commit failed >> "%LOG%"
-    echo ERROR: commit failed - see %LOG%
-    endlocal
-    exit /b 1
-)
-
-git pull --rebase --autostash origin main >> "%LOG%" 2>&1
-git push origin HEAD:main >> "%LOG%" 2>&1
-if errorlevel 1 (
-    echo ERROR: push failed >> "%LOG%"
-    echo ERROR: push failed - see %LOG%
-    endlocal
-    exit /b 1
-)
-
-rem Confirm the push actually landed, per CLAUDE.md.
-git log --oneline -1 origin/main >> "%LOG%" 2>&1
-echo Pushed successfully >> "%LOG%"
-echo Pushed successfully
-git log --oneline -1 origin/main
+echo DISABLED: this script no longer commits or pushes. See github_push.bat and the repo decision log. >> "%LOG%"
+echo DISABLED: this script no longer commits or pushes. Remove its Task Scheduler entry.
 
 endlocal
 exit /b 0
