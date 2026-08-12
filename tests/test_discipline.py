@@ -463,6 +463,92 @@ def test_end_to_end_passes_a_clean_sheet(tmp_path, monkeypatch, capsys):
     assert '規律をクリア' in capsys.readouterr().out
 
 
+def test_clean_check_does_not_send_an_email(tmp_path, monkeypatch, caplog):
+    """規律クリアの回は「問題なし」メールを送らないこと（1日最大4回はメールが多すぎるという要望）。
+
+    docs/index.html・data/checks/ には毎回残るので、受信箱に来るのは
+    発注を止めた回だけにする。
+    """
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+
+    sent = []
+    monkeypatch.setattr(check.Mailer, 'is_configured', lambda self: True)
+    monkeypatch.setattr(check.Mailer, 'send',
+                        lambda self, subject, body: sent.append(subject) or True)
+
+    bets.save_sheet(BetSheet(
+        date=date(2026, 8, 2),
+        races=[make_race(
+            name='クイーンステークス',
+            marks=marks_of(items=[('◎', 7), ('○', 11), ('△', 14)]),
+            bets=[Bet('馬連', [7, 11]), Bet('ワイド', [7, 14])],
+            subjective_hit_rate=0.35,
+        )],
+    ))
+
+    def fake_fetch(race_id, bet_type):
+        tables = {
+            '単勝': {'07': ['2.9', '3.0', '1']},
+            '馬連': {'0711': ['11.2', '11.5', '3']},
+            'ワイド': {'0714': ['9.0', '9.4', '4']},
+        }
+        return {'status': 'middle', 'reason': None,
+                'official_datetime': '14:28:00', 'odds': tables[bet_type]}
+
+    monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
+    monkeypatch.setattr(conditions_module, 'fetch',
+                        lambda rid, **kw: {'going': '良', 'weather': '晴',
+                                          'surface': '芝', 'distance': 1800})
+
+    with caplog.at_level('INFO'):
+        exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30', '--no-save'])
+
+    assert exit_code == check.EXIT_OK
+    assert sent == []
+    assert 'メールを省略します' in caplog.text
+
+
+def test_blocked_check_still_sends_an_email(tmp_path, monkeypatch):
+    """発注を止めた回は、これまでどおり必ずメールすること。"""
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+
+    sent = []
+    monkeypatch.setattr(check.Mailer, 'is_configured', lambda self: True)
+    monkeypatch.setattr(check.Mailer, 'send',
+                        lambda self, subject, body: sent.append(subject) or True)
+
+    bets.save_sheet(BetSheet(
+        date=date(2026, 8, 2),
+        races=[make_race(
+            name='クイーンステークス',
+            venue='札幌', race_no=11,
+            marks=marks_of(items=[('◎', 7), ('○', 11), ('▲', 2), ('△', 14)]),
+            bets=[Bet('馬連', [7, 2]), Bet('馬連', [7, 14])],
+            subjective_hit_rate=0.16,
+        )],
+    ))
+
+    def fake_fetch(race_id, bet_type):
+        tables = {
+            '単勝': {'07': ['2.9', '3.0', '1'], '11': ['8.8', '9.0', '3']},
+            '馬連': {'0207': ['13.1', '13.4', '5'], '0714': ['10.7', '11.0', '4']},
+        }
+        return {'status': 'middle', 'reason': None,
+                'official_datetime': '14:28:00', 'odds': tables[bet_type]}
+
+    monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
+    monkeypatch.setattr(conditions_module, 'fetch',
+                        lambda rid, **kw: {'going': '良', 'weather': '晴',
+                                          'surface': '芝', 'distance': 1800})
+
+    exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30', '--no-save'])
+
+    assert exit_code == check.EXIT_NEEDS_ATTENTION
+    assert sent == ['【要確認】直前検算で発注を止めた買い目があります']
+
+
 def test_deliver_logs_failure(caplog, monkeypatch):
     """メール送信の成否が必ずログに残ること。
 

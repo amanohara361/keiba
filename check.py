@@ -366,10 +366,15 @@ def main(argv=None):
 
     if not args.no_email:
         blocked = sum(1 for v in verdicts if v.blocked)
-        subject = ('【要確認】直前検算で発注を止めた買い目があります'
-                   if blocked else '【自動配信】直前検算 完了')
-        if not deliver(mailer, subject, body):
-            return EXIT_ERROR
+        if blocked:
+            subject = '【要確認】直前検算で発注を止めた買い目があります'
+            if not deliver(mailer, subject, body):
+                return EXIT_ERROR
+        else:
+            # 「問題なし」は毎回メールしない（1日最大4回・地方は特に多い）。
+            # docs/index.html と実行ログでは毎回残る。発注を止めた回だけが
+            # 受信箱に来るべき情報で、それ以外はメールする理由がない。
+            logger.info('規律クリアのためメールを省略します（docs/index.html は更新済み）')
 
     return EXIT_NEEDS_ATTENTION if any(v.blocked for v in verdicts) else EXIT_OK
 
