@@ -19,7 +19,9 @@ verdict.forms が馬場が渋ったときしか埋まらない（check.py の設
 import html
 import json
 import os
+from datetime import datetime
 
+import bets
 import conditions as conditions_module
 import discipline
 import nar_card
@@ -369,6 +371,99 @@ def render_missing(day, now):
         body=body,
         footer=f'確認時刻 {now:%H:%M} JST',
     )
+
+
+def render_no_history(day):
+    """過去のある日を見返そうとしたが、記録が無かった場合。"""
+    body = f'''
+  <div class="race">
+    <div class="race-head">
+      <div>
+        <div class="race-title serif">この日の記録が見つかりません</div>
+        <div class="race-meta">data/bets/{_esc(day.isoformat())}.json が存在しません</div>
+      </div>
+      <span class="pill pill-neutral">記録なし</span>
+    </div>
+  </div>'''
+    return _page(
+        eyebrow='過去の検算結果を見返す',
+        title=f'{day.isoformat()} の記録',
+        subtitle='買い目が作られなかった日か、対象レースが無かった日です',
+        body=body,
+        footer='',
+    )
+
+
+class _SavedFinding:
+    """data/checks/ に保存済みの findings 辞書を、discipline.Finding と同じ形で読ませる。"""
+
+    def __init__(self, raw):
+        self.severity = raw.get('severity')
+        self.code = raw.get('code')
+        self.message = raw.get('message')
+        self.remedy = raw.get('remedy', '')
+
+
+class _SavedVerdict:
+    """data/checks/YYYY-MM-DD.json の1レース分を、report_html が読める形に包む。
+
+    本番の RaceVerdict はオッズ取得の直後にその場で作られるが、見返すときは
+    その場で再計算できない（実オッズはもう変わっている）。保存済みの数字を
+    そのまま表示するだけにして、再取得はしない。
+    """
+
+    def __init__(self, race, saved):
+        self.race = race
+        self.composite = saved.get('composite_odds')
+        self._expected_value = saved.get('expected_value')
+        self.bet_odds = [b.get('odds') for b in (saved.get('bet_odds') or [])]
+        self.conditions = saved.get('conditions') or {}
+        self.meta = saved.get('odds_meta') or {}
+        self.forms = {}
+        self.findings = [_SavedFinding(f) for f in (saved.get('findings') or [])]
+
+    @property
+    def blocked(self):
+        return any(f.severity == discipline.BLOCK for f in self.findings)
+
+    @property
+    def blocks(self):
+        return [f for f in self.findings if f.severity == discipline.BLOCK]
+
+    @property
+    def warnings(self):
+        return [f for f in self.findings if f.severity == discipline.WARN]
+
+    @property
+    def expected_value(self):
+        return self._expected_value
+
+
+def render_history(day):
+    """過去のある日の買い目・検算結果を、docs/index.html と同じ見た目で描く。
+
+    毎日は残さない設計（decision log:「過去分は data/ の Git履歴で十分」）なので、
+    これは見たいときだけ呼ぶ関数。data/checks/ は1日に複数回分たまるため、
+    その日の**最後の検算**（＝実オッズが最も締まった時点の判定）を使う。
+    """
+    sheet = bets.load_sheet(day)
+    if sheet is None:
+        return render_no_history(day)
+
+    checks_path = os.path.join(bets.CHECKS_DIR, f'{day.isoformat()}.json')
+    saved_by_id = {}
+    checked_at = None
+    if os.path.exists(checks_path):
+        with open(checks_path, encoding='utf-8') as f:
+            history = json.load(f)
+        if history:
+            latest = history[-1]
+            checked_at = latest.get('checked_at')
+            saved_by_id = {r['race_id']: r for r in latest.get('races') or []}
+
+    verdicts = [_SavedVerdict(race, saved_by_id.get(race.race_id, {})) for race in sheet.races]
+    now = datetime.fromisoformat(checked_at) if checked_at else datetime.now(bets.JST)
+    return render(sheet, verdicts, now)
 
 
 def _page(eyebrow, title, subtitle, body, footer):
