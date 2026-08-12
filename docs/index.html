@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>地方競馬・中央 直前検算</title>
+<style>
+:root {
+  --bg: #E4E7DE; --surface: #F8F9F3; --surface-2: #ECEEE4;
+  --border: #C9CDBD; --border-soft: #D7DACC;
+  --text: #1C2320; --text-muted: #566057;
+  --accent: #2C5560; --clay: #A15A34;
+  --good: #3E7D45; --good-soft: #E1EBE0;
+  --warn: #B8862E; --warn-soft: #F3EAD7;
+  --critical: #B23B2E; --critical-soft: #F3E1DC;
+  --shadow: 0 1px 2px rgba(28,35,32,0.06), 0 4px 14px rgba(28,35,32,0.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12181A; --surface: #1A2225; --surface-2: #212B2E;
+    --border: #33413F; --border-soft: #2A3634;
+    --text: #E7ECE8; --text-muted: #93A29C;
+    --accent: #7FB8C4; --clay: #DB9163;
+    --good: #6FCB7A; --good-soft: #1E3021;
+    --warn: #E0B15B; --warn-soft: #362B16;
+    --critical: #F0776A; --critical-soft: #3A211D;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 4px 18px rgba(0,0,0,0.25);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12181A; --surface: #1A2225; --surface-2: #212B2E;
+  --border: #33413F; --border-soft: #2A3634;
+  --text: #E7ECE8; --text-muted: #93A29C;
+  --accent: #7FB8C4; --clay: #DB9163;
+  --good: #6FCB7A; --good-soft: #1E3021;
+  --warn: #E0B15B; --warn-soft: #362B16;
+  --critical: #F0776A; --critical-soft: #3A211D;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 4px 18px rgba(0,0,0,0.25);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP",
+    -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.65; -webkit-font-smoothing: antialiased;
+}
+.serif { font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", Georgia, serif; }
+.page { max-width: 760px; margin: 0 auto; padding: 48px 20px 80px; }
+.eyebrow { font-size: 12.5px; letter-spacing: .09em; color: var(--text-muted); text-transform: uppercase; }
+h1 { font-size: 28px; font-weight: 600; margin: 2px 0 0; text-wrap: balance; }
+.masthead-sub { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+.summary { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px;
+  background: var(--border-soft); border: 1px solid var(--border-soft);
+  border-radius: 10px; overflow: hidden; margin: 32px 0 40px; }
+.stat { background: var(--surface); padding: 16px 15px; display: flex; flex-direction: column; gap: 4px; }
+.stat-label { font-size: 11.5px; color: var(--text-muted); }
+.stat-value { font-size: 24px; font-variant-numeric: tabular-nums; font-weight: 600; }
+.stat-value.critical { color: var(--critical); }
+.stat-value.good { color: var(--good); }
+.stat-note { font-size: 11.5px; color: var(--text-muted); }
+.race { background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: var(--shadow); padding: 22px 22px 20px; margin-bottom: 22px; }
+.race-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; flex-wrap: wrap; }
+.race-title { font-size: 19px; font-weight: 600; text-wrap: balance; margin: 0 0 4px; }
+.race-meta { color: var(--text-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; white-space: nowrap; }
+.pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.pill-critical { background: var(--critical-soft); color: var(--critical); }
+.pill-good { background: var(--good-soft); color: var(--good); }
+.pill-warn { background: var(--warn-soft); color: var(--warn); }
+.pill-neutral { background: var(--surface-2); color: var(--text-muted); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 13px 0 17px; }
+.chip { font-size: 12px; padding: 4px 10px; border-radius: 7px; background: var(--surface-2); color: var(--text-muted); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+.marks { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 8px; margin-bottom: 18px; }
+.mark { background: var(--surface-2); border-radius: 8px; padding: 9px 10px; display: flex; flex-direction: column; gap: 2px; }
+.mark-symbol { font-size: 12.5px; color: var(--accent); font-weight: 700; }
+.mark-symbol .um { color: var(--text-muted); font-weight: 500; margin-left: 4px; font-variant-numeric: tabular-nums; }
+.mark-name { font-size: 13px; font-weight: 600; }
+.section-label { font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 8px; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--border-soft); border-radius: 8px; margin-bottom: 18px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { text-align: left; background: var(--surface-2); color: var(--text-muted); font-weight: 600;
+  font-size: 11.5px; padding: 8px 11px; border-bottom: 1px solid var(--border-soft); }
+tbody td { padding: 8px 11px; border-bottom: 1px solid var(--border-soft); font-variant-numeric: tabular-nums; }
+tbody tr:last-child td { border-bottom: none; }
+td.odds { color: var(--clay); font-weight: 600; text-align: right; }
+td.stake { text-align: right; color: var(--text-muted); }
+.no-bets { font-size: 13px; color: var(--text-muted); background: var(--surface-2); border-radius: 8px;
+  padding: 10px 12px; margin-bottom: 18px; }
+.gauges { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+@media (max-width: 480px) { .gauges { grid-template-columns: 1fr; } }
+.gauge-label { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+.gauge-value { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); }
+.gauge-track { position: relative; height: 9px; border-radius: 5px; background: var(--surface-2); }
+.gauge-fill { position: absolute; inset: 0 auto 0 0; border-radius: 5px; background: var(--critical); }
+.gauge-fill.pass { background: var(--good); }
+.gauge-threshold { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text-muted); opacity: .55; }
+.gauge-threshold-label { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+.odds-note { font-size: 12.5px; color: var(--text-muted); background: var(--surface-2); border-radius: 8px;
+  padding: 9px 12px; margin-bottom: 18px; }
+.findings { display: flex; flex-direction: column; gap: 8px; margin-bottom: 2px; }
+.finding { border-radius: 8px; padding: 10px 12px; font-size: 12.5px; display: flex; flex-direction: column; gap: 3px; }
+.finding.critical { background: var(--critical-soft); }
+.finding.warn { background: var(--warn-soft); }
+.finding.good { background: var(--good-soft); }
+.finding-title { font-weight: 700; }
+.finding.critical .finding-title { color: var(--critical); }
+.finding.warn .finding-title { color: var(--warn); }
+.finding.good .finding-title { color: var(--good); }
+.finding-remedy { color: var(--text-muted); }
+.note { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-soft); font-size: 12px; color: var(--text-muted); }
+.note-label { font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; opacity: .85; }
+footer { margin-top: 32px; padding-top: 18px; border-top: 1px solid var(--border-soft); font-size: 12px; color: var(--text-muted);
+  display: flex; flex-direction: column; gap: 4px; }
+footer code { background: var(--surface-2); padding: 1px 5px; border-radius: 4px; font-size: 11px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="eyebrow">直前検算（予想メソッド 第13章）</div>
+  <h1 class="serif">2026-08-12 検算結果</h1>
+  <div class="masthead-sub">対象 2レース &amp;mdash; 実オッズ反映後の判定</div>
+  
+  <div class="summary">
+    <div class="stat"><div class="stat-label">対象レース</div>
+      <div class="stat-value">2</div>
+      <div class="stat-note">cloud-nar 作成</div></div>
+    <div class="stat"><div class="stat-label">購入</div>
+      <div class="stat-value critical">0件</div>
+      <div class="stat-note">2件 BLOCK</div></div>
+    <div class="stat"><div class="stat-label">検算時刻</div>
+      <div class="stat-value" style="font-size:17px;">16:14 JST</div>
+      <div class="stat-note">買い目作成 2026-08-12T09:12:00+09:00</div></div>
+  </div>
+  <div class="race">
+    <div class="race-head">
+      <div>
+        <div class="race-title serif">第５５回 くろゆり賞３歳以上・オープン</div>
+        <div class="race-meta">笠松11R &middot; ダート1580m &middot; 発走 16:35</div>
+      </div>
+      <span class="pill pill-critical">見送り（BLOCK）</span>
+    </div>
+    <div class="chips"><span class="chip">勝負度 B</span><span class="chip">主観的中率 30%</span><span class="chip">天候 曇</span><span class="chip">馬場 良</span></div>
+    <div class="section-label">印</div>
+    <div class="marks"><div class="mark"><div class="mark-symbol">◎<span class="um">8番</span></div><div class="mark-name">マルヨハルキ</div></div><div class="mark"><div class="mark-symbol">○<span class="um">6番</span></div><div class="mark-name">キャッシュブリッツ</div></div><div class="mark"><div class="mark-symbol">▲<span class="um">2番</span></div><div class="mark-name">グスタール</div></div><div class="mark"><div class="mark-symbol">△<span class="um">7番</span></div><div class="mark-name">コトシロ</div></div></div>
+    <div class="section-label">買い目</div><div class="table-wrap"><table><thead><tr><th>券種</th><th>組み合わせ</th><th style="text-align:right">実オッズ</th><th style="text-align:right">金額</th></tr></thead><tbody><tr><td>ワイド</td><td>8-6</td><td class="odds">8.7倍</td><td class="stake">100円</td></tr><tr><td>ワイド</td><td>8-2</td><td class="odds">8.6倍</td><td class="stake">100円</td></tr><tr><td>ワイド</td><td>8-7</td><td class="odds">14.3倍</td><td class="stake">100円</td></tr></tbody></table></div>
+    <div class="gauges">
+      <div>
+        <div class="gauge-label"><span>合成オッズ</span><span class="gauge-value">3.32倍</span></div>
+        <div class="gauge-track">
+          <div class="gauge-fill pass" style="width:83.0%"></div>
+          <div class="gauge-threshold" style="left:75%"></div>
+        </div>
+        <div class="gauge-threshold-label">基準 3.0倍 &mdash; クリア</div>
+      </div>
+      <div>
+        <div class="gauge-label"><span>期待値</span><span class="gauge-value">1.00</span></div>
+        <div class="gauge-track">
+          <div class="gauge-fill " style="width:62.3%"></div>
+          <div class="gauge-threshold" style="left:75%"></div>
+        </div>
+        <div class="gauge-threshold-label">基準 1.2 &mdash; 未達</div>
+      </div></div>
+    
+    <div class="findings"><div class="finding critical"><div class="finding-title">BLOCK &mdash; 第５５回 くろゆり賞３歳以上・オープン: 期待値 1.00 &lt; 1.2（合成 3.32倍 × 主観的中率 30%）</div><div class="finding-remedy">買い目セットを組み直してください。なお期待値が印と食い違うときは、まず主観的中率の見積りを疑うこと（第13章）。</div></div></div>
+    <div class="note"><div class="note-label">メモ</div>◎8マルヨハルキ:距離1580m実績3-0-0-0(全勝、レコード2回)、通算勝率45%・当地47%。ただし今回騎乗の望月洵は1580m3連勝時の主戦(藤原幹)にも前走(渡邊竜)にも当たらない乗り替わりで要確認。○6キャッシュブリッツ:当地連対率57%、距離延長(1500→1580)も長距離実績豊富で問題視せず。▲2グスタール:当地単勝勝率57%(全馬最高の当地巧者)だが1580m実績0走・前走4着。△7コトシロ:当地3着内率46%、直近3走3-3-1着と人気薄想定でも堅実(妙味候補)。危険な人気馬:1マンノライトニングは前走1着だが距離延長ローテ(1400→1580、1580m実績0走)で減点方式該当のため見送り。馬体重・馬場状態・厩舎コメント・パトロールビデオは取得不可のため直前タスクで要確認。オッズは発売前(予想オッズ)のため実オッズ未確定、暫定として点数を絞った。</div>
+  </div>
+  <div class="race">
+    <div class="race-head">
+      <div>
+        <div class="race-title serif">’２６ヴィーナスサマースプリント（準重賞）３上牝馬オープン</div>
+        <div class="race-meta">浦和11R &middot; ダート1400m &middot; 発走 18:45</div>
+      </div>
+      <span class="pill pill-critical">見送り（BLOCK）</span>
+    </div>
+    <div class="chips"><span class="chip">勝負度 B</span><span class="chip">主観的中率 35%</span><span class="chip">天候 曇</span><span class="chip warn">馬場 不良（要注意）</span></div>
+    <div class="section-label">印</div>
+    <div class="marks"><div class="mark"><div class="mark-symbol">◎<span class="um">1番</span></div><div class="mark-name">イナダヒメ</div></div><div class="mark"><div class="mark-symbol">○<span class="um">4番</span></div><div class="mark-name">ツーシャドー</div></div><div class="mark"><div class="mark-symbol">▲<span class="um">2番</span></div><div class="mark-name">エスカティア</div></div><div class="mark"><div class="mark-symbol">△<span class="um">9番</span></div><div class="mark-name">リヴェルベロ</div></div></div>
+    <div class="section-label">買い目</div><div class="table-wrap"><table><thead><tr><th>券種</th><th>組み合わせ</th><th style="text-align:right">実オッズ</th><th style="text-align:right">金額</th></tr></thead><tbody><tr><td>馬連</td><td>1-4</td><td class="odds">5.5倍</td><td class="stake">100円</td></tr><tr><td>ワイド</td><td>1-2</td><td class="odds">4.3倍</td><td class="stake">100円</td></tr><tr><td>ワイド</td><td>1-9</td><td class="odds">10.0倍</td><td class="stake">100円</td></tr></tbody></table></div>
+    <div class="gauges">
+      <div>
+        <div class="gauge-label"><span>合成オッズ</span><span class="gauge-value">1.94倍</span></div>
+        <div class="gauge-track">
+          <div class="gauge-fill " style="width:48.6%"></div>
+          <div class="gauge-threshold" style="left:75%"></div>
+        </div>
+        <div class="gauge-threshold-label">基準 3.0倍 &mdash; 未達</div>
+      </div>
+      <div>
+        <div class="gauge-label"><span>期待値</span><span class="gauge-value">0.68</span></div>
+        <div class="gauge-track">
+          <div class="gauge-fill " style="width:42.5%"></div>
+          <div class="gauge-threshold" style="left:75%"></div>
+        </div>
+        <div class="gauge-threshold-label">基準 1.2 &mdash; 未達</div>
+      </div></div>
+    
+    <div class="findings"><div class="finding critical"><div class="finding-title">BLOCK &mdash; ’２６ヴィーナスサマースプリント（準重賞）３上牝馬オープン: 合成オッズ 1.94倍 &lt; 3.0倍</div><div class="finding-remedy">点数を減らす・券種を絞る・重複した保険を外す。当たっても負ける構造です。</div></div><div class="finding critical"><div class="finding-title">BLOCK &mdash; ’２６ヴィーナスサマースプリント（準重賞）３上牝馬オープン: 期待値 0.68 &lt; 1.2（合成 1.94倍 × 主観的中率 35%）</div><div class="finding-remedy">買い目セットを組み直してください。なお期待値が印と食い違うときは、まず主観的中率の見積りを疑うこと（第13章）。</div></div><div class="finding warn"><div class="finding-title">WARN &mdash; ’２６ヴィーナスサマースプリント（準重賞）３上牝馬オープン: 馬場が「不良」です（ダート1400m / 天候:曇 / 馬場:不良）</div><div class="finding-remedy">ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。</div></div></div>
+    <div class="note"><div class="note-label">メモ</div>◎1イナダヒメ:当地(浦和)勝率46%・距離1400m実績勝率50%、全成績が左回りで今回条件と完全一致、前走1着で勢いあり。ただし枠1(内枠)はダート減点方式(-3点)に該当し要注意。○4ツーシャドー:当地連対率71%・距離1400m連対率62%、全馬最速の自己ベスト1:26.0。直近2走(8着・7着)は南関東交流重賞(1600m級)への格上挑戦での凡走で、1400m準重賞に戻れば巻き返し十分と判断。▲2エスカティア:距離1400m実績が4戦3連対(連対率75%)、直近は1700m・1500mへの延長戦で凡走していたが1400mへの短縮はプラス材料。△9リヴェルベロ:当地3着内率60%・距離1400m実績3着内率67%(いずれもサンプル5戦以下につき小標本の留保あり)、先行力を残し展開次第で浮上の目。危険な人気馬:3ダヴァンティは6か月以上の休み明け(減点方式該当)、6ミルニュイは前走(2000m)大差の15着大敗で距離大幅短縮(-600m)も加わり信頼薄いため見送り。馬体重・馬場状態・厩舎コメント・パトロールビデオは取得不可のため直前タスクで要確認。オッズは発売前(予想オッズ)のため実オッズ未確定、暫定として点数を絞った。</div>
+  </div>
+  <footer>データ元: <code>data/bets/2026-08-12.json</code> / <code>data/checks/2026-08-12.json</code><div>本検算は買い目設計の規律のみを見ています。印の判断には関与しません。</div></footer>
+</div>
+</body>
+</html>

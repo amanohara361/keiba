@@ -27,6 +27,7 @@ import discipline
 import form as form_module
 import nar as nar_module
 import odds as odds_module
+import report_html
 from mailer import Mailer
 
 # 終了コードは「このジョブが役目を果たせたか」で決める。
@@ -325,6 +326,7 @@ def main(argv=None):
     parser.add_argument('--now', help='現在時刻 (YYYY-MM-DDTHH:MM)。動作確認用。')
     parser.add_argument('--no-email', action='store_true', help='メールを送らない')
     parser.add_argument('--no-save', action='store_true', help='検算結果を保存しない')
+    parser.add_argument('--no-html', action='store_true', help='HTMLレポートを書き出さない')
     args = parser.parse_args(argv)
 
     now = resolve_now(args.now)
@@ -337,6 +339,8 @@ def main(argv=None):
         body = format_missing_sheet(day, now)
         print(body)
         write_job_summary(body)
+        if not args.no_html:
+            report_html.save(report_html.render_missing(day, now))
         if args.no_email:
             return EXIT_NEEDS_ATTENTION
         # 知らせられたかどうかで結果を分ける。
@@ -349,6 +353,9 @@ def main(argv=None):
     body = format_report(sheet, verdicts, now)
     print(body)
     write_job_summary(body)
+
+    if not args.no_html:
+        report_html.save(report_html.render(sheet, verdicts, now))
 
     if not args.no_save:
         path = bets.save_check_result(day, {

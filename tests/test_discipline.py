@@ -19,7 +19,14 @@ import check  # noqa: E402
 import discipline  # noqa: E402
 import conditions as conditions_module  # noqa: E402
 import odds as odds_module  # noqa: E402
+import report_html  # noqa: E402
 from bets import JST, Bet, BetSheet, BetsError, RaceBets, parse_sheet  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+def _isolate_html_report(tmp_path, monkeypatch):
+    """HTMLレポートの書き出し先を一時ディレクトリへ逃がす。実リポジトリの docs/ を汚さない。"""
+    monkeypatch.setattr(report_html, 'HTML_PATH', str(tmp_path / '_report' / 'index.html'))
 
 
 def make_race(**kwargs):
