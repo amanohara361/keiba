@@ -403,7 +403,15 @@ def test_取得に失敗したらstatusを立てずエラーを残す():
 # カード
 # ----------------------------------------------------------------------
 
-def test_カードは重賞だけを候補にして出馬表を付ける():
+def test_カードは重賞だけを候補にして出馬表を付ける(monkeypatch):
+    # build_card は「対象日が今日なら当日ファイル、そうでなければ月次」で
+    # 経路を分ける（当日ファイルの方が新しく、月次より軽い）。このテストは
+    # 対象日をハードコードしているため、実行日が対象日と一致しないと
+    # 月次経路に落ち、6か月分ぶん同じ行が積み上がって重複する
+    # （このテストの fake は month を見分けないため）。「今日」を固定して
+    # 当日ファイル経路を必ず通す。
+    monkeypatch.setattr(nar, 'today_jst', lambda: date(2026, 8, 12))
+
     def fake(type_, month=None):
         return {'racelist': rows(RACELIST), 'horselist': rows(HORSELIST),
                 'payback': []}
