@@ -234,17 +234,21 @@ def annotate(entries, history, day, distance=None):
 # カード作成
 # ----------------------------------------------------------------------
 
-def build_card(day, levels=('重賞', '準重賞'), with_entries=True, fetcher=None):
+def build_card(day, levels=('重賞', '準重賞'), with_entries=True, fetcher=None, today=None):
     """その日のカードを組む。
 
     fetcher はテスト用の差し替え口。`fetcher(type_, month)` が
     {'racelist':..., 'horselist':...} を返せばよい。
+    today もテスト用の差し替え口（既定は実際の現在日）。**ここを実時刻に
+    直結させたままだと、day と実際の「今日」がたまたま一致する/しないかで
+    テストの通る道筋が日付をまたぐたびに変わり、テストの結果が壊れる**
+    （2026-08-12に書いたテストが翌13日に失敗した）。
     """
     fetch = fetcher or (lambda type_, month=None: nar.race_data(type_, month))
 
     # 当日ファイルにはその日のレースだけが入っており、いちばん新しい。
     # 取れなければ月次で代替する（月次は当日＋2日先まで入っている）。
-    today = nar.today_jst()
+    today = today if today is not None else nar.today_jst()
     daily = None
     if day == today:
         try:

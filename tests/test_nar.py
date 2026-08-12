@@ -408,7 +408,12 @@ def test_カードは重賞だけを候補にして出馬表を付ける():
         return {'racelist': rows(RACELIST), 'horselist': rows(HORSELIST),
                 'payback': []}
 
-    card = nar_card.build_card(date(2026, 8, 12), fetcher=fake)
+    # today を day と同じに固定し、当日ファイル経路（daily）を確実に通す。
+    # 実行日の巡り合わせで daily と月次（monthly）のどちらを通るかが
+    # 変わると、この fixture（月次だと同じ内容が6回重複する）では
+    # 結果が変わってしまう。
+    card = nar_card.build_card(date(2026, 8, 12), fetcher=fake,
+                               today=date(2026, 8, 12))
     assert card['org'] == 'nar'
     assert card['race_count'] == 3          # ばんえいを除いた当日のレース数
     assert [r['name'] for r in card['races']] == ['テスト記念', 'テストスプリント']
@@ -423,7 +428,7 @@ def test_開催があって重賞が無い日は空のカードを書く():
         return {'racelist': rows(RACELIST), 'horselist': rows(HORSELIST),
                 'payback': []}
 
-    card = nar_card.build_card(date(2026, 7, 20), fetcher=fake)
+    card = nar_card.build_card(date(2026, 7, 20), fetcher=fake, today=date(2026, 9, 1))
     assert card['races'] == []
     assert card['race_count'] == 1
 
@@ -529,4 +534,4 @@ def test_データに無い日はカードを書かない():
         return {'racelist': rows(RACELIST), 'horselist': [], 'payback': []}
 
     with pytest.raises(nar_card.CardError):
-        nar_card.build_card(date(2026, 1, 1), fetcher=fake)
+        nar_card.build_card(date(2026, 1, 1), fetcher=fake, today=date(2026, 9, 1))

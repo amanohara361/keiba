@@ -25,6 +25,7 @@ import argparse
 import json
 import logging
 import os
+import statistics
 import sys
 from datetime import date, timedelta
 
@@ -265,6 +266,41 @@ def review_race(race, result, check):
 
 
 # ----------------------------------------------------------------------
+# 配当の偏り
+# ----------------------------------------------------------------------
+
+def payout_stats(rows):
+    """的中したレースの配当分布。少数の高配当に引っ張られて回収率を
+    過大評価していないかを見るための診断。**判定はしない、数字を出すだけ。**
+
+    回収率は「上位N件の配当を除いても、賭け金は変えずに」計算する
+    （その馬券を買ったこと自体は事実なので、賭け金は減らさない）。
+    的中がN件に満たない場合は、あるだけ除く（0件ならROIは0%になる。
+    それも正しい数字なので隠さない）。
+    """
+    hits = sorted((e['returned'] for e in rows if e['category'] == HIT), reverse=True)
+    if not hits:
+        return None
+    staked = sum(e['staked'] for e in rows)
+    returned = sum(hits)
+
+    def roi_excluding(n):
+        if not staked:
+            return None
+        excluded = sum(hits[:min(n, len(hits))])
+        return (returned - excluded) / staked
+
+    return {
+        'count': len(hits),
+        'median': statistics.median(hits),
+        'min': hits[-1],
+        'max': hits[0],
+        'roi_excl_top1': roi_excluding(1),
+        'roi_excl_top3': roi_excluding(3),
+    }
+
+
+# ----------------------------------------------------------------------
 # 集計
 # ----------------------------------------------------------------------
 
@@ -304,6 +340,9 @@ def summarize(entries):
         'virtual': totals(purchased),
         'disciplined': totals(kept),
         'blocked': totals(blocked),
+        # 規律適用後（実際に運用した場合）の的中に対する診断。
+        # 「回収率（規律適用後）」が少数の高配当に引っ張られていないかを見る。
+        'payout_stats': payout_stats(kept),
         'bet_miss': sum(1 for e in settled if e['category'] == BET_MISS),
         'predict_miss': sum(1 for e in settled if e['category'] == PREDICT_MISS),
         'honmei_races': len(honmei_ranked),
@@ -367,6 +406,31 @@ def _roi(t):
     return f"{t['roi'] * 100:.0f}%" if t['roi'] is not None else '—'
 
 
+def _payout_roi(pct):
+    return f'{pct * 100:.0f}%' if pct is not None else '—'
+
+
+# (見出し, payout_stats() の戻り値 -> 表示文字列)。None（的中0件）は "—"。
+# render() の表と render_mail() の両方がここから作る。
+PAYOUT_STAT_ROWS = [
+    ('的中', lambda s: f"{s['count']}件" if s else '0件'),
+    ('配当の中央値', lambda s: _yen(round(s['median'])) if s else '—'),
+    ('配当（最小〜最大）', lambda s: f"{_yen(s['min'])}〜{_yen(s['max'])}" if s else '—'),
+    ('回収率（上位1件除く）', lambda s: _payout_roi(s['roi_excl_top1']) if s else '—'),
+    ('回収率（上位3件除く）', lambda s: _payout_roi(s['roi_excl_top3']) if s else '—'),
+]
+
+
+def _payout_stats_line(label, stats):
+    if not stats:
+        return f'{label}: 的中0件'
+    return (f"{label}: 的中{stats['count']}件 "
+            f"中央値{_yen(round(stats['median']))} "
+            f"{_yen(stats['min'])}〜{_yen(stats['max'])} / "
+            f"上位1件除く{_payout_roi(stats['roi_excl_top1'])} "
+            f"上位3件除く{_payout_roi(stats['roi_excl_top3'])}")
+
+
 def _totals_line(label, t):
     return (f"- {label}：{t['races']}レース 的中{t['hits']} "
             f"投資{_yen(t['staked'])} 払戻{_yen(t['returned'])} "
@@ -398,6 +462,18 @@ def render(collected, week_summary, total_summary, period):
     lines.append(f'- **差引：{diff:+,}円**（プラスなら規律が損を防いだ、マイナスなら上振れを逃した）')
     if week_summary['blocked']['races']:
         lines.append(_totals_line('  うち止めた分', week_summary['blocked']))
+    lines.append('')
+
+    # --- 配当の偏り ---
+    # 「回収率（規律適用後）」が少数の高配当に引っ張られていないかを、
+    # すぐ上の数字に対する注記として置く。判定はしない、数字だけ。
+    lines.append('### 配当の偏り（規律適用後の的中に対して）')
+    lines.append('')
+    lines.append('| 指標 | 今週 | 通算 |')
+    lines.append('|---|---|---|')
+    for label, fn in PAYOUT_STAT_ROWS:
+        lines.append(f'| {label} | {fn(week_summary["payout_stats"])} '
+                     f'| {fn(total_summary["payout_stats"])} |')
     lines.append('')
 
     # --- レース別 ---
@@ -492,6 +568,12 @@ def render_mail(week_summary, period, path, total_summary=None):
         f"仮想成績   {v['races']}R 的中{v['hits']} 収支{v['profit']:+,}円 回収率{_roi(v)}",
         f"規律適用後 {d['races']}R 的中{d['hits']} 収支{d['profit']:+,}円 回収率{_roi(d)}",
         f'差引 {diff:+,}円',
+        '',
+        _payout_stats_line('配当(規律適用後) 今週', week_summary['payout_stats']),
+    ]
+    if total_summary:
+        lines.append(_payout_stats_line('配当(規律適用後) 通算', total_summary['payout_stats']))
+    lines += [
         '',
         f"◎勝率 {_pct(week_summary['honmei_win'], week_summary['honmei_races'])}"
         f" / ◎複勝率 {_pct(week_summary['honmei_place'], week_summary['honmei_races'])}",
