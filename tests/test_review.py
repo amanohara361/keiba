@@ -255,6 +255,61 @@ def test_本命の勝率と複勝率():
 
 
 # ----------------------------------------------------------------------
+# 配当の偏り（少数の高配当に引っ張られていないか）
+# ----------------------------------------------------------------------
+
+def test_的中が無ければ配当統計はNone():
+    assert review.payout_stats([]) is None
+    assert review.payout_stats([entry(category=review.PREDICT_MISS, staked=300)]) is None
+
+
+def test_配当の中央値と最小最大():
+    rows = [
+        entry(category=review.HIT, staked=100, returned=210),
+        entry(category=review.HIT, staked=100, returned=900),
+        entry(category=review.HIT, staked=100, returned=1830),
+        entry(category=review.PREDICT_MISS, staked=100, returned=0),
+    ]
+    stats = review.payout_stats(rows)
+    assert stats['count'] == 3
+    assert stats['median'] == 900
+    assert stats['min'] == 210
+    assert stats['max'] == 1830
+
+
+def test_上位1件と3件を除いた回収率():
+    """賭け金は減らさない。買ったこと自体は事実として残す。"""
+    rows = [
+        entry(category=review.HIT, staked=100, returned=210),
+        entry(category=review.HIT, staked=100, returned=900),
+        entry(category=review.HIT, staked=100, returned=1830),
+        entry(category=review.PREDICT_MISS, staked=100, returned=0),
+    ]
+    stats = review.payout_stats(rows)
+    # 総投資400円、総払戻2,940円。上位1件(1830円)を除くと1,110円。
+    assert stats['roi_excl_top1'] == pytest.approx(1110 / 400)
+    # 上位3件（＝全的中）を除くと払戻0円。
+    assert stats['roi_excl_top3'] == pytest.approx(0.0)
+
+
+def test_的中が3件未満でも上位3件除外はあるだけ除いて計算する():
+    rows = [entry(category=review.HIT, staked=100, returned=500)]
+    stats = review.payout_stats(rows)
+    assert stats['roi_excl_top3'] == pytest.approx(0.0)   # 1件しかないので全部除く
+
+
+def test_summarizeがpayout_statsを規律適用後の的中から作る():
+    """止めた(blocked)レースの配当は診断に含めない。規律適用後の実運用が対象。"""
+    entries = [
+        entry(category=review.HIT, staked=100, returned=900),
+        entry(category=review.HIT, staked=100, returned=300, blocked=True),
+    ]
+    summary = review.summarize(entries)
+    assert summary['payout_stats']['count'] == 1
+    assert summary['payout_stats']['median'] == 900
+
+
+# ----------------------------------------------------------------------
 # 検算記録の読み方（実データを使う）
 # ----------------------------------------------------------------------
 
@@ -318,3 +373,37 @@ def test_total_summaryを渡さなければ従来どおり静か():
     week = review.summarize([entry(wipeout=True)])
     body = review.render_mail(week, (date(2026, 8, 3), date(2026, 8, 9)), 'x.md')
     assert 'メソッド見直しの検討どきです' not in body
+
+
+def test_配当の偏りがrenderの規律の節のすぐ下に出る():
+    summary = review.summarize([
+        entry(category=review.HIT, staked=100, returned=210),
+        entry(category=review.HIT, staked=100, returned=1830),
+    ])
+    text = review.render([], summary, summary, (date(2026, 8, 3), date(2026, 8, 9)))
+    effect_idx = text.index('## 規律は収支に効いたか')
+    payout_idx = text.index('### 配当の偏り')
+    race_idx = text.index('## レース別')
+    # 「規律は収支に効いたか」のすぐ下、「レース別」より上に置く
+    assert effect_idx < payout_idx < race_idx
+    assert '中央値' in text
+    assert '1,020円' in text            # (210+1830)/2
+
+
+def test_配当の偏りは的中0件でも表を壊さない():
+    summary = review.summarize([entry(category=review.PREDICT_MISS)])
+    text = review.render([], summary, summary, (date(2026, 8, 3), date(2026, 8, 9)))
+    assert '### 配当の偏り' in text
+    assert '0件' in text
+
+
+def test_メール本文にも配当の偏りが出る():
+    week = review.summarize([
+        entry(category=review.HIT, staked=100, returned=210),
+        entry(category=review.HIT, staked=100, returned=1830),
+    ])
+    body = review.render_mail(week, (date(2026, 8, 3), date(2026, 8, 9)), 'x.md',
+                              total_summary=week)
+    assert '配当(規律適用後) 今週' in body
+    assert '配当(規律適用後) 通算' in body
+    assert '中央値' in body
