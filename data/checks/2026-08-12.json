@@ -418,5 +418,50 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-12T20:26:44.151436+09:00",
+    "races": [
+      {
+        "race_id": "202608124711",
+        "name": "第５５回 くろゆり賞３歳以上・オープン",
+        "blocked": true,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "BLOCK",
+            "code": "already_started",
+            "message": "第５５回 くろゆり賞３歳以上・オープン: 既に発走しています（発走 16:35 / 現在 20:26）",
+            "remedy": "購入できません。このレースの買い目は出しません。"
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608124211",
+        "name": "’２６ヴィーナスサマースプリント（準重賞）３上牝馬オープン",
+        "blocked": true,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "BLOCK",
+            "code": "already_started",
+            "message": "’２６ヴィーナスサマースプリント（準重賞）３上牝馬オープン: 既に発走しています（発走 18:45 / 現在 20:26）",
+            "remedy": "購入できません。このレースの買い目は出しません。"
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
