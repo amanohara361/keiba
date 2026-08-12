@@ -44,6 +44,27 @@ MARK_ORDER = ['◎', '○', '▲', '△']
 SENIOR_MARKS = ['◎', '○']   # これが相手から外れたら矛盾を疑う
 JUNIOR_MARKS = ['▲', '△']
 
+# 予想メソッド 第1章「予想の手順（7ステップ）」。印1つ1つに、どの手順が
+# 根拠になったかをタグ付けする（2026-08-12・後ろ向き研究のための仕込み）。
+#
+# 厳密な統計評価をやるにはまだサンプルが足りないが、「外した時は手順のどこが
+# ズレたか振り返る」（第1章）という振り返りの単位は最初から手順1〜7で
+# 決まっている。的中率・回収率だけを記録すると、半年後に「そもそもどの手順が
+# 効いていないのか」を知る手段が無い。noteの自由記述には理由が書かれているが、
+# 構造化されていないため後から集計できない。番号だけなら書く側の負担も小さい。
+#
+# 過去分（steps を持たない buy 目）は遡って埋められない。ここから先の分だけが
+# 対象になる。
+STEPS = {
+    1: 'トラックバイアスの設定',
+    2: '厩舎コメントの確認',
+    3: '出走馬の絞り込み（消去法・減点方式）',
+    4: '展開予想',
+    5: '危険な人気馬の割り出し',
+    6: '印をつける',
+    7: '競馬新聞の印との照合',
+}
+
 CONFIDENCE_LEVELS = ['A', 'B', 'C']
 
 
@@ -200,7 +221,15 @@ def parse_sheet(payload):
             mark = _require(m, 'mark', f'{context}の印')
             if mark not in MARK_ORDER:
                 raise BetsError(f'{context}: 知らない印です {mark}（{"".join(MARK_ORDER)} のいずれか）')
-            marks.append({'mark': mark, 'umaban': int(_require(m, 'umaban', f'{context}の印'))})
+            steps = [int(s) for s in m.get('steps', [])]
+            for s in steps:
+                if s not in STEPS:
+                    raise BetsError(f'{context}の{mark}: 知らない手順番号です {s}'
+                                    '（第1章の1〜7のいずれか）')
+            entry = {'mark': mark, 'umaban': int(_require(m, 'umaban', f'{context}の印'))}
+            if steps:
+                entry['steps'] = steps
+            marks.append(entry)
 
         bets = [
             Bet(_require(b, 'type', f'{context}の買い目'),
