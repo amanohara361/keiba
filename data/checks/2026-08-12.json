@@ -109,5 +109,166 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-12T15:23:31.249553+09:00",
+    "races": [
+      {
+        "race_id": "202608124711",
+        "name": "第５５回 くろゆり賞３歳以上・オープン",
+        "blocked": true,
+        "composite_odds": 3.15,
+        "expected_value": 0.94,
+        "bet_odds": [
+          {
+            "bet": "ワイド 8-6",
+            "odds": 8.5
+          },
+          {
+            "bet": "ワイド 8-2",
+            "odds": 8.3
+          },
+          {
+            "bet": "ワイド 8-7",
+            "odds": 12.6
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "第５５回 くろゆり賞３歳以上・オープン: ダート1580m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "第５５回 くろゆり賞３歳以上・オープン: 合成オッズ 3.15倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "BLOCK",
+            "code": "expected_value_below_minimum",
+            "message": "第５５回 くろゆり賞３歳以上・オープン: 期待値 0.94 < 1.2（合成 3.15倍 × 主観的中率 30%）",
+            "remedy": "買い目セットを組み直してください。なお期待値が印と食い違うときは、まず主観的中率の見積りを疑うこと（第13章）。"
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1580,
+          "weather": "曇",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 45
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 90
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 45
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 120
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-12 15:23:33"
+        }
+      },
+      {
+        "race_id": "202608124211",
+        "name": "’２６ヴィーナスサマースプリント（準重賞）３上牝馬オープン",
+        "blocked": true,
+        "composite_odds": 2.02,
+        "expected_value": 0.71,
+        "bet_odds": [
+          {
+            "bet": "馬連 1-4",
+            "odds": 5.7
+          },
+          {
+            "bet": "ワイド 1-2",
+            "odds": 4.3
+          },
+          {
+            "bet": "ワイド 1-9",
+            "odds": 11.6
+          }
+        ],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "’２６ヴィーナスサマースプリント（準重賞）３上牝馬オープン: 馬場が「不良」です（ダート1400m / 天候:曇 / 馬場:不良）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "BLOCK",
+            "code": "composite_below_minimum",
+            "message": "’２６ヴィーナスサマースプリント（準重賞）３上牝馬オープン: 合成オッズ 2.02倍 < 3.0倍",
+            "remedy": "点数を減らす・券種を絞る・重複した保険を外す。当たっても負ける構造です。"
+          },
+          {
+            "severity": "BLOCK",
+            "code": "expected_value_below_minimum",
+            "message": "’２６ヴィーナスサマースプリント（準重賞）３上牝馬オープン: 期待値 0.71 < 1.2（合成 2.02倍 × 主観的中率 35%）",
+            "remedy": "買い目セットを組み直してください。なお期待値が印と食い違うときは、まず主観的中率の見積りを疑うこと（第13章）。"
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "曇",
+          "going": "不良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 9
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 9
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 36
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 72
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 36
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 84
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-12 15:23:33"
+        }
+      }
+    ]
   }
 ]
