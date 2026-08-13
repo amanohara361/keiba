@@ -310,6 +310,21 @@ def format_report(sheet, verdicts, now):
     return '\n'.join(lines)
 
 
+def format_clean_summary(verdicts, now):
+    """規律クリア時に送る1行サマリ（フルレポートは docs/index.html を見てもらう）。"""
+    parts = []
+    for verdict in verdicts:
+        piece = verdict.race.name
+        if verdict.composite:
+            piece += f'（合成{verdict.composite:.2f}倍'
+            if verdict.expected_value:
+                piece += f'・期待値{verdict.expected_value:.2f}'
+            piece += '）'
+        parts.append(piece)
+    races = '／'.join(parts) if parts else '対象レースなし'
+    return f'{now:%H:%M} 直前検算 問題なし：{races}'
+
+
 def write_job_summary(body):
     path = os.environ.get('GITHUB_STEP_SUMMARY')
     if not path:
@@ -371,10 +386,14 @@ def main(argv=None):
             if not deliver(mailer, subject, body):
                 return EXIT_ERROR
         else:
-            # 「問題なし」は毎回メールしない（1日最大4回・地方は特に多い）。
-            # docs/index.html と実行ログでは毎回残る。発注を止めた回だけが
-            # 受信箱に来るべき情報で、それ以外はメールする理由がない。
-            logger.info('規律クリアのためメールを省略します（docs/index.html は更新済み）')
+            # 「問題なし」を完全に無音にすると、メールが来ないことが
+            # 「規律クリア」なのか「そもそもまだ実行されていない／遅延中」
+            # なのか受信側で区別できない（2026-08-13、定時実行が最大92分
+            # 遅れる仕様と重なって「壊れてるのでは」と誤認させた）。
+            # フルレポートは重いので、1行サマリだけ毎回送る。
+            subject = f'直前検算 問題なし（{now:%H:%M}）'
+            if not deliver(mailer, subject, format_clean_summary(verdicts, now)):
+                return EXIT_ERROR
 
     return EXIT_NEEDS_ATTENTION if any(v.blocked for v in verdicts) else EXIT_OK
 

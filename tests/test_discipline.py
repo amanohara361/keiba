@@ -463,11 +463,11 @@ def test_end_to_end_passes_a_clean_sheet(tmp_path, monkeypatch, capsys):
     assert '規律をクリア' in capsys.readouterr().out
 
 
-def test_clean_check_does_not_send_an_email(tmp_path, monkeypatch, caplog):
-    """規律クリアの回は「問題なし」メールを送らないこと（1日最大4回はメールが多すぎるという要望）。
+def test_clean_check_sends_a_short_one_line_email(tmp_path, monkeypatch):
+    """規律クリアの回もメールは送るが、フルレポートではなく1行サマリにすること。
 
-    docs/index.html・data/checks/ には毎回残るので、受信箱に来るのは
-    発注を止めた回だけにする。
+    完全に無音にすると「規律クリア」と「まだ実行されていない／遅延中」の
+    区別が受信側でつかない（2026-08-13、定時実行の遅延と重なって誤認させた）。
     """
     monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
     monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
@@ -501,12 +501,10 @@ def test_clean_check_does_not_send_an_email(tmp_path, monkeypatch, caplog):
                         lambda rid, **kw: {'going': '良', 'weather': '晴',
                                           'surface': '芝', 'distance': 1800})
 
-    with caplog.at_level('INFO'):
-        exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30', '--no-save'])
+    exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30', '--no-save'])
 
     assert exit_code == check.EXIT_OK
-    assert sent == []
-    assert 'メールを省略します' in caplog.text
+    assert sent == ['直前検算 問題なし（14:30）']
 
 
 def test_blocked_check_still_sends_an_email(tmp_path, monkeypatch):
