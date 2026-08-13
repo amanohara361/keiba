@@ -1,5 +1,5 @@
-# card-horse-search ラッキーキッド  (2026-08-13T00:54:52Z)
-取得サイズ: 64963 文字
+# card-horse-search ラッキーキッド  (2026-08-13T00:56:47Z)
+取得サイズ: 65148 文字
 URL: https://db.netkeiba.com/?pid=horse_list&word=%E3%83%A9%E3%83%83%E3%82%AD%E3%83%BC%E3%82%AD%E3%83%83%E3%83%89
   /horse/: 30 箇所
   horse_list: 0 箇所
@@ -8,39 +8,38 @@ URL: https://db.netkeiba.com/?pid=horse_list&word=%E3%83%A9%E3%83%83%E3%82%AD%E3
   nowrap: 0 箇所
 
 見つかった horse_id 候補: 3件
-  2023101148
-  2024100679
-  2025100762
 
---- 先頭2000文字 ---
+--- 2023101148 の前後400文字 ---
+の全データがご覧いただけます。" />
+<meta name="keywords" content="競馬情報,競走馬,騎手,レース,調教師,馬主,検索,データベース,JRA,netkeiba,ネット競馬" />
+<meta name="thumbnail" content="https://cdnv2.netkeiba.com/img.db.sp/show_photo.php?horse_id=2023101148&no=spdb&tn=&tmp=no&default_image=netkeiba" />
+<!-- ogp用 -->
+<meta property="og:site_name" content="netkeiba" />
+<meta property="og:type" content="article" />
+<meta property="og:title" conte
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja" id="html">
-<head>
+--- 2024100679 の前後400文字 ---
+<th>主な勝鞍</th>
+<td><a href="/race/202605010809/" title="26'ヒヤシンスS(L)">26'ヒヤシンスS(L)</a><!--、<a href="/race/202505040704/" title=25'2歳新馬"">25'2歳新馬</a>--></td>
+</tr>
+<tr>
+<th>近親馬</th>
+<td><a href="/horse/2024100679/" title="ハッピーユー">ハッピーユー</a>、<a href="/horse/2025100762/" title="ハッピーゴラッキーの2025">ハッピーゴラッキーの2025</a></td>
+</tr>
+</table>
+<span id="horse_pedigree_box">
+<img src="https://cdnv2.netkeiba.com/im
 
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta http-equiv="content-type" content="text/html; charset=euc-jp" />
-<meta http-equiv="content-script-type" content="text/javascript" />
-<meta http-equiv="content-style-type" content="text/css" />
-<link href="https://cdnv2.netkeiba.com/img.db/common/css/reset.css?20160421" rel="stylesheet" type="text/css" media="all" />
-<link href="https://cdnv2.netkeiba.com/img.db/common/css/common.css?20210819" rel="stylesheet" type="text/css" media="all" />
-<link href="https://cdnv2.netkeiba.com/img.db/common/css/db_detail.css?20180621" rel="stylesheet" type="text/css" media="all" />
-<link href="https://cdnv2.netkeiba.com/img.db/common/css/horse_detail.css?20260717" rel="stylesheet" type="text/css" media="all" />
-<link href="https://cdnv2.netkeiba.com/img.db/common/css/win.css?20160421" rel="stylesheet" type="text/css" media="all" />
-<link href="https://cdnv2.netkeiba.com/img.db/common/css/db_top.css?20160421" rel="stylesheet" type="text/css" media="all" />
-<link href="https://cdnv2.netkeiba.com/img.db/common/css/prettyPhoto.css?20160421" rel="stylesheet" type="text/css" />
-<link href="https://cdnv2.netkeiba.com/img.db/common/css/jquery.fancybox-1.3.4.css?20160421" rel="stylesheet" type="text/css" />
-<link href="https://cdnv2.netkeiba.com/img.db/common/css/db_classic_nk01.css?201911209" rel="stylesheet" type="text/css" />
-<!-- link rel="stylesheet" href="https://cdnv2.netkeiba.com/img.www/style/netkeiba.ja/css/common_header.css" type="text/css" -->
-<script language="javascript">
-<!--
-b = navigator.userAgent.toUpperCase();
-if(b.indexOf("MAC") >= 0)
-{
-cssFile = "mac.css";
-}
-else
-{
-cssFile = "win.css";
-}
-document.write("<link rel='stylesheet' type='text/css' href='https://cdnv2.netkeiba.com/img.db/common/css/" + c
+--- 2025100762 の前後400文字 ---
+26'ヒヤシンスS(L)">26'ヒヤシンスS(L)</a><!--、<a href="/race/202505040704/" title=25'2歳新馬"">25'2歳新馬</a>--></td>
+</tr>
+<tr>
+<th>近親馬</th>
+<td><a href="/horse/2024100679/" title="ハッピーユー">ハッピーユー</a>、<a href="/horse/2025100762/" title="ハッピーゴラッキーの2025">ハッピーゴラッキーの2025</a></td>
+</tr>
+</table>
+<span id="horse_pedigree_box">
+<img src="https://cdnv2.netkeiba.com/img.db/common/img/gif_loader.gif" />
+</span>
+<script>
+"us
