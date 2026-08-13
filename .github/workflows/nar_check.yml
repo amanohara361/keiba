@@ -143,8 +143,8 @@ jobs:
           GITHUB_SHA_VALUE: ${{ github.sha }}
           GITHUB_RUN_ID_VALUE: ${{ github.run_id }}
         run: |
-          curl --fail-with-body --retry 3 --retry-delay 5 --max-time 120 \\
-            -X POST "https://keibadash-jaskieca.manus.space/api/integrations/github/import" \\
-            -H "Content-Type: application/json" \\
-            -H "x-github-import-secret: ${DASHBOARD_WEBHOOK_SECRET}" \\
-            -d "{\\"repo\\":\\"amanohara361/keiba\\",\\"workflow\\":\\"nar-check\\",\\"runId\\":\\"${GITHUB_RUN_ID_VALUE}\\",\\"sha\\":\\"${GITHUB_SHA_VALUE}\\"}"
+          curl --fail-with-body --retry 3 --retry-delay 5 --max-time 120 \
+            -X POST "https://keibadash-jaskieca.manus.space/api/integrations/github/import" \
+            -H "Content-Type: application/json" \
+            -H "x-github-import-secret: ${DASHBOARD_WEBHOOK_SECRET}" \
+            -d "{\"repo\":\"amanohara361/keiba\",\"workflow\":\"nar-check\",\"runId\":\"${GITHUB_RUN_ID_VALUE}\",\"sha\":\"${GITHUB_SHA_VALUE}\"}"
