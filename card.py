@@ -456,12 +456,13 @@ def probe_horse_search(name):
         print(f'  {marker}: {page.count(marker)} 箇所')
 
     ids = re.findall(r'/horse/(\d{10})/?["\'\s]', page)
-    print(f'\n見つかった horse_id 候補: {len(set(ids))}件')
-    for hid in list(dict.fromkeys(ids))[:10]:
-        print(' ', hid)
-
-    print('\n--- 先頭2000文字 ---')
-    print(page[:2000])
+    uniq = list(dict.fromkeys(ids))
+    print(f'\n見つかった horse_id 候補: {len(uniq)}件')
+    for hid in uniq[:10]:
+        idx = page.find(hid)
+        start = max(0, idx - 200)
+        print(f'\n--- {hid} の前後400文字 ---')
+        print(page[start:start + 400])
 
 
 def probe_horse(horse_id):
