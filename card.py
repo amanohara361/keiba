@@ -438,6 +438,32 @@ def probe_entries(race_id):
     probe_horse(first['horse_id'])
 
 
+def probe_horse_search(name):
+    """馬名からnetkeibaのhorse_idを引けるか調べる。
+
+    交流重賞に出走するJRA所属馬は、地方の公式データ（keiba.go.jp）には
+    馬名しか無くhorse_idが載っていない。中央の出馬表（form_module.fetch_entries）
+    はレースごとにしか引けないため、名前から検索する経路が要る。
+    URLの形はまだ確認していないので、まずここで実物を見る
+    （決定ログ「ページ構造は推測せず、Actions の probe で実物を見る」）。
+    """
+    import urllib.parse
+    url = f'https://db.netkeiba.com/?pid=horse_list&word={urllib.parse.quote(name)}'
+    page = form_module._fetch(url)
+    print(f'取得サイズ: {len(page)} 文字')
+    print(f'URL: {url}')
+    for marker in ['/horse/', 'horse_list', 'No.', '該当', 'nowrap']:
+        print(f'  {marker}: {page.count(marker)} 箇所')
+
+    ids = re.findall(r'/horse/(\d{10})/?["\'\s]', page)
+    print(f'\n見つかった horse_id 候補: {len(set(ids))}件')
+    for hid in list(dict.fromkeys(ids))[:10]:
+        print(' ', hid)
+
+    print('\n--- 先頭2000文字 ---')
+    print(page[:2000])
+
+
 def probe_horse(horse_id):
     """馬の3ページを順に見て、パーサーが実際に読めるか確かめる。"""
     pages = {}
@@ -479,9 +505,10 @@ def main(argv=None):
                             '定時実行を二重にかけても取得が二度走らないようにする')
 
     probe = sub.add_parser('probe', help='ページ構造を調べる')
-    probe.add_argument('target', choices=['list', 'entries', 'horse'])
+    probe.add_argument('target', choices=['list', 'entries', 'horse', 'horse-search'])
     probe.add_argument('value',
-                       help='list なら YYYY-MM-DD、entries なら race_id、horse なら horse_id')
+                       help='list なら YYYY-MM-DD、entries なら race_id、'
+                            'horse なら horse_id、horse-search なら馬名')
 
     args = parser.parse_args(argv)
 
@@ -490,6 +517,8 @@ def main(argv=None):
             probe_list(date.fromisoformat(args.value))
         elif args.target == 'entries':
             probe_entries(args.value)
+        elif args.target == 'horse-search':
+            probe_horse_search(args.value)
         else:
             probe_horse(args.value)
         return EXIT_OK

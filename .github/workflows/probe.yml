@@ -10,12 +10,12 @@ on:
   workflow_dispatch:
     inputs:
       race_id:
-        description: '調べる対象。conditions/bias は race_id（12桁）、card-list は YYYY-MM-DD、card-entries は race_id、card-horse は horse_id'
+        description: '調べる対象。conditions/bias は race_id（12桁）、card-list は YYYY-MM-DD、card-entries は race_id、card-horse は horse_id、card-horse-search は馬名'
         required: true
       target:
         description: '調べる対象'
         type: choice
-        options: [conditions, bias, card-list, card-entries, card-horse, card-build]
+        options: [conditions, bias, card-list, card-entries, card-horse, card-horse-search, card-build]
         default: conditions
 
 concurrency:
@@ -52,6 +52,7 @@ jobs:
               card-build) python card.py build --date "$RACE_ID" --limit 2 || true ;;
               card-entries) python card.py probe entries "$RACE_ID" || true ;;
               card-horse) python card.py probe horse "$RACE_ID" || true ;;
+              card-horse-search) python card.py probe horse-search "$RACE_ID" || true ;;
               *)          python conditions.py probe "$RACE_ID" || true ;;
             esac
           } | tee data/probe/last.txt
