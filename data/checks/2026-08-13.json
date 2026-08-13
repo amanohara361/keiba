@@ -783,5 +783,50 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-13T20:33:43.444424+09:00",
+    "races": [
+      {
+        "race_id": "202608133011",
+        "name": "第３０回 北海道スプリントカップJpnIII３歳オープン",
+        "blocked": true,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "BLOCK",
+            "code": "already_started",
+            "message": "第３０回 北海道スプリントカップJpnIII３歳オープン: 既に発走しています（発走 19:55 / 現在 20:33）",
+            "remedy": "購入できません。このレースの買い目は出しません。"
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608134409",
+        "name": "第６０回 黒潮盃３歳選定馬重賞",
+        "blocked": true,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "BLOCK",
+            "code": "already_started",
+            "message": "第６０回 黒潮盃３歳選定馬重賞: 既に発走しています（発走 20:10 / 現在 20:33）",
+            "remedy": "購入できません。このレースの買い目は出しません。"
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
