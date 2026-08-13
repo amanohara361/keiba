@@ -1,66 +1,54 @@
-# card-horse-search キッド  (2026-08-13T01:01:06Z)
-取得サイズ: 72798 文字
-URL: https://db.netkeiba.com/?pid=horse_list&word=%E3%82%AD%E3%83%83%E3%83%89
-  /horse/: 60 箇所
-  horse_list: 58 箇所
+# card-horse-search ラッキーキッド  (2026-08-13T01:01:43Z)
+取得サイズ: 65078 文字
+URL: https://db.netkeiba.com/?pid=horse_list&word=%E3%83%A9%E3%83%83%E3%82%AD%E3%83%BC%E3%82%AD%E3%83%83%E3%83%89
+  /horse/: 30 箇所
+  horse_list: 0 箇所
   No.: 1 箇所
   該当: 0 箇所
-  nowrap: 364 箇所
+  nowrap: 0 箇所
 
-title: 馬名[キッド]の競走馬検索結果｜競馬データベース - netkeiba.com
-canonical: (なし)
-og:url: (なし)
+title: ラッキーキッド (Lucky Kid) | 競走馬データ - netkeiba
+canonical: https://db.netkeiba.com/horse/2023101148/
+og:url: https://db.netkeiba.com/horse/2023101148/
   db_h_race_results: 0 箇所
   RaceKind_result: 0 箇所
-  horse_result: 1 箇所
+  horse_result: 4 箇所
   該当馬: 0 箇所
   件が該当: 0 箇所
 
-見つかった horse_id 候補: 4件
+見つかった horse_id 候補: 3件
 
---- 1993101014 の前後400文字 ---
-px;" src="https://cdnv2.netkeiba.com/img.db//style/netkeiba.ja/image/sort_01.png" alt="ソートする" name="sortimage"></a></th>
+--- 2023101148 の前後400文字 ---
+の全データがご覧いただけます。" />
+<meta name="keywords" content="競馬情報,競走馬,騎手,レース,調教師,馬主,検索,データベース,JRA,netkeiba,ネット競馬" />
+<meta name="thumbnail" content="https://cdnv2.netkeiba.com/img.db.sp/show_photo.php?horse_id=2023101148&no=spdb&tn=&tmp=no&default_image=netkeiba" />
+<!-- ogp用 -->
+<meta property="og:site_name" content="netkeiba" />
+<meta property="og:type" content="article" />
+<meta property="og:title" conte
+
+--- 2024100679 の前後400文字 ---
+<th>主な勝鞍</th>
+<td><a href="/race/202605010809/" title="26'ヒヤシンスS(L)">26'ヒヤシンスS(L)</a><!--、<a href="/race/202505040704/" title=25'2歳新馬"">25'2歳新馬</a>--></td>
 </tr>
 <tr>
-<td nowrap="nowrap"><input type="checkbox" name="horse_id[]" value="1993101014" id="chk_horse"></td>
+<th>近親馬</th>
+<td><a href="/horse/2024100679/" title="ハッピーユー">ハッピーユー</a>、<a href="/horse/2025100762/" title="ハッピーゴラッキーの2025">ハッピーゴラッキーの2025</a></td>
+</tr>
+</table>
+<span id="horse_pedigree_box">
+<img src="https://cdnv2.netkeiba.com/im
 
-<!--<td nowrap="nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>-->
-<td class="xml txt_l w_human" nowrap="nowrap"><a href="/horse/1993101014/" title="キッド">キッド</a></td>
-<td
-
---- 2021105146 の前後400文字 ---
-wrap">
-<a href="/breeder/result/recent/430088/" title="野村征治">野村征治</a>
-
-</td>
-<td class="txt_r" nowrap="nowrap">829.0</td>
-</tr><tr>
-<td nowrap="nowrap"><input type="checkbox" name="horse_id[]" value="2021105146" id="chk_horse"></td>
-
-<!--<td nowrap="nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>-->
-<td class="bml txt_l w_human" nowrap="nowrap"><a href="/horse/2021105146/" title="キッドストン">キッドストン</a></t
-
---- 2003106221 の前後400文字 ---
-">
-<a href="/breeder/result/recent/393126/" title="社台ファーム">社台ファーム</a>
-
-</td>
-<td class="txt_r" nowrap="nowrap">472.0</td>
-</tr><tr>
-<td nowrap="nowrap"><input type="checkbox" name="horse_id[]" value="2003106221" id="chk_horse"></td>
-
-<!--<td nowrap="nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>-->
-<td class="bml txt_l w_human" nowrap="nowrap"><a href="/horse/2003106221/" title="キッドマン">キッドマン</a></td>
-
---- 2014101426 の前後400文字 ---
-">
-<a href="/breeder/result/recent/000512/" title="新生ファーム">新生ファーム</a>
-
-</td>
-<td class="txt_r" nowrap="nowrap">216.8</td>
-</tr><tr>
-<td nowrap="nowrap"><input type="checkbox" name="horse_id[]" value="2014101426" id="chk_horse"></td>
-
-<!--<td nowrap="nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>-->
-<td class="bml txt_l w_human" nowrap="nowrap"><a href="/horse/2014101426/" title="キッド">キッド</a></td>
-<td
+--- 2025100762 の前後400文字 ---
+26'ヒヤシンスS(L)">26'ヒヤシンスS(L)</a><!--、<a href="/race/202505040704/" title=25'2歳新馬"">25'2歳新馬</a>--></td>
+</tr>
+<tr>
+<th>近親馬</th>
+<td><a href="/horse/2024100679/" title="ハッピーユー">ハッピーユー</a>、<a href="/horse/2025100762/" title="ハッピーゴラッキーの2025">ハッピーゴラッキーの2025</a></td>
+</tr>
+</table>
+<span id="horse_pedigree_box">
+<img src="https://cdnv2.netkeiba.com/img.db/common/img/gif_loader.gif" />
+</span>
+<script>
+"us
