@@ -139,7 +139,7 @@ jobs:
       - name: ダッシュボードへ最新データを通知
         if: success() && (steps.gate.outputs.state == 'run' || steps.gate.outputs.state == 'none')
         env:
-          DASHBOARD_WEBHOOK_SECRET: ${{ secrets.GITHUB_IMPORT_WEBHOOK_SECRET }}
+          DASHBOARD_WEBHOOK_SECRET: ${{ secrets.KEIBA_DASHBOARD_IMPORT_SECRET }}
           GITHUB_SHA_VALUE: ${{ github.sha }}
           GITHUB_RUN_ID_VALUE: ${{ github.run_id }}
         run: |
