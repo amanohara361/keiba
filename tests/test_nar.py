@@ -412,13 +412,58 @@ def test_カードは重賞だけを候補にして出馬表を付ける():
     # 実行日の巡り合わせで daily と月次（monthly）のどちらを通るかが
     # 変わると、この fixture（月次だと同じ内容が6回重複する）では
     # 結果が変わってしまう。
+    # jra_fetcher/jra_sleep も固定する。既定は netkeiba への実アクセスなので、
+    # 差し替えないとJRA所属馬（umaban 2）ぶんだけテストが本当にネットへ出ようとする。
     card = nar_card.build_card(date(2026, 8, 12), fetcher=fake,
-                               today=date(2026, 8, 12))
+                               today=date(2026, 8, 12),
+                               jra_fetcher=lambda name, opener=None: None,
+                               jra_sleep=lambda seconds: None)
     assert card['org'] == 'nar'
     assert card['race_count'] == 3          # ばんえいを除いた当日のレース数
     assert [r['name'] for r in card['races']] == ['テスト記念', 'テストスプリント']
     assert len(card['races'][0]['entries']) == 3
     assert card['races'][0]['jra_horses'] == [2]
+
+
+def test_JRA所属馬はnetkeibaで見つかれば近走を差し替える():
+    def fake(type_, month=None):
+        return {'racelist': rows(RACELIST), 'horselist': rows(HORSELIST),
+                'payback': []}
+
+    found_names = []
+
+    def jra_fetcher(name, opener=None):
+        found_names.append(name)
+        return [{'date': '2026/05/06', 'race': 'ヒヤシンスS', 'rank': 4}]
+
+    card = nar_card.build_card(date(2026, 8, 12), fetcher=fake,
+                               today=date(2026, 8, 12),
+                               jra_fetcher=jra_fetcher,
+                               jra_sleep=lambda seconds: None)
+
+    jra_entry = next(e for e in card['races'][0]['entries'] if e['belongs_jra'])
+    assert found_names == [jra_entry['name']]
+    assert jra_entry['jra_recent_runs'] == [{'date': '2026/05/06', 'race': 'ヒヤシンスS', 'rank': 4}]
+    assert 'jra_recent_runs' in jra_entry['last_run']['note']
+
+    # JRA所属でない馬は今までどおりnetkeibaへ問い合わせない。
+    others = [e for e in card['races'][0]['entries'] if not e['belongs_jra']]
+    assert all('jra_recent_runs' not in e for e in others)
+
+
+def test_JRA所属馬がnetkeibaで1頭に絞れなければ定型文のまま():
+    def fake(type_, month=None):
+        return {'racelist': rows(RACELIST), 'horselist': rows(HORSELIST),
+                'payback': []}
+
+    card = nar_card.build_card(date(2026, 8, 12), fetcher=fake,
+                               today=date(2026, 8, 12),
+                               jra_fetcher=lambda name, opener=None: None,
+                               jra_sleep=lambda seconds: None)
+
+    jra_entry = next(e for e in card['races'][0]['entries'] if e['belongs_jra'])
+    assert 'jra_recent_runs' not in jra_entry
+    assert '別途あたること' in jra_entry['last_run']['note']
 
 
 def test_開催があって重賞が無い日は空のカードを書く():

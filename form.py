@@ -30,6 +30,7 @@ SHUTUBA_URL = 'https://race.netkeiba.com/race/shutuba.html?race_id={race_id}'
 HORSE_URL = 'https://db.netkeiba.com/horse/{horse_id}/'
 RESULT_URL = 'https://db.netkeiba.com/horse/result/{horse_id}/'
 PED_URL = 'https://db.netkeiba.com/horse/ped/{horse_id}/'
+HORSE_SEARCH_URL = 'https://db.netkeiba.com/?pid=horse_list&word={word}'
 
 UA = ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
       '(KHTML, like Gecko) Chrome/124.0 Safari/537.36')
@@ -301,6 +302,54 @@ def parse_pedigree(page):
 
 def fetch_pedigree(horse_id, opener=None):
     return parse_pedigree(_fetch(PED_URL.format(horse_id=horse_id), opener=opener))
+
+
+# ----------------------------------------------------------------------
+# 馬名からの検索（交流重賞に出るJRA所属馬用）
+# ----------------------------------------------------------------------
+#
+# 地方（NAR）の公式データには馬名しか無く、netkeibaのhorse_idが無い。
+# fetch_entries はレースの出馬表からしかhorse_idを引けないため、
+# 「地方のレースにいるJRA所属馬」を中央側から特定する経路がここに要る。
+#
+# 2026-08-13にActionsのprobeで実物を確認した（data/probe/last.txt）。
+#   - 検索語で1頭に絞れる場合、一覧ページではなくその馬の詳細ページが
+#     直接返る。<link rel="canonical" href=".../horse/{id}/"> で確定できる。
+#   - 複数該当する場合は一覧ページが返る。行ごとに
+#     `value="{id}" id="chk_horse">...<a href="/horse/{id}/" title="{馬名}">`
+#     という形で並ぶ。馬名が完全一致する行が1つだけなら、それを採用する。
+#     0件または2件以上一致したら None（同姓同名を推測で選ばない）。
+
+_SEARCH_ROW = re.compile(
+    r'value="(\d{10})" id="chk_horse">.*?<a href="/horse/\1/" title="([^"]+)"',
+    re.S)
+
+
+def parse_horse_search(page, name):
+    """馬名検索の結果ページからhorse_idを1つに絞れれば返す。絞れなければNone。"""
+    canonical = re.search(
+        r'<link[^>]*rel="canonical"[^>]*href="https://db\.netkeiba\.com/horse/(\d+)/"',
+        page)
+    if canonical:
+        return canonical.group(1)
+
+    matches = [hid for hid, title in _SEARCH_ROW.findall(page) if title == name]
+    return matches[0] if len(matches) == 1 else None
+
+
+def search_horse_id(name, opener=None):
+    import urllib.parse
+    url = HORSE_SEARCH_URL.format(word=urllib.parse.quote(name))
+    return parse_horse_search(_fetch(url, opener=opener), name)
+
+
+def fetch_jra_recent_runs(name, opener=None, limit=5):
+    """馬名からnetkeibaの近走を取る。見つからなければNone（0件と区別する）。"""
+    horse_id = search_horse_id(name, opener=opener)
+    if not horse_id:
+        return None
+    page = _fetch(RESULT_URL.format(horse_id=horse_id), opener=opener)
+    return parse_recent_runs(page, limit=limit)
 
 
 # ----------------------------------------------------------------------

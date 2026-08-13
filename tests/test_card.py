@@ -341,3 +341,73 @@ def test_血統表が無ければ空で返す():
 
 def test_競走成績が無ければ空で返す():
     assert form_module.parse_recent_runs('<html></html>') == []
+
+
+# ----------------------------------------------------------------------
+# 馬名検索（交流重賞のJRA所属馬。地方の公式データにはhorse_idが無い）
+# ----------------------------------------------------------------------
+#
+# 2026-08-13にActionsのprobeで確認した実物の形を縮めて使う
+# （data/probe/last.txt、「ラッキーキッド」「キッド」で実測）。
+
+SINGLE_MATCH_PAGE = '''
+<title>ラッキーキッド (Lucky Kid) | 競走馬データ - netkeiba</title>
+<link rel="canonical" href="https://db.netkeiba.com/horse/2023101148/" />
+<meta property="og:url" content="https://db.netkeiba.com/horse/2023101148/" />
+'''
+
+LIST_PAGE = '''
+<title>馬名[キッド]の競走馬検索結果｜競馬データベース - netkeiba.com</title>
+<tr>
+<td nowrap="nowrap"><input type="checkbox" name="horse_id[]" value="1993101014" id="chk_horse"></td>
+<td class="xml txt_l w_human" nowrap="nowrap"><a href="/horse/1993101014/" title="キッド">キッド</a></td>
+</tr><tr>
+<td nowrap="nowrap"><input type="checkbox" name="horse_id[]" value="2021105146" id="chk_horse"></td>
+<td class="bml txt_l w_human" nowrap="nowrap"><a href="/horse/2021105146/" title="キッドストン">キッドストン</a></td>
+</tr><tr>
+<td nowrap="nowrap"><input type="checkbox" name="horse_id[]" value="2014101426" id="chk_horse"></td>
+<td class="bml txt_l w_human" nowrap="nowrap"><a href="/horse/2014101426/" title="キッド">キッド</a></td>
+</tr>
+'''
+
+
+def test_1頭に絞れる検索はcanonicalのhorse_idを返す():
+    assert form_module.parse_horse_search(SINGLE_MATCH_PAGE, 'ラッキーキッド') == '2023101148'
+
+
+def test_複数該当でも馬名が完全一致する行が1つならそれを返す():
+    assert form_module.parse_horse_search(LIST_PAGE, 'キッドストン') == '2021105146'
+
+
+def test_同姓同名が複数いたら推測せずNoneを返す():
+    # 「キッド」は1993年生と2014年生の2頭がヒットする。どちらかを勝手に選ばない。
+    assert form_module.parse_horse_search(LIST_PAGE, 'キッド') is None
+
+
+def test_該当なしはNoneを返す():
+    assert form_module.parse_horse_search(LIST_PAGE, 'いない馬') is None
+
+
+def test_search_horse_idはfetchしたページをparse_horse_searchに渡す(monkeypatch):
+    calls = []
+
+    def fake_fetch(url, opener=None):
+        calls.append(url)
+        return SINGLE_MATCH_PAGE
+
+    monkeypatch.setattr(form_module, '_fetch', fake_fetch)
+    assert form_module.search_horse_id('ラッキーキッド') == '2023101148'
+    assert 'word=' in calls[0]
+
+
+def test_fetch_jra_recent_runsは見つからなければNoneを返す(monkeypatch):
+    monkeypatch.setattr(form_module, 'search_horse_id', lambda name, opener=None: None)
+    assert form_module.fetch_jra_recent_runs('いない馬') is None
+
+
+def test_fetch_jra_recent_runsはhorse_idの近走を返す(monkeypatch):
+    monkeypatch.setattr(form_module, 'search_horse_id',
+                        lambda name, opener=None: '2023101148')
+    monkeypatch.setattr(form_module, '_fetch', lambda url, opener=None: HORSE_PAGE)
+    runs = form_module.fetch_jra_recent_runs('ラッキーキッド')
+    assert len(runs) == 2

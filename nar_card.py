@@ -27,8 +27,10 @@ import logging
 import os
 import re
 import sys
+import time
 from datetime import date, datetime, timedelta
 
+import form as form_module
 import nar
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s %(message)s')
@@ -48,6 +50,10 @@ RECENT_RUNS = 5
 # そのまま休み明けの根拠になる。月次ファイル1本あたり数秒なので、
 # 長さより「判定できないまま通す」ほうが高くつく。
 LOOKBACK_MONTHS = 6
+
+# JpnI/II/IIIなどの交流重賞に出るJRA所属馬の近走をnetkeibaへ問い合わせる間隔。
+# form.pyのREQUEST_INTERVALと同じ考え方（サーバへの配慮）。
+JRA_REQUEST_INTERVAL = 1.5
 
 # 終了コードの意味は check.py と揃える。
 # **赤は「知らせられなかった」だけに絞る。** 買い目が無い日・重賞が無い日が
@@ -230,11 +236,40 @@ def annotate(entries, history, day, distance=None):
     return entries
 
 
+def _annotate_jra_horse(entry, fetcher, sleep):
+    """交流重賞に出るJRA所属馬の近走をnetkeibaから補う。
+
+    annotate() は地方のCSVに近走が無いJRA所属馬に定型文（「近走は別途あたること」）
+    を入れる。ここは「別途あたる」側の実装で、馬名からnetkeibaを検索し、
+    見つかれば jra_recent_runs に競走成績を入れて note を上書きする。
+
+    **馬名検索は同姓同名で複数該当することがある。1頭に絞れないときは
+    fetcher が None を返す設計にしてあり、その場合は定型文のまま何もしない
+    （推測で当てない。第12章「不明点は推測せず要確認と明記する」）。**
+    """
+    sleep(JRA_REQUEST_INTERVAL)
+    try:
+        runs = fetcher(entry['name'])
+    except form_module.FormError as exc:
+        logger.warning('%s（JRA所属）の近走を取得できませんでした: %s', entry['name'], exc)
+        return
+    if runs is None:
+        logger.info('%s（JRA所属）はnetkeibaで馬名を1頭に絞れませんでした', entry['name'])
+        return
+    entry['jra_recent_runs'] = runs
+    entry['last_run'] = {
+        'note': ('中央（JRA）所属。netkeibaの競走成績を jra_recent_runs に入れた'
+                 if runs else
+                 '中央（JRA）所属。netkeibaで馬は特定できたが競走成績が0件（新馬の可能性）'),
+    }
+
+
 # ----------------------------------------------------------------------
 # カード作成
 # ----------------------------------------------------------------------
 
-def build_card(day, levels=('重賞', '準重賞'), with_entries=True, fetcher=None, today=None):
+def build_card(day, levels=('重賞', '準重賞'), with_entries=True, fetcher=None, today=None,
+               jra_fetcher=None, jra_sleep=None):
     """その日のカードを組む。
 
     fetcher はテスト用の差し替え口。`fetcher(type_, month)` が
@@ -243,8 +278,11 @@ def build_card(day, levels=('重賞', '準重賞'), with_entries=True, fetcher=N
     直結させたままだと、day と実際の「今日」がたまたま一致する/しないかで
     テストの通る道筋が日付をまたぐたびに変わり、テストの結果が壊れる**
     （2026-08-12に書いたテストが翌13日に失敗した）。
+    jra_fetcher も同様にテスト用の差し替え口（既定は netkeiba への実アクセス）。
     """
     fetch = fetcher or (lambda type_, month=None: nar.race_data(type_, month))
+    jra_fetcher = jra_fetcher or form_module.fetch_jra_recent_runs
+    jra_sleep = jra_sleep or time.sleep
 
     # 当日ファイルにはその日のレースだけが入っており、いちばん新しい。
     # 取れなければ月次で代替する（月次は当日＋2日先まで入っている）。
@@ -280,9 +318,13 @@ def build_card(day, levels=('重賞', '準重賞'), with_entries=True, fetcher=N
         for race in targets:
             entries = nar.parse_entries(horselist, race['race_id'])
             annotate(entries, history, day, race['distance'])
-            # 生年月日は近走の突き合わせにしか使わないので、カードには残さない。
             for entry in entries:
+                # 生年月日は近走の突き合わせにしか使わないので、カードには残さない。
                 entry.pop('birth', None)
+                # JRA所属馬は地方のCSVに近走が無いのが仕様。netkeibaを馬名で
+                # 検索できれば近走を補う（見つからなければ定型文のまま）。
+                if entry.get('belongs_jra'):
+                    _annotate_jra_horse(entry, jra_fetcher, jra_sleep)
             race['entries'] = entries
             # 交流重賞かどうか。中央馬が1頭でもいれば、そのレースの近走は
             # 地方のデータだけでは揃わない。判断側にそれを先に知らせる。
