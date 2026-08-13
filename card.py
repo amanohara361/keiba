@@ -455,6 +455,19 @@ def probe_horse_search(name):
     for marker in ['/horse/', 'horse_list', 'No.', '該当', 'nowrap']:
         print(f'  {marker}: {page.count(marker)} 箇所')
 
+    title = re.search(r'<title>(.*?)</title>', page, re.S)
+    print(f'\ntitle: {title.group(1).strip() if title else "(なし)"}')
+
+    canonical = re.search(r'<link[^>]*rel=["\']canonical["\'][^>]*href=["\']([^"\']+)', page)
+    print(f'canonical: {canonical.group(1) if canonical else "(なし)"}')
+
+    og_url = re.search(r'<meta[^>]*property=["\']og:url["\'][^>]*content=["\']([^"\']+)', page)
+    print(f'og:url: {og_url.group(1) if og_url else "(なし)"}')
+
+    # 検索結果一覧ページによく出る目印（1頭に絞れず候補が並ぶ形かどうか）
+    for marker in ['db_h_race_results', 'RaceKind_result', 'horse_result', '該当馬', '件が該当']:
+        print(f'  {marker}: {page.count(marker)} 箇所')
+
     ids = re.findall(r'/horse/(\d{10})/?["\'\s]', page)
     uniq = list(dict.fromkeys(ids))
     print(f'\n見つかった horse_id 候補: {len(uniq)}件')
