@@ -1,0 +1,60 @@
+[
+  {
+    "checked_at": "2026-08-14T08:46:50.881278+09:00",
+    "races": [
+      {
+        "race_id": "202608145011",
+        "name": "第５８回 摂津盃３歳以上登録馬",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [
+          {
+            "bet": "ワイド 7-8",
+            "odds": null
+          },
+          {
+            "bet": "ワイド 7-3",
+            "odds": null
+          },
+          {
+            "bet": "ワイド 8-3",
+            "odds": null
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第５８回 摂津盃３歳以上登録馬: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "no_odds",
+            "message": "第５８回 摂津盃３歳以上登録馬: 実オッズが取得できず合成オッズを計算できません",
+            "remedy": "「暫定」として扱い、点数を1段階絞ってください（第13章 実オッズ優先の原則）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_expected_value",
+            "message": "第５８回 摂津盃３歳以上登録馬: 期待値を計算できません（合成オッズなし / 主観的中率あり）",
+            "remedy": "主観的中率を買い目ファイルに入れてください。"
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1700,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-08-14 08:46:52"
+        }
+      }
+    ]
+  }
+]
