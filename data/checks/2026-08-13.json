@@ -126,5 +126,158 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-13T14:53:17.666115+09:00",
+    "races": [
+      {
+        "race_id": "202608133011",
+        "name": "第３０回 北海道スプリントカップJpnIII３歳オープン",
+        "blocked": false,
+        "composite_odds": 9.17,
+        "expected_value": 2.57,
+        "bet_odds": [
+          {
+            "bet": "ワイド 6-9",
+            "odds": 9.5
+          },
+          {
+            "bet": "ワイド 6-7",
+            "odds": 264.5
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "第３０回 北海道スプリントカップJpnIII３歳オープン: ダート1200m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "第３０回 北海道スプリントカップJpnIII３歳オープン: 合成オッズ 9.17倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "第３０回 北海道スプリントカップJpnIII３歳オープン: 期待値 2.57（合成 9.17倍 × 主観的中率 28%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1200,
+          "weather": "晴",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 45
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 90
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 45
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 120
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-13 14:53:19"
+        }
+      },
+      {
+        "race_id": "202608134409",
+        "name": "第６０回 黒潮盃３歳選定馬重賞",
+        "blocked": true,
+        "composite_odds": 3.75,
+        "expected_value": 1.2,
+        "bet_odds": [
+          {
+            "bet": "ワイド 9-8",
+            "odds": 5.8
+          },
+          {
+            "bet": "ワイド 9-1",
+            "odds": 10.6
+          }
+        ],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "第６０回 黒潮盃３歳選定馬重賞: 馬場が「不良」です（ダート1800m / 天候:曇 / 馬場:不良）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "第６０回 黒潮盃３歳選定馬重賞: 合成オッズ 3.75倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "BLOCK",
+            "code": "expected_value_below_minimum",
+            "message": "第６０回 黒潮盃３歳選定馬重賞: 期待値 1.20 < 1.2（合成 3.75倍 × 主観的中率 32%）",
+            "remedy": "買い目セットを組み直してください。なお期待値が印と食い違うときは、まず主観的中率の見積りを疑うこと（第13章）。"
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1800,
+          "weather": "曇",
+          "going": "不良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 15
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 15
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 105
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 210
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 105
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 455
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-13 14:53:19"
+        }
+      }
+    ]
   }
 ]
