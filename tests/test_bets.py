@@ -59,3 +59,53 @@ def test_書き出しても手順タグが残る():
 
 def test_手順は第1章の7つで全部揃っている():
     assert set(bets.STEPS) == set(range(1, 8))
+
+
+# ----------------------------------------------------------------------
+# 中穴候補（partners、2026-08-14 追加）
+# ----------------------------------------------------------------------
+
+def test_中穴候補を読める():
+    r = race([{'mark': '◎', 'umaban': 7}],
+             partners=[{'umaban': 9, 'reason': '前走出遅れ'}])
+    assert r.partners == [{'umaban': 9, 'reason': '前走出遅れ'}]
+
+
+def test_中穴候補は無くても読める():
+    r = race([{'mark': '◎', 'umaban': 7}])
+    assert r.partners == []
+
+
+def test_中穴候補の理由は省略できる():
+    r = race([{'mark': '◎', 'umaban': 7}], partners=[{'umaban': 9}])
+    assert r.partners == [{'umaban': 9, 'reason': ''}]
+
+
+def test_書き出しても中穴候補が残る():
+    r = race([{'mark': '◎', 'umaban': 7}],
+             partners=[{'umaban': 9, 'reason': '前走出遅れ'}])
+    assert r.to_dict()['partners'] == [{'umaban': 9, 'reason': '前走出遅れ'}]
+
+
+def test_相手プールは印の優先順で中穴候補が最後につく():
+    r = race([
+        {'mark': '◎', 'umaban': 7},
+        {'mark': '○', 'umaban': 11},
+        {'mark': '▲', 'umaban': 2},
+        {'mark': '△', 'umaban': 3},
+        {'mark': '△', 'umaban': 14},
+    ], partners=[{'umaban': 9, 'reason': '前走出遅れ'}, {'umaban': 5, 'reason': '距離短縮'}])
+    assert r.partner_pool == [11, 2, 3, 14, 9, 5]
+
+
+def test_相手プールは軸と重複した中穴候補を除く():
+    r = race([{'mark': '◎', 'umaban': 7}], partners=[{'umaban': 7, 'reason': '軸と同じ'}])
+    assert r.partner_pool == []
+
+
+def test_相手プールは印馬と重複した中穴候補を足さない():
+    r = race([
+        {'mark': '◎', 'umaban': 7},
+        {'mark': '○', 'umaban': 11},
+    ], partners=[{'umaban': 11, 'reason': '重複'}])
+    assert r.partner_pool == [11]

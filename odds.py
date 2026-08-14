@@ -117,24 +117,24 @@ def win_odds_table(table):
     return out
 
 
-def collect(race, fetcher=None):
-    """1レースの買い目に必要なオッズを、券種ごとに1回だけ取得してまとめる。
+def fetch_tables(race_id, bet_types, fetcher=None):
+    """指定した券種ぶんのオッズ表をまとめて取得する。
 
-    戻り値は (買い目ごとのオッズのリスト, 単勝表, メタ情報)。
-    取得できなかった買い目は None が入る（呼び出し側が「暫定」として扱う）。
+    買い目がまだ確定していない段階（bet_builder が候補の組み合わせを
+    試す場面）で使う。券種の表さえあれば `odds_for()` で任意の組み合わせを
+    照会できるので、買い目を先に決めておく必要が無い。
 
-    fetcher は既定値ではなく呼び出し時に解決する。既定引数に束縛すると
-    差し替えが効かず、テストが本物のAPIを叩きにいってしまうため。
+    戻り値は (券種ごとのオッズ表, メタ情報)。`collect()` はこれの薄いラッパー。
     """
     fetcher = fetcher or fetch
-    needed = {bet.type for bet in race.bets} | {'単勝'}
+    needed = set(bet_types) | {'単勝'}
     tables = {}
     meta = {}
     errors = []
 
     for bet_type in sorted(needed):
         try:
-            result = fetcher(race.race_id, bet_type)
+            result = fetcher(race_id, bet_type)
         except OddsError as exc:
             errors.append(str(exc))
             continue
@@ -145,13 +145,26 @@ def collect(race, fetcher=None):
             'official_datetime': result['official_datetime'],
         }
 
-    bet_odds = [
-        odds_for(tables.get(bet.type, {}), bet.horses, bet.type)
-        for bet in race.bets
-    ]
-    return bet_odds, win_odds_table(tables.get('単勝', {})), {
+    return tables, {
         'per_type': meta,
         'errors': errors,
         'status': (meta.get('単勝') or {}).get('status'),
         'official_datetime': (meta.get('単勝') or {}).get('official_datetime'),
     }
+
+
+def collect(race, fetcher=None):
+    """1レースの買い目に必要なオッズを、券種ごとに1回だけ取得してまとめる。
+
+    戻り値は (買い目ごとのオッズのリスト, 単勝表, メタ情報)。
+    取得できなかった買い目は None が入る（呼び出し側が「暫定」として扱う）。
+
+    fetcher は既定値ではなく呼び出し時に解決する。既定引数に束縛すると
+    差し替えが効かず、テストが本物のAPIを叩きにいってしまうため。
+    """
+    tables, meta = fetch_tables(race.race_id, {bet.type for bet in race.bets}, fetcher)
+    bet_odds = [
+        odds_for(tables.get(bet.type, {}), bet.horses, bet.type)
+        for bet in race.bets
+    ]
+    return bet_odds, win_odds_table(tables.get('単勝', {})), meta

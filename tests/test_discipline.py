@@ -384,7 +384,15 @@ def test_missing_morning_sheet_alerts_and_fails(tmp_path, monkeypatch, capsys):
     assert '2026-08-01' in output      # 何が起きたかの説明が入っている
 
 
-def test_end_to_end_blocks_the_queen_stakes_bet(tmp_path, monkeypatch, capsys):
+def test_end_to_end_declines_when_a_senior_mark_has_no_odds(tmp_path, monkeypatch, capsys):
+    """買い目は直前検算(bet_builder)が実オッズから組み立てる（2026-08-14〜）。
+
+    ○11の馬連・ワイドのオッズがどちらも（一時的に）取得できない場合を再現する。
+    2026-08-14の設計変更で、bet_builderは相手全員ぶんのオッズが揃わない段を
+    使わない。○を欠いたどの段も不成立になるので、▲2・△14だけで買い目を
+    組んでしまう（＝2026-08-02クイーンSと同じ形の矛盾）ことは無く、
+    このレースはそのまま見送り（勝負度C・買い目なし）になる。
+    """
     monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
     monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
 
@@ -394,7 +402,7 @@ def test_end_to_end_blocks_the_queen_stakes_bet(tmp_path, monkeypatch, capsys):
             name='クイーンステークス',
             venue='札幌', race_no=11,
             marks=marks_of(items=[('◎', 7), ('○', 11), ('▲', 2), ('△', 14)]),
-            bets=[Bet('馬連', [7, 2]), Bet('馬連', [7, 14])],
+            bets=[],
             subjective_hit_rate=0.16,
         )],
         generated_at='2026-08-02T07:31:00+09:00',
@@ -402,8 +410,10 @@ def test_end_to_end_blocks_the_queen_stakes_bet(tmp_path, monkeypatch, capsys):
 
     def fake_fetch(race_id, bet_type):
         tables = {
+            # 0711（◎-○）のオッズが馬連・ワイドどちらにも無い。
             '単勝': {'07': ['2.9', '3.0', '1'], '11': ['8.8', '9.0', '3']},
             '馬連': {'0207': ['13.1', '13.4', '5'], '0714': ['10.7', '11.0', '4']},
+            'ワイド': {'0207': ['16.0', '16.4', '5'], '0714': ['16.0', '16.4', '4']},
         }
         return {'status': 'middle', 'reason': None,
                 'official_datetime': '14:28:00', 'odds': tables[bet_type]}
@@ -416,16 +426,15 @@ def test_end_to_end_blocks_the_queen_stakes_bet(tmp_path, monkeypatch, capsys):
     exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30',
                             '--no-email'])
 
-    assert exit_code == check.EXIT_NEEDS_ATTENTION
+    assert exit_code == check.EXIT_OK
     output = capsys.readouterr().out
-    assert '発注を止めました' in output
-    assert '○11番' in output
-    assert '発売中の途中経過' in output
+    assert '発注を止めました' not in output
+    assert '勝負度C' in output
 
-    # 検算の記録が残ること
-    saved = (tmp_path / 'checks' / '2026-08-02.json')
-    assert saved.exists()
-    assert 'mark_contradiction' in saved.read_text(encoding='utf-8')
+    # 書き戻された買い目ファイルを見ても、買い目は空のまま（部分的に組まれていない）
+    saved_sheet = bets.load_sheet(date(2026, 8, 2))
+    assert saved_sheet.races[0].confidence == 'C'
+    assert saved_sheet.races[0].bets == []
 
 
 def test_end_to_end_passes_a_clean_sheet(tmp_path, monkeypatch, capsys):
@@ -437,7 +446,7 @@ def test_end_to_end_passes_a_clean_sheet(tmp_path, monkeypatch, capsys):
         races=[make_race(
             name='クイーンステークス',
             marks=marks_of(items=[('◎', 7), ('○', 11), ('△', 14)]),
-            bets=[Bet('馬連', [7, 11]), Bet('ワイド', [7, 14])],
+            bets=[],
             subjective_hit_rate=0.35,
         )],
     ))
@@ -445,8 +454,8 @@ def test_end_to_end_passes_a_clean_sheet(tmp_path, monkeypatch, capsys):
     def fake_fetch(race_id, bet_type):
         tables = {
             '単勝': {'07': ['2.9', '3.0', '1']},
-            '馬連': {'0711': ['11.2', '11.5', '3']},
-            'ワイド': {'0714': ['9.0', '9.4', '4']},
+            '馬連': {'0711': ['11.2', '11.5', '3'], '0714': ['9.5', '9.8', '4']},
+            'ワイド': {},
         }
         return {'status': 'middle', 'reason': None,
                 'official_datetime': '14:28:00', 'odds': tables[bet_type]}
@@ -508,7 +517,14 @@ def test_clean_check_sends_a_short_one_line_email(tmp_path, monkeypatch):
 
 
 def test_blocked_check_still_sends_an_email(tmp_path, monkeypatch):
-    """発注を止めた回は、これまでどおり必ずメールすること。"""
+    """発注を止めた回は、これまでどおり必ずメールすること。
+
+    2026-08-14の設計変更（bet_builderが相手全員分のオッズを要求する）で、
+    check.py の通常経路が到達しうるBLOCKは実質的に「発走済み」だけになった
+    （合成オッズ・期待値・印の矛盾は、bet_builderの出力に対しては構造的に
+    違反しなくなったため）。2026-08-01に配信が発走後まで遅れ◎2鞍を
+    購入できなかった事象の再発検知として、このBLOCKこそ最初に守るべきもの。
+    """
     monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
     monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
 
@@ -522,21 +538,13 @@ def test_blocked_check_still_sends_an_email(tmp_path, monkeypatch):
         races=[make_race(
             name='クイーンステークス',
             venue='札幌', race_no=11,
+            start_time='14:00',   # 検算時刻(14:30)より前＝発走済み
             marks=marks_of(items=[('◎', 7), ('○', 11), ('▲', 2), ('△', 14)]),
-            bets=[Bet('馬連', [7, 2]), Bet('馬連', [7, 14])],
+            bets=[],
             subjective_hit_rate=0.16,
         )],
     ))
 
-    def fake_fetch(race_id, bet_type):
-        tables = {
-            '単勝': {'07': ['2.9', '3.0', '1'], '11': ['8.8', '9.0', '3']},
-            '馬連': {'0207': ['13.1', '13.4', '5'], '0714': ['10.7', '11.0', '4']},
-        }
-        return {'status': 'middle', 'reason': None,
-                'official_datetime': '14:28:00', 'odds': tables[bet_type]}
-
-    monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
     monkeypatch.setattr(conditions_module, 'fetch',
                         lambda rid, **kw: {'going': '良', 'weather': '晴',
                                           'surface': '芝', 'distance': 1800})
