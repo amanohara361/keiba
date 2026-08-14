@@ -219,7 +219,7 @@ def _race_block(verdict, nar_names):
         meta_bits.append(f'発走 {race.start_time}')
     meta_line = ' &middot; '.join(_esc(b) for b in meta_bits)
 
-    chips = [f'<span class="chip">勝負度 {_esc(race.confidence)}</span>']
+    chips = [f'<span class="chip">勝負度 {_esc(race.confidence or "未評価")}</span>']
     if race.subjective_hit_rate is not None:
         chips.append(f'<span class="chip">主観的中率 {race.subjective_hit_rate:.0%}</span>')
     if cond.get('weather'):

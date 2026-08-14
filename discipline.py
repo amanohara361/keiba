@@ -71,7 +71,15 @@ def composite_odds(odds_list):
 # ----------------------------------------------------------------------
 
 def check_already_started(race, now, day):
-    """発走時刻を過ぎたレースの買い目は出さない（CLAUDE.md ステップ0）。"""
+    """発走時刻を過ぎたレースの買い目は出さない（CLAUDE.md ステップ0）。
+
+    2026-08-14〜、発走済みのときは race.confidence の有無で2通りに分ける。
+    **None（直前検算が一度も評価していない）なら真の見逃し**（2026-08-01の
+    事故と同じ形）としてBLOCKする。**A/B/C（評価済み。Cで見送った場合を
+    含む）なら、直近の検算結果がそのまま最終形**であり、この実行が単に
+    間に合わなかっただけの無害な再確認なので、BLOCKにしない。
+    「発注を止めました」という言い回しは、本当に何も届かなかった前者にだけ使う。
+    """
     start = race.start_datetime(day)
     if start is None:
         return Finding(
@@ -80,10 +88,18 @@ def check_already_started(race, now, day):
             '発走済みかどうか判定できません。start_time を入れてください。',
         )
     if now >= start:
+        if race.confidence is None:
+            return Finding(
+                BLOCK, 'already_started_unevaluated',
+                f'{race.name}: 発走までに一度も評価できませんでした'
+                f'（発走 {race.start_time} / 現在 {now:%H:%M}）',
+                '買い目が一度も確定しないまま発走しました。'
+                '直前検算の実行間隔・遅延を確認してください。',
+            )
         return Finding(
-            BLOCK, 'already_started',
-            f'{race.name}: 既に発走しています（発走 {race.start_time} / 現在 {now:%H:%M}）',
-            '購入できません。このレースの買い目は出しません。',
+            INFO, 'already_started',
+            f'{race.name}: 既に発走しています（発走 {race.start_time} / 現在 {now:%H:%M}）。'
+            f'買い目は直近の検算結果のとおりです（勝負度{race.confidence}）。',
         )
     return None
 
@@ -376,8 +392,13 @@ def review_race(race, bet_odds, win_table, meta, now, day, conditions=None,
     started = check_already_started(race, now, day)
     if started:
         findings.append(started)
-        if started.severity == BLOCK:
-            # 発走済みなら以降の検算に意味がない
+        if started.code != 'no_start_time':
+            # 発走済みなら以降の検算に意味がない（BLOCK＝未評価のまま発走／
+            # INFO＝評価済みで直近の検算結果が最終形、のどちらでも同じ）。
+            # bet_odds・win_table はここでは取得していない（check.py が
+            # 発走済みレースはオッズを取りに行かない）ので、ここから先の
+            # 合成オッズ・期待値チェックにかけると「オッズが取れない」という
+            # 別の（誤った）警告になってしまう。
             return RaceVerdict(race, findings, None, bet_odds, win_table, meta,
                                conditions, forms)
 
@@ -391,7 +412,7 @@ def review_race(race, bet_odds, win_table, meta, now, day, conditions=None,
 
     if not race.bets:
         findings.append(Finding(
-            INFO, 'no_bets', f'{race.name}: 買い目なし（勝負度{race.confidence}）'))
+            INFO, 'no_bets', f'{race.name}: 買い目なし（勝負度{race.confidence or "未評価"}）'))
         return RaceVerdict(race, findings, None, bet_odds, win_table, meta,
                            conditions, forms)
 

@@ -109,3 +109,30 @@ def test_相手プールは印馬と重複した中穴候補を足さない():
         {'mark': '○', 'umaban': 11},
     ], partners=[{'umaban': 11, 'reason': '重複'}])
     assert r.partner_pool == [11]
+
+
+# ----------------------------------------------------------------------
+# 勝負度が「未評価」を表せること（2026-08-14 追加）
+# ----------------------------------------------------------------------
+
+def test_confidenceを省くとBではなくNoneになる():
+    """朝タスクはもうconfidenceを書かない。Bの代用にすると、直前検算が
+    一度も評価しないまま発走した場合と、評価してBと判定した場合の
+    区別がつかなくなる（discipline.check_already_started 参照）。"""
+    r = race([{'mark': '◎', 'umaban': 7}])
+    assert r.confidence is None
+
+
+def test_confidenceを明示すればそのまま読める():
+    r = race([{'mark': '◎', 'umaban': 7}], confidence='A')
+    assert r.confidence == 'A'
+
+
+def test_confidenceに知らない値を入れると弾く():
+    with pytest.raises(bets.BetsError):
+        race([{'mark': '◎', 'umaban': 7}], confidence='S')
+
+
+def test_Noneのconfidenceも書き出せる():
+    r = race([{'mark': '◎', 'umaban': 7}])
+    assert r.to_dict()['confidence'] is None

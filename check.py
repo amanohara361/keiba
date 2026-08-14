@@ -16,6 +16,7 @@
 """
 
 import argparse
+import itertools
 import logging
 import os
 import sys
@@ -292,7 +293,7 @@ def format_verdict(verdict):
         header += f' {race.venue}{race.race_no}R'
     if race.start_time:
         header += f' {race.start_time}発走'
-    header += f' 勝負度{race.confidence}'
+    header += f' 勝負度{race.confidence or "未評価"}'
     lines.append(header)
 
     track = conditions_module.label(verdict.conditions)
@@ -319,7 +320,10 @@ def format_verdict(verdict):
 
     if race.bets:
         lines.append('  買い目:')
-        for bet, value in zip(race.bets, verdict.bet_odds):
+        # verdict.bet_odds は race.bets と長さが揃わないことがある
+        # （発走済みで今回はオッズを取りに行っていない場合。買い目自体は
+        # 直近の検算結果のまま表示する）。zip_longest で欠けを許容する。
+        for bet, value in itertools.zip_longest(race.bets, verdict.bet_odds):
             shown = f'{value:.1f}倍' if value else 'オッズ取得できず'
             lines.append(f'    {bet.type} {bet.combination}  {shown}  {bet.stake}円')
 

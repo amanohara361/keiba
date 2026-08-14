@@ -107,14 +107,21 @@ class RaceBets:
     ORGS = ['jra', 'nar']
 
     def __init__(self, race_id, name, start_time, marks, bets,
-                 confidence='B', subjective_hit_rate=None, venue=None, race_no=None,
+                 confidence=None, subjective_hit_rate=None, venue=None, race_no=None,
                  note='', org='jra', partners=None):
         self.race_id = str(race_id)
         self.name = name
         self.start_time = start_time          # "15:25"
         self.marks = marks                    # [{'mark': '◎', 'umaban': 7}, ...]
         self.bets = bets                      # [Bet, ...]
-        self.confidence = confidence          # 勝負度 A/B/C（直前検算が最終確定する）
+        # 勝負度 A/B/C。**Noneは「直前検算がまだ一度も評価していない」を表す
+        # 別の状態**であり、Bの代用ではない（2026-08-14）。朝タスクはもう
+        # confidenceを書かないので、直前検算が一度も走らないまま発走すると
+        # Noneのまま残る。これと「評価した結果Cで見送った」を区別できないと、
+        # 発走済みの通知が「本当に未評価のまま見逃した」のか「評価済みで
+        # たまたま最後の検算が発走後に遅れて来ただけ」なのか後から分からない
+        # （discipline.check_already_started 参照）。
+        self.confidence = confidence
         self.subjective_hit_rate = subjective_hit_rate   # 期待値の計算に使う（0.0〜1.0）
         self.venue = venue
         self.race_no = race_no
@@ -127,7 +134,7 @@ class RaceBets:
 
         if org not in self.ORGS:
             raise BetsError(f'org は {"／".join(self.ORGS)} のいずれかです: {org}')
-        if confidence not in CONFIDENCE_LEVELS:
+        if confidence is not None and confidence not in CONFIDENCE_LEVELS:
             raise BetsError(f'勝負度は A/B/C のいずれかです: {confidence}')
         if not re.fullmatch(r'\d{12}', self.race_id):
             raise BetsError(f'race_id は12桁の数字です: {race_id}')
@@ -272,7 +279,7 @@ def parse_sheet(payload):
             marks=marks,
             partners=partners,
             bets=bets,
-            confidence=raw.get('confidence', 'B'),
+            confidence=raw.get('confidence'),
             subjective_hit_rate=raw.get('subjective_hit_rate'),
             venue=raw.get('venue'),
             race_no=raw.get('race_no'),

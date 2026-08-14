@@ -490,7 +490,7 @@ def render(collected, week_summary, total_summary, period):
             verdict = e['category'] + ('（発注停止）' if e['blocked'] else '')
             profit = f"{e['returned'] - e['staked']:+,}円" if e['staked'] else '—'
             lines.append(
-                f"| {day['date'].isoformat()} | {e['name']} | {e['confidence']} "
+                f"| {day['date'].isoformat()} | {e['name']} | {e['confidence'] or '未評価'} "
                 f"| {verdict} | {profit} | {top3} |")
     lines.append('')
 

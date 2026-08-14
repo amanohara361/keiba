@@ -167,15 +167,39 @@ def test_morning_odds_would_have_passed_the_same_race():
     assert verdict.expected_value == pytest.approx(4.3 * 0.29, abs=0.01)
 
 
-def test_already_started_race_is_blocked():
-    """2026-08-01：◎2鞍とも1着だが配信が発走後で購入できなかった件。"""
-    race = make_race(name='STV賞', start_time='15:25', bets=[Bet('単勝', [7])])
+def test_発走までに一度も評価されなかったレースはブロックする():
+    """2026-08-01：◎2鞍とも1着だが配信が発走後で購入できなかった件。
 
-    verdict = review(race, bet_odds=[8.6],
+    2026-08-14〜、confidence が None（＝直前検算が一度も評価していない）
+    ことを「真の見逃し」の判定条件にする。B/C の代用ではなく、明示的に
+    「評価していない」状態を持たせたことで、下のテスト（評価済みで
+    たまたま最後の検算が遅れて来ただけ）と区別できる。
+    """
+    race = make_race(name='STV賞', start_time='15:25', bets=[], confidence=None)
+
+    verdict = review(race, bet_odds=[],
                      now=datetime(2026, 8, 2, 20, 30, tzinfo=JST))
 
     assert verdict.blocked
-    assert 'already_started' in [f.code for f in verdict.blocks]
+    assert 'already_started_unevaluated' in [f.code for f in verdict.blocks]
+
+
+def test_評価済みで発走したレースはブロックしない():
+    """直前検算が発走前に買い目を確定できていれば、後続の遅れた実行は無害。
+
+    実例：2026-08-14 摂津盃は19:34:46（発走19:55の20分前）に確定した買い目が
+    あったが、20:23の実行（発走後）は「発注を止めました」と表示していた。
+    直近の検算結果が最終形であり、購入できなかったわけではない。
+    """
+    race = make_race(name='摂津盃', start_time='19:55', confidence='B',
+                     bets=[Bet('馬連', [7, 8])])
+
+    verdict = review(race, bet_odds=[],
+                     now=datetime(2026, 8, 14, 20, 23, tzinfo=JST),
+                     day=date(2026, 8, 14))
+
+    assert not verdict.blocked
+    assert 'already_started' in [f.code for f in verdict.findings]
 
 
 # ----------------------------------------------------------------------
@@ -384,6 +408,53 @@ def test_missing_morning_sheet_alerts_and_fails(tmp_path, monkeypatch, capsys):
     assert '2026-08-01' in output      # 何が起きたかの説明が入っている
 
 
+def test_発走後の実行は評価済みの買い目をブロックせずそのまま報告する(tmp_path, monkeypatch, capsys):
+    """実例：2026-08-14 摂津盃。19:34:46（発走19:55の20分前）に確定した買い目が
+    あったのに、20:23（発走後）の実行が「発注を止めました／購入できません」と
+    表示していた。実際には49分前に規律をクリアした買い目が届いていた。
+
+    直前検算は1日に複数回走る。最後の1回がたまたま発走後にずれ込んでも、
+    それより前の実行で確定した買い目（＝実際に購入できたはずの記録）を
+    「ブロックされた」と読める表記にしない。
+    """
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+
+    # 発走前の実行が既に買い目・勝負度を確定させて保存した状態を再現する。
+    bets.save_sheet(BetSheet(
+        date=date(2026, 8, 14),
+        races=[make_race(
+            race_id='202608145011', name='第５８回 摂津盃３歳以上登録馬',
+            venue='園田', race_no=11, start_time='19:55', org='nar',
+            marks=marks_of(items=[('◎', 7), ('○', 8), ('▲', 3), ('△', 5), ('△', 12)]),
+            confidence='B', bets=[Bet('馬連', [7, 8])],
+            subjective_hit_rate=0.3,
+        )],
+    ))
+
+    # 発走済みなのでオッズは取りに行かないが、_NarDay 自体は org: nar の
+    # レースがあれば常に組み立てられる（開催情報の取得）。ネットワークに
+    # 出ないよう差し替える。
+    import nar as nar_module
+    monkeypatch.setattr(nar_module, 'race_data',
+                        lambda type_=nar_module.DAILY, day=None, opener=None:
+                        {'racelist': []})
+
+    exit_code = check.main(['--date', '2026-08-14', '--now', '2026-08-14T20:23',
+                            '--no-email'])
+
+    assert exit_code == check.EXIT_OK
+    output = capsys.readouterr().out
+    assert '発注を止めました' not in output
+    assert '購入できません' not in output
+    assert '勝負度B' in output
+    assert '馬連 7-8' in output   # 確定していた買い目がそのまま報告に残る
+
+    saved_sheet = bets.load_sheet(date(2026, 8, 14))
+    assert saved_sheet.races[0].confidence == 'B'
+    assert [str(b) for b in saved_sheet.races[0].bets] == ['馬連 7-8']
+
+
 def test_end_to_end_declines_when_a_senior_mark_has_no_odds(tmp_path, monkeypatch, capsys):
     """買い目は直前検算(bet_builder)が実オッズから組み立てる（2026-08-14〜）。
 
@@ -540,7 +611,7 @@ def test_blocked_check_still_sends_an_email(tmp_path, monkeypatch):
             venue='札幌', race_no=11,
             start_time='14:00',   # 検算時刻(14:30)より前＝発走済み
             marks=marks_of(items=[('◎', 7), ('○', 11), ('▲', 2), ('△', 14)]),
-            bets=[],
+            bets=[], confidence=None,   # 一度も評価されないまま発走した想定
             subjective_hit_rate=0.16,
         )],
     ))
