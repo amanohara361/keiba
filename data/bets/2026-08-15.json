@@ -1,0 +1,336 @@
+{
+  "date": "2026-08-15",
+  "generated_at": "2026-08-15T07:19:54+09:00",
+  "source": "cloud",
+  "races": [
+    {
+      "race_id": "202607020702",
+      "org": "jra",
+      "name": "3歳未勝利",
+      "venue": "中京",
+      "race_no": 2,
+      "start_time": "10:20",
+      "confidence": null,
+      "subjective_hit_rate": 0.12,
+      "marks": [
+        {
+          "mark": "◎",
+          "umaban": 7,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "○",
+          "umaban": 14,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "▲",
+          "umaban": 9,
+          "steps": [
+            3,
+            5
+          ]
+        },
+        {
+          "mark": "△",
+          "umaban": 6,
+          "steps": [
+            3
+          ]
+        },
+        {
+          "mark": "△",
+          "umaban": 3,
+          "steps": [
+            3
+          ]
+        }
+      ],
+      "partners": [
+        {
+          "umaban": 15,
+          "reason": "直近同コース同距離（中京1400）で経験あり、上がり34.8と悪くない"
+        }
+      ],
+      "bets": [],
+      "note": "未勝利戦で戦績が薄く精度は低め。8番・12番は近走データなし（取れない情報として判断保留）。厩舎コメント・パドックは未確認、直前タスクで要確認。"
+    },
+    {
+      "race_id": "202607020705",
+      "org": "jra",
+      "name": "3歳未勝利",
+      "venue": "中京",
+      "race_no": 5,
+      "start_time": "11:50",
+      "confidence": null,
+      "subjective_hit_rate": 0.15,
+      "marks": [
+        {
+          "mark": "◎",
+          "umaban": 3,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "○",
+          "umaban": 6,
+          "steps": [
+            3
+          ]
+        },
+        {
+          "mark": "▲",
+          "umaban": 7,
+          "steps": [
+            3
+          ]
+        },
+        {
+          "mark": "△",
+          "umaban": 11,
+          "steps": [
+            3,
+            4
+          ]
+        }
+      ],
+      "partners": [
+        {
+          "umaban": 14,
+          "reason": "NAR交流重賞で2着経験あり、直近は低調だが地力に期待"
+        }
+      ],
+      "bets": [],
+      "note": "2番メイショウプレマは1番人気だが芝からの初ダート転向であり「危険な人気馬」候補（軸から外す）。厩舎コメント・パドックは未確認、直前タスクで要確認。"
+    },
+    {
+      "race_id": "202607020707",
+      "org": "jra",
+      "name": "高山S",
+      "venue": "中京",
+      "race_no": 7,
+      "start_time": "15:45",
+      "confidence": null,
+      "subjective_hit_rate": 0.22,
+      "marks": [
+        {
+          "mark": "◎",
+          "umaban": 7,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "○",
+          "umaban": 2,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "▲",
+          "umaban": 4,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "△",
+          "umaban": 5,
+          "steps": [
+            3
+          ]
+        }
+      ],
+      "partners": [
+        {
+          "umaban": 1,
+          "reason": "2勝クラス勝ち馬。3勝クラス初戦は3番手からの競馬で悪くない内容、距離延長でどうか"
+        }
+      ],
+      "bets": [],
+      "note": "7番フィオレストラーダは3クラス連続で今回距離(2000m)にて連対中、妥当な人気（危険な人気馬には該当しない）。厩舎コメント・パドックは未確認、直前タスクで要確認。"
+    },
+    {
+      "race_id": "202604020707",
+      "org": "jra",
+      "name": "上越S",
+      "venue": "新潟",
+      "race_no": 7,
+      "start_time": "15:25",
+      "confidence": null,
+      "subjective_hit_rate": 0.18,
+      "marks": [
+        {
+          "mark": "◎",
+          "umaban": 4,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "○",
+          "umaban": 7,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "▲",
+          "umaban": 6,
+          "steps": [
+            3
+          ]
+        },
+        {
+          "mark": "△",
+          "umaban": 2,
+          "steps": [
+            3
+          ]
+        },
+        {
+          "mark": "△",
+          "umaban": 1,
+          "steps": [
+            3,
+            5
+          ]
+        }
+      ],
+      "partners": [
+        {
+          "umaban": 15,
+          "reason": "3勝クラスで連対経験あり、短縮巧者"
+        }
+      ],
+      "bets": [],
+      "note": "1番アメリカンチケットは1番人気だが3勝クラス初挑戦で好走は直近1走のみ（危険な人気馬候補、軸は4番を優先）。厩舎コメント・パドックは未確認、直前タスクで要確認。"
+    },
+    {
+      "race_id": "202601010709",
+      "org": "jra",
+      "name": "コスモス賞",
+      "venue": "札幌",
+      "race_no": 9,
+      "start_time": "14:25",
+      "confidence": null,
+      "subjective_hit_rate": 0.28,
+      "marks": [
+        {
+          "mark": "◎",
+          "umaban": 8,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "○",
+          "umaban": 1,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "▲",
+          "umaban": 3,
+          "steps": [
+            3
+          ]
+        },
+        {
+          "mark": "△",
+          "umaban": 7,
+          "steps": [
+            3
+          ]
+        }
+      ],
+      "partners": [
+        {
+          "umaban": 6,
+          "reason": "前走1200m勝ちだが距離延長(1800m)初挑戦。2番人気で巻き返せば穴"
+        }
+      ],
+      "bets": [],
+      "note": "全馬2歳・1〜2走のみでサンプルが薄いため主観的中率は低めに設定。厩舎コメント・パドックは未確認、直前タスクで要確認。"
+    },
+    {
+      "race_id": "202601010711",
+      "org": "jra",
+      "name": "大雪HC",
+      "venue": "札幌",
+      "race_no": 11,
+      "start_time": "15:35",
+      "confidence": null,
+      "subjective_hit_rate": 0.2,
+      "marks": [
+        {
+          "mark": "◎",
+          "umaban": 11,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "○",
+          "umaban": 7,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "▲",
+          "umaban": 3,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "△",
+          "umaban": 5,
+          "steps": [
+            3
+          ]
+        },
+        {
+          "mark": "△",
+          "umaban": 1,
+          "steps": [
+            3
+          ]
+        }
+      ],
+      "partners": [
+        {
+          "umaban": 14,
+          "reason": "前走3勝クラス初挑戦で先行押し切れず失速も、格上挑戦のたたき台だった可能性"
+        },
+        {
+          "umaban": 8,
+          "reason": "2勝クラスでは巻き返し実績あり、今回3勝クラス2戦目"
+        }
+      ],
+      "bets": [],
+      "note": "11番・3番・7番はいずれも札幌コース(同距離帯)での実績あり。厩舎コメント・パドックは未確認、直前タスクで要確認。"
+    }
+  ]
+}
