@@ -29,6 +29,18 @@
 必ず上位印から残る。印の上位馬が相手から外れ下位印が残る、という
 2026-08-02クイーンSの事故（矛盾）は構造的に起こらない。
 
+**各段は、相手全員ぶんのオッズが揃わなければ不成立として次の段へ進む
+（2026-08-14 ユーザー指摘・承認）。** 一部の相手のオッズだけで組んだ場合、
+オッズが引けなかった馬（それが◎○かもしれない）を無言で相手から落とす
+ことになる。無印の中穴候補だけにオッズがあり印馬に無い場合、買い目に
+下位印が1つも残らず discipline.check_matched_marks（上位印が買い目に無い
+のに下位印が残っている、を検知する仕組み）もすり抜けてしまう。
+実オッズ優先の原則（第13章）に沿って、完全に揃わない段は使わない。
+この結果、discipline.py の合成オッズ・期待値・印の矛盾チェックは
+bet_builder の出力に対しては構造的に違反しなくなる（安全網としては
+make_bets.py での手組みなど、bet_builder を経由しない買い目に対して
+引き続き効く）。
+
 勝負度の最終確定もここで行う（2026-08-14ユーザー承認）。
 期待値1.5以上をA（勝負）、1.2以上1.5未満をB（縮小）とする。
 この1.5という線は検証で緩和・変更が承認されるまで変えない。
@@ -82,30 +94,30 @@ def build_bets(race, lookup, stake=100):
         (pool[:1], 'ワイド'),
     ]
 
-    tried = []
+    any_fully_priced = False   # 相手全員ぶんオッズが揃った段が一度でもあったか
     for partners, bet_type in stages:
         partners = list(dict.fromkeys(partners))  # 重複除去（順序維持）
         if not partners:
             continue
         odds_values = _odds_for_pairs(axis, partners, bet_type, lookup)
+        if any(o is None for o in odds_values):
+            # 相手の誰か1頭でもオッズが引けなければこの段は使わない
+            # （実オッズ優先の原則。上のdocstring参照）。
+            continue
+        any_fully_priced = True
         composite = discipline.composite_odds(odds_values)
-        ev = None if composite is None or hit_rate is None else composite * hit_rate
-        tried.append((bet_type, partners, composite, ev))
+        ev = None if hit_rate is None else composite * hit_rate
         if _clears_discipline(composite, ev):
-            selected = [
-                Bet(bet_type, [axis, p], stake)
-                for p, o in zip(partners, odds_values) if o
-            ]
-            if not selected:
-                continue
+            selected = [Bet(bet_type, [axis, p], stake) for p in partners]
             note = (f'{bet_type} {axis}軸-{"/".join(str(p) for p in partners)}'
                     f'（合成{composite:.2f}倍・期待値{ev:.2f}）')
             if partners == pool and not has_dark_horse:
                 note += ' ※中穴候補が無く印馬のみで構成'
             return _confidence_for(ev), selected, note
 
-    if all(c is None for _, _, c, _ in tried):
-        return 'C', [], '実オッズが取得できず買い目を組めませんでした（要・時間を置いて再検算）'
+    if not any_fully_priced:
+        return 'C', [], ('相手の実オッズが揃わず買い目を組めませんでした'
+                         '（要・時間を置いて再検算）')
 
     return 'C', [], ('第13章の基準（合成オッズ3.0倍・期待値1.2）を満たす買い目を'
                      '組めませんでした。見送り（勝負度C）。')

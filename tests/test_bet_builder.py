@@ -108,6 +108,28 @@ def test_馬連で沈んだらワイドへ振り替える():
     assert 'ワイド' in note
 
 
+def test_下位印のオッズが無ければ絞り込みでその馬を落として救える():
+    """△のオッズが無くても、○▲まで絞る段（相手2頭）で△が外れれば組める。
+
+    上のテストと対になる例：完全性を要求しても、絞り込みの過程で
+    「オッズが無い馬」自体が優先順位の外に落ちれば通常どおり組める
+    （F案②「点数を2点以下に絞る」に対応する pool[:2] の段）。
+    """
+    r = race(
+        marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11},
+               {'mark': '▲', 'umaban': 2}, {'mark': '△', 'umaban': 14}],
+        subjective_hit_rate=0.4,
+    )
+    lookup = lookup_from({
+        # △14のオッズはどの券種にも無い。○11・▲2のワイドは絞った段で使える。
+        ('ワイド', frozenset({7, 11})): 8.0,
+        ('ワイド', frozenset({7, 2})): 8.0,
+    })
+    confidence, built, note = bet_builder.build_bets(r, lookup)
+    assert {b.combination for b in built} == {'7-11', '7-2'}
+    assert all(b.type == 'ワイド' for b in built)
+
+
 def test_相手を1頭にまで絞っても駄目なら見送り():
     r = race(marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11}],
              subjective_hit_rate=0.1)
@@ -145,12 +167,15 @@ def test_相手候補が無ければ組めない():
     assert built == []
 
 
-def test_上位印のオッズが無くても下位印だけを勝手に残さない矛盾は起きない():
-    """○のオッズが取れない場合、bet_builderは○を除いた組み合わせで組む。
+def test_上位印のオッズが無ければその段は使わず絞り込みへ進む():
+    """○のオッズが無い場合、○抜きの組み合わせで勝手に組まない（見送りうる）。
 
-    discipline.check_matched_marks（上位印が買い目に無いのに下位印が残る）は
-    ここでは検出できない（bet_builderは印の序列を知らない）。安全網は
-    discipline側に残す設計であることの確認を兼ねる。
+    2026-08-14の設計変更：各段は相手全員ぶんのオッズが揃わなければ不成立と
+    する。部分的に組むと、オッズが引けなかった馬（◎○かもしれない）を
+    無言で相手から落とすことになり、無印の中穴候補だけが残る場合は
+    discipline.check_matched_marks（上位印が買い目に無いのに下位印が残る、を
+    検知する仕組み）もすり抜けてしまう。◎○▲のどの段も○のオッズが無ければ
+    全滅するので、実オッズが無い状態のまま何かを買うことはない。
     """
     r = race(
         marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11},
@@ -158,8 +183,11 @@ def test_上位印のオッズが無くても下位印だけを勝手に残さ�
         subjective_hit_rate=0.3,
     )
     lookup = lookup_from({
-        # ○11のオッズが無い。▲2だけが埋まる。
+        # ○11のオッズが無い（馬連・ワイドとも）。▲2にはあるが、
+        # ○を欠いたどの段も不成立になるので、▲2だけで組まれることはない。
         ('馬連', frozenset({7, 2})): 10.0,
+        ('ワイド', frozenset({7, 2})): 10.0,
     })
     confidence, built, note = bet_builder.build_bets(r, lookup)
-    assert {b.combination for b in built} == {'7-2'}
+    assert confidence == 'C'
+    assert built == []
