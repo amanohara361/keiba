@@ -1013,5 +1013,30 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-14T20:23:59.676326+09:00",
+    "races": [
+      {
+        "race_id": "202608145011",
+        "name": "第５８回 摂津盃３歳以上登録馬",
+        "blocked": true,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "BLOCK",
+            "code": "already_started",
+            "message": "第５８回 摂津盃３歳以上登録馬: 既に発走しています（発走 19:55 / 現在 20:23）",
+            "remedy": "購入できません。このレースの買い目は出しません。"
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
