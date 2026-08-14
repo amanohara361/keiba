@@ -43,6 +43,7 @@ BET_TYPES = {
 MARK_ORDER = ['◎', '○', '▲', '△']
 SENIOR_MARKS = ['◎', '○']   # これが相手から外れたら矛盾を疑う
 JUNIOR_MARKS = ['▲', '△']
+PARTNER_ORDER = ['○', '▲', '△']   # ◎を除いた印の優先順（相手プールの並び順）
 
 # 予想メソッド 第1章「予想の手順（7ステップ）」。印1つ1つに、どの手順が
 # 根拠になったかをタグ付けする（2026-08-12・後ろ向き研究のための仕込み）。
@@ -107,18 +108,22 @@ class RaceBets:
 
     def __init__(self, race_id, name, start_time, marks, bets,
                  confidence='B', subjective_hit_rate=None, venue=None, race_no=None,
-                 note='', org='jra'):
+                 note='', org='jra', partners=None):
         self.race_id = str(race_id)
         self.name = name
         self.start_time = start_time          # "15:25"
         self.marks = marks                    # [{'mark': '◎', 'umaban': 7}, ...]
         self.bets = bets                      # [Bet, ...]
-        self.confidence = confidence          # 勝負度 A/B/C
+        self.confidence = confidence          # 勝負度 A/B/C（直前検算が最終確定する）
         self.subjective_hit_rate = subjective_hit_rate   # 期待値の計算に使う（0.0〜1.0）
         self.venue = venue
         self.race_no = race_no
         self.note = note
         self.org = org
+        # 中穴候補（印は無いが7ステップの分析シート上でプラス材料があった馬）。
+        # [{'umaban': 9, 'reason': '...'}, ...]。直前検算の bet_builder が
+        # 「相手の広げ方」（第13章）の候補プールとして使う。朝タスクが出す。
+        self.partners = partners or []
 
         if org not in self.ORGS:
             raise BetsError(f'org は {"／".join(self.ORGS)} のいずれかです: {org}')
@@ -143,6 +148,21 @@ class RaceBets:
     @property
     def marked_horses(self):
         return {m['umaban'] for m in self.marks}
+
+    @property
+    def partner_pool(self):
+        """買い目組み立て用の相手プール（優先順）。
+
+        印馬（○▲△、序列順）を先に、次に中穴候補を分析シートに書かれた順で
+        並べる。◎自身と重複した馬番は除く（軸と相手を兼ねない）。
+        """
+        axis = set(self.horses_for('◎'))
+        pool = [u for mark in PARTNER_ORDER for u in self.horses_for(mark) if u not in axis]
+        for p in self.partners:
+            u = p['umaban']
+            if u not in axis and u not in pool:
+                pool.append(u)
+        return pool
 
     @property
     def horses_in_bets(self):
@@ -170,6 +190,7 @@ class RaceBets:
             'confidence': self.confidence,
             'subjective_hit_rate': self.subjective_hit_rate,
             'marks': self.marks,
+            'partners': self.partners,
             'bets': [b.to_dict() for b in self.bets],
             'note': self.note,
         }
@@ -231,6 +252,12 @@ def parse_sheet(payload):
                 entry['steps'] = steps
             marks.append(entry)
 
+        partners = [
+            {'umaban': int(_require(p, 'umaban', f'{context}の中穴候補')),
+             'reason': p.get('reason', '')}
+            for p in raw.get('partners', [])
+        ]
+
         bets = [
             Bet(_require(b, 'type', f'{context}の買い目'),
                 _require(b, 'horses', f'{context}の買い目'),
@@ -243,6 +270,7 @@ def parse_sheet(payload):
             name=raw.get('name', ''),
             start_time=raw.get('start_time'),
             marks=marks,
+            partners=partners,
             bets=bets,
             confidence=raw.get('confidence', 'B'),
             subjective_hit_rate=raw.get('subjective_hit_rate'),

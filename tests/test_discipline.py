@@ -385,6 +385,13 @@ def test_missing_morning_sheet_alerts_and_fails(tmp_path, monkeypatch, capsys):
 
 
 def test_end_to_end_blocks_the_queen_stakes_bet(tmp_path, monkeypatch, capsys):
+    """買い目は直前検算(bet_builder)が実オッズから組み立てる（2026-08-14〜）。
+
+    ○11の馬連オッズが（一時的に）取得できず、bet_builderが▲2・△14だけで
+    組んだ場合を再現する。印の上書きで意図的に外すのではなく、データが
+    薄い場面でも同じ矛盾が起こりうることの確認であり、discipline側の
+    安全網（check_matched_marks）が引き続き機能することを見る。
+    """
     monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
     monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
 
@@ -394,7 +401,7 @@ def test_end_to_end_blocks_the_queen_stakes_bet(tmp_path, monkeypatch, capsys):
             name='クイーンステークス',
             venue='札幌', race_no=11,
             marks=marks_of(items=[('◎', 7), ('○', 11), ('▲', 2), ('△', 14)]),
-            bets=[Bet('馬連', [7, 2]), Bet('馬連', [7, 14])],
+            bets=[],
             subjective_hit_rate=0.16,
         )],
         generated_at='2026-08-02T07:31:00+09:00',
@@ -402,8 +409,10 @@ def test_end_to_end_blocks_the_queen_stakes_bet(tmp_path, monkeypatch, capsys):
 
     def fake_fetch(race_id, bet_type):
         tables = {
+            # 0711（◎-○）のオッズが無い。bet_builderは▲2・△14だけで組む。
             '単勝': {'07': ['2.9', '3.0', '1'], '11': ['8.8', '9.0', '3']},
             '馬連': {'0207': ['13.1', '13.4', '5'], '0714': ['10.7', '11.0', '4']},
+            'ワイド': {'0207': ['16.0', '16.4', '5'], '0714': ['16.0', '16.4', '4']},
         }
         return {'status': 'middle', 'reason': None,
                 'official_datetime': '14:28:00', 'odds': tables[bet_type]}
@@ -437,7 +446,7 @@ def test_end_to_end_passes_a_clean_sheet(tmp_path, monkeypatch, capsys):
         races=[make_race(
             name='クイーンステークス',
             marks=marks_of(items=[('◎', 7), ('○', 11), ('△', 14)]),
-            bets=[Bet('馬連', [7, 11]), Bet('ワイド', [7, 14])],
+            bets=[],
             subjective_hit_rate=0.35,
         )],
     ))
@@ -445,8 +454,8 @@ def test_end_to_end_passes_a_clean_sheet(tmp_path, monkeypatch, capsys):
     def fake_fetch(race_id, bet_type):
         tables = {
             '単勝': {'07': ['2.9', '3.0', '1']},
-            '馬連': {'0711': ['11.2', '11.5', '3']},
-            'ワイド': {'0714': ['9.0', '9.4', '4']},
+            '馬連': {'0711': ['11.2', '11.5', '3'], '0714': ['9.5', '9.8', '4']},
+            'ワイド': {},
         }
         return {'status': 'middle', 'reason': None,
                 'official_datetime': '14:28:00', 'odds': tables[bet_type]}
@@ -523,7 +532,7 @@ def test_blocked_check_still_sends_an_email(tmp_path, monkeypatch):
             name='クイーンステークス',
             venue='札幌', race_no=11,
             marks=marks_of(items=[('◎', 7), ('○', 11), ('▲', 2), ('△', 14)]),
-            bets=[Bet('馬連', [7, 2]), Bet('馬連', [7, 14])],
+            bets=[],
             subjective_hit_rate=0.16,
         )],
     ))
@@ -532,6 +541,7 @@ def test_blocked_check_still_sends_an_email(tmp_path, monkeypatch):
         tables = {
             '単勝': {'07': ['2.9', '3.0', '1'], '11': ['8.8', '9.0', '3']},
             '馬連': {'0207': ['13.1', '13.4', '5'], '0714': ['10.7', '11.0', '4']},
+            'ワイド': {'0207': ['16.0', '16.4', '5'], '0714': ['16.0', '16.4', '4']},
         }
         return {'status': 'middle', 'reason': None,
                 'official_datetime': '14:28:00', 'odds': tables[bet_type]}

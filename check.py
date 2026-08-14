@@ -22,6 +22,7 @@ import sys
 from datetime import date, datetime
 
 import bets
+import bet_builder
 import conditions as conditions_module
 import discipline
 import form as form_module
@@ -29,6 +30,11 @@ import nar as nar_module
 import odds as odds_module
 import report_html
 from mailer import Mailer
+
+# bet_builder が組み立てを試す券種。単勝は odds.fetch_tables が常に足すので
+# 明示しなくてよい。3連複・馬単・複勝は現状のはしご（第13章F案）が
+# 触れない券種なので、常時は取りに行かない（不要なAPI呼び出しを避ける）。
+BUILD_BET_TYPES = ('馬連', 'ワイド')
 
 # 終了コードは「このジョブが役目を果たせたか」で決める。
 #
@@ -70,12 +76,37 @@ def resolve_now(override=None):
     return datetime.now(bets.JST)
 
 
+def _jra_odds_for(tables, numbers, bet_type):
+    return odds_module.odds_for(tables.get(bet_type, {}), numbers, bet_type)
+
+
+def _nar_odds_for(tables, numbers, bet_type):
+    return nar_module.odds_for(tables, numbers, bet_type)
+
+
+def _build_race_bets(race, tables, odds_for):
+    """race.bets/confidence を実オッズで確定する（bet_builder、第13章）。
+
+    印は朝タスクが確定済み。ここが決めるのは買い目だけ（2026-08-14ユーザー承認）。
+    毎回の検算ごとに最新の実オッズで組み直す（ロックしない・実オッズ優先の原則）。
+    odds_for は (tables, numbers, bet_type) -> オッズ|None。中央・地方でtablesの
+    形が違う（中央は券種ごとの表、地方は券種込みの1枚）ので、呼び出し側が
+    _jra_odds_for / _nar_odds_for のどちらを渡すかで吸収する。
+    """
+    lookup = lambda bet_type, horses: odds_for(tables, horses, bet_type)  # noqa: E731
+    confidence, built_bets, note = bet_builder.build_bets(race, lookup)
+    race.confidence = confidence
+    race.bets = built_bets
+    race.note = f'{race.note} / {note}' if race.note else note
+
+
 def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
                  forms_fetcher=None, nar_fetcher=None):
     """買い目ファイル全体を検算して、レースごとの判定を返す。
 
     中央と地方が同じファイルに混ざっていてよい。**違うのはオッズと馬場の
-    取得先だけで、第13章の規律をあてる部分は完全に同じコードが通る。**
+    取得先だけで、買い目の組み立て（bet_builder）も第13章の規律をあてる
+    部分（discipline）も完全に同じコードが通る。**
     """
     fetcher = fetcher or odds_module.fetch
     conditions_fetcher = conditions_fetcher or conditions_module.fetch
@@ -88,7 +119,8 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
 
     verdicts = []
     for race in sheet.races:
-        # 発走済みなら実オッズを取りに行かない（netkeibaは朝の値しか返さない）
+        # 発走済みなら実オッズを取りに行かない（netkeibaは朝の値しか返さない）。
+        # 買い目も組み直さない（購入できないレースを触っても意味が無い）。
         start = race.start_datetime(sheet.date)
         if start and now >= start:
             verdicts.append(discipline.review_race(
@@ -101,7 +133,12 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
             # 出馬表CSVに当競馬場成績・ダート左右別成績があり、それは
             # カードの段階で判断側に渡っている。ここで引き直す必要はない。
             track = nar_data.conditions(race.race_id)
-            bet_odds, win_table, meta = nar_data.odds(race)
+            tables = nar_data.raw_tables(race.race_id)
+            _build_race_bets(race, tables, _nar_odds_for)
+            bet_odds = [_nar_odds_for(tables, bet.horses, bet.type)
+                        for bet in race.bets]
+            win_table = nar_module.win_odds_table(tables, nar_data.ninki(race.race_id))
+            meta = nar_data.meta(race.race_id)
             verdicts.append(discipline.review_race(
                 race, bet_odds, win_table, meta, now, sheet.date, track, {}))
             continue
@@ -122,7 +159,13 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
             except form_module.FormError as exc:
                 logger.warning('%s の各馬の戦績を取得できませんでした: %s', race.name, exc)
 
-        bet_odds, win_table, meta = odds_module.collect(race, fetcher=fetcher)
+        # 単勝・馬連・ワイドをまとめて1回で取得する（bet_builder が任意の
+        # 組み合わせを試せるよう、買い目を先に決めずに券種の表だけ取る）。
+        tables, meta = odds_module.fetch_tables(race.race_id, BUILD_BET_TYPES, fetcher)
+        _build_race_bets(race, tables, _jra_odds_for)
+        bet_odds = [_jra_odds_for(tables, bet.horses, bet.type)
+                    for bet in race.bets]
+        win_table = odds_module.win_odds_table(tables.get('単勝', {}))
         verdicts.append(discipline.review_race(
             race, bet_odds, win_table, meta, now, sheet.date, track, forms))
     return verdicts
@@ -141,6 +184,7 @@ class _NarDay:
         self._odds_error = None
         self._fetcher = fetcher
         self._races = {}
+        self._parsed_cache = {}
         try:
             rows = nar_module.parse_races(
                 nar_module.race_data(nar_module.DAILY)['racelist'], sheet.date)
@@ -161,7 +205,12 @@ class _NarDay:
             'going': race['going'] or None,
         }
 
-    def odds(self, race):
+    def _rows(self):
+        """当日オッズCSVの行を1度だけ取り、以後はキャッシュを返す。
+
+        取得に失敗したことを空リストで隠さない。1回の失敗をレースの数だけ
+        持ち回れるよう、例外そのものを取っておく。
+        """
         if self._odds_rows is None and self._odds_error is None:
             fetch = self._fetcher or (lambda: nar_module.odds_data(nar_module.DAILY))
             try:
@@ -170,15 +219,45 @@ class _NarDay:
                 logger.warning('地方のオッズを取得できませんでした: %s', exc)
                 self.errors.append(str(exc))
                 self._odds_error = exc
+        if self._odds_error is not None:
+            raise self._odds_error
+        return self._odds_rows
 
-        def replay():
-            # 取得に失敗したことを空リストで隠さない。1回の失敗を
-            # レースの数だけ持ち回れるよう、例外そのものを取っておく。
-            if self._odds_error is not None:
-                raise self._odds_error
-            return self._odds_rows
+    def _parsed(self, race_id):
+        """券種ごとのオッズ表・人気・エラーを1レースぶんまとめて返す（結果はキャッシュする）。"""
+        cache = self._parsed_cache
+        race_id = str(race_id)
+        if race_id not in cache:
+            try:
+                tables, ninki = nar_module.parse_odds(self._rows(), race_id)
+                errors = []
+            except nar_module.NarError as exc:
+                tables, ninki, errors = {}, {}, [str(exc)]
+            cache[race_id] = (tables, ninki, errors)
+        return cache[race_id]
 
-        return nar_module.collect(race, fetcher=replay)
+    def raw_tables(self, race_id):
+        """買い目を問わない、券種ごとのオッズ表（bet_builder用）。"""
+        tables, _ninki, _errors = self._parsed(race_id)
+        return tables
+
+    def ninki(self, race_id):
+        _tables, ninki, _errors = self._parsed(race_id)
+        return ninki
+
+    def meta(self, race_id):
+        """odds.collect() と同じ形のメタ情報（当日ファイルの発売前/発売中の別）。"""
+        tables, _ninki, errors = self._parsed(race_id)
+        status = 'middle' if tables else 'yoso'
+        if errors:
+            status = None
+        return {
+            'per_type': {t: {'status': status, 'count': len(v)} for t, v in tables.items()},
+            'errors': errors,
+            'status': status,
+            'official_datetime': nar_module.datetime.now(nar_module.JST)
+                .strftime('%Y-%m-%d %H:%M:%S'),
+        }
 
 
 # ----------------------------------------------------------------------
@@ -373,6 +452,10 @@ def main(argv=None):
         report_html.save(report_html.render(sheet, verdicts, now))
 
     if not args.no_save:
+        # 買い目（bet_builder が実オッズで組み直した bets・確定した confidence）
+        # を書き戻す。data/bets/YYYY-MM-DD.json がここで最終形になる
+        # （印は朝タスクのまま・買い目は直前検算が確定、2026-08-14ユーザー承認）。
+        bets.save_sheet(sheet)
         path = bets.save_check_result(day, {
             'checked_at': now.isoformat(),
             'races': [v.to_dict() for v in verdicts],
