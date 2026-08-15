@@ -132,10 +132,12 @@ td.stake { text-align: right; color: var(--text-muted); }
 .finding.critical { background: var(--critical-soft); }
 .finding.warn { background: var(--warn-soft); }
 .finding.good { background: var(--good-soft); }
+.finding.neutral { background: var(--surface-2); }
 .finding-title { font-weight: 700; }
 .finding.critical .finding-title { color: var(--critical); }
 .finding.warn .finding-title { color: var(--warn); }
 .finding.good .finding-title { color: var(--good); }
+.finding.neutral .finding-title { color: var(--text-muted); }
 .finding-remedy { color: var(--text-muted); }
 .note { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-soft); font-size: 12px; color: var(--text-muted); }
 .note-label { font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; opacity: .85; }
@@ -284,9 +286,19 @@ def _race_block(verdict, nar_names):
             + (f'<div class="finding-remedy">{_esc(f.remedy)}</div>' if f.remedy else '') + '</div>'
         )
     if not verdict.blocked and not verdict.warnings:
-        findings_html.append(
-            '<div class="finding good"><div class="finding-title">第13章の規律をすべてクリアしています</div></div>'
-        )
+        if race.bets:
+            findings_html.append(
+                '<div class="finding good"><div class="finding-title">'
+                '第13章の規律をすべてクリアしています</div></div>'
+            )
+        else:
+            # 買い目が無いのに「規律をクリア」は誤読を招く（check.py と同じ理由）。
+            # BLOCK・WARNが無いのは買い目自体を検証していないからで、
+            # 買い目が規律に合格したわけではない。
+            findings_html.append(
+                '<div class="finding neutral"><div class="finding-title">'
+                '見送り（買い目なし）</div></div>'
+            )
 
     note_html = ''
     if race.note:
