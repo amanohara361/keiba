@@ -93,12 +93,17 @@ def _build_race_bets(race, tables, odds_for):
     odds_for は (tables, numbers, bet_type) -> オッズ|None。中央・地方でtablesの
     形が違う（中央は券種ごとの表、地方は券種込みの1枚）ので、呼び出し側が
     _jra_odds_for / _nar_odds_for のどちらを渡すかで吸収する。
+
+    戻り値は bet_builder の説明文（その回だけの一時的な情報）。**race.note には
+    書かない。** race.note は朝タスクが書いた分析メモで、data/bets/ に永続化
+    される。ここに毎回追記すると、検算が走るたびに同じ説明文が積み重なって
+    無限に伸びる（2026-08-15、同じ「見送り」文言が3回連結される不具合で発覚）。
     """
     lookup = lambda bet_type, horses: odds_for(tables, horses, bet_type)  # noqa: E731
     confidence, built_bets, note = bet_builder.build_bets(race, lookup)
     race.confidence = confidence
     race.bets = built_bets
-    race.note = f'{race.note} / {note}' if race.note else note
+    return note
 
 
 def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
@@ -135,13 +140,15 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
             # カードの段階で判断側に渡っている。ここで引き直す必要はない。
             track = nar_data.conditions(race.race_id)
             tables = nar_data.raw_tables(race.race_id)
-            _build_race_bets(race, tables, _nar_odds_for)
+            bet_note = _build_race_bets(race, tables, _nar_odds_for)
             bet_odds = [_nar_odds_for(tables, bet.horses, bet.type)
                         for bet in race.bets]
             win_table = nar_module.win_odds_table(tables, nar_data.ninki(race.race_id))
             meta = nar_data.meta(race.race_id)
-            verdicts.append(discipline.review_race(
-                race, bet_odds, win_table, meta, now, sheet.date, track, {}))
+            verdict = discipline.review_race(
+                race, bet_odds, win_table, meta, now, sheet.date, track, {})
+            verdict.bet_note = bet_note
+            verdicts.append(verdict)
             continue
 
         # 馬場状態は朝は未発表のことが多い。取れなくても検算は続ける。
@@ -163,12 +170,14 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
         # 単勝・馬連・ワイドをまとめて1回で取得する（bet_builder が任意の
         # 組み合わせを試せるよう、買い目を先に決めずに券種の表だけ取る）。
         tables, meta = odds_module.fetch_tables(race.race_id, BUILD_BET_TYPES, fetcher)
-        _build_race_bets(race, tables, _jra_odds_for)
+        bet_note = _build_race_bets(race, tables, _jra_odds_for)
         bet_odds = [_jra_odds_for(tables, bet.horses, bet.type)
                     for bet in race.bets]
         win_table = odds_module.win_odds_table(tables.get('単勝', {}))
-        verdicts.append(discipline.review_race(
-            race, bet_odds, win_table, meta, now, sheet.date, track, forms))
+        verdict = discipline.review_race(
+            race, bet_odds, win_table, meta, now, sheet.date, track, forms)
+        verdict.bet_note = bet_note
+        verdicts.append(verdict)
     return verdicts
 
 
@@ -332,6 +341,9 @@ def format_verdict(verdict):
         if verdict.expected_value:
             summary += f' / 期待値 {verdict.expected_value:.2f}'
         lines.append(summary)
+
+    if verdict.bet_note:
+        lines.append(f'  買い目メモ: {verdict.bet_note}')
 
     if verdict.blocked:
         lines.append('')

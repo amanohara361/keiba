@@ -304,6 +304,16 @@ def _race_block(verdict, nar_names):
     if race.note:
         note_html = (f'<div class="note"><div class="note-label">メモ</div>{_esc(race.note)}</div>')
 
+    # bet_builder の説明文（その回だけの一時的な情報）。race.note とは別枠で
+    # 出す。data/bets/ には保存されないので、次の検算では消えて新しく出る
+    # （2026-08-15、race.note に書いて無限に積み重なっていた不具合の修正）。
+    bet_note_html = ''
+    if getattr(verdict, 'bet_note', None):
+        bet_note_html = (
+            f'<div class="note"><div class="note-label">買い目メモ</div>'
+            f'{_esc(verdict.bet_note)}</div>'
+        )
+
     return f'''
   <div class="race">
     <div class="race-head">
@@ -320,6 +330,7 @@ def _race_block(verdict, nar_names):
     {gauges_html}
     {odds_note}
     <div class="findings">{''.join(findings_html)}</div>
+    {bet_note_html}
     {note_html}
   </div>'''
 
