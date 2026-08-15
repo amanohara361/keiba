@@ -97,6 +97,9 @@ def test_confidence_c_race_shows_no_bets_placeholder():
 
     assert '買い目なし' in out
     assert 'pill-neutral' in out
+    # 買い目が無いのに「規律をクリア」は誤読を招く（check.py と同じ修正）。
+    assert '規律をすべてクリア' not in out
+    assert '見送り（買い目なし）' in out
 
 
 def test_missing_odds_shows_provisional_note_not_a_crash():
