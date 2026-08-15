@@ -1057,5 +1057,347 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-15T13:37:49.318399+09:00",
+    "races": [
+      {
+        "race_id": "202607020702",
+        "name": "3歳未勝利",
+        "blocked": true,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "BLOCK",
+            "code": "already_started_unevaluated",
+            "message": "3歳未勝利: 発走までに一度も評価できませんでした（発走 10:20 / 現在 13:37）",
+            "remedy": "買い目が一度も確定しないまま発走しました。直前検算の実行間隔・遅延を確認してください。"
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202607020705",
+        "name": "3歳未勝利",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳未勝利: 既に発走しています（発走 11:50 / 現在 13:37）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202607020707",
+        "name": "高山S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "高山S: 芝2000m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "高山S: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "曇",
+          "surface": "芝",
+          "distance": 2000
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-15 13:36:22"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-15 13:36:22"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-15 13:36:22"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-15 13:36:22"
+        }
+      },
+      {
+        "race_id": "202604020707",
+        "name": "上越S",
+        "blocked": false,
+        "composite_odds": 12.58,
+        "expected_value": 2.26,
+        "bet_odds": [
+          {
+            "bet": "馬連 4-7",
+            "odds": 38.4
+          },
+          {
+            "bet": "馬連 4-6",
+            "odds": 31.8
+          },
+          {
+            "bet": "馬連 4-2",
+            "odds": 45.4
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "上越S: ダート1200m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "上越S: 合成オッズ 12.58倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "上越S: 期待値 2.26（合成 12.58倍 × 主観的中率 18%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-15 13:37:02"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-15 13:37:02"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-15 13:37:02"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-15 13:37:02"
+        }
+      },
+      {
+        "race_id": "202601010709",
+        "name": "コスモス賞",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "コスモス賞: 芝1800m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "コスモス賞: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1800
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-15 13:37:37"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-15 13:37:37"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-15 13:37:37"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-15 13:37:37"
+        }
+      },
+      {
+        "race_id": "202601010711",
+        "name": "大雪HC",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "大雪HC: ダート1700m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "大雪HC: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1700
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-15 13:36:42"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-15 13:36:42"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-15 13:36:42"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-15 13:36:42"
+        }
+      },
+      {
+        "race_id": "202608155507",
+        "name": "あさがお賞Ｂ",
+        "blocked": false,
+        "composite_odds": 4.5,
+        "expected_value": 1.35,
+        "bet_odds": [
+          {
+            "bet": "馬連 1-7",
+            "odds": 6.3
+          },
+          {
+            "bet": "馬連 1-4",
+            "odds": 27.4
+          },
+          {
+            "bet": "馬連 1-10",
+            "odds": 37.2
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "あさがお賞Ｂ: ダート1400m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "あさがお賞Ｂ: 合成オッズ 4.50倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "あさがお賞Ｂ: 期待値 1.35（合成 4.50倍 × 主観的中率 30%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "曇",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 45
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 90
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 45
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 120
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-15 13:37:54"
+        }
+      }
+    ]
   }
 ]
