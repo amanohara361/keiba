@@ -501,6 +501,10 @@ def test_end_to_end_declines_when_a_senior_mark_has_no_odds(tmp_path, monkeypatc
     output = capsys.readouterr().out
     assert '発注を止めました' not in output
     assert '勝負度C' in output
+    # 買い目が無いのに「規律をクリアしています」は誤読を招く（2026-08-15
+    # ユーザー指摘）。買い目が無いときは見送りだとそのまま書く。
+    assert '規律をすべてクリアしています' not in output
+    assert '見送り（買い目なし）' in output
 
     # 書き戻された買い目ファイルを見ても、買い目は空のまま（部分的に組まれていない）
     saved_sheet = bets.load_sheet(date(2026, 8, 2))
