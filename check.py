@@ -347,7 +347,12 @@ def format_verdict(verdict):
             lines.append(f'      → {finding.remedy}')
 
     if not verdict.blocked and not verdict.warnings:
-        lines.append('  ✓ 第13章の規律をすべてクリアしています')
+        if race.bets:
+            lines.append('  ✓ 第13章の規律をすべてクリアしています')
+        else:
+            # 買い目が無いのに「規律をクリア」は誤読を招く（クリアしたのは
+            # 何も無い、という状態であって、買い目が規律に合格したのではない）。
+            lines.append('  － 見送り（買い目なし）')
 
     meta = verdict.meta or {}
     status = meta.get('status')
