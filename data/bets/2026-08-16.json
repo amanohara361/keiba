@@ -1,0 +1,299 @@
+{
+  "date": "2026-08-16",
+  "generated_at": "2026-08-16T07:05:17+09:00",
+  "source": "cloud",
+  "races": [
+    {
+      "race_id": "202607020807",
+      "org": "jra",
+      "name": "中京記念",
+      "venue": "中京",
+      "race_no": 7,
+      "start_time": "15:35",
+      "confidence": null,
+      "subjective_hit_rate": 0.16,
+      "marks": [
+        {
+          "mark": "◎",
+          "umaban": 8,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "○",
+          "umaban": 6,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "▲",
+          "umaban": 5,
+          "steps": [
+            3
+          ]
+        },
+        {
+          "mark": "△",
+          "umaban": 10,
+          "steps": [
+            3
+          ]
+        }
+      ],
+      "partners": [
+        {
+          "umaban": 9,
+          "reason": "前走桜花賞は度外視可（後方から届かず、休み明けで巻き返しの余地あり）"
+        }
+      ],
+      "bets": [],
+      "note": "12番サトノシャイニングは1番人気だが約10ヶ月の休み明けで「危険な人気馬」候補（軸から外す）。厩舎コメント・パドック・馬体重は未確認、直前タスクで要確認。"
+    },
+    {
+      "race_id": "202604020803",
+      "org": "jra",
+      "name": "2歳未勝利",
+      "venue": "新潟",
+      "race_no": 3,
+      "start_time": "10:40",
+      "confidence": null,
+      "subjective_hit_rate": 0.13,
+      "marks": [
+        {
+          "mark": "◎",
+          "umaban": 8,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "○",
+          "umaban": 6,
+          "steps": [
+            3
+          ]
+        },
+        {
+          "mark": "▲",
+          "umaban": 14,
+          "steps": [
+            3
+          ]
+        }
+      ],
+      "partners": [
+        {
+          "umaban": 1,
+          "reason": "デビュー戦3着で悪くない内容、上積み期待"
+        }
+      ],
+      "bets": [],
+      "note": "3番ラキアーヴェは1番人気だが前走先行して上がり42.4と大失速（危険な人気馬候補）。2歳未勝利で戦績が薄く精度は低め。厩舎コメント・パドックは未確認、直前タスクで要確認。"
+    },
+    {
+      "race_id": "202604020806",
+      "org": "jra",
+      "name": "稲妻S",
+      "venue": "新潟",
+      "race_no": 6,
+      "start_time": "14:50",
+      "confidence": null,
+      "subjective_hit_rate": 0.17,
+      "marks": [
+        {
+          "mark": "◎",
+          "umaban": 8,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "○",
+          "umaban": 10,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "▲",
+          "umaban": 6,
+          "steps": [
+            3
+          ]
+        },
+        {
+          "mark": "△",
+          "umaban": 13,
+          "steps": [
+            3
+          ]
+        }
+      ],
+      "partners": [
+        {
+          "umaban": 11,
+          "reason": "1番人気で総合力は高いが、今回距離(1000m)そのものでの実績はやや手薄"
+        }
+      ],
+      "bets": [],
+      "note": "短距離のためコース・距離実績を重視。厩舎コメント・パドック・馬体重は未確認、直前タスクで要確認。"
+    },
+    {
+      "race_id": "202604020807",
+      "org": "jra",
+      "name": "NST賞",
+      "venue": "新潟",
+      "race_no": 7,
+      "start_time": "15:25",
+      "confidence": null,
+      "subjective_hit_rate": 0.24,
+      "marks": [
+        {
+          "mark": "◎",
+          "umaban": 5,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "○",
+          "umaban": 9,
+          "steps": [
+            3
+          ]
+        },
+        {
+          "mark": "▲",
+          "umaban": 7,
+          "steps": [
+            3
+          ]
+        },
+        {
+          "mark": "△",
+          "umaban": 10,
+          "steps": [
+            3
+          ]
+        }
+      ],
+      "partners": [
+        {
+          "umaban": 2,
+          "reason": "以前は連続好走歴あり、直近低調だが巻き返しに期待"
+        }
+      ],
+      "bets": [],
+      "note": "5番コンクイスタは1番人気だが今回距離での連続好走が根拠で危険な人気馬には該当しない。厩舎コメント・パドックは未確認、直前タスクで要確認。"
+    },
+    {
+      "race_id": "202601010808",
+      "org": "jra",
+      "name": "3歳以上1勝クラス",
+      "venue": "札幌",
+      "race_no": 8,
+      "start_time": "14:00",
+      "confidence": null,
+      "subjective_hit_rate": 0.16,
+      "marks": [
+        {
+          "mark": "◎",
+          "umaban": 10,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "○",
+          "umaban": 3,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "▲",
+          "umaban": 4,
+          "steps": [
+            3
+          ]
+        },
+        {
+          "mark": "△",
+          "umaban": 7,
+          "steps": [
+            3
+          ]
+        }
+      ],
+      "partners": [
+        {
+          "umaban": 5,
+          "reason": "堅実な連対争い、距離はやや長めだが崩れない"
+        }
+      ],
+      "bets": [],
+      "note": "1勝クラスで戦績が薄く精度は低め。厩舎コメント・パドック・馬体重は未確認、直前タスクで要確認。"
+    },
+    {
+      "race_id": "202601010811",
+      "org": "jra",
+      "name": "札幌記念",
+      "venue": "札幌",
+      "race_no": 11,
+      "start_time": "15:45",
+      "confidence": null,
+      "subjective_hit_rate": 0.18,
+      "marks": [
+        {
+          "mark": "◎",
+          "umaban": 13,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "○",
+          "umaban": 15,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "▲",
+          "umaban": 8,
+          "steps": [
+            3,
+            4
+          ]
+        },
+        {
+          "mark": "△",
+          "umaban": 9,
+          "steps": [
+            3
+          ]
+        }
+      ],
+      "partners": [
+        {
+          "umaban": 5,
+          "reason": "GIII/GIIでは崩れておらず、前走GIは相手が強すぎた可能性"
+        }
+      ],
+      "bets": [],
+      "note": "7番ショウヘイは1番人気だが前走同距離のGIで10着と低調（危険な人気馬候補）。10番アドマイヤテラは2番人気だが最近は3000m超が主戦で今回2000mへの距離短縮は未知数。両者とも軸から外す。厩舎コメント・パドック・馬体重は未確認、直前タスクで要確認。"
+    }
+  ]
+}
