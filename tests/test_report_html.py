@@ -102,6 +102,39 @@ def test_confidence_c_race_shows_no_bets_placeholder():
     assert '見送り（買い目なし）' in out
 
 
+def test_bet_noteはメモとは別枠で毎回上書きの説明として出る():
+    """bet_builderの説明文（verdict.bet_note）はrace.noteとは別に表示する。
+
+    2026-08-15、bet_builderの説明文をrace.noteに追記していたため、
+    検算を繰り返すたびに同じ文言が積み重なる不具合があった。race.note
+    （朝タスクの分析メモ）は触らず、bet_noteは検算のたびに新しい内容で
+    上書きされる別枠として出す。
+    """
+    race = make_race(name='見送りレース', confidence='C',
+                     marks=[{'mark': '◎', 'umaban': 3}], bets=[],
+                     note='2番は危険な人気馬候補。')
+    verdict = review(race)
+    verdict.bet_note = '第13章の基準を満たす買い目を組めませんでした。見送り（勝負度C）。'
+
+    out = report_html.render(FakeSheet([race]), [verdict],
+                             datetime(2026, 8, 12, 10, 0, tzinfo=JST))
+
+    assert '買い目メモ' in out
+    assert '第13章の基準を満たす買い目を組めませんでした' in out
+    assert '2番は危険な人気馬候補。' in out   # race.note（朝タスクのメモ）も別枠で残る
+
+
+def test_bet_noteが無ければ買い目メモ欄は出ない():
+    race = make_race(name='見送りレース', confidence='C',
+                     marks=[{'mark': '◎', 'umaban': 3}], bets=[])
+    verdict = review(race)
+
+    out = report_html.render(FakeSheet([race]), [verdict],
+                             datetime(2026, 8, 12, 10, 0, tzinfo=JST))
+
+    assert '買い目メモ' not in out
+
+
 def test_missing_odds_shows_provisional_note_not_a_crash():
     race = make_race(
         marks=[{'mark': '◎', 'umaban': 1}],

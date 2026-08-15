@@ -348,6 +348,12 @@ class RaceVerdict:
         self.meta = meta
         self.conditions = conditions or {}
         self.forms = forms or {}
+        # bet_builder の説明文（その回だけの一時的な情報）。discipline.py は
+        # bet_builder を知らないので、呼び出し側（check.py）がここに直接
+        # 代入する。race.note には書かない（2026-08-15、note が無限に
+        # 積み重なる不具合の修正）。既定 None は「bet_builder を経由して
+        # いない」（発走済み・データ欠損など）ことを表す。
+        self.bet_note = None
 
     @property
     def blocked(self):

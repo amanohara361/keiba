@@ -512,6 +512,61 @@ def test_end_to_end_declines_when_a_senior_mark_has_no_odds(tmp_path, monkeypatc
     assert saved_sheet.races[0].bets == []
 
 
+def test_race_noteはbet_builderの説明で積み重ならない(tmp_path, monkeypatch, capsys):
+    """実例：2026-08-15、中京5R「3歳未勝利」で同じ「見送り」文言が3回連結された。
+
+    1日に複数回走る検算のたびに race.note へ追記していたことが原因。
+    race.note は朝タスクが書いた分析メモのまま変わらないこと、
+    bet_builderの説明は verdict.bet_note（毎回上書き・非永続）に出ることを
+    確認する。
+    """
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+
+    original_note = '2番メイショウプレマは芝からの初ダート転向で危険な人気馬候補。'
+    bets.save_sheet(BetSheet(
+        date=date(2026, 8, 2),
+        races=[make_race(
+            name='3歳未勝利',
+            marks=marks_of(items=[('◎', 3), ('○', 6)]),
+            bets=[], subjective_hit_rate=0.15, note=original_note,
+        )],
+    ))
+
+    def fake_fetch(race_id, bet_type):
+        # オッズは引けるが低すぎて規律を満たせない＝bet_builderは毎回
+        # 「見送り（勝負度C）」の説明文を返す（実例と同じ形の見送り）。
+        tables = {
+            '単勝': {'03': ['2.9', '3.0', '1']},
+            '馬連': {'0306': ['2.0', '2.1', '1']},
+            'ワイド': {'0306': ['1.5', '1.6', '1']},
+        }
+        return {'status': 'middle', 'reason': None,
+                'official_datetime': '10:00:00', 'odds': tables[bet_type]}
+
+    monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
+    monkeypatch.setattr(conditions_module, 'fetch',
+                        lambda rid, **kw: {'going': '良', 'weather': '晴',
+                                          'surface': '芝', 'distance': 1800})
+
+    for _ in range(2):
+        exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T10:00',
+                                '--no-email'])
+        assert exit_code == check.EXIT_OK
+    capsys.readouterr()   # 直前2回ぶんの出力は捨てる
+
+    exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T10:00',
+                            '--no-email'])
+    assert exit_code == check.EXIT_OK
+
+    saved_sheet = bets.load_sheet(date(2026, 8, 2))
+    assert saved_sheet.races[0].note == original_note   # 積み重なっていない
+
+    output = capsys.readouterr().out   # 3回目（最新）の出力だけを見る
+    assert output.count('見送り（勝負度C）') == 1   # 説明文自体も重複しない
+    assert '買い目メモ: 第13章の基準' in output
+
+
 def test_end_to_end_passes_a_clean_sheet(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
     monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
