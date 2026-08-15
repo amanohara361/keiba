@@ -1,0 +1,353 @@
+[
+  {
+    "checked_at": "2026-08-16T07:06:09.149077+09:00",
+    "races": [
+      {
+        "race_id": "202607020807",
+        "name": "中京記念",
+        "blocked": false,
+        "composite_odds": 21.85,
+        "expected_value": 3.5,
+        "bet_odds": [
+          {
+            "bet": "馬連 8-6",
+            "odds": 89.2
+          },
+          {
+            "bet": "馬連 8-5",
+            "odds": 85.2
+          },
+          {
+            "bet": "馬連 8-10",
+            "odds": 68.0
+          },
+          {
+            "bet": "馬連 8-9",
+            "odds": 123.3
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "中京記念: 芝1600m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "中京記念: 合成オッズ 21.85倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "中京記念: 期待値 3.50（合成 21.85倍 × 主観的中率 16%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "曇",
+          "surface": "芝",
+          "distance": 1600
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:04:51"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:04:51"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:04:51"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-16 07:04:51"
+        }
+      },
+      {
+        "race_id": "202604020803",
+        "name": "2歳未勝利",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "2歳未勝利: ダート1200m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "2歳未勝利: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:03:06"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:03:06"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:03:06"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-16 07:03:06"
+        }
+      },
+      {
+        "race_id": "202604020806",
+        "name": "稲妻S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "稲妻S: 芝1000m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "稲妻S: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1000
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:03:56"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:03:56"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:03:56"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-16 07:03:56"
+        }
+      },
+      {
+        "race_id": "202604020807",
+        "name": "NST賞",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "NST賞: ダート1200m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "NST賞: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:04:36"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:04:36"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:04:36"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-16 07:04:36"
+        }
+      },
+      {
+        "race_id": "202601010808",
+        "name": "3歳以上1勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "3歳以上1勝クラス: ダート1700m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "3歳以上1勝クラス: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1700
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:05:11"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:05:11"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:05:11"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-16 07:05:11"
+        }
+      },
+      {
+        "race_id": "202601010811",
+        "name": "札幌記念",
+        "blocked": false,
+        "composite_odds": 12.13,
+        "expected_value": 2.18,
+        "bet_odds": [
+          {
+            "bet": "馬連 13-15",
+            "odds": 25.1
+          },
+          {
+            "bet": "馬連 13-8",
+            "odds": 41.9
+          },
+          {
+            "bet": "馬連 13-9",
+            "odds": 246.1
+          },
+          {
+            "bet": "馬連 13-5",
+            "odds": 68.3
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "札幌記念: 芝2000m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "札幌記念: 合成オッズ 12.13倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "札幌記念: 期待値 2.18（合成 12.13倍 × 主観的中率 18%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 2000
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:02:11"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:02:11"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-16 07:02:11"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-16 07:02:11"
+        }
+      }
+    ]
+  }
+]
