@@ -88,6 +88,27 @@ def test_相手全員のオッズが低いと絞っても救えず見送りに�
     assert built == []
 
 
+def test_オッズが0以下ならNone扱いで見送りクラッシュしない():
+    """0.0（未発売等でオッズCSVが実際には返しうる値）はNoneと同じく
+
+    「引けなかった」扱いにする。2026-08-15、地方の1レースでオッズCSVが
+    全点0.0を返し、discipline.composite_odds が None を返した結果
+    `composite * hit_rate` で TypeError になり検算全体が落ちた事故の再発防止。
+    見送り（C）になり例外を投げないことを確認する。
+    """
+    r = race(
+        marks=[{'mark': '◎', 'umaban': 1}, {'mark': '○', 'umaban': 7}],
+        subjective_hit_rate=0.3,
+    )
+    lookup = lookup_from({
+        ('馬連', frozenset({1, 7})): 0.0,
+        ('ワイド', frozenset({1, 7})): 0.0,
+    })
+    confidence, built, note = bet_builder.build_bets(r, lookup)
+    assert confidence == 'C'
+    assert built == []
+
+
 def test_馬連で沈んだらワイドへ振り替える():
     r = race(
         marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11},

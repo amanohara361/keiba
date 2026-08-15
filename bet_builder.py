@@ -100,9 +100,15 @@ def build_bets(race, lookup, stake=100):
         if not partners:
             continue
         odds_values = _odds_for_pairs(axis, partners, bet_type, lookup)
-        if any(o is None for o in odds_values):
+        if any(o is None or o <= 0 for o in odds_values):
             # 相手の誰か1頭でもオッズが引けなければこの段は使わない
             # （実オッズ優先の原則。上のdocstring参照）。
+            # 0以下は「まだ売り出されていない」等の値で、実際のオッズでは
+            # あり得ない（券面は必ず1倍超）。discipline.composite_odds も
+            # 0以下を計算から除外するため、ここで先に弾かないと全点が
+            # 0以下だった場合に composite が None のまま次の掛け算に渡り、
+            # TypeError で検算全体が落ちる（2026-08-15、地方の1レースで
+            # オッズCSVが未発売のため全点0.0を返し再現）。
             continue
         any_fully_priced = True
         composite = discipline.composite_odds(odds_values)
