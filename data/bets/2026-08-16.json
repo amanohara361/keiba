@@ -234,7 +234,7 @@
       "venue": "札幌",
       "race_no": 8,
       "start_time": "14:00",
-      "confidence": "C",
+      "confidence": "B",
       "subjective_hit_rate": 0.16,
       "marks": [
         {
@@ -274,7 +274,16 @@
           "reason": "堅実な連対争い、距離はやや長めだが崩れない"
         }
       ],
-      "bets": [],
+      "bets": [
+        {
+          "type": "ワイド",
+          "horses": [
+            10,
+            3
+          ],
+          "stake": 100
+        }
+      ],
       "note": "1勝クラスで戦績が薄く精度は低め。厩舎コメント・パドック・馬体重は未確認、直前タスクで要確認。"
     },
     {
