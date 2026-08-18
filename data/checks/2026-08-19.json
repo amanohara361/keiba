@@ -1,0 +1,111 @@
+[
+  {
+    "checked_at": "2026-08-19T08:09:20.217675+09:00",
+    "races": [
+      {
+        "race_id": "202608194511",
+        "name": "第２３回 スパーキングサマーカップ【地方交流】３歳上オープン",
+        "blocked": false,
+        "composite_odds": 13.9,
+        "expected_value": 3.75,
+        "bet_odds": [
+          {
+            "bet": "ワイド 8-7",
+            "odds": 13.9
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第２３回 スパーキングサマーカップ【地方交流】３歳上オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "第２３回 スパーキングサマーカップ【地方交流】３歳上オープン: 合成オッズ 13.90倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "第２３回 スパーキングサマーカップ【地方交流】３歳上オープン: 期待値 3.75（合成 13.90倍 × 主観的中率 27%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1600,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 66
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 132
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 66
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 220
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-19 08:09:21"
+        }
+      },
+      {
+        "race_id": "202608193012",
+        "name": "第１３回 フルールカップ（ミスチヴィアスアレックス賞）２歳牝馬オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第１３回 フルールカップ（ミスチヴィアスアレックス賞）２歳牝馬オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第１３回 フルールカップ（ミスチヴィアスアレックス賞）２歳牝馬オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1200,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-08-19 08:09:21"
+        }
+      }
+    ]
+  }
+]
