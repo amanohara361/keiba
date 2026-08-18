@@ -159,5 +159,166 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-18T14:38:53.278138+09:00",
+    "races": [
+      {
+        "race_id": "202608183511",
+        "name": "第２７回 岩手県知事杯ＯＲＯカップ（タリスマニック賞）オープン",
+        "blocked": false,
+        "composite_odds": 9.42,
+        "expected_value": 2.36,
+        "bet_odds": [
+          {
+            "bet": "馬連 11-7",
+            "odds": 33.7
+          },
+          {
+            "bet": "馬連 11-8",
+            "odds": 143.1
+          },
+          {
+            "bet": "馬連 11-12",
+            "odds": 14.4
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "第２７回 岩手県知事杯ＯＲＯカップ（タリスマニック賞）オープン: 芝1700m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "第２７回 岩手県知事杯ＯＲＯカップ（タリスマニック賞）オープン: 合成オッズ 9.42倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "第２７回 岩手県知事杯ＯＲＯカップ（タリスマニック賞）オープン: 期待値 2.36（合成 9.42倍 × 主観的中率 25%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "芝",
+          "distance": 1700,
+          "weather": "曇",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 13
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 13
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 78
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 156
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 78
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 286
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-18 14:38:56"
+        }
+      },
+      {
+        "race_id": "202608184609",
+        "name": "石川門カップ３歳",
+        "blocked": false,
+        "composite_odds": 4.48,
+        "expected_value": 1.43,
+        "bet_odds": [
+          {
+            "bet": "馬連 12-1",
+            "odds": 7.7
+          },
+          {
+            "bet": "馬連 12-3",
+            "odds": 13.3
+          },
+          {
+            "bet": "馬連 12-5",
+            "odds": 55.4
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "石川門カップ３歳: ダート1400m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "石川門カップ３歳: 合成オッズ 4.48倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "石川門カップ３歳: 期待値 1.43（合成 4.48倍 × 主観的中率 32%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "晴",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 66
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 132
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 66
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 220
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-18 14:38:56"
+        }
+      }
+    ]
   }
 ]
