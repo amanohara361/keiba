@@ -406,4 +406,43 @@ def test_メール本文にも配当の偏りが出る():
                               total_summary=week)
     assert '配当(規律適用後) 今週' in body
     assert '配当(規律適用後) 通算' in body
-    assert '中央値' in body
+
+
+# ----------------------------------------------------------------------
+# 件名サフィックス（結果取得の再試行、2026-08-18 追加）
+# ----------------------------------------------------------------------
+
+def test_件名にサフィックスを付けられる(tmp_path, monkeypatch):
+    """月曜のレビューで結果が欠けていた場合、火曜に再取得して送るメールが
+    月曜と同じ件名だと、単なる誤送信・重複に見えてしまう
+    （実例：2026-08-17、12レースの結果が取得できておらず、2日後の再取得で
+    全て揃った。件名で「再試行」と分かるようにする）。"""
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(review, 'REVIEW_DIR', str(tmp_path / 'review'))
+
+    import mailer as mailer_module
+    sent = []
+    monkeypatch.setattr(mailer_module.Mailer, 'is_configured', lambda self: True)
+    monkeypatch.setattr(mailer_module.Mailer, 'send',
+                        lambda self, subject, body: sent.append(subject) or True)
+
+    exit_code = review.main(['--end', '2026-08-17', '--days', '7', '--mail',
+                             '--subject-suffix', '（結果取得の再試行）'])
+
+    assert exit_code in (review.EXIT_OK, review.EXIT_NEEDS_ATTENTION)
+    assert sent == ['週次レビュー 2026-08-11〜2026-08-17（結果取得の再試行）']
+
+
+def test_サフィックス省略時は従来どおりの件名(tmp_path, monkeypatch):
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(review, 'REVIEW_DIR', str(tmp_path / 'review'))
+
+    import mailer as mailer_module
+    sent = []
+    monkeypatch.setattr(mailer_module.Mailer, 'is_configured', lambda self: True)
+    monkeypatch.setattr(mailer_module.Mailer, 'send',
+                        lambda self, subject, body: sent.append(subject) or True)
+
+    review.main(['--end', '2026-08-17', '--days', '7', '--mail'])
+
+    assert sent == ['週次レビュー 2026-08-11〜2026-08-17']

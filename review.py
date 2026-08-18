@@ -601,6 +601,8 @@ def main(argv=None):
     parser.add_argument('--mail', action='store_true', help='結果をメールする')
     parser.add_argument('--no-cache', action='store_true',
                         help='保存済みの結果を使わず取り直す')
+    parser.add_argument('--subject-suffix', default='',
+                        help='件名に付け足す文字列（例：再取得回だと分かるように）')
     args = parser.parse_args(argv)
 
     end = date.fromisoformat(args.end) if args.end else bets.now_jst().date()
@@ -633,7 +635,7 @@ def main(argv=None):
         if not mailer.is_configured():
             logger.error('メールの認証情報が未設定です')
             return EXIT_ERROR
-        subject = f'週次レビュー {start.isoformat()}〜{end.isoformat()}'
+        subject = f'週次レビュー {start.isoformat()}〜{end.isoformat()}{args.subject_suffix}'
         rel = os.path.relpath(path, ROOT)
         body = render_mail(week_summary, (start, end), rel, total_summary=total_summary)
         if not mailer.send(subject, body):

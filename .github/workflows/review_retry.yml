@@ -1,0 +1,101 @@
+name: 週次レビュー再取得
+
+# 月曜のレビュー（review.yml）実行時点で、netkeiba側がまだレース結果を
+# 反映しきっていないと、その分だけ結果が欠けたまま週次レビューが確定してしまう。
+#
+# 実例：2026-08-17（月）09:54 JST の実行で12レース分の結果が取得できず、
+# レビューに「結果を取得できていない」の注記が付いた。原因調査のため
+# results.py と同じ db.netkeiba.com の結果ページ・同じパース処理を使う
+# バイアス蓄積（bias.yml）を2日後に手動で再実行したところ、全レース
+# 問題なく取得できた。結果ページ自体の構造変化やパース側の不具合ではなく、
+# netkeiba側の反映がその時点でまだ間に合っていなかっただけ、と確認済み。
+#
+# 対策：火曜（月曜の翌日）に同じ期間で review.py を再実行する。月曜分の
+# レビューに「結果を取得できていない」の注記が無ければ（＝欠けが無かった
+# か、もう解消している）何もしない。同じ内容のメールを毎週送らないため。
+
+on:
+  schedule:
+    # 00:17 UTC 火 = 09:17 JST 火（月曜の週次レビューの翌日）
+    - cron: '17 0 * * 2'
+  workflow_dispatch:
+    inputs:
+      end:
+        description: '再取得する対象週の終わり (YYYY-MM-DD)。空なら前日（通常は直近の月曜）。'
+        required: false
+
+concurrency:
+  group: keiba-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  retry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 前回のレビューに欠けがあるか確認
+        id: check
+        env:
+          INPUT_END: ${{ inputs.end }}
+        run: |
+          end_arg="$INPUT_END"
+          if [ -z "$end_arg" ]; then
+            end_arg="$(TZ=Asia/Tokyo date -d 'yesterday' +%Y-%m-%d)"
+          fi
+          echo "end=$end_arg" >> "$GITHUB_OUTPUT"
+          path="data/review/$end_arg.md"
+          if [ ! -f "$path" ]; then
+            echo "対象のレビューがありません: $path（何もしません）"
+            echo "retry=false" >> "$GITHUB_OUTPUT"
+          elif grep -q 'レースの結果を取得できていない' "$path"; then
+            echo "$path に結果の欠けあり。再取得します。"
+            echo "retry=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "$path に欠けなし。何もしません。"
+            echo "retry=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-python@v5
+        if: steps.check.outputs.retry == 'true'
+        with:
+          python-version: '3.11'
+
+      - name: 結果を再取得してレビューを更新
+        if: steps.check.outputs.retry == 'true'
+        env:
+          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+          RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
+          TARGET_END: ${{ steps.check.outputs.end }}
+        run: |
+          set +e
+          python review.py --end "$TARGET_END" --days 7 --mail \
+            --subject-suffix '（結果取得の再試行）' \
+            | tee "$GITHUB_STEP_SUMMARY"
+          code=${PIPESTATUS[0]}
+          set -e
+          # 終了コード3＝要確認だが通知はできた状態。review.yml と同じ扱いにする。
+          if [ "$code" -eq 0 ] || [ "$code" -eq 3 ]; then exit 0; fi
+          exit "$code"
+
+      - name: 更新をコミット
+        if: steps.check.outputs.retry == 'true' && always()
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/ 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo '更新はありません'
+          else
+            git commit -m "週次レビュー再取得: $(date -u +%Y-%m-%d)"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
