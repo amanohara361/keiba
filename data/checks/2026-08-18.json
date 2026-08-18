@@ -584,5 +584,50 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-18T19:59:36.503638+09:00",
+    "races": [
+      {
+        "race_id": "202608183511",
+        "name": "第２７回 岩手県知事杯ＯＲＯカップ（タリスマニック賞）オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第２７回 岩手県知事杯ＯＲＯカップ（タリスマニック賞）オープン: 既に発走しています（発走 17:40 / 現在 19:59）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608184609",
+        "name": "石川門カップ３歳",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "石川門カップ３歳: 既に発走しています（発走 19:55 / 現在 19:59）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
