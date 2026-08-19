@@ -10,6 +10,7 @@
       "venue": "名古屋",
       "race_no": 11,
       "start_time": "20:05",
+      "confidence": "C",
       "subjective_hit_rate": 0.3,
       "marks": [
         {
@@ -53,6 +54,7 @@
       "venue": "門別",
       "race_no": 12,
       "start_time": "20:35",
+      "confidence": "C",
       "subjective_hit_rate": 0.33,
       "marks": [
         {

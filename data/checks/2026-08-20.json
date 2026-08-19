@@ -1,0 +1,75 @@
+[
+  {
+    "checked_at": "2026-08-20T08:10:32.808659+09:00",
+    "races": [
+      {
+        "race_id": "202608204811",
+        "name": "第７回 ベイスプリントオープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第７回 ベイスプリントオープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第７回 ベイスプリントオープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 920,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-08-20 08:10:34"
+        }
+      },
+      {
+        "race_id": "202608203012",
+        "name": "第２０回 ブリーダーズゴールドジュニアカップ（ソールオリエンス賞）２歳オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第２０回 ブリーダーズゴールドジュニアカップ（ソールオリエンス賞）２歳オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第２０回 ブリーダーズゴールドジュニアカップ（ソールオリエンス賞）２歳オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1700,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-08-20 08:10:34"
+        }
+      }
+    ]
+  }
+]
