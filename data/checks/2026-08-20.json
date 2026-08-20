@@ -639,5 +639,147 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-20T20:00:45.251287+09:00",
+    "races": [
+      {
+        "race_id": "202608204811",
+        "name": "第７回 ベイスプリントオープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "第７回 ベイスプリントオープン: ダート920m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第７回 ベイスプリントオープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 920,
+          "weather": "晴",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 11
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 11
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 55
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 110
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 55
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 165
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-20 20:00:46"
+        }
+      },
+      {
+        "race_id": "202608203012",
+        "name": "第２０回 ブリーダーズゴールドジュニアカップ（ソールオリエンス賞）２歳オープン",
+        "blocked": false,
+        "composite_odds": 6.7,
+        "expected_value": 2.21,
+        "bet_odds": [
+          {
+            "bet": "馬連 1-6",
+            "odds": 27.5
+          },
+          {
+            "bet": "馬連 1-4",
+            "odds": 20.9
+          },
+          {
+            "bet": "馬連 1-8",
+            "odds": 15.4
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "第２０回 ブリーダーズゴールドジュニアカップ（ソールオリエンス賞）２歳オープン: ダート1700m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "第２０回 ブリーダーズゴールドジュニアカップ（ソールオリエンス賞）２歳オープン: 合成オッズ 6.70倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "第２０回 ブリーダーズゴールドジュニアカップ（ソールオリエンス賞）２歳オープン: 期待値 2.21（合成 6.70倍 × 主観的中率 33%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1700,
+          "weather": "晴",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 45
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 90
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 45
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 120
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-20 20:00:46"
+        }
+      }
+    ]
   }
 ]
