@@ -543,7 +543,7 @@
       "venue": "札幌",
       "race_no": 11,
       "start_time": "15:45",
-      "confidence": "B",
+      "confidence": "A",
       "subjective_hit_rate": 0.45,
       "marks": [
         {
@@ -624,38 +624,6 @@
           "horses": [
             14,
             11
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            14,
-            3
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            14,
-            12
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            14,
-            9
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            14,
-            1
           ],
           "stake": 100
         }

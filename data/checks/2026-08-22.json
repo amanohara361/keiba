@@ -473,5 +473,464 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-22T11:19:38.298761+09:00",
+    "races": [
+      {
+        "race_id": "202607030106",
+        "name": "大府特別",
+        "blocked": false,
+        "composite_odds": 3.21,
+        "expected_value": 1.6,
+        "bet_odds": [
+          {
+            "bet": "馬連 4-12",
+            "odds": 8.5
+          },
+          {
+            "bet": "馬連 4-5",
+            "odds": 10.9
+          },
+          {
+            "bet": "馬連 4-11",
+            "odds": 39.2
+          },
+          {
+            "bet": "馬連 4-14",
+            "odds": 48.1
+          },
+          {
+            "bet": "馬連 4-2",
+            "odds": 28.9
+          },
+          {
+            "bet": "馬連 4-3",
+            "odds": 46.5
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "大府特別: ダート1800m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "大府特別: 合成オッズ 3.21倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "大府特別: 期待値 1.60（合成 3.21倍 × 主観的中率 50%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1800
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:19:13"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:19:13"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:19:13"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-22 11:19:13"
+        }
+      },
+      {
+        "race_id": "202607030107",
+        "name": "伊賀S",
+        "blocked": false,
+        "composite_odds": 3.34,
+        "expected_value": 1.5,
+        "bet_odds": [
+          {
+            "bet": "馬連 3-4",
+            "odds": 8.2
+          },
+          {
+            "bet": "馬連 3-7",
+            "odds": 23.8
+          },
+          {
+            "bet": "馬連 3-13",
+            "odds": 14.2
+          },
+          {
+            "bet": "馬連 3-2",
+            "odds": 28.8
+          },
+          {
+            "bet": "馬連 3-14",
+            "odds": 137.2
+          },
+          {
+            "bet": "馬連 3-5",
+            "odds": 42.9
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "伊賀S: ダート1400m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "伊賀S: 合成オッズ 3.34倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "伊賀S: 期待値 1.50（合成 3.34倍 × 主観的中率 45%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1400
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:19:18"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:19:18"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:19:18"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-22 11:19:18"
+        }
+      },
+      {
+        "race_id": "202604030106",
+        "name": "長岡S",
+        "blocked": false,
+        "composite_odds": 4.74,
+        "expected_value": 2.09,
+        "bet_odds": [
+          {
+            "bet": "馬連 10-12",
+            "odds": 20.7
+          },
+          {
+            "bet": "馬連 10-2",
+            "odds": 7.4
+          },
+          {
+            "bet": "馬連 10-7",
+            "odds": 36.5
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "長岡S: 芝1600m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "長岡S: 合成オッズ 4.74倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "長岡S: 期待値 2.09（合成 4.74倍 × 主観的中率 44%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1600
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:18:03"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:18:03"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:18:03"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-22 11:18:03"
+        }
+      },
+      {
+        "race_id": "202604030107",
+        "name": "朱鷺S",
+        "blocked": false,
+        "composite_odds": 3.86,
+        "expected_value": 1.62,
+        "bet_odds": [
+          {
+            "bet": "馬連 6-3",
+            "odds": 16.2
+          },
+          {
+            "bet": "馬連 6-17",
+            "odds": 37.6
+          },
+          {
+            "bet": "馬連 6-14",
+            "odds": 20.0
+          },
+          {
+            "bet": "馬連 6-1",
+            "odds": 36.1
+          },
+          {
+            "bet": "馬連 6-16",
+            "odds": 27.7
+          },
+          {
+            "bet": "馬連 6-9",
+            "odds": 22.5
+          },
+          {
+            "bet": "馬連 6-15",
+            "odds": 78.0
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "朱鷺S: 芝1400m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "朱鷺S: 合成オッズ 3.86倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "朱鷺S: 期待値 1.62（合成 3.86倍 × 主観的中率 42%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1400
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:18:53"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:18:53"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:18:53"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-22 11:18:53"
+        }
+      },
+      {
+        "race_id": "202601020109",
+        "name": "クローバー賞",
+        "blocked": false,
+        "composite_odds": 7.75,
+        "expected_value": 3.1,
+        "bet_odds": [
+          {
+            "bet": "馬連 6-13",
+            "odds": 20.6
+          },
+          {
+            "bet": "馬連 6-1",
+            "odds": 20.9
+          },
+          {
+            "bet": "馬連 6-9",
+            "odds": 30.6
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "クローバー賞: 芝1500m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "クローバー賞: 合成オッズ 7.75倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "クローバー賞: 期待値 3.10（合成 7.75倍 × 主観的中率 40%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1500
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:15:48"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:15:48"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:15:48"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-22 11:15:48"
+        }
+      },
+      {
+        "race_id": "202601020111",
+        "name": "WASJ2",
+        "blocked": false,
+        "composite_odds": 6.01,
+        "expected_value": 2.7,
+        "bet_odds": [
+          {
+            "bet": "馬連 14-10",
+            "odds": 9.6
+          },
+          {
+            "bet": "馬連 14-7",
+            "odds": 20.3
+          },
+          {
+            "bet": "馬連 14-11",
+            "odds": 76.5
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "WASJ2: 芝2000m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "WASJ2: 合成オッズ 6.01倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "WASJ2: 期待値 2.70（合成 6.01倍 × 主観的中率 45%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 2000
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:16:43"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:16:43"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-22 11:16:43"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-22 11:16:43"
+        }
+      }
+    ]
   }
 ]
