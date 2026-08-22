@@ -3250,5 +3250,150 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-22T19:55:35.656201+09:00",
+    "races": [
+      {
+        "race_id": "202607030106",
+        "name": "大府特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "大府特別: 既に発走しています（発走 15:00 / 現在 19:55）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202607030107",
+        "name": "伊賀S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "伊賀S: 既に発走しています（発走 15:35 / 現在 19:55）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202604030106",
+        "name": "長岡S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "長岡S: 既に発走しています（発走 14:50 / 現在 19:55）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202604030107",
+        "name": "朱鷺S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "朱鷺S: 既に発走しています（発走 15:25 / 現在 19:55）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202601020109",
+        "name": "クローバー賞",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "クローバー賞: 既に発走しています（発走 14:35 / 現在 19:55）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202601020111",
+        "name": "WASJ2",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "WASJ2: 既に発走しています（発走 15:45 / 現在 19:55）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608225507",
+        "name": "南風月（はえづき）賞Ａ１・Ａ２",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "南風月（はえづき）賞Ａ１・Ａ２: 既に発走しています（発走 19:15 / 現在 19:55）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
