@@ -1839,5 +1839,527 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-23T14:37:14.136715+09:00",
+    "races": [
+      {
+        "race_id": "202607030206",
+        "name": "有松特別",
+        "blocked": false,
+        "composite_odds": 4.9,
+        "expected_value": 1.27,
+        "bet_odds": [
+          {
+            "bet": "ワイド 5-11",
+            "odds": 4.9
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "有松特別: 芝1600m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "有松特別: 合成オッズ 4.90倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "有松特別: 期待値 1.27（合成 4.90倍 × 主観的中率 26%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1600
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:13"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:58"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:58"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-23 14:36:58"
+        }
+      },
+      {
+        "race_id": "202607030207",
+        "name": "名古屋城S",
+        "blocked": false,
+        "composite_odds": 6.76,
+        "expected_value": 1.35,
+        "bet_odds": [
+          {
+            "bet": "馬連 2-13",
+            "odds": 18.5
+          },
+          {
+            "bet": "馬連 2-5",
+            "odds": 13.4
+          },
+          {
+            "bet": "馬連 2-4",
+            "odds": 51.7
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "名古屋城S: ダート1800m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "名古屋城S: 合成オッズ 6.76倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "名古屋城S: 期待値 1.35（合成 6.76倍 × 主観的中率 20%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1800
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:23"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:23"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:23"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-23 14:36:23"
+        }
+      },
+      {
+        "race_id": "202604030206",
+        "name": "古町S",
+        "blocked": false,
+        "composite_odds": 6.11,
+        "expected_value": 1.53,
+        "bet_odds": [
+          {
+            "bet": "馬連 1-7",
+            "odds": 15.1
+          },
+          {
+            "bet": "馬連 1-14",
+            "odds": 21.2
+          },
+          {
+            "bet": "馬連 1-13",
+            "odds": 51.7
+          },
+          {
+            "bet": "馬連 1-15",
+            "odds": 80.8
+          },
+          {
+            "bet": "馬連 1-2",
+            "odds": 123.4
+          },
+          {
+            "bet": "馬連 1-4",
+            "odds": 96.7
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "古町S: ダート1800m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "古町S: 合成オッズ 6.11倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "古町S: 期待値 1.53（合成 6.11倍 × 主観的中率 25%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "曇",
+          "surface": "ダート",
+          "distance": 1800
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:43"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:43"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:43"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-23 14:36:43"
+        }
+      },
+      {
+        "race_id": "202604030207",
+        "name": "新潟2歳S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "新潟2歳S: 芝1600m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "新潟2歳S: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "曇",
+          "surface": "芝",
+          "distance": 1600
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:08"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:08"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:08"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-23 14:36:08"
+        }
+      },
+      {
+        "race_id": "202601020210",
+        "name": "WASJ3",
+        "blocked": false,
+        "composite_odds": 8.75,
+        "expected_value": 2.36,
+        "bet_odds": [
+          {
+            "bet": "馬連 1-8",
+            "odds": 26.0
+          },
+          {
+            "bet": "馬連 1-4",
+            "odds": 24.6
+          },
+          {
+            "bet": "馬連 1-7",
+            "odds": 28.4
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "WASJ3: ダート1700m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "WASJ3: 合成オッズ 8.75倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "WASJ3: 期待値 2.36（合成 8.75倍 × 主観的中率 27%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1700
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:28"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:28"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:28"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-23 14:36:28"
+        }
+      },
+      {
+        "race_id": "202601020211",
+        "name": "キーンランドカップ",
+        "blocked": false,
+        "composite_odds": 12.59,
+        "expected_value": 2.52,
+        "bet_odds": [
+          {
+            "bet": "馬連 13-1",
+            "odds": 34.6
+          },
+          {
+            "bet": "馬連 13-10",
+            "odds": 56.7
+          },
+          {
+            "bet": "馬連 13-4",
+            "odds": 30.4
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "キーンランドカップ: 芝1200m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "キーンランドカップ: 合成オッズ 12.59倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "キーンランドカップ: 期待値 2.52（合成 12.59倍 × 主観的中率 20%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:33"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:33"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-23 14:36:33"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-23 14:36:33"
+        }
+      },
+      {
+        "race_id": "202608233508",
+        "name": "第２８回 ジュニアグランプリ２歳",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "第２８回 ジュニアグランプリ２歳: 馬場が「稍重」です（芝1600m / 天候:曇 / 馬場:稍重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第２８回 ジュニアグランプリ２歳: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "芝",
+          "distance": 1600,
+          "weather": "曇",
+          "going": "稍重"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 66
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 132
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 66
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 220
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-23 14:37:24"
+        }
+      },
+      {
+        "race_id": "202608235507",
+        "name": "第６回 九州チャンピオンシップオープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "第６回 九州チャンピオンシップオープン: ダート1750m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第６回 九州チャンピオンシップオープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1750,
+          "weather": "晴",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 66
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 132
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 66
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 220
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-23 14:37:24"
+        }
+      }
+    ]
   }
 ]
