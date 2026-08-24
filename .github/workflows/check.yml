@@ -106,6 +106,7 @@ jobs:
 
       - name: ダッシュボードへ最新データを通知
         if: success()
+        continue-on-error: true
         env:
           DASHBOARD_WEBHOOK_SECRET: ${{ secrets.KEIBA_DASHBOARD_IMPORT_SECRET }}
           GITHUB_SHA_VALUE: ${{ github.sha }}
