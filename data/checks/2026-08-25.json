@@ -1,0 +1,41 @@
+[
+  {
+    "checked_at": "2026-08-25T08:10:51.018057+09:00",
+    "races": [
+      {
+        "race_id": "202608254609",
+        "name": "第２２回 イヌワシ賞【白山大賞典トライアル】３歳上（地方全国交流）",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第２２回 イヌワシ賞【白山大賞典トライアル】３歳上（地方全国交流）: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第２２回 イヌワシ賞【白山大賞典トライアル】３歳上（地方全国交流）: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 2000,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-08-25 08:10:52"
+        }
+      }
+    ]
+  }
+]
