@@ -229,5 +229,30 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-25T20:03:00.371876+09:00",
+    "races": [
+      {
+        "race_id": "202608254609",
+        "name": "第２２回 イヌワシ賞【白山大賞典トライアル】３歳上（地方全国交流）",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第２２回 イヌワシ賞【白山大賞典トライアル】３歳上（地方全国交流）: 既に発走しています（発走 19:55 / 現在 20:03）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
