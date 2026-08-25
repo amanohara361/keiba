@@ -165,5 +165,69 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-25T19:03:06.099623+09:00",
+    "races": [
+      {
+        "race_id": "202608254609",
+        "name": "第２２回 イヌワシ賞【白山大賞典トライアル】３歳上（地方全国交流）",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "第２２回 イヌワシ賞【白山大賞典トライアル】３歳上（地方全国交流）: ダート2000m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第２２回 イヌワシ賞【白山大賞典トライアル】３歳上（地方全国交流）: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 2000,
+          "weather": "晴",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 45
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 90
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 45
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 120
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-25 19:03:08"
+        }
+      }
+    ]
   }
 ]
