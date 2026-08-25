@@ -1,0 +1,217 @@
+{
+  "race_id": "202607030207",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 1,
+      "name": "トリポリタニア",
+      "ninki": 1,
+      "odds": 3.1
+    },
+    {
+      "rank": 2,
+      "umaban": 9,
+      "name": "マーズオデッセイ",
+      "ninki": 5,
+      "odds": 11.2
+    },
+    {
+      "rank": 3,
+      "umaban": 11,
+      "name": "マリオロード",
+      "ninki": 16,
+      "odds": 103.6
+    },
+    {
+      "rank": 4,
+      "umaban": 13,
+      "name": "ハピ",
+      "ninki": 4,
+      "odds": 8.2
+    },
+    {
+      "rank": 5,
+      "umaban": 15,
+      "name": "レッドプロフェシー",
+      "ninki": 6,
+      "odds": 12.6
+    },
+    {
+      "rank": 6,
+      "umaban": 5,
+      "name": "ハギノサステナブル",
+      "ninki": 3,
+      "odds": 7.1
+    },
+    {
+      "rank": 7,
+      "umaban": 10,
+      "name": "ミッキークレスト",
+      "ninki": 10,
+      "odds": 32.1
+    },
+    {
+      "rank": 8,
+      "umaban": 4,
+      "name": "ロードプレジール",
+      "ninki": 9,
+      "odds": 24.7
+    },
+    {
+      "rank": 9,
+      "umaban": 8,
+      "name": "マンマリアーレ",
+      "ninki": 14,
+      "odds": 83.6
+    },
+    {
+      "rank": 10,
+      "umaban": 6,
+      "name": "リチュアル",
+      "ninki": 7,
+      "odds": 15.0
+    },
+    {
+      "rank": 11,
+      "umaban": 14,
+      "name": "メイショウユズルハ",
+      "ninki": 15,
+      "odds": 94.1
+    },
+    {
+      "rank": 12,
+      "umaban": 3,
+      "name": "マリアナトレンチ",
+      "ninki": 11,
+      "odds": 58.3
+    },
+    {
+      "rank": 13,
+      "umaban": 7,
+      "name": "ペイシャモノノフ",
+      "ninki": 8,
+      "odds": 21.2
+    },
+    {
+      "rank": 14,
+      "umaban": 16,
+      "name": "ラインオブソウル",
+      "ninki": 13,
+      "odds": 81.6
+    },
+    {
+      "rank": 15,
+      "umaban": 12,
+      "name": "ブルーサン",
+      "ninki": 12,
+      "odds": 68.6
+    },
+    {
+      "rank": 16,
+      "umaban": 2,
+      "name": "スナークラファエロ",
+      "ninki": 2,
+      "odds": 4.1
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          1
+        ],
+        "yen": 310
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          1
+        ],
+        "yen": 190
+      },
+      {
+        "combination": [
+          9
+        ],
+        "yen": 290
+      },
+      {
+        "combination": [
+          11
+        ],
+        "yen": 1790
+      }
+    ],
+    "枠連": [
+      {
+        "combination": [
+          1,
+          5
+        ],
+        "yen": 780
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          1,
+          9
+        ],
+        "yen": 1830
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          1,
+          9
+        ],
+        "yen": 880
+      },
+      {
+        "combination": [
+          1,
+          11
+        ],
+        "yen": 6690
+      },
+      {
+        "combination": [
+          9,
+          11
+        ],
+        "yen": 12020
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          1,
+          9
+        ],
+        "yen": 2560
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          1,
+          9,
+          11
+        ],
+        "yen": 70520
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          1,
+          9,
+          11
+        ],
+        "yen": 238670
+      }
+    ]
+  }
+}

@@ -1,0 +1,231 @@
+{
+  "race_id": "202604030107",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 16,
+      "name": "ショウナンザナドゥ",
+      "ninki": 5,
+      "odds": 12.4
+    },
+    {
+      "rank": 2,
+      "umaban": 5,
+      "name": "ガロンヌ",
+      "ninki": 14,
+      "odds": 61.1
+    },
+    {
+      "rank": 3,
+      "umaban": 1,
+      "name": "ララマセラシオン",
+      "ninki": 8,
+      "odds": 19.6
+    },
+    {
+      "rank": 4,
+      "umaban": 2,
+      "name": "グレイイングリーン",
+      "ninki": 16,
+      "odds": 82.9
+    },
+    {
+      "rank": 5,
+      "umaban": 18,
+      "name": "タガノアラリア",
+      "ninki": 2,
+      "odds": 4.6
+    },
+    {
+      "rank": 6,
+      "umaban": 8,
+      "name": "タガノエルピーダ",
+      "ninki": 3,
+      "odds": 7.9
+    },
+    {
+      "rank": 7,
+      "umaban": 17,
+      "name": "マサノカナリア",
+      "ninki": 11,
+      "odds": 28.1
+    },
+    {
+      "rank": 8,
+      "umaban": 7,
+      "name": "カルチャーデイ",
+      "ninki": 9,
+      "odds": 20.2
+    },
+    {
+      "rank": 9,
+      "umaban": 12,
+      "name": "レディマリオン",
+      "ninki": 13,
+      "odds": 56.2
+    },
+    {
+      "rank": 10,
+      "umaban": 10,
+      "name": "レッドシュヴェルト",
+      "ninki": 12,
+      "odds": 47.0
+    },
+    {
+      "rank": 11,
+      "umaban": 13,
+      "name": "アルテヴェローチェ",
+      "ninki": 15,
+      "odds": 65.8
+    },
+    {
+      "rank": 12,
+      "umaban": 3,
+      "name": "ヤブサメ",
+      "ninki": 4,
+      "odds": 8.9
+    },
+    {
+      "rank": 13,
+      "umaban": 4,
+      "name": "ビーアストニッシド",
+      "ninki": 18,
+      "odds": 317.2
+    },
+    {
+      "rank": 14,
+      "umaban": 9,
+      "name": "クルゼイロドスル",
+      "ninki": 6,
+      "odds": 12.4
+    },
+    {
+      "rank": 15,
+      "umaban": 15,
+      "name": "スリールミニョン",
+      "ninki": 10,
+      "odds": 24.1
+    },
+    {
+      "rank": 16,
+      "umaban": 14,
+      "name": "ランフォーヴァウ",
+      "ninki": 7,
+      "odds": 14.3
+    },
+    {
+      "rank": 17,
+      "umaban": 6,
+      "name": "セフィロ",
+      "ninki": 1,
+      "odds": 3.3
+    },
+    {
+      "rank": 18,
+      "umaban": 11,
+      "name": "デイトナモード",
+      "ninki": 17,
+      "odds": 274.8
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          16
+        ],
+        "yen": 1240
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          16
+        ],
+        "yen": 510
+      },
+      {
+        "combination": [
+          5
+        ],
+        "yen": 1340
+      },
+      {
+        "combination": [
+          1
+        ],
+        "yen": 590
+      }
+    ],
+    "枠連": [
+      {
+        "combination": [
+          3,
+          8
+        ],
+        "yen": 560
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          5,
+          16
+        ],
+        "yen": 29230
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          5,
+          16
+        ],
+        "yen": 9010
+      },
+      {
+        "combination": [
+          1,
+          16
+        ],
+        "yen": 4460
+      },
+      {
+        "combination": [
+          1,
+          5
+        ],
+        "yen": 9640
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          16,
+          5
+        ],
+        "yen": 46850
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          1,
+          5,
+          16
+        ],
+        "yen": 218600
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          16,
+          5,
+          1
+        ],
+        "yen": 1290170
+      }
+    ]
+  }
+}
