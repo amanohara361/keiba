@@ -1,0 +1,109 @@
+[
+  {
+    "checked_at": "2026-08-27T08:12:01.958431+09:00",
+    "races": [
+      {
+        "race_id": "202608274711",
+        "name": "第５１回 秋風ジュニア２歳・オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第５１回 秋風ジュニア２歳・オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第５１回 秋風ジュニア２歳・オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-08-27 08:12:03"
+        }
+      },
+      {
+        "race_id": "202608273011",
+        "name": "第３８回 ブリーダーズゴールドカップJpnIII一般牝馬オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第３８回 ブリーダーズゴールドカップJpnIII一般牝馬オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第３８回 ブリーダーズゴールドカップJpnIII一般牝馬オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 2000,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-08-27 08:12:03"
+        }
+      },
+      {
+        "race_id": "202608274311",
+        "name": "アレキサンドライトカップ（準重賞）３歳牝馬オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "アレキサンドライトカップ（準重賞）３歳牝馬オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "アレキサンドライトカップ（準重賞）３歳牝馬オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1700,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-08-27 08:12:03"
+        }
+      }
+    ]
+  }
+]
