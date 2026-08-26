@@ -390,7 +390,22 @@ def format_report(sheet, verdicts, now):
     blocked = [v for v in verdicts if v.blocked]
     warned = [v for v in verdicts if not v.blocked and v.warnings]
 
+    # **入力欠落は規律違反より先に出す。** 規律の見送りは「基準に届かなかった」
+    # という判断の結果だが、入力欠落は「判断そのものが行われていない」状態で、
+    # 直せば買い目が出る可能性がある。同じ見出しに混ぜると区別がつかない
+    # （2026-08-26、地方の朝タスクの書き漏らしが正常な見送りに見えた）。
+    missing = [v for v in verdicts
+               if bet_builder.MISSING_INPUT in (v.bet_note or '')]
+
     lines = ['🏇 直前検算（予想メソッド 第13章）', DIVIDER]
+    if missing:
+        lines.append(f'⚠ 朝タスクの入力が欠けているレース: {len(missing)}件')
+        for verdict in missing:
+            lines.append(f'   ・{verdict.race.name}'
+                         f'（win_probabilities なし → 買い目が出ません）')
+        lines.append('   朝タスクが馬番ごとの主観勝率を書いていません。')
+        lines.append('   規律による見送りではないので、書けば買い目が出ます。')
+        lines.append('')
     if blocked:
         lines.append(f'■ 発注を止めたレース: {len(blocked)}件')
         for verdict in blocked:
@@ -491,10 +506,21 @@ def main(argv=None):
         })
         print(f'\n検算結果を保存しました: {path}')
 
+    # **入力欠落は「問題なし」ではない。** 朝タスクが win_probabilities を
+    # 書き漏らすと、blocked は0のまま買い目だけが消える。2026-08-26 の実測では
+    # この状態で「直前検算 問題なし」のメールが出る寸前だった。買い目が1点も
+    # 出ていないのに問題なしと知らせるのは、いちばん質の悪い沈黙にあたる。
+    missing = sum(1 for v in verdicts
+                  if bet_builder.MISSING_INPUT in (v.bet_note or ''))
+
     if not args.no_email:
         blocked = sum(1 for v in verdicts if v.blocked)
         if blocked:
             subject = '【要確認】直前検算で発注を止めた買い目があります'
+            if not deliver(mailer, subject, body):
+                return EXIT_ERROR
+        elif missing:
+            subject = f'【要確認】朝タスクの入力が欠けています（{missing}件）'
             if not deliver(mailer, subject, body):
                 return EXIT_ERROR
         else:
@@ -507,7 +533,9 @@ def main(argv=None):
             if not deliver(mailer, subject, format_clean_summary(verdicts, now)):
                 return EXIT_ERROR
 
-    return EXIT_NEEDS_ATTENTION if any(v.blocked for v in verdicts) else EXIT_OK
+    if any(v.blocked for v in verdicts) or missing:
+        return EXIT_NEEDS_ATTENTION
+    return EXIT_OK
 
 
 if __name__ == '__main__':

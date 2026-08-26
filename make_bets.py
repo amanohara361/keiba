@@ -310,11 +310,20 @@ def read_pasted():
 
 
 def show(day):
+    """買い目を表示し、契約を満たしていなければ問題の件数を返す。
+
+    **戻り値は「問題のあるレース数」。** 朝タスクはこのコマンドを自己検証に
+    使うので、黙って 0 を返すと欠落が素通りする。2026-08-26 に地方の朝タスクが
+    win_probabilities を書かずに push し、直前検算で全レース見送りになったが、
+    このコマンドは何も言わなかった。表示するだけの関数を検証に使っていたのが
+    原因なので、ここで落とす。
+    """
     sheet = bets.load_sheet(day)
     if sheet is None:
         print(f'{day} の買い目はまだありません（{bets.sheet_path(day)}）')
-        return
+        return 0
     print(f'\n{day} / 作成元 {sheet.source} / 作成 {sheet.generated_at or "不明"}')
+    problems = 0
     for race in sheet.races:
         marks = ' '.join(f"{m['mark']}{m['umaban']}" for m in race.marks)
         print(f'\n  【{race.name}】{race.venue or ""}{race.race_no or ""}R '
@@ -322,8 +331,27 @@ def show(day):
         print(f'    印: {marks}')
         for bet in race.bets:
             print(f'    {bet.type} {bet.combination}  {bet.stake}円')
+
+        if race.win_probabilities:
+            shown = ' '.join(f'{n}:{p:.3f}'
+                             for n, p in sorted(race.win_probabilities.items()))
+            total = sum(race.win_probabilities.values())
+            print(f'    主観勝率 {shown}（記入分の合計 {total:.3f}）')
+        elif race.marks:
+            problems += 1
+            print('    ⚠ win_probabilities がありません。')
+            print('      **このレースは直前検算で必ず見送り（勝負度C）になります。**')
+            print('      市場勝率だけでは期待値が控除率を超えないためです。')
+            print('      書き方: docs/朝タスク手順.md「主観勝率の書き方」')
+
         if race.subjective_hit_rate:
-            print(f'    主観的中率 {race.subjective_hit_rate:.0%}')
+            print(f'    （非推奨）subjective_hit_rate {race.subjective_hit_rate:.0%}'
+                  ' … 2026-08-26に廃止。直前検算は読みません')
+
+    if problems:
+        print(f'\n  ⚠ {problems}件のレースに win_probabilities がありません。')
+        print('  このまま push すると、その分の買い目は出ません。')
+    return problems
 
 
 def main(argv=None):
@@ -337,8 +365,8 @@ def main(argv=None):
     day = date.fromisoformat(args.date) if args.date else bets.now_jst().date()
 
     if args.show:
-        show(day)
-        return 0
+        # 問題があれば非ゼロで終わる。朝タスクの自己検証がここで止まる。
+        return 1 if show(day) else 0
 
     print()
     print('  ============================================')

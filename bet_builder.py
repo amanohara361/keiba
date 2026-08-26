@@ -79,6 +79,14 @@ PAYOUT_RATE = {'単勝': 0.80, '複勝': 0.80, '馬連': 0.775,
 LOW_HIT_RATE = 0.05
 WIDE_DIVERGENCE = 1.8
 
+# 朝タスクが win_probabilities を書かなかったレースに付ける印。
+# **規律を満たさない見送りと、入力が欠けている見送りは別物である。**
+# 2026-08-26、地方の朝タスクが win_probabilities を書かずに push し、
+# 直前検算は「基準を満たさないので見送り」という規律どおりの文言だけを出した。
+# 人にもレポートにも「入力が欠けている」と伝わらず、正常な見送りに見えた。
+# check.py はこの文字列でレポートの先頭に警告を立てる。
+MISSING_INPUT = '【入力欠落】'
+
 
 # ----------------------------------------------------------------------
 # 勝率モデル
@@ -272,13 +280,17 @@ def build_bets(race, lookup, win_odds=None, stake=100):
 
     ok = [c for c in candidates if c.clears()]
     if not ok:
-        tail = ''
         if not overrides:
-            tail = ('（この買い目には win_probabilities が無く、市場勝率のみで'
-                    '評価しています。期待値が控除率を超えないのは当然の結果です）')
+            # 規律の話にしない。**朝タスクの入力が欠けている**と言い切る。
+            return 'C', [], (
+                f'{MISSING_INPUT}このレースには win_probabilities（馬番ごとの'
+                '主観勝率）がありません。市場勝率だけで評価したため、期待値が'
+                '控除率を超えず見送り（勝負度C）になりました。**これは規律の'
+                '判断ではなく、朝タスクの書き漏らしです。**書き方は'
+                ' docs/朝タスク手順.md「主観勝率の書き方」。')
         return 'C', [], (f'第13章の基準（合成オッズ{discipline.MIN_COMPOSITE_ODDS}倍・'
                          f'期待値{discipline.MIN_EXPECTED_VALUE}）を満たす買い目を'
-                         f'組めませんでした。見送り（勝負度C）。{tail}')
+                         f'組めませんでした。見送り（勝負度C）。')
 
     # **規律を満たす候補のうち、期待値ではなく的中率が最大のものを選ぶ。**
     #
@@ -295,7 +307,8 @@ def build_bets(race, lookup, win_odds=None, stake=100):
     note = (f'{best.label()}（合成{best.composite:.2f}倍・'
             f'主観的中率{best.hit_rate * 100:.2f}%・期待値{best.ev:.2f}）')
     if not overrides:
-        note += ' ※win_probabilities が無く市場勝率のみで評価'
+        note = (f'{MISSING_INPUT}win_probabilities が無く市場勝率のみで評価しています'
+                f'（朝タスクの書き漏らし）。' + note)
     for w in best.warnings():
         note += f' ※{w}'
 
