@@ -341,5 +341,30 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-26T20:05:17.343784+09:00",
+    "races": [
+      {
+        "race_id": "202608264311",
+        "name": "第４回 フリオーソレジェンドカップ４上オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第４回 フリオーソレジェンドカップ４上オープン: 既に発走しています（発走 20:05 / 現在 20:05）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
