@@ -144,6 +144,25 @@ def p_wide(p, pair):
     return sum(p_trio(p, (a, b, c)) for c in p if c not in pair)
 
 
+def p_wide_group(p, axis, subset):
+    """軸＋相手複数頭のワイド流し全体の的中率（軸と、相手のうち少なくとも
+    1頭が、ともに3着以内）。
+
+    相手ごとの p_wide を単純合算すると、相手が2頭以上同時に3着以内へ
+    来るケースを二重・三重に数えてしまう（2026-08-26、実測とモンテカルロ
+    検算で確認：軸+相手3頭流しで単純合算1.04〔確率が1を超える〕・
+    モンテカルロ真値0.71、約1.47倍の過大評価だった）。軸以外の全馬から、
+    相手を1頭以上含む3頭の組を漏れなく数え上げて正しく求める。
+    相手が1頭のときは p_wide と完全に一致する（後方互換）。
+    """
+    others = [h for h in p if h != axis]
+    total = 0.0
+    for x, y in itertools.combinations(others, 2):
+        if x in subset or y in subset:
+            total += p_trio(p, (axis, x, y))
+    return total
+
+
 # ----------------------------------------------------------------------
 # 候補
 # ----------------------------------------------------------------------
@@ -208,12 +227,20 @@ def _build_candidates(axis, pool, marked, p, lookup):
     for n in range(len(pool), 0, -1):
         subset = pool[:n]
         combos = [[axis, q] for q in subset]
-        for bet_type, prob in (('馬連', p_quinella), ('ワイド', p_wide)):
-            vals = priced(bet_type, combos)
-            if vals:
-                rate = sum(prob(p, (axis, q)) for q in subset)
-                out.append(Candidate(bet_type, combos, vals, rate,
-                                     f'◎{axis}軸-相手{n}頭'))
+
+        # 馬連は特定の1組しか的中しない（同時に2組が当たることはない）ため、
+        # 相手ごとの確率をそのまま合算してよい。
+        vals = priced('馬連', combos)
+        if vals:
+            rate = sum(p_quinella(p, (axis, q)) for q in subset)
+            out.append(Candidate('馬連', combos, vals, rate, f'◎{axis}軸-相手{n}頭'))
+
+        # ワイドは相手が2頭以上同時に3着以内へ来ると複数組が同時に的中しうる
+        # ため、単純合算ではなく p_wide_group で正しい的中率を求める。
+        vals = priced('ワイド', combos)
+        if vals:
+            rate = p_wide_group(p, axis, subset)
+            out.append(Candidate('ワイド', combos, vals, rate, f'◎{axis}軸-相手{n}頭'))
 
     # 第13章：セット全体が印馬だけになる3連複は作らない。原文の理由が
     # 「無印馬が1頭でも絡んだ時点で全点が消滅する」なので、判定はセット単位。
