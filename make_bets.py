@@ -15,19 +15,29 @@ data/bets/YYYY-MM-DD.json を作れる。あとは git push すれば
   python make_bets.py --show           いまある買い目を表示する
 
 ■ 貼り付け・ファイルの書き方
-  1レースにつき3ブロック。レースとレースの間は空行で区切る。
+  1レースにつき、レースとレースの間は空行で区切る。
 
-    202601020811 クイーンステークス 15:25 B 35%
+    202601020811 クイーンステークス 15:25 B
     ◎7 ○11 ▲2 △3 △14
+    勝率 7:0.28 11:0.15
     馬連 7-11 100
     ワイド 7-14 100
 
-    202604020207 アイビスサマーダッシュ 15:45 A 29%
+    202604020207 アイビスサマーダッシュ 15:45 A
     ◎16 ○6
+    勝率 16:0.35
     単勝 16 200
 
-  1行目は race_id・レース名・発走時刻・勝負度・主観的中率。
-  レース名以外は書き方で見分けるので**並び順は自由**。金額を省くと100円。
+  1行目は race_id・レース名・発走時刻・勝負度。レース名以外は書き方で
+  見分けるので**並び順は自由**。金額を省くと100円。
+
+  「勝率」の行は馬番ごとの主観勝率（`win_probabilities`）。直前検算が
+  実オッズと合わせて Harville モデルに通し、券種ごとの的中率を算出して
+  買い目を組み直す（この行の「馬連」「ワイド」は書かなくても直前検算が
+  勝手に組んでくれるので、参考値・手元の仮置きとして残しておいてよい）。
+  **書かないとそのレースは実質的にすべて見送りになる**
+  （docs/朝タスク手順.md「主観勝率の書き方」）。書かなかった馬は市場勝率
+  から自動で按分されるので、印を打った上位数頭だけ書けばよい。
 
 外部ライブラリは使わない（Python 3.x だけで動く）。
 入力の形式間違いは bets.py が全部はじくので、通れば検算にかけられる。
@@ -103,20 +113,54 @@ def ask_bets():
 
 
 def ask_rate():
-    """主観的中率。第13章の期待値判定に使うので必須。"""
-    print('  主観的中率（期待値1.2の判定に使う。0.16 でも 16% でも可）')
+    """主観的中率。2026-08-26に廃止（非推奨）。旧ファイルの読み込みのためだけに残す。"""
+    print('  （非推奨）主観的中率。win_probabilities に置き換わった。読みたくなければ空Enter')
     while True:
         raw = input('  主観的中率: ').strip().rstrip('%％')
+        if not raw:
+            return None
         try:
             value = float(raw)
         except ValueError:
-            print('  !! 数字で入力してください')
+            print('  !! 数字で入力してください（空Enterでスキップ）')
             continue
         if value > 1:
             value /= 100
         if 0 < value <= 1:
             return round(value, 4)
         print('  !! 0より大きく1以下（または100%以下）で入力してください')
+
+
+def ask_win_probabilities():
+    """馬番ごとの主観勝率を1頭ずつ受け取る。
+
+    直前検算（bet_builder.py）はこれを Harville モデルに通し、券種ごとに
+    的中率を算出して買い目を組む。書かなければ市場勝率だけで評価され、
+    期待値が控除率を超えないため実質的にすべて見送りになる
+    （2026-08-26、make_bets.py がこの項目を集めていなかったため、手入力
+    経路だけ「保険にならない」状態になっていた不具合の修正）。
+    """
+    print('  主観勝率を1頭ずつ入力（例: 8 0.30 ／ 空Enterで終了）')
+    print('  市場と同じでよい馬・分からない馬は書かなくてよい（残りは市場比で按分される）')
+    print('  書き方の目安: docs/朝タスク手順.md「主観勝率の書き方」')
+    out = {}
+    while True:
+        line = input('  勝率: ').strip()
+        if not line:
+            return out
+        match = re.match(r'^(\d+)\s+(0?\.\d+|1(?:\.0+)?|\d{1,3})\s*[%％]?$', line)
+        if not match:
+            print('  !! 読み取れません。「馬番 0.30」のように入力してください')
+            continue
+        umaban = int(match.group(1))
+        value = float(match.group(2))
+        if value > 1:
+            value /= 100
+        if not 0.0 < value < 1.0:
+            print('  !! 0より大きく1未満で入力してください')
+            continue
+        out[umaban] = value
+        print(f'    -> {umaban}番: {value:.1%}')
 
 
 def ask_race():
@@ -144,16 +188,21 @@ def ask_race():
     if confidence == 'C':
         # 第13章：勝負度Cは印を記録するのみで購入しない
         print('  勝負度Cのため買い目は記録しません（第13章）')
-        entries, rate = [], None
+        entries, rate, win_probabilities = [], None, {}
     else:
         entries = ask_bets()
         rate = ask_rate() if entries else None
+        # win_probabilities は bets の有無に関わらず集める。直前検算が
+        # 実オッズで買い目を組み直す際（2026-08-14ユーザー承認）に使うのは
+        # これで、ここで手入力した bets 自体は毎回上書きされる。
+        win_probabilities = ask_win_probabilities()
 
     try:
         return RaceBets(
             race_id=race_id, name=name, start_time=start_time,
             marks=marks, bets=entries, confidence=confidence,
-            subjective_hit_rate=rate, venue=venue, race_no=race_no,
+            subjective_hit_rate=rate, win_probabilities=win_probabilities,
+            venue=venue, race_no=race_no,
         )
     except BetsError as exc:
         print(f'  !! {exc}')
@@ -175,6 +224,27 @@ def parse_bet_line(line):
     numbers = re.findall(r'\d+', match.group(2))
     stake = int(match.group(3)) if match.group(3) else 100
     return Bet(bet_type, numbers, stake)
+
+
+def parse_win_prob_line(line):
+    """「勝率 8:0.30 7:0.12」を {馬番: 確率} にする。勝率の行でなければ None。
+
+    直前検算（bet_builder.py）がこれを Harville モデルに通して券種ごとの
+    的中率を出す。書かなければ市場勝率だけで評価され実質的に見送りになる
+    （docs/朝タスク手順.md「主観勝率の書き方」）。
+    """
+    if not re.match(r'^(主観)?勝率\b', line):
+        return None
+    pairs = re.findall(r'(\d+)\s*[:：]\s*(\d+(?:\.\d+)?)\s*[%％]?', line)
+    if not pairs:
+        raise BetsError(f'勝率の行が読み取れません（「勝率 8:0.30 7:0.12」の形式）: {line}')
+    out = {}
+    for umaban, raw in pairs:
+        value = float(raw)
+        if value > 1:
+            value /= 100
+        out[int(umaban)] = value
+    return out
 
 
 def parse_header(line):
@@ -232,11 +302,15 @@ def parse_block(block):
     lines = [ln.strip() for ln in block.splitlines() if ln.strip()]
     header = parse_header(lines[0])
 
-    marks, entries = [], []
+    marks, entries, win_probabilities = [], [], {}
     for line in lines[1:]:
         found = re.findall(r'([◎○▲△])\s*(\d+)', line)
         if found:
             marks.extend({'mark': m, 'umaban': int(n)} for m, n in found)
+            continue
+        wp = parse_win_prob_line(line)
+        if wp is not None:
+            win_probabilities.update(wp)
             continue
         bet = parse_bet_line(line)
         if bet is None:
@@ -255,7 +329,7 @@ def parse_block(block):
 
     return RaceBets(
         marks=marks, bets=entries, venue=venue, race_no=race_no,
-        org=org, **header,
+        org=org, win_probabilities=win_probabilities, **header,
     )
 
 
