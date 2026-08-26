@@ -446,3 +446,78 @@ def test_サフィックス省略時は従来どおりの件名(tmp_path, monkey
     review.main(['--end', '2026-08-17', '--days', '7', '--mail'])
 
     assert sent == ['週次レビュー 2026-08-11〜2026-08-17']
+
+
+# ----------------------------------------------------------------------
+# メール本文のレース別明細・暫定値の警告（2026-08-24 の指摘への対応）
+# ----------------------------------------------------------------------
+
+def _mail_entry(name, category, marks, top3, staked=300, returned=0, blocked=False):
+    """レース別明細つきのエントリ。render_mail が読む形に合わせる。"""
+    return {
+        'name': name, 'category': category, 'staked': staked, 'returned': returned,
+        'blocked': blocked, 'honmei_rank': None, 'unmarked_good_runs': [],
+        'honmei_wipeout': False, 'marks': marks, 'top3': top3,
+    }
+
+
+def _collected(entries, day=date(2026, 8, 24)):
+    return [{'date': day, 'entries': entries}]
+
+
+def test_メール本文にレース別の明細が入る():
+    """数字の要約だけでは何が起きたのか分からない、という指摘への対応。"""
+    e = _mail_entry(
+        'テストステークス', review.BET_MISS,
+        marks=[{'mark': '◎', 'umaban': 8}, {'mark': '○', 'umaban': 7}],
+        top3=[{'rank': 1, 'umaban': 8, 'mark': '◎'},
+              {'rank': 2, 'umaban': 3, 'mark': None},
+              {'rank': 3, 'umaban': 7, 'mark': '○'}])
+    week = review.summarize([e])
+    body = review.render_mail(week, (date(2026, 8, 18), date(2026, 8, 24)), 'x.md',
+                              collected=_collected([e]))
+    assert 'レース別' in body
+    assert 'テストステークス' in body
+    assert '◎8 ○7' in body        # 打った印が読める
+    assert '1着8◎' in body         # 誰が走ったのかと、その印が読める
+    assert '3着7○' in body
+
+
+def test_メール本文の明細は見送りと購入を区別する():
+    skipped = _mail_entry(
+        '見送りステークス', review.SKIPPED,
+        marks=[{'mark': '◎', 'umaban': 1}],
+        top3=[{'rank': 1, 'umaban': 1, 'mark': '◎'}], staked=0)
+    week = review.summarize([skipped])
+    body = review.render_mail(week, (date(2026, 8, 18), date(2026, 8, 24)), 'x.md',
+                              collected=_collected([skipped]))
+    # 明細の行だけを見る（集計欄の「収支+0円」とは別物なので混ぜて判定しない）
+    detail = body[body.index('レース別'):]
+    assert '見送りステークス' in detail
+    # 買っていないレースに収支の金額を出すと誤解を招く
+    assert '+0円' not in detail
+    assert '見送り' in detail
+
+
+def test_未確定があるメールは暫定値だと先頭で言い切る():
+    """2026-08-24、結果12件未取得のまま出た数字が確定値の4分の1だった。"""
+    entries = [entry(category=review.UNSETTLED, staked=0),
+               entry(category=review.HIT, staked=100, returned=500)]
+    week = review.summarize(entries)
+    body = review.render_mail(week, (date(2026, 8, 18), date(2026, 8, 24)), 'x.md')
+    assert '暫定値' in body
+    # 警告は数字より前に出す（読み飛ばされては意味がない）
+    assert body.index('暫定値') < body.index('仮想成績')
+
+
+def test_未確定が無ければ暫定値の警告は出さない():
+    week = review.summarize([entry(category=review.HIT, staked=100, returned=500)])
+    body = review.render_mail(week, (date(2026, 8, 18), date(2026, 8, 24)), 'x.md')
+    assert '暫定値' not in body
+
+
+def test_collectedを渡さなければ従来どおり明細なしで動く():
+    week = review.summarize([entry(category=review.HIT, staked=100, returned=500)])
+    body = review.render_mail(week, (date(2026, 8, 18), date(2026, 8, 24)), 'x.md')
+    assert 'レース別' not in body
+    assert '仮想成績' in body

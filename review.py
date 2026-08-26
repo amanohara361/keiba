@@ -532,13 +532,45 @@ def render(collected, week_summary, total_summary, period):
     return '\n'.join(lines)
 
 
-def render_mail(week_summary, period, path, total_summary=None):
+def _mail_race_lines(collected):
+    """メールに入れるレース別の明細。
+
+    **数字だけの要約では何が起きたのか分からない**（2026-08-24、
+    「買い目構成ミス4」とだけ書かれても、どのレースでどの印が走って
+    どう取りこぼしたのかが読めない、という指摘）。レース名・印・
+    1〜3着に来た馬とその印・収支を1行ずつ並べ、メールだけで
+    「馬は見えていたのに買い方で落とした」かどうかが分かるようにする。
+    """
+    lines = []
+    for day in collected:
+        for e in day['entries']:
+            if e['category'] == UNSETTLED:
+                continue
+            marks = ' '.join(f"{m['mark']}{m['umaban']}" for m in e['marks']) or '印なし'
+            top3 = ' / '.join(
+                f"{h['rank']}着{h['umaban']}{h['mark'] or '無'}"
+                for h in e.get('top3', [])
+            ) or '着順不明'
+            profit = f"{e['returned'] - e['staked']:+,}円" if e['staked'] else '見送り'
+            head = f"[{e['category']}] {e['name']}"
+            if e['blocked']:
+                head += '（発注停止）'
+            lines.append(f'  {head}　{profit}')
+            lines.append(f'    印 {marks}　→　{top3}')
+    return lines
+
+
+def render_mail(week_summary, period, path, total_summary=None, collected=None):
     """メール本文。**しきい値に達したカウンタがあれば、ここで一言で言い切る。**
 
     通算の件数や「10件」という基準そのものは、レビューの .md ファイルには
     出ているがメールには出ていなかった。メールしか見ない運用だと、
     しきい値を超えても誰も気づかない。数字を読んで判断するのではなく、
     「見直しどき」かどうかだけを機械が言い切る形にする。
+
+    **レース別の明細もメールに入れる**（2026-08-24 の指摘）。要約の数字だけでは
+    「買い目構成ミス4」が何のことか分からず、詳細ファイルを開かないと
+    判断できなかった。メール単体で意味が通るようにする。
     """
     start, end = period
     v, d = week_summary['virtual'], week_summary['disciplined']
@@ -546,41 +578,69 @@ def render_mail(week_summary, period, path, total_summary=None):
     lines = [
         f'週次レビュー {start.isoformat()} 〜 {end.isoformat()}',
         '',
-        f"対象 {week_summary['settled']}レース（未確定 {week_summary['unsettled']}）",
-        '',
     ]
+
+    # **未確定があるうちは暫定値だと最初に言い切る。** 2026-08-24 は結果が
+    # 12件未取得のまま「5R 収支-1,300円」というメールが出た。後で再取得した
+    # 実際の数字は16R・-5,400円で、4倍以上ずれていた。数字の大小より先に
+    # 「これは確定値ではない」と分かる必要がある。
     if week_summary['unsettled']:
-        lines.append(f"※ {week_summary['unsettled']}レースの結果を取得できていない。"
-                     '集計はその分欠けている。')
-        lines.append('')
+        lines += [
+            f"⚠ これは暫定値です（{week_summary['unsettled']}レースの結果が未取得）。",
+            f"　 確定した集計は火曜 09:17 の再取得メール（件名に「再取得」）を見てください。",
+            '',
+        ]
+
+    lines.append(f"対象 {week_summary['settled']}レース"
+                 f"（うち購入 {v['races']}／見送り {week_summary['skipped']}"
+                 f"／未確定 {week_summary['unsettled']}）")
+    lines.append('')
 
     if total_summary:
-        reached = [label for label, key, _note in THRESHOLD_COUNTERS
-                  if total_summary[key] >= COUNTER_THRESHOLD]
+        reached = [(label, note) for label, key, note in THRESHOLD_COUNTERS
+                   if total_summary[key] >= COUNTER_THRESHOLD]
         if reached:
-            lines.append('■ メソッド見直しの検討どきです')
-            for label in reached:
-                lines.append(f'  - {label}')
-            lines.append('  （通算10件が目安。検証ノート.md へ転記して判断してください）')
+            lines.append(f'■ メソッド見直しの検討どきです（通算{COUNTER_THRESHOLD}件が目安）')
+            for label, note in reached:
+                # 何件たまっていて、到達したら何をするのかまで書く。
+                # 見出しだけでは「で、どうすれば」が分からない。
+                key = next(k for lbl, k, _ in THRESHOLD_COUNTERS if lbl == label)
+                lines.append(f'  - {label}：通算{total_summary[key]}件')
+                lines.append(f'    → {note.replace("**", "")}')
+            lines.append('  （検証ノート.md へ転記して判断してください）')
             lines.append('')
 
     lines += [
-        f"仮想成績   {v['races']}R 的中{v['hits']} 収支{v['profit']:+,}円 回収率{_roi(v)}",
-        f"規律適用後 {d['races']}R 的中{d['hits']} 収支{d['profit']:+,}円 回収率{_roi(d)}",
-        f'差引 {diff:+,}円',
+        '── 収支 ' + '─' * 30,
+        f"仮想成績   {v['races']}R 的中{v['hits']} 収支{v['profit']:+,}円 回収率{_roi(v)}"
+        '　… 買い目どおり全部買った場合',
+        f"規律適用後 {d['races']}R 的中{d['hits']} 収支{d['profit']:+,}円 回収率{_roi(d)}"
+        '　… BLOCKを除いた実運用',
+        f'差引 {diff:+,}円'
+        '　… プラスなら規律が損を防いだ、マイナスなら上振れを逃した',
         '',
         _payout_stats_line('配当(規律適用後) 今週', week_summary['payout_stats']),
     ]
     if total_summary:
         lines.append(_payout_stats_line('配当(規律適用後) 通算', total_summary['payout_stats']))
+
     lines += [
         '',
+        '── 印の精度 ' + '─' * 26,
         f"◎勝率 {_pct(week_summary['honmei_win'], week_summary['honmei_races'])}"
         f" / ◎複勝率 {_pct(week_summary['honmei_place'], week_summary['honmei_races'])}",
-        f"買い目構成ミス {week_summary['bet_miss']} / 予想ミス {week_summary['predict_miss']}",
-        '',
-        f'詳細: {path}',
+        f"買い目構成ミス {week_summary['bet_miss']}件"
+        '　… 印は当たっていたのに買い方で取りこぼした',
+        f"予想ミス {week_summary['predict_miss']}件"
+        '　… 印そのものが外れた',
     ]
+
+    if collected:
+        race_lines = _mail_race_lines(collected)
+        if race_lines:
+            lines += ['', '── レース別 ' + '─' * 26] + race_lines
+
+    lines += ['', f'詳細: {path}']
     return '\n'.join(lines)
 
 
@@ -637,7 +697,8 @@ def main(argv=None):
             return EXIT_ERROR
         subject = f'週次レビュー {start.isoformat()}〜{end.isoformat()}{args.subject_suffix}'
         rel = os.path.relpath(path, ROOT)
-        body = render_mail(week_summary, (start, end), rel, total_summary=total_summary)
+        body = render_mail(week_summary, (start, end), rel,
+                           total_summary=total_summary, collected=week)
         if not mailer.send(subject, body):
             logger.error('メール送信に失敗しました')
             return EXIT_ERROR
