@@ -85,5 +85,69 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-26T11:17:30.306886+09:00",
+    "races": [
+      {
+        "race_id": "202608264311",
+        "name": "第４回 フリオーソレジェンドカップ４上オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "第４回 フリオーソレジェンドカップ４上オープン: ダート1800m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第４回 フリオーソレジェンドカップ４上オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1800,
+          "weather": "晴",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 13
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 13
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 78
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 156
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 78
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 286
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-26 11:17:31"
+        }
+      }
+    ]
   }
 ]
