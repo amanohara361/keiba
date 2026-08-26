@@ -38,6 +38,9 @@ def make_race(**kwargs):
         bets=[],
         confidence='B',
         subjective_hit_rate=0.20,
+        # 2026-08-26：bet_builder は馬番ごとの主観勝率を Harville に通して
+        # 券種ごとの的中率を出す。既定は「◎が市場よりやや強い」程度に置く。
+        win_probabilities={7: 0.35, 11: 0.20, 14: 0.12},
     )
     defaults.update(kwargs)
     return RaceBets(**defaults)
@@ -311,11 +314,12 @@ def test_collect_fetches_each_type_once():
     def fake_fetch(race_id, bet_type):
         calls.append(bet_type)
         tables = {
-            '単勝': {'07': ['2.9', '3.0', '1']},
+            '単勝': {'07': ['2.9', '3.0', '1'], '11': ['5.0', '5.2', '2'],
+                   '14': ['9.0', '9.4', '3'], '02': ['20.0', '21.0', '4']},
             '馬連': {'0711': ['11.2', '11.5', '3'], '0207': ['13.1', '13.4', '5']},
         }
         return {'status': 'middle', 'reason': None,
-                'official_datetime': '14:30:00', 'odds': tables[bet_type]}
+                'official_datetime': '14:30:00', 'odds': tables.get(bet_type, {})}
 
     bet_odds, win_table, meta = odds_module.collect(race, fetcher=fake_fetch)
 
@@ -487,7 +491,7 @@ def test_end_to_end_declines_when_a_senior_mark_has_no_odds(tmp_path, monkeypatc
             'ワイド': {'0207': ['16.0', '16.4', '5'], '0714': ['16.0', '16.4', '4']},
         }
         return {'status': 'middle', 'reason': None,
-                'official_datetime': '14:28:00', 'odds': tables[bet_type]}
+                'official_datetime': '14:28:00', 'odds': tables.get(bet_type, {})}
 
     monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
     monkeypatch.setattr(conditions_module, 'fetch',
@@ -530,6 +534,7 @@ def test_race_noteはbet_builderの説明で積み重ならない(tmp_path, monk
             name='3歳未勝利',
             marks=marks_of(items=[('◎', 3), ('○', 6)]),
             bets=[], subjective_hit_rate=0.15, note=original_note,
+            win_probabilities={3: 0.38, 6: 0.24},
         )],
     ))
 
@@ -537,12 +542,13 @@ def test_race_noteはbet_builderの説明で積み重ならない(tmp_path, monk
         # オッズは引けるが低すぎて規律を満たせない＝bet_builderは毎回
         # 「見送り（勝負度C）」の説明文を返す（実例と同じ形の見送り）。
         tables = {
-            '単勝': {'03': ['2.9', '3.0', '1']},
+            '単勝': {'03': ['2.9', '3.0', '1'], '06': ['4.0', '4.2', '2'],
+                   '09': ['8.0', '8.4', '3'], '11': ['15.0', '15.8', '4']},
             '馬連': {'0306': ['2.0', '2.1', '1']},
             'ワイド': {'0306': ['1.5', '1.6', '1']},
         }
         return {'status': 'middle', 'reason': None,
-                'official_datetime': '10:00:00', 'odds': tables[bet_type]}
+                'official_datetime': '10:00:00', 'odds': tables.get(bet_type, {})}
 
     monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
     monkeypatch.setattr(conditions_module, 'fetch',
@@ -583,12 +589,13 @@ def test_end_to_end_passes_a_clean_sheet(tmp_path, monkeypatch, capsys):
 
     def fake_fetch(race_id, bet_type):
         tables = {
-            '単勝': {'07': ['2.9', '3.0', '1']},
+            '単勝': {'07': ['2.9', '3.0', '1'], '11': ['5.0', '5.2', '2'],
+                   '14': ['9.0', '9.4', '3'], '02': ['20.0', '21.0', '4']},
             '馬連': {'0711': ['11.2', '11.5', '3'], '0714': ['9.5', '9.8', '4']},
             'ワイド': {},
         }
         return {'status': 'middle', 'reason': None,
-                'official_datetime': '14:28:00', 'odds': tables[bet_type]}
+                'official_datetime': '14:28:00', 'odds': tables.get(bet_type, {})}
 
     monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
     monkeypatch.setattr(conditions_module, 'fetch',
@@ -628,12 +635,13 @@ def test_clean_check_sends_a_short_one_line_email(tmp_path, monkeypatch):
 
     def fake_fetch(race_id, bet_type):
         tables = {
-            '単勝': {'07': ['2.9', '3.0', '1']},
+            '単勝': {'07': ['2.9', '3.0', '1'], '11': ['5.0', '5.2', '2'],
+                   '14': ['9.0', '9.4', '3'], '02': ['20.0', '21.0', '4']},
             '馬連': {'0711': ['11.2', '11.5', '3']},
             'ワイド': {'0714': ['9.0', '9.4', '4']},
         }
         return {'status': 'middle', 'reason': None,
-                'official_datetime': '14:28:00', 'odds': tables[bet_type]}
+                'official_datetime': '14:28:00', 'odds': tables.get(bet_type, {})}
 
     monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
     monkeypatch.setattr(conditions_module, 'fetch',
