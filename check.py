@@ -33,9 +33,14 @@ import report_html
 from mailer import Mailer
 
 # bet_builder が組み立てを試す券種。単勝は odds.fetch_tables が常に足すので
-# 明示しなくてよい。3連複・馬単・複勝は現状のはしご（第13章F案）が
-# 触れない券種なので、常時は取りに行かない（不要なAPI呼び出しを避ける）。
-BUILD_BET_TYPES = ('馬連', 'ワイド')
+# 明示しなくてよい。
+# **2026-08-26に3連複を追加した。** 予想メソッド第13章「相手の広げ方」は
+# 「3連複を組む際、3頭すべてを印馬から選ぶ構成は原則として避ける」「相手には
+# 印を打たなかった中穴馬を最低1頭含める」と3連複の組み方を明示的に規定して
+# いるのに、実装の候補に入っていなかった。馬連は1着2着を当てなければ0円で、
+# 3着に来ても0円のため、検証ノートが記録する「印から2頭以上が3着内なのに
+# 0円」（6鞍連続・買い目構成ミス率48%）を構造的に生んでいた。
+BUILD_BET_TYPES = ('馬連', 'ワイド', '3連複')
 
 # 終了コードは「このジョブが役目を果たせたか」で決める。
 #
@@ -85,7 +90,7 @@ def _nar_odds_for(tables, numbers, bet_type):
     return nar_module.odds_for(tables, numbers, bet_type)
 
 
-def _build_race_bets(race, tables, odds_for):
+def _build_race_bets(race, tables, odds_for, win_table=None):
     """race.bets/confidence を実オッズで確定する（bet_builder、第13章）。
 
     印は朝タスクが確定済み。ここが決めるのは買い目だけ（2026-08-14ユーザー承認）。
@@ -100,7 +105,10 @@ def _build_race_bets(race, tables, odds_for):
     無限に伸びる（2026-08-15、同じ「見送り」文言が3回連結される不具合で発覚）。
     """
     lookup = lambda bet_type, horses: odds_for(tables, horses, bet_type)  # noqa: E731
-    confidence, built_bets, note = bet_builder.build_bets(race, lookup)
+    # win_table は {馬番: (単勝オッズ, 人気)}。bet_builder が Harville モデルで
+    # 券種ごとの的中率を出すのに、出走全頭の勝率分布が要る（2026-08-26）。
+    win_odds = {n: v[0] for n, v in (win_table or {}).items() if v and v[0]}
+    confidence, built_bets, note = bet_builder.build_bets(race, lookup, win_odds)
     race.confidence = confidence
     race.bets = built_bets
     return note
@@ -140,10 +148,10 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
             # カードの段階で判断側に渡っている。ここで引き直す必要はない。
             track = nar_data.conditions(race.race_id)
             tables = nar_data.raw_tables(race.race_id)
-            bet_note = _build_race_bets(race, tables, _nar_odds_for)
+            win_table = nar_module.win_odds_table(tables, nar_data.ninki(race.race_id))
+            bet_note = _build_race_bets(race, tables, _nar_odds_for, win_table)
             bet_odds = [_nar_odds_for(tables, bet.horses, bet.type)
                         for bet in race.bets]
-            win_table = nar_module.win_odds_table(tables, nar_data.ninki(race.race_id))
             meta = nar_data.meta(race.race_id)
             verdict = discipline.review_race(
                 race, bet_odds, win_table, meta, now, sheet.date, track, {})
@@ -170,10 +178,10 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
         # 単勝・馬連・ワイドをまとめて1回で取得する（bet_builder が任意の
         # 組み合わせを試せるよう、買い目を先に決めずに券種の表だけ取る）。
         tables, meta = odds_module.fetch_tables(race.race_id, BUILD_BET_TYPES, fetcher)
-        bet_note = _build_race_bets(race, tables, _jra_odds_for)
+        win_table = odds_module.win_odds_table(tables.get('単勝', {}))
+        bet_note = _build_race_bets(race, tables, _jra_odds_for, win_table)
         bet_odds = [_jra_odds_for(tables, bet.horses, bet.type)
                     for bet in race.bets]
-        win_table = odds_module.win_odds_table(tables.get('単勝', {}))
         verdict = discipline.review_race(
             race, bet_odds, win_table, meta, now, sheet.date, track, forms)
         verdict.bet_note = bet_note

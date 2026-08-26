@@ -96,6 +96,10 @@ class Bet:
         return {'type': self.type, 'horses': self.horses, 'stake': self.stake}
 
 
+def context_name(name):
+    return name or '（レース名なし）'
+
+
 class RaceBets:
     """1レース分の印・勝負度・買い目。"""
 
@@ -108,7 +112,7 @@ class RaceBets:
 
     def __init__(self, race_id, name, start_time, marks, bets,
                  confidence=None, subjective_hit_rate=None, venue=None, race_no=None,
-                 note='', org='jra', partners=None):
+                 note='', org='jra', partners=None, win_probabilities=None):
         self.race_id = str(race_id)
         self.name = name
         self.start_time = start_time          # "15:25"
@@ -122,7 +126,19 @@ class RaceBets:
         # たまたま最後の検算が発走後に遅れて来ただけ」なのか後から分からない
         # （discipline.check_already_started 参照）。
         self.confidence = confidence
-        self.subjective_hit_rate = subjective_hit_rate   # 期待値の計算に使う（0.0〜1.0）
+        # **非推奨（2026-08-26）。** レース単位の1つの数字で、券種が変わっても
+        # 同じ値が使い回されていた。実測29件の検証で、この自己申告値の平均が
+        # 28.9%に対し実際の的中率は7.1%（市場推定は13.6%）と判明し、期待値の
+        # 判定が機能していなかった。二項検定でも28.9%は棄却される（P=0.005）。
+        # 新しい買い目は win_probabilities を使うこと。本フィールドは過去の
+        # 買い目ファイルを読めるようにするためだけに残している。
+        self.subjective_hit_rate = subjective_hit_rate
+
+        # 馬番ごとの主観勝率 {馬番: 0.0〜1.0}。bet_builder がこれを Harville
+        # モデルに通し、**券種ごとに**的中率を算出する。市場勝率（単勝オッズ）
+        # からの補正だけを書けばよく、指定しなかった馬は残りを市場比で按分する。
+        self.win_probabilities = {int(k): float(v)
+                                  for k, v in (win_probabilities or {}).items()}
         self.venue = venue
         self.race_no = race_no
         self.note = note
@@ -138,6 +154,16 @@ class RaceBets:
             raise BetsError(f'勝負度は A/B/C のいずれかです: {confidence}')
         if not re.fullmatch(r'\d{12}', self.race_id):
             raise BetsError(f'race_id は12桁の数字です: {race_id}')
+        for umaban, prob in self.win_probabilities.items():
+            if not 0.0 < prob < 1.0:
+                raise BetsError(
+                    f'{context_name(name)}の主観勝率が範囲外です'
+                    f'（馬番{umaban}: {prob}）。0より大きく1未満で指定します')
+        total = sum(self.win_probabilities.values())
+        if total >= 1.0:
+            raise BetsError(
+                f'{context_name(name)}の主観勝率の合計が {total:.3f} で1.0以上です。'
+                f'指定しなかった馬に配る余地がありません')
 
     # --- 印の参照 ---
 
@@ -196,6 +222,7 @@ class RaceBets:
             'start_time': self.start_time,
             'confidence': self.confidence,
             'subjective_hit_rate': self.subjective_hit_rate,
+            'win_probabilities': self.win_probabilities or None,
             'marks': self.marks,
             'partners': self.partners,
             'bets': [b.to_dict() for b in self.bets],
@@ -281,6 +308,7 @@ def parse_sheet(payload):
             bets=bets,
             confidence=raw.get('confidence'),
             subjective_hit_rate=raw.get('subjective_hit_rate'),
+            win_probabilities=raw.get('win_probabilities'),
             venue=raw.get('venue'),
             race_no=raw.get('race_no'),
             note=raw.get('note', ''),
