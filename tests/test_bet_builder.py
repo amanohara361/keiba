@@ -368,3 +368,58 @@ def test_キーンランドC_相手に無印の中穴を含む():
         keenland_race(), lookup_from(KEENLAND_TABLE), KEENLAND_WIN)
     marked = set(keenland_race().marked_horses)
     assert any(any(h not in marked for h in b.horses) for b in built)
+
+
+# ----------------------------------------------------------------------
+# 軸の単勝オッズ上限（2026-08-26 ユーザー承認・第8章の推奨レンジを軸に適用）
+# ----------------------------------------------------------------------
+
+def test_軸の単勝が推奨レンジ上限を超えたら見送る():
+    """実データ45レースで、◎が10倍超だった5件は1頭も3着に入らなかった。
+
+    それでもその5件は全部購入されていた（合成オッズ3.0倍の下限が
+    人気薄の◎を軸にしたレースばかり通す逆選択を起こしていたため）。
+    """
+    long_shot = dict(WIN_ODDS)
+    long_shot[7] = 15.0          # ◎の単勝を推奨レンジ上限（9.9倍）超へ
+    r = race(marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11},
+                    {'mark': '▲', 'umaban': 2}],
+             win_probabilities={7: 0.20, 11: 0.15})
+    confidence, built, note = build(r, {
+        ('馬連', frozenset({7, 11})): 12.0,
+        ('馬連', frozenset({7, 2})): 14.0,
+        ('ワイド', frozenset({7, 11})): 5.0,
+        ('ワイド', frozenset({7, 2})): 6.0,
+    }, win_odds=long_shot)
+    assert confidence == 'C'
+    assert built == []
+    assert '15.0倍' in note
+    assert '推奨レンジ上限' in note
+
+
+def test_軸の単勝が上限ちょうどなら見送らない():
+    """9.9倍は推奨レンジの内側。境界で余計に弾かない。"""
+    boundary = dict(WIN_ODDS)
+    boundary[7] = 9.9
+    r = race(marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11},
+                    {'mark': '▲', 'umaban': 2}],
+             win_probabilities={7: 0.20, 11: 0.15})
+    _confidence, _built, note = build(r, {
+        ('ワイド', frozenset({7, 11})): 5.0,
+        ('ワイド', frozenset({7, 2})): 6.0,
+    }, win_odds=boundary)
+    assert '推奨レンジ上限' not in note
+
+
+def test_軸の単勝が短くても上限では弾かない():
+    """入れたのは上限だけ。下限（3.9倍以下）は保留中の検討事項なので効かせない。"""
+    short = dict(WIN_ODDS)
+    short[7] = 1.8
+    r = race(marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11},
+                    {'mark': '▲', 'umaban': 2}],
+             win_probabilities={7: 0.45, 11: 0.15})
+    _confidence, _built, note = build(r, {
+        ('ワイド', frozenset({7, 11})): 5.0,
+        ('ワイド', frozenset({7, 2})): 6.0,
+    }, win_odds=short)
+    assert '推奨レンジ上限' not in note
