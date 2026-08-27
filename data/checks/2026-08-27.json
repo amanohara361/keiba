@@ -105,5 +105,209 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-27T15:18:39.253788+09:00",
+    "races": [
+      {
+        "race_id": "202608274711",
+        "name": "第５１回 秋風ジュニア２歳・オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "第５１回 秋風ジュニア２歳・オープン: 馬場が「稍重」です（ダート1400m / 天候:雨 / 馬場:稍重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第５１回 秋風ジュニア２歳・オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "雨",
+          "going": "稍重"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 7
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 7
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 21
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 42
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 21
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 35
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-27 15:18:41"
+        }
+      },
+      {
+        "race_id": "202608273011",
+        "name": "第３８回 ブリーダーズゴールドカップJpnIII一般牝馬オープン",
+        "blocked": false,
+        "composite_odds": 29.5,
+        "expected_value": 1.79,
+        "bet_odds": [
+          {
+            "bet": "3連複 2-5-8",
+            "odds": 29.5
+          }
+        ],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "第３８回 ブリーダーズゴールドカップJpnIII一般牝馬オープン: 馬場が「重」です（ダート2000m / 天候:曇 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "第３８回 ブリーダーズゴールドカップJpnIII一般牝馬オープン: 合成オッズ 29.50倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "第３８回 ブリーダーズゴールドカップJpnIII一般牝馬オープン: 期待値 1.79（合成 29.50倍 × 主観的中率 6%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 2000,
+          "weather": "曇",
+          "going": "重"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 11
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 11
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 55
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 110
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 55
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 165
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-27 15:18:41"
+        }
+      },
+      {
+        "race_id": "202608274311",
+        "name": "アレキサンドライトカップ（準重賞）３歳牝馬オープン",
+        "blocked": false,
+        "composite_odds": 38.9,
+        "expected_value": 2.23,
+        "bet_odds": [
+          {
+            "bet": "3連複 2-3-9",
+            "odds": 38.9
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "アレキサンドライトカップ（準重賞）３歳牝馬オープン: ダート1700m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "アレキサンドライトカップ（準重賞）３歳牝馬オープン: 合成オッズ 38.90倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "アレキサンドライトカップ（準重賞）３歳牝馬オープン: 期待値 2.23（合成 38.90倍 × 主観的中率 6%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1700,
+          "weather": "曇",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 45
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 90
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 45
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 120
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-27 15:18:41"
+        }
+      }
+    ]
   }
 ]
