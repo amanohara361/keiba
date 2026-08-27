@@ -236,7 +236,7 @@ def annotate(entries, history, day, distance=None):
     return entries
 
 
-def _annotate_jra_horse(entry, fetcher, sleep):
+def _annotate_jra_horse(entry, fetcher, sleep, day):
     """交流重賞に出るJRA所属馬の近走をnetkeibaから補う。
 
     annotate() は地方のCSVに近走が無いJRA所属馬に定型文（「近走は別途あたること」）
@@ -246,10 +246,19 @@ def _annotate_jra_horse(entry, fetcher, sleep):
     **馬名検索は同姓同名で複数該当することがある。1頭に絞れないときは
     fetcher が None を返す設計にしてあり、その場合は定型文のまま何もしない
     （推測で当てない。第12章「不明点は推測せず要確認と明記する」）。**
+
+    ただし出馬表CSVは父名と馬齢を持っているので、それを手がかりとして渡す。
+    突き合わせできる材料を使うのは推測ではない。2026-08-27の門別11R・
+    ペンダント（オルフェーヴル産駒・2023年生）は、netkeibaに1997年生の
+    同名馬がいるため名前だけでは割れて取りこぼしていた。
     """
     sleep(JRA_REQUEST_INTERVAL)
+    birth_year = None
+    if entry.get('age'):
+        # 馬齢は「年 − 生年」（2001年からの満年齢表記）。
+        birth_year = day.year - entry['age']
     try:
-        runs = fetcher(entry['name'])
+        runs = fetcher(entry['name'], sire=entry.get('sire'), birth_year=birth_year)
     except form_module.FormError as exc:
         logger.warning('%s（JRA所属）の近走を取得できませんでした: %s', entry['name'], exc)
         return
@@ -335,7 +344,7 @@ def build_card(day, levels=('重賞', '準重賞'), with_entries=True, fetcher=N
                 # JRA所属馬は地方のCSVに近走が無いのが仕様。netkeibaを馬名で
                 # 検索できれば近走を補う（見つからなければ定型文のまま）。
                 if entry.get('belongs_jra'):
-                    _annotate_jra_horse(entry, jra_fetcher, jra_sleep)
+                    _annotate_jra_horse(entry, jra_fetcher, jra_sleep, day)
             race['entries'] = entries
             # 交流重賞かどうか。中央馬が1頭でもいれば、そのレースの近走は
             # 地方のデータだけでは揃わない。判断側にそれを先に知らせる。

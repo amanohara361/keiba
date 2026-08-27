@@ -416,7 +416,7 @@ def test_カードは重賞だけを候補にして出馬表を付ける():
     # 差し替えないとJRA所属馬（umaban 2）ぶんだけテストが本当にネットへ出ようとする。
     card = nar_card.build_card(date(2026, 8, 12), fetcher=fake,
                                today=date(2026, 8, 12),
-                               jra_fetcher=lambda name, opener=None: None,
+                               jra_fetcher=lambda name, opener=None, **kw: None,
                                jra_sleep=lambda seconds: None)
     assert card['org'] == 'nar'
     assert card['race_count'] == 3          # ばんえいを除いた当日のレース数
@@ -432,7 +432,7 @@ def test_JRA所属馬はnetkeibaで見つかれば近走を差し替える():
 
     found_names = []
 
-    def jra_fetcher(name, opener=None):
+    def jra_fetcher(name, opener=None, **kw):
         found_names.append(name)
         return [{'date': '2026/05/06', 'race': 'ヒヤシンスS', 'rank': 4}]
 
@@ -458,7 +458,7 @@ def test_JRA所属馬がnetkeibaで1頭に絞れなければ定型文のまま()
 
     card = nar_card.build_card(date(2026, 8, 12), fetcher=fake,
                                today=date(2026, 8, 12),
-                               jra_fetcher=lambda name, opener=None: None,
+                               jra_fetcher=lambda name, opener=None, **kw: None,
                                jra_sleep=lambda seconds: None)
 
     jra_entry = next(e for e in card['races'][0]['entries'] if e['belongs_jra'])
@@ -481,8 +481,8 @@ def test_地方の近走があるJRA馬はlast_runを注記で潰さない():
                      'venue': '川崎', 'days_since': 71},
     }
     nar_card._annotate_jra_horse(
-        entry, lambda name, opener=None: [{'date': '2026/05/06', 'rank': 4}],
-        lambda seconds: None)
+        entry, lambda name, opener=None, **kw: [{'date': '2026/05/06', 'rank': 4}],
+        lambda seconds: None, date(2026, 8, 27))
 
     # 注記は足す。**元の近走の中身は残す。**
     assert 'jra_recent_runs' in entry['last_run']['note']
@@ -496,8 +496,8 @@ def test_地方の近走が無いJRA馬は従来どおり注記だけになる()
     entry = {'name': 'テスト馬', 'belongs_jra': True, 'recent_runs': [],
              'last_run': {'note': '中央（JRA）所属。近走は別途あたること'}}
     nar_card._annotate_jra_horse(
-        entry, lambda name, opener=None: [{'date': '2026/05/06', 'rank': 4}],
-        lambda seconds: None)
+        entry, lambda name, opener=None, **kw: [{'date': '2026/05/06', 'rank': 4}],
+        lambda seconds: None, date(2026, 8, 27))
     assert list(entry['last_run']) == ['note']
     assert 'jra_recent_runs' in entry['last_run']['note']
 

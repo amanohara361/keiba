@@ -324,9 +324,29 @@ _SEARCH_ROW = re.compile(
     r'value="(\d{10})" id="chk_horse">.*?<a href="/horse/\1/" title="([^"]+)"',
     re.S)
 
+# 候補行の全体（父名・生年を読むために行ごと取る）。
+_SEARCH_ROW_FULL = re.compile(
+    r'value="(\d{10})" id="chk_horse">(.*?)</tr>', re.S)
 
-def parse_horse_search(page, name):
-    """馬名検索の結果ページからhorse_idを1つに絞れれば返す。絞れなければNone。"""
+_TAGS = re.compile(r'<[^>]+>')
+
+
+def _row_text(html):
+    return _TAGS.sub(' ', html).replace('&nbsp;', ' ')
+
+
+def parse_horse_search(page, name, sire=None, birth_year=None):
+    """馬名検索の結果ページからhorse_idを1つに絞れれば返す。絞れなければNone。
+
+    **同姓同名は推測で選ばない**という原則は変えない。ただし父名・生年という
+    照合できる材料が手元にあるなら、それは推測ではなく突き合わせなので使う。
+
+    2026-08-27、門別11Rのペンダント（オルフェーヴル産駒・2023年生）で
+    実際に取りこぼした。netkeibaに1997年生の同名馬がいるため名前だけでは
+    2頭に割れて None になり、関東オークスJpnII勝ちを含む中央6走が
+    カードに載らなかった。カードは `sire` と `age` を持っているので、
+    その2つを渡せばこの馬は一意に決まる。
+    """
     canonical = re.search(
         r'<link[^>]*rel="canonical"[^>]*href="https://db\.netkeiba\.com/horse/(\d+)/"',
         page)
@@ -334,18 +354,42 @@ def parse_horse_search(page, name):
         return canonical.group(1)
 
     matches = [hid for hid, title in _SEARCH_ROW.findall(page) if title == name]
-    return matches[0] if len(matches) == 1 else None
+    if len(matches) == 1:
+        return matches[0]
+    if not matches:
+        return None
+
+    # ここから先は同姓同名が複数いる場合。手がかりが無ければ従来どおり諦める。
+    if not sire and not birth_year:
+        return None
+
+    rows = {hid: _row_text(html) for hid, html in _SEARCH_ROW_FULL.findall(page)}
+    narrowed = []
+    for hid in matches:
+        text = rows.get(hid, '')
+        if sire and sire not in text:
+            continue
+        if birth_year and str(birth_year) not in text:
+            continue
+        narrowed.append(hid)
+    # 絞った結果が1頭のときだけ採用する。2頭以上残ったらやはり諦める。
+    return narrowed[0] if len(narrowed) == 1 else None
 
 
-def search_horse_id(name, opener=None):
+def search_horse_id(name, opener=None, sire=None, birth_year=None):
     import urllib.parse
     url = HORSE_SEARCH_URL.format(word=urllib.parse.quote(name))
-    return parse_horse_search(_fetch(url, opener=opener), name)
+    return parse_horse_search(_fetch(url, opener=opener), name,
+                              sire=sire, birth_year=birth_year)
 
 
-def fetch_jra_recent_runs(name, opener=None, limit=5):
-    """馬名からnetkeibaの近走を取る。見つからなければNone（0件と区別する）。"""
-    horse_id = search_horse_id(name, opener=opener)
+def fetch_jra_recent_runs(name, opener=None, limit=5, sire=None, birth_year=None):
+    """馬名からnetkeibaの近走を取る。見つからなければNone（0件と区別する）。
+
+    sire・birth_year は同姓同名を絞るための手がかり（任意）。出馬表CSVに
+    どちらも入っているので、交流重賞のJRA馬にはカード側から渡している。
+    """
+    horse_id = search_horse_id(name, opener=opener, sire=sire, birth_year=birth_year)
     if not horse_id:
         return None
     page = _fetch(RESULT_URL.format(horse_id=horse_id), opener=opener)

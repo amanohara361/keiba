@@ -401,13 +401,57 @@ def test_search_horse_idはfetchしたページをparse_horse_searchに渡す(mo
 
 
 def test_fetch_jra_recent_runsは見つからなければNoneを返す(monkeypatch):
-    monkeypatch.setattr(form_module, 'search_horse_id', lambda name, opener=None: None)
+    monkeypatch.setattr(form_module, 'search_horse_id',
+                        lambda name, opener=None, **kw: None)
     assert form_module.fetch_jra_recent_runs('いない馬') is None
 
 
 def test_fetch_jra_recent_runsはhorse_idの近走を返す(monkeypatch):
     monkeypatch.setattr(form_module, 'search_horse_id',
-                        lambda name, opener=None: '2023101148')
+                        lambda name, opener=None, **kw: '2023101148')
     monkeypatch.setattr(form_module, '_fetch', lambda url, opener=None: HORSE_PAGE)
     runs = form_module.fetch_jra_recent_runs('ラッキーキッド')
     assert len(runs) == 2
+
+
+# ----------------------------------------------------------------------
+# 同姓同名の絞り込み（2026-08-27 門別11R・ペンダントの取りこぼし）
+# ----------------------------------------------------------------------
+
+_AMBIGUOUS_SEARCH = '''
+<table>
+<tr><td><input value="2023105447" id="chk_horse"></td>
+<td><a href="/horse/2023105447/" title="ペンダント">ペンダント</a></td>
+<td>牝</td><td>2023</td><td>[西]池江泰寿</td><td>オルフェーヴル</td></tr>
+<tr><td><input value="1997104448" id="chk_horse"></td>
+<td><a href="/horse/1997104448/" title="ペンダント">ペンダント</a></td>
+<td>牝</td><td>1997</td><td>[地]桜田浩三</td><td>ティンバーカントリー</td></tr>
+</table>
+'''
+
+
+def test_同姓同名は手がかりが無ければ従来どおり諦める():
+    """推測で選ばない、という原則は変えない。"""
+    assert form_module.parse_horse_search(_AMBIGUOUS_SEARCH, 'ペンダント') is None
+
+
+def test_同姓同名でも父名で絞れれば特定する():
+    assert form_module.parse_horse_search(
+        _AMBIGUOUS_SEARCH, 'ペンダント', sire='オルフェーヴル') == '2023105447'
+
+
+def test_同姓同名でも生年で絞れれば特定する():
+    assert form_module.parse_horse_search(
+        _AMBIGUOUS_SEARCH, 'ペンダント', birth_year=1997) == '1997104448'
+
+
+def test_手がかりを渡しても複数残るなら諦める():
+    """両方とも同じ父・同じ生年なら、やはり1頭に決められない。"""
+    page = _AMBIGUOUS_SEARCH.replace('ティンバーカントリー', 'オルフェーヴル')
+    assert form_module.parse_horse_search(
+        page, 'ペンダント', sire='オルフェーヴル') is None
+
+
+def test_手がかりが誰にも一致しなければ諦める():
+    assert form_module.parse_horse_search(
+        _AMBIGUOUS_SEARCH, 'ペンダント', sire='ディープインパクト') is None
