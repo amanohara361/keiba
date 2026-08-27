@@ -466,6 +466,42 @@ def test_JRA所属馬がnetkeibaで1頭に絞れなければ定型文のまま()
     assert '別途あたること' in jra_entry['last_run']['note']
 
 
+def test_地方の近走があるJRA馬はlast_runを注記で潰さない():
+    """交流重賞の常連（JRA所属で地方にも近走がある馬）の材料を落とさない。
+
+    2026-08-27 門別11Rのペンダントがこの形だった。0617関東オークスJpnII を
+    勝った事実が last_run に入っていたが、netkeiba 側が取れていれば注記だけの
+    辞書で上書きされて消えていた。第2章の減点条件は last_run の着順・脚質・
+    間隔・距離増減を見るので、消すと判断材料が無くなる。
+    """
+    entry = {
+        'name': 'テスト馬', 'belongs_jra': True,
+        'recent_runs': [{'date': '20260617', 'finish': 1}],
+        'last_run': {'finish': 1, 'style': '先行', 'distance': 2100,
+                     'venue': '川崎', 'days_since': 71},
+    }
+    nar_card._annotate_jra_horse(
+        entry, lambda name, opener=None: [{'date': '2026/05/06', 'rank': 4}],
+        lambda seconds: None)
+
+    # 注記は足す。**元の近走の中身は残す。**
+    assert 'jra_recent_runs' in entry['last_run']['note']
+    assert entry['last_run']['finish'] == 1
+    assert entry['last_run']['distance'] == 2100
+    assert entry['last_run']['venue'] == '川崎'
+    assert entry['last_run']['days_since'] == 71
+
+
+def test_地方の近走が無いJRA馬は従来どおり注記だけになる():
+    entry = {'name': 'テスト馬', 'belongs_jra': True, 'recent_runs': [],
+             'last_run': {'note': '中央（JRA）所属。近走は別途あたること'}}
+    nar_card._annotate_jra_horse(
+        entry, lambda name, opener=None: [{'date': '2026/05/06', 'rank': 4}],
+        lambda seconds: None)
+    assert list(entry['last_run']) == ['note']
+    assert 'jra_recent_runs' in entry['last_run']['note']
+
+
 def test_開催があって重賞が無い日は空のカードを書く():
     # **ファイルが無い状態は「取得できなかった」を意味させたい。**
     # 該当なしと取得失敗を同じ形にすると区別が付かなくなる。

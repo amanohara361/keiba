@@ -257,11 +257,22 @@ def _annotate_jra_horse(entry, fetcher, sleep):
         logger.info('%s（JRA所属）はnetkeibaで馬名を1頭に絞れませんでした', entry['name'])
         return
     entry['jra_recent_runs'] = runs
-    entry['last_run'] = {
-        'note': ('中央（JRA）所属。netkeibaの競走成績を jra_recent_runs に入れた'
-                 if runs else
-                 '中央（JRA）所属。netkeibaで馬は特定できたが競走成績が0件（新馬の可能性）'),
-    }
+    note = ('中央（JRA）所属。netkeibaの競走成績を jra_recent_runs に入れた'
+            if runs else
+            '中央（JRA）所属。netkeibaで馬は特定できたが競走成績が0件（新馬の可能性）')
+
+    # **地方の近走がある馬の last_run を、注記だけの辞書で上書きしない。**
+    # JRA所属でも交流重賞に遠征していれば地方のCSVに近走が残る。annotate() が
+    # そこから組み立てた last_run（着順・脚質・距離・場・間隔・距離増減・
+    # 乗り替わり）は第2章の減点条件をあてるための材料で、注記に差し替えると
+    # 消えてしまう。2026-08-27の門別11R・ペンダントがこの形で、関東オークス
+    # JpnII を勝った事実が last_run から落ちる寸前だった（このときは netkeiba
+    # 側の検索が失敗して上書き自体が起きず、結果的に露見しなかった）。
+    # 注記は既存の last_run に足すだけにする。
+    if entry.get('recent_runs'):
+        entry['last_run'] = dict(entry.get('last_run') or {}, note=note)
+    else:
+        entry['last_run'] = {'note': note}
 
 
 # ----------------------------------------------------------------------
