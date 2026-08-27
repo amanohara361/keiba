@@ -55,6 +55,18 @@ LOOKBACK_MONTHS = 6
 # form.pyのREQUEST_INTERVALと同じ考え方（サーバへの配慮）。
 JRA_REQUEST_INTERVAL = 1.5
 
+# JRA所属馬は何走まで載せるか。**地方馬の RECENT_RUNS より深く取る。**
+# 地方馬は月次CSVがあるので5走を超えて知りたければ後から遡れるが、JRA所属馬に
+# ついてはこのフィールドが唯一の窓で、切り捨てた分は二度と見えない。
+#
+# 2026-08-27の門別11R・ペンダントで実害が出た。通算7戦のうち5走だけを保存した
+# 結果、芝で敗れた2走のうち1走（2025/08/24 新馬 芝1600m 4着）がカードから
+# 落ちた。この馬は「ダート5戦3-2-0-0・芝2戦0-0-0-2」で、**着外がどちらも芝**
+# という点が本日のダート戦の評価を決める材料だったのに、カードだけを見ると
+# 芝の敗戦が1走しか無く、その根拠を確かめられない状態になっていた。
+# 通算20戦程度までなら1頭1ページで収まるので、深さで損はしない。
+JRA_RECENT_RUNS = 20
+
 # 終了コードの意味は check.py と揃える。
 # **赤は「知らせられなかった」だけに絞る。** 買い目が無い日・重賞が無い日が
 # 毎回赤くなると、本当の障害（SMTP断・公式サイトの構造変更）が同じ色に埋もれる。
@@ -258,7 +270,8 @@ def _annotate_jra_horse(entry, fetcher, sleep, day):
         # 馬齢は「年 − 生年」（2001年からの満年齢表記）。
         birth_year = day.year - entry['age']
     try:
-        runs = fetcher(entry['name'], sire=entry.get('sire'), birth_year=birth_year)
+        runs = fetcher(entry['name'], sire=entry.get('sire'),
+                       birth_year=birth_year, limit=JRA_RECENT_RUNS)
     except form_module.FormError as exc:
         logger.warning('%s（JRA所属）の近走を取得できませんでした: %s', entry['name'], exc)
         return

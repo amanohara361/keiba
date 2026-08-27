@@ -492,6 +492,43 @@ def test_地方の近走があるJRA馬はlast_runを注記で潰さない():
     assert entry['last_run']['days_since'] == 71
 
 
+def test_JRA馬は地方馬より深く近走を取る():
+    """JRA馬にとってこのフィールドが唯一の窓なので、切り捨てると二度と見えない。
+
+    2026-08-27 門別11Rのペンダントは通算7戦だが5走しか保存されず、芝で敗れた
+    2走のうち1走がカードから落ちた。「着外がどちらも芝」という、その日の
+    ダート戦の評価を決める材料が、カードだけでは確かめられない状態になっていた。
+    """
+    seen = {}
+
+    def fetcher(name, opener=None, limit=None, **kw):
+        seen['limit'] = limit
+        return [{'date': '2026/05/06', 'rank': 4}]
+
+    entry = {'name': 'テスト馬', 'belongs_jra': True, 'age': 3,
+             'sire': 'オルフェーヴル', 'recent_runs': [], 'last_run': {}}
+    nar_card._annotate_jra_horse(entry, fetcher, lambda seconds: None,
+                                 date(2026, 8, 27))
+    assert seen['limit'] == nar_card.JRA_RECENT_RUNS
+    assert nar_card.JRA_RECENT_RUNS > nar_card.RECENT_RUNS
+
+
+def test_JRA馬の検索には父名と生年を手がかりとして渡す():
+    """同姓同名で割れて取りこぼさないため（2026-08-27 ペンダント）。"""
+    seen = {}
+
+    def fetcher(name, opener=None, limit=None, sire=None, birth_year=None):
+        seen.update(sire=sire, birth_year=birth_year)
+        return []
+
+    entry = {'name': 'テスト馬', 'belongs_jra': True, 'age': 3,
+             'sire': 'オルフェーヴル', 'recent_runs': [], 'last_run': {}}
+    nar_card._annotate_jra_horse(entry, fetcher, lambda seconds: None,
+                                 date(2026, 8, 27))
+    assert seen['sire'] == 'オルフェーヴル'
+    assert seen['birth_year'] == 2023      # 開催年 − 馬齢
+
+
 def test_地方の近走が無いJRA馬は従来どおり注記だけになる():
     entry = {'name': 'テスト馬', 'belongs_jra': True, 'recent_runs': [],
              'last_run': {'note': '中央（JRA）所属。近走は別途あたること'}}
