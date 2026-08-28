@@ -94,7 +94,7 @@
       "race_no": 6,
       "start_time": "15:00",
       "confidence": "A",
-      "subjective_hit_rate": 0.0257,
+      "subjective_hit_rate": 0.0266,
       "win_probabilities": {
         "1": 0.22,
         "4": 0.19,
@@ -500,6 +500,8 @@
       "venue": "佐賀",
       "race_no": 6,
       "start_time": "19:15",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "9": 0.3,
         "2": 0.18,
