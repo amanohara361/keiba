@@ -1,7 +1,7 @@
 {
   "date": "2026-08-29",
   "org": "nar",
-  "generated_at": "2026-08-29T06:15:43+09:00",
+  "generated_at": "2026-08-29T11:03:48+09:00",
   "source": "keiba.go.jp 公式データダウンロード",
   "levels": [
     "重賞",
@@ -23,8 +23,8 @@
       "distance": 1750,
       "field_size": 9,
       "condition": "サラブレッド系　一般 別定",
-      "weather": "",
-      "going": "",
+      "weather": "晴",
+      "going": "良",
       "prize_1st": 1200000,
       "has_furlong_times": false,
       "candidate": true,
