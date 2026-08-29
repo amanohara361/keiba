@@ -500,7 +500,7 @@
       "venue": "佐賀",
       "race_no": 6,
       "start_time": "19:15",
-      "confidence": "A",
+      "confidence": "B",
       "subjective_hit_rate": 0.3,
       "win_probabilities": {
         "9": 0.3,
