@@ -11,7 +11,7 @@
       "race_no": 6,
       "start_time": "15:00",
       "confidence": "B",
-      "subjective_hit_rate": 0.4113,
+      "subjective_hit_rate": 0.411,
       "win_probabilities": {
         "9": 0.14,
         "6": 0.4,
@@ -378,7 +378,7 @@
       "race_no": 11,
       "start_time": "15:25",
       "confidence": "A",
-      "subjective_hit_rate": 0.096,
+      "subjective_hit_rate": 0.0959,
       "win_probabilities": {
         "13": 0.155,
         "2": 0.095,
@@ -453,6 +453,8 @@
       "venue": "盛岡",
       "race_no": 12,
       "start_time": "19:15",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "9": 0.22,
         "3": 0.15,

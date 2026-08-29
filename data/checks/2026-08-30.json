@@ -391,5 +391,432 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-08-30T08:12:51.752489+09:00",
+    "races": [
+      {
+        "race_id": "202607030406",
+        "name": "白川郷S",
+        "blocked": false,
+        "composite_odds": 3.5,
+        "expected_value": 1.44,
+        "bet_odds": [
+          {
+            "bet": "ワイド 9-6",
+            "odds": 5.6
+          },
+          {
+            "bet": "ワイド 9-3",
+            "odds": 20.7
+          },
+          {
+            "bet": "ワイド 9-16",
+            "odds": 17.1
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "白川郷S: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "白川郷S: 合成オッズ 3.50倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "白川郷S: 期待値 1.44（合成 3.50倍 × 主観的中率 41%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": null,
+          "weather": "曇",
+          "surface": "ダート",
+          "distance": 1900
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:10"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:10"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:10"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:10"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-30 08:10:10"
+        }
+      },
+      {
+        "race_id": "202607030407",
+        "name": "中京2歳S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "中京2歳S: 芝1400m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "中京2歳S: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "曇",
+          "surface": "芝",
+          "distance": 1400
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:50"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:50"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:50"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:50"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-30 08:10:50"
+        }
+      },
+      {
+        "race_id": "202604030406",
+        "name": "両津湾特別",
+        "blocked": false,
+        "composite_odds": 9.0,
+        "expected_value": 1.35,
+        "bet_odds": [
+          {
+            "bet": "単勝 8",
+            "odds": 9.0
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "両津湾特別: ダート1800m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "両津湾特別: 合成オッズ 9.00倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "両津湾特別: 期待値 1.35（合成 9.00倍 × 主観的中率 15%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "曇",
+          "surface": "ダート",
+          "distance": 1800
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:09:55"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:09:55"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:09:55"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:09:55"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-30 08:09:55"
+        }
+      },
+      {
+        "race_id": "202604030407",
+        "name": "日本海S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "日本海S: 芝2200m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "日本海S: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "曇",
+          "surface": "芝",
+          "distance": 2200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:35"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:35"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:35"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:35"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-30 08:10:35"
+        }
+      },
+      {
+        "race_id": "202604030408",
+        "name": "新潟記念",
+        "blocked": false,
+        "composite_odds": 43.7,
+        "expected_value": 1.23,
+        "bet_odds": [
+          {
+            "bet": "馬連 8-10",
+            "odds": 43.7
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "新潟記念: 芝2000m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "新潟記念: 合成オッズ 43.70倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "新潟記念: 期待値 1.23（合成 43.70倍 × 主観的中率 3%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "lone_partner",
+            "message": "新潟記念: 馬連・馬単の相手が 10番の1頭だけです",
+            "remedy": "2着抜けで全滅する構造です。◎絡みのワイドまたは複勝を保険に置けないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "曇",
+          "surface": "芝",
+          "distance": 2000
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:40"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:40"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:40"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:10:40"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-30 08:10:40"
+        }
+      },
+      {
+        "race_id": "202601020411",
+        "name": "日高S",
+        "blocked": false,
+        "composite_odds": 25.4,
+        "expected_value": 2.44,
+        "bet_odds": [
+          {
+            "bet": "ワイド 13-2",
+            "odds": 25.4
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "日高S: 芝1500m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "日高S: 合成オッズ 25.40倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "日高S: 期待値 2.44（合成 25.40倍 × 主観的中率 10%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1500
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:12:35"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:12:35"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:12:35"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-08-30 08:12:35"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-08-30 08:12:35"
+        }
+      },
+      {
+        "race_id": "202608303512",
+        "name": "第52回ビューチフルドリーマーカップ（ドンフランキー賞）オープン牝馬",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第52回ビューチフルドリーマーカップ（ドンフランキー賞）オープン牝馬: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第52回ビューチフルドリーマーカップ（ドンフランキー賞）オープン牝馬: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 2000,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-08-30 08:12:59"
+        }
+      }
+    ]
   }
 ]
