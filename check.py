@@ -30,6 +30,7 @@ import form as form_module
 import nar as nar_module
 import odds as odds_module
 import report_html
+import report_md
 from mailer import Mailer
 
 # bet_builder が組み立てを試す券種。単勝は odds.fetch_tables が常に足すので
@@ -465,6 +466,8 @@ def main(argv=None):
     parser.add_argument('--no-email', action='store_true', help='メールを送らない')
     parser.add_argument('--no-save', action='store_true', help='検算結果を保存しない')
     parser.add_argument('--no-html', action='store_true', help='HTMLレポートを書き出さない')
+    parser.add_argument('--no-md', action='store_true',
+                         help='data/checks_md/ へのMarkdown書き出しをしない')
     args = parser.parse_args(argv)
 
     now = resolve_now(args.now)
@@ -479,6 +482,8 @@ def main(argv=None):
         write_job_summary(body)
         if not args.no_html:
             report_html.save(report_html.render_missing(day, now))
+        if not args.no_md:
+            report_md.save(report_md.render_missing(day, now), report_md.path_for(day))
         if args.no_email:
             return EXIT_NEEDS_ATTENTION
         # 知らせられたかどうかで結果を分ける。
@@ -494,6 +499,9 @@ def main(argv=None):
 
     if not args.no_html:
         report_html.save(report_html.render(sheet, verdicts, now))
+
+    if not args.no_md:
+        report_md.save(report_md.render(sheet, verdicts, now), report_md.path_for(day))
 
     if not args.no_save:
         # 買い目（bet_builder が実オッズで組み直した bets・確定した confidence）
