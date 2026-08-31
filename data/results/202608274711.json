@@ -1,0 +1,132 @@
+{
+  "race_id": "202608274711",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 1,
+      "name": "ギフノオウマサン",
+      "ninki": 1
+    },
+    {
+      "rank": 2,
+      "umaban": 3,
+      "name": "トレノ",
+      "ninki": 4
+    },
+    {
+      "rank": 3,
+      "umaban": 2,
+      "name": "レジーナカズ",
+      "ninki": 3
+    },
+    {
+      "rank": 4,
+      "umaban": 8,
+      "name": "ルナクエーサー",
+      "ninki": 7
+    },
+    {
+      "rank": 5,
+      "umaban": 7,
+      "name": "ベアケイ",
+      "ninki": 2
+    },
+    {
+      "rank": 6,
+      "umaban": 6,
+      "name": "マシロクン",
+      "ninki": 6
+    },
+    {
+      "rank": 7,
+      "umaban": 4,
+      "name": "エルジェム",
+      "ninki": 5
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          1
+        ],
+        "yen": 150
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          1
+        ],
+        "yen": 150
+      },
+      {
+        "combination": [
+          3
+        ],
+        "yen": 380
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          1,
+          3
+        ],
+        "yen": 1210
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          1,
+          3
+        ],
+        "yen": 1380
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          1,
+          3
+        ],
+        "yen": 270
+      },
+      {
+        "combination": [
+          1,
+          2
+        ],
+        "yen": 210
+      },
+      {
+        "combination": [
+          2,
+          3
+        ],
+        "yen": 390
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          1,
+          2,
+          3
+        ],
+        "yen": 520
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          1,
+          3,
+          2
+        ],
+        "yen": 2540
+      }
+    ]
+  }
+}
