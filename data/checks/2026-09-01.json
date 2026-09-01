@@ -48,5 +48,30 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-01T23:15:24.102677+09:00",
+    "races": [
+      {
+        "race_id": "202609013510",
+        "name": "第58回不来方賞JpnII（3歳）",
+        "blocked": true,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "BLOCK",
+            "code": "already_started_unevaluated",
+            "message": "第58回不来方賞JpnII（3歳）: 発走までに一度も評価できませんでした（発走 17:05 / 現在 23:15）",
+            "remedy": "買い目が一度も確定しないまま発走しました。直前検算の実行間隔・遅延を確認してください。"
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
