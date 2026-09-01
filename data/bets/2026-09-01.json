@@ -10,13 +10,8 @@
       "venue": "盛岡",
       "race_no": 10,
       "start_time": "17:05",
-      "jra_horses": [
-        2,
-        6,
-        7,
-        9,
-        10
-      ],
+      "confidence": null,
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "6": 0.28,
         "2": 0.24,
