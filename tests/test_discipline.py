@@ -108,6 +108,39 @@ def test_tokai_stakes_lone_partner_is_warned():
     assert '2着抜け' in finding.remedy
 
 
+def test_axis_only_bets_are_warned_as_axis_dependency():
+    """2026-08-31 検証ノート「◎一極集中で全滅」6件の再発防止。
+
+    ◎○▲△△に印を打ちながら、買い目が全て◎絡みで組まれていると、
+    ◎が着外の回は○▲△が3着以内に来ても何も拾えない。
+    """
+    race = make_race(
+        name='大府特別',
+        marks=marks_of(items=[('◎', 7), ('○', 11), ('▲', 2), ('△', 3), ('△', 14)]),
+        bets=[Bet('馬連', [7, 11]), Bet('ワイド', [7, 2])],
+    )
+
+    verdict = review(race, bet_odds=[5.0, 4.0])
+
+    codes = [f.code for f in verdict.warnings]
+    assert 'axis_dependency' in codes
+    finding = next(f for f in verdict.warnings if f.code == 'axis_dependency')
+    assert '◎以外の印馬同士' in finding.remedy
+
+
+def test_axis_dependency_not_warned_when_a_non_axis_bet_exists():
+    """◎抜きの買い目（○▲△同士）が1点でもあれば警告しない。"""
+    race = make_race(
+        name='大府特別',
+        marks=marks_of(items=[('◎', 7), ('○', 11), ('▲', 2), ('△', 3), ('△', 14)]),
+        bets=[Bet('馬連', [7, 11]), Bet('ワイド', [11, 2])],
+    )
+
+    verdict = review(race, bet_odds=[5.0, 4.0])
+
+    assert 'axis_dependency' not in [f.code for f in verdict.warnings]
+
+
 def test_sekigahara_marked_only_trifecta_is_warned():
     """2026-07-25 関ケ原S：印4頭の3連複ボックスが、無印馬の2着で全滅した件。"""
     race = make_race(
@@ -257,8 +290,11 @@ def test_missing_odds_downgrades_to_provisional():
 
 
 def test_clean_bet_set_passes():
+    # 印は◎○の2頭のみ（◎抜きの組み合わせを作れないケース）。◎○▲△△のように
+    # 印が3頭以上あるのに買い目が全て◎絡み、というケースは axis_dependency
+    # で別途警告する（test_axis_only_bets_are_warned_as_axis_dependency）。
     race = make_race(
-        marks=marks_of(items=[('◎', 7), ('○', 11), ('▲', 2)]),
+        marks=marks_of(items=[('◎', 7), ('○', 11)]),
         bets=[Bet('馬連', [7, 11]), Bet('馬連', [7, 2])],
         subjective_hit_rate=0.30,
     )
@@ -577,6 +613,53 @@ def test_end_to_end_passes_a_clean_sheet(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
     monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
 
+    # 印は◎○の2頭のみ。現状の bet_builder は◎を含まない組み合わせを
+    # 一切作らないため、印が3頭以上だと axis_dependency が必ず立ってしまう
+    # （下記 test_end_to_end_axis_dependency_is_visible_but_not_blocking で
+    # 別途確認する）。ここでは規律オールクリアの経路だけを見たいので印を
+    # 2頭に絞り、馬連の表を空にしてワイド1点（lone_partnerの対象外）が
+    # 選ばれるようにする。
+    bets.save_sheet(BetSheet(
+        date=date(2026, 8, 2),
+        races=[make_race(
+            name='クイーンステークス',
+            marks=marks_of(items=[('◎', 7), ('○', 11)]),
+            bets=[],
+            subjective_hit_rate=0.35,
+            win_probabilities={7: 0.40, 11: 0.25},
+        )],
+    ))
+
+    def fake_fetch(race_id, bet_type):
+        tables = {
+            '単勝': {'07': ['2.9', '3.0', '1'], '11': ['5.0', '5.2', '2'],
+                   '14': ['9.0', '9.4', '3'], '02': ['20.0', '21.0', '4']},
+            '馬連': {},
+            'ワイド': {'0711': ['3.3', '3.4', '1']},
+        }
+        return {'status': 'middle', 'reason': None,
+                'official_datetime': '14:28:00', 'odds': tables.get(bet_type, {})}
+
+    monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
+    monkeypatch.setattr(conditions_module, 'fetch',
+                        lambda rid, **kw: {'going': '良', 'weather': '晴',
+                                          'surface': '芝', 'distance': 1800})
+
+    exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30',
+                            '--no-email', '--no-save'])
+
+    assert exit_code == check.EXIT_OK
+    assert '規律をクリア' in capsys.readouterr().out
+
+
+def test_end_to_end_axis_dependency_is_visible_but_not_blocking(tmp_path, monkeypatch, capsys):
+    """印が◎○△の3頭だと、現状の bet_builder は◎を含まない組み合わせを
+    一切作らないため axis_dependency が必ず立つ（2026-09-02、可視化のみで
+    採否は変えない前提の確認）。EXIT_OKのまま、警告として出るだけ。
+    """
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+
     bets.save_sheet(BetSheet(
         date=date(2026, 8, 2),
         races=[make_race(
@@ -606,7 +689,9 @@ def test_end_to_end_passes_a_clean_sheet(tmp_path, monkeypatch, capsys):
                             '--no-email', '--no-save'])
 
     assert exit_code == check.EXIT_OK
-    assert '規律をクリア' in capsys.readouterr().out
+    out = capsys.readouterr().out
+    assert '規律をクリア' not in out
+    assert '買い目が全て◎絡み' in out
 
 
 def test_clean_check_sends_a_short_one_line_email(tmp_path, monkeypatch):
