@@ -10,8 +10,8 @@
       "venue": "大井",
       "race_no": 11,
       "start_time": "20:15",
-      "confidence": "B",
-      "subjective_hit_rate": 0.3661,
+      "confidence": "A",
+      "subjective_hit_rate": 0.0085,
       "win_probabilities": {
         "8": 0.26,
         "3": 0.22,
@@ -60,10 +60,11 @@
       ],
       "bets": [
         {
-          "type": "ワイド",
+          "type": "3連複",
           "horses": [
+            7,
             8,
-            3
+            14
           ],
           "stake": 100
         }
