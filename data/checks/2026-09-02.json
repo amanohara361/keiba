@@ -347,5 +347,30 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-02T22:48:26.063293+09:00",
+    "races": [
+      {
+        "race_id": "202609024411",
+        "name": "第33回アフター5スター賞（3歳以上オープン）",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第33回アフター5スター賞（3歳以上オープン）: 既に発走しています（発走 20:15 / 現在 22:48）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
