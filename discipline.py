@@ -17,6 +17,11 @@
   marked_only     … 2026-07-25 関ケ原S、2026-07-26 関屋記念、2026-07-19 函館2歳S
   lone_partner    … 2026-07-26 東海S（相手を○1頭に固定し2着抜けで全滅）
   already_started … 2026-08-01（◎2鞍とも1着だが配信が発走後で購入不可）
+  axis_dependency … 2026-08-31 検証ノート「◎一極集中で全滅」6件（大府特別・朱鷺S・
+                    名古屋城S・古町S・キーンランドカップ・白川郷S）。◎○▲△△に
+                    印を打ちながら買い目が全て◎絡みで、◎が着外だと○▲△が
+                    3着以内でも何も拾えなかった。可視化のみ（2026-09-02 ユーザー
+                    承認）。基準値・買い目選定ロジックは変えない。
 """
 
 from bets import JUNIOR_MARKS, SENIOR_MARKS
@@ -229,6 +234,32 @@ def check_lone_partner(race):
     return None
 
 
+def check_axis_dependency(race):
+    """買い目が全て◎絡みだと、◎が着外の回は○▲△が3着以内に来ても何も
+    拾えない（検証ノート2026-08-31、◎一極集中で全滅6件の可視化）。
+
+    採否・買い目の組み方は変えない。◎以外の印馬同士で買い目を作る余地が
+    あるのに使っていない、と気づかせるだけの警告（2026-09-02 ユーザー承認）。
+    """
+    if not race.bets:
+        return None
+    axis = set(race.horses_for('◎'))
+    if not axis:
+        return None
+    if any(not (axis & set(bet.horses)) for bet in race.bets):
+        return None  # 既に◎抜きの買い目がある
+
+    others = race.marked_horses - axis
+    if len(others) < 2:
+        return None  # ◎抜きの組み合わせを作れるだけの印馬がいない
+
+    return Finding(
+        WARN, 'axis_dependency',
+        f'{race.name}: 買い目が全て◎絡みで、◎が着外だと全滅する構成です',
+        '◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。',
+    )
+
+
 def check_win_odds_range(race, win_table):
     """単勝は4.0〜9.9倍を中心ゾーンとする（第8章）。
 
@@ -435,6 +466,10 @@ def review_race(race, bet_odds, win_table, meta, now, day, conditions=None,
     lone = check_lone_partner(race)
     if lone:
         findings.append(lone)
+
+    axis_dep = check_axis_dependency(race)
+    if axis_dep:
+        findings.append(axis_dep)
 
     findings.extend(check_win_odds_range(race, win_table))
 
