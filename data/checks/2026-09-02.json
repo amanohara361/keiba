@@ -241,5 +241,86 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-02T20:03:29.558505+09:00",
+    "races": [
+      {
+        "race_id": "202609024411",
+        "name": "第33回アフター5スター賞（3歳以上オープン）",
+        "blocked": false,
+        "composite_odds": 434.5,
+        "expected_value": 1.65,
+        "bet_odds": [
+          {
+            "bet": "3連複 5-8-14",
+            "odds": 434.5
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "第33回アフター5スター賞（3歳以上オープン）: ダート1200m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "第33回アフター5スター賞（3歳以上オープン）: 合成オッズ 434.50倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "第33回アフター5スター賞（3歳以上オープン）: 期待値 1.65（合成 434.50倍 × 主観的中率 0%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "第33回アフター5スター賞（3歳以上オープン）: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1200,
+          "weather": "曇",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 16
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 16
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 120
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 240
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 120
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 560
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-02 20:03:31"
+        }
+      }
+    ]
   }
 ]
