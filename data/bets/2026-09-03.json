@@ -10,6 +10,8 @@
       "venue": "名古屋",
       "race_no": 10,
       "start_time": "19:30",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "3": 0.22,
         "9": 0.2,
@@ -68,13 +70,8 @@
       "venue": "佐賀",
       "race_no": 11,
       "start_time": "20:00",
-      "jra_horses": [
-        2,
-        3,
-        4,
-        6,
-        9
-      ],
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "5": 0.24,
         "8": 0.14,
