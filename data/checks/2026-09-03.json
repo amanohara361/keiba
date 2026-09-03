@@ -367,5 +367,50 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-03T21:03:39.422211+09:00",
+    "races": [
+      {
+        "race_id": "202609034810",
+        "name": "第20回秋桜賞（牝馬オープン）",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第20回秋桜賞（牝馬オープン）: 既に発走しています（発走 19:30 / 現在 21:03）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202609035511",
+        "name": "第26回サマーチャンピオンJpnIII",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第26回サマーチャンピオンJpnIII: 既に発走しています（発走 20:00 / 現在 21:03）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
