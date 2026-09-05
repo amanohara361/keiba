@@ -485,5 +485,629 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-06T08:19:50.727888+09:00",
+    "races": [
+      {
+        "race_id": "202601020601",
+        "name": "3歳未勝利",
+        "blocked": false,
+        "composite_odds": 7.68,
+        "expected_value": 1.21,
+        "bet_odds": [
+          {
+            "bet": "3連複 2-6-10",
+            "odds": 27.7
+          },
+          {
+            "bet": "3連複 3-6-10",
+            "odds": 21.6
+          },
+          {
+            "bet": "3連複 5-6-10",
+            "odds": 150.9
+          },
+          {
+            "bet": "3連複 6-10-11",
+            "odds": 82.5
+          },
+          {
+            "bet": "3連複 6-8-10",
+            "odds": 90.3
+          },
+          {
+            "bet": "3連複 4-6-10",
+            "odds": 55.6
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "3歳未勝利: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "3歳未勝利: 合成オッズ 7.68倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "3歳未勝利: 期待値 1.21（合成 7.68倍 × 主観的中率 16%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "marked_only_trifecta",
+            "message": "3歳未勝利: 3連複 2-6-10 が印馬だけで組まれています",
+            "remedy": "印馬が3着以内を独占する前提に依存します。◎（＋1頭）を軸に、相手へ印を打たなかった中穴を最低1頭含めてください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "marked_only_trifecta",
+            "message": "3歳未勝利: 3連複 3-6-10 が印馬だけで組まれています",
+            "remedy": "印馬が3着以内を独占する前提に依存します。◎（＋1頭）を軸に、相手へ印を打たなかった中穴を最低1頭含めてください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "marked_only_trifecta",
+            "message": "3歳未勝利: 3連複 5-6-10 が印馬だけで組まれています",
+            "remedy": "印馬が3着以内を独占する前提に依存します。◎（＋1頭）を軸に、相手へ印を打たなかった中穴を最低1頭含めてください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "marked_only_trifecta",
+            "message": "3歳未勝利: 3連複 6-10-11 が印馬だけで組まれています",
+            "remedy": "印馬が3着以内を独占する前提に依存します。◎（＋1頭）を軸に、相手へ印を打たなかった中穴を最低1頭含めてください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "3歳未勝利: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": null,
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1700
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:05"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:05"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:05"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:05"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 08:19:05"
+        }
+      },
+      {
+        "race_id": "202606040210",
+        "name": "セプテンバーステークス",
+        "blocked": false,
+        "composite_odds": 6.0,
+        "expected_value": 1.44,
+        "bet_odds": [
+          {
+            "bet": "単勝 5",
+            "odds": 6.0
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "セプテンバーステークス: 芝1200m / 天候:雨 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "セプテンバーステークス: 合成オッズ 6.00倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "セプテンバーステークス: 期待値 1.44（合成 6.00倍 × 主観的中率 24%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "セプテンバーステークス: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "雨",
+          "surface": "芝",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:25"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:25"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:25"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:25"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 08:19:25"
+        }
+      },
+      {
+        "race_id": "202606040211",
+        "name": "紫苑ステークス",
+        "blocked": true,
+        "composite_odds": 342.9,
+        "expected_value": 1.68,
+        "bet_odds": [
+          {
+            "bet": "3連複 3-7-11",
+            "odds": 342.9
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "紫苑ステークス: 芝2000m / 天候:雨 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "紫苑ステークス: 合成オッズ 342.90倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "紫苑ステークス: 期待値 1.68（合成 342.90倍 × 主観的中率 0%）",
+            "remedy": ""
+          },
+          {
+            "severity": "BLOCK",
+            "code": "mark_contradiction",
+            "message": "紫苑ステークス: 上位印 ○9番 が買い目に無いのに、下位印 ▲11番 が入っています",
+            "remedy": "数値基準は買い目を削る道具であって、印の序列を上書きする根拠ではありません。(1)相手を◎○に絞り点数を減らす (2)◎が堅く2着が絞れないならワイドにする (3)どれも無理なら見送る（勝負度Cへ降格）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "紫苑ステークス: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "雨",
+          "surface": "芝",
+          "distance": 2000
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:30"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:30"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:30"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:30"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 08:19:30"
+        }
+      },
+      {
+        "race_id": "202601020611",
+        "name": "丹頂ステークス",
+        "blocked": true,
+        "composite_odds": 96.9,
+        "expected_value": 1.27,
+        "bet_odds": [
+          {
+            "bet": "3連複 10-12-14",
+            "odds": 96.9
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "丹頂ステークス: 芝2600m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "丹頂ステークス: 合成オッズ 96.90倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "丹頂ステークス: 期待値 1.27（合成 96.90倍 × 主観的中率 1%）",
+            "remedy": ""
+          },
+          {
+            "severity": "BLOCK",
+            "code": "mark_contradiction",
+            "message": "丹頂ステークス: 上位印 ○1番 が買い目に無いのに、下位印 ▲14番 が入っています",
+            "remedy": "数値基準は買い目を削る道具であって、印の序列を上書きする根拠ではありません。(1)相手を◎○に絞り点数を減らす (2)◎が堅く2着が絞れないならワイドにする (3)どれも無理なら見送る（勝負度Cへ降格）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "丹頂ステークス: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 2600
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:16:10"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:16:10"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:16:10"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:16:10"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 08:16:10"
+        }
+      },
+      {
+        "race_id": "202609040210",
+        "name": "オークランドパークステークス",
+        "blocked": false,
+        "composite_odds": 28.7,
+        "expected_value": 1.28,
+        "bet_odds": [
+          {
+            "bet": "3連複 5-9-10",
+            "odds": 28.7
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "オークランドパークステークス: ダート1200m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "オークランドパークステークス: 合成オッズ 28.70倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "オークランドパークステークス: 期待値 1.28（合成 28.70倍 × 主観的中率 4%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "オークランドパークステークス: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "曇",
+          "surface": "ダート",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:40"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:40"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:40"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:19:40"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 08:19:40"
+        }
+      },
+      {
+        "race_id": "202609040211",
+        "name": "セントウルステークス",
+        "blocked": false,
+        "composite_odds": 5.8,
+        "expected_value": 1.71,
+        "bet_odds": [
+          {
+            "bet": "ワイド 3-16",
+            "odds": 12.8
+          },
+          {
+            "bet": "ワイド 3-12",
+            "odds": 10.6
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "セントウルステークス: 芝1200m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "セントウルステークス: 合成オッズ 5.80倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "セントウルステークス: 期待値 1.71（合成 5.80倍 × 主観的中率 29%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "セントウルステークス: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "曇",
+          "surface": "芝",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:15:55"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:15:55"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:15:55"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 08:15:55"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 08:15:55"
+        }
+      },
+      {
+        "race_id": "202609063610",
+        "name": "第４４回 ビギナーズカップ２歳",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第４４回 ビギナーズカップ２歳: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第４４回 ビギナーズカップ２歳: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-09-06 08:19:59"
+        }
+      },
+      {
+        "race_id": "202609065504",
+        "name": "第３７回 ＪＲＡ認定　九州ジュニアチャンピオン２歳オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第３７回 ＪＲＡ認定　九州ジュニアチャンピオン２歳オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第３７回 ＪＲＡ認定　九州ジュニアチャンピオン２歳オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 66
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 132
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 66
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 220
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 08:19:59"
+        }
+      },
+      {
+        "race_id": "202609064610",
+        "name": "第２１回 石川テレビ杯【ネクストスター金沢ＴＲ】２歳",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第２１回 石川テレビ杯【ネクストスター金沢ＴＲ】２歳: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第２１回 石川テレビ杯【ネクストスター金沢ＴＲ】２歳: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-09-06 08:19:59"
+        }
+      }
+    ]
   }
 ]

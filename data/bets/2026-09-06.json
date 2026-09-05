@@ -11,7 +11,7 @@
       "race_no": 1,
       "start_time": "09:50",
       "confidence": "B",
-      "subjective_hit_rate": 0.1365,
+      "subjective_hit_rate": 0.1572,
       "win_probabilities": {
         "10": 0.2,
         "2": 0.14,
@@ -126,6 +126,15 @@
             10
           ],
           "stake": 100
+        },
+        {
+          "type": "3連複",
+          "horses": [
+            4,
+            6,
+            10
+          ],
+          "stake": 100
         }
       ],
       "note": "9:50発走で当日実測バイアスなし。逃げ馬は⑩セラサイトのみで単騎逃げ濃厚、平均〜ややスロー想定。◎⑩は当コースで安定した実績、○⑥はパワー型で先行実績あり、▲②は前走内容最上位だが軽量・内枠で軸には不適。危険な人気馬：③エリカビアリッツ(1番人気)は善戦タイプで前走②と同タイムながら人気が上、内枠減点も乗るため軸には推さない。無印馬(⑦⑨⑫⑬①)は近走の着差・条件不適合により減点方式で下げた。当日馬体重・馬場発表・斤量(④⑪の減量騎手替わり)は直前タスクで要確認。"
@@ -217,7 +226,7 @@
       "race_no": 11,
       "start_time": "15:45",
       "confidence": "A",
-      "subjective_hit_rate": 0.0047,
+      "subjective_hit_rate": 0.0049,
       "win_probabilities": {
         "3": 0.2,
         "9": 0.3,
@@ -299,7 +308,7 @@
       "race_no": 11,
       "start_time": "15:20",
       "confidence": "B",
-      "subjective_hit_rate": 0.1749,
+      "subjective_hit_rate": 0.0131,
       "win_probabilities": {
         "12": 0.17,
         "1": 0.16,
@@ -385,10 +394,11 @@
       ],
       "bets": [
         {
-          "type": "ワイド",
+          "type": "3連複",
           "horses": [
+            10,
             12,
-            1
+            14
           ],
           "stake": 100
         }
@@ -403,7 +413,7 @@
       "race_no": 10,
       "start_time": "14:55",
       "confidence": "B",
-      "subjective_hit_rate": 0.22,
+      "subjective_hit_rate": 0.0445,
       "win_probabilities": {
         "10": 0.22,
         "5": 0.27,
@@ -478,8 +488,10 @@
       ],
       "bets": [
         {
-          "type": "単勝",
+          "type": "3連複",
           "horses": [
+            5,
+            9,
             10
           ],
           "stake": 100
@@ -495,7 +507,7 @@
       "race_no": 11,
       "start_time": "15:30",
       "confidence": "A",
-      "subjective_hit_rate": 0.2931,
+      "subjective_hit_rate": 0.2948,
       "win_probabilities": {
         "5": 0.07,
         "8": 0.11,
@@ -598,6 +610,8 @@
       "venue": "水沢",
       "race_no": 10,
       "start_time": "17:25",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "9": 0.3,
         "8": 0.24,
@@ -673,6 +687,8 @@
       "venue": "佐賀",
       "race_no": 4,
       "start_time": "18:05",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "9": 0.36,
         "5": 0.12,
@@ -749,6 +765,8 @@
       "venue": "金沢",
       "race_no": 10,
       "start_time": "18:15",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "10": 0.34,
         "6": 0.16,
