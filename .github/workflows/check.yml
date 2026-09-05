@@ -20,6 +20,16 @@ on:
     - cron: '7 1 * * 6,0'   # 01:07 UTC = 10:07 JST  朝の買い目の到着確認
     - cron: '7 4 * * 6,0'   # 04:07 UTC = 13:07 JST  直前検算（本命）
     - cron: '7 5 * * 6,0'   # 05:07 UTC = 14:07 JST  直前検算（最終・オッズが最も締まる）
+  push:
+    # 朝タスクのRoutineが印を打ってdata/bets/をpushした直後に、実オッズで
+    # 即座に買い目を確定させるため（2026-09-05）。以前はpush後にRoutineが
+    # actions_run_triggerでworkflow_dispatchを手動起動していたが、Routineの
+    # セッションにGitHub Actions用のコネクターを付けられない環境があると
+    # 判明し、その手段が使えなくなった。pushトリガーならRoutine側は普通の
+    # git pushをするだけでよく、コネクターの有無に依存しない。
+    branches: [main]
+    paths:
+      - 'data/bets/**'
   workflow_dispatch:
     inputs:
       date:
@@ -42,6 +52,12 @@ permissions:
 
 jobs:
   check:
+    # このジョブ自身が「検算の記録をコミット」でdata/へpushする（github-actions[bot]
+    # 名義）。pushトリガーがdata/bets/**を見ているため、そのコミットにdata/bets/への
+    # 更新が含まれると自分自身を再起動しかねない。GitHub側の仕様（GITHUB_TOKENで
+    # 行ったpushはpushイベントの再発火を起こさない）で通常は起きないはずだが、
+    # 前提が変わっても事故らないよう明示的にガードしておく。
+    if: github.event_name != 'push' || github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
