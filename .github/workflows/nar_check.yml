@@ -23,6 +23,12 @@ on:
     - cron: '7 7 * * *'    # 07:07 UTC = 16:07 JST  夕方の便
     - cron: '37 9 * * *'   # 09:37 UTC = 18:37 JST  夜の便
     - cron: '37 10 * * *'  # 10:37 UTC = 19:37 JST  ナイター最終便（20時台の発走向け）
+  push:
+    # check.ymlと同じ理由（2026-09-05）。朝タスクのRoutineがdata/bets/をpush
+    # した直後に、GitHub Actionsのコネクターに依存せず即座に検算を走らせる。
+    branches: [main]
+    paths:
+      - 'data/bets/**'
   workflow_dispatch:
     inputs:
       date:
@@ -49,6 +55,8 @@ permissions:
 
 jobs:
   check:
+    # check.ymlと同じ自己再起動ガード（詳細はcheck.ymlのコメント参照）。
+    if: github.event_name != 'push' || github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
