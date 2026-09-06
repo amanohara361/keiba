@@ -1753,5 +1753,308 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-06T17:36:21.621644+09:00",
+    "races": [
+      {
+        "race_id": "202601020601",
+        "name": "3歳未勝利",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳未勝利: 既に発走しています（発走 09:50 / 現在 17:36）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202606040210",
+        "name": "セプテンバーステークス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "セプテンバーステークス: 既に発走しています（発走 15:05 / 現在 17:36）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202606040211",
+        "name": "紫苑ステークス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "紫苑ステークス: 既に発走しています（発走 15:45 / 現在 17:36）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202601020611",
+        "name": "丹頂ステークス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "丹頂ステークス: 既に発走しています（発走 15:20 / 現在 17:36）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202609040210",
+        "name": "オークランドパークステークス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "オークランドパークステークス: 既に発走しています（発走 14:55 / 現在 17:36）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202609040211",
+        "name": "セントウルステークス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "セントウルステークス: 既に発走しています（発走 15:30 / 現在 17:36）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202609063610",
+        "name": "第４４回 ビギナーズカップ２歳",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第４４回 ビギナーズカップ２歳: 既に発走しています（発走 17:25 / 現在 17:36）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202609065504",
+        "name": "第３７回 ＪＲＡ認定　九州ジュニアチャンピオン２歳オープン",
+        "blocked": false,
+        "composite_odds": 12.3,
+        "expected_value": 1.43,
+        "bet_odds": [
+          {
+            "bet": "馬連 9-5",
+            "odds": 12.3
+          }
+        ],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "第３７回 ＪＲＡ認定　九州ジュニアチャンピオン２歳オープン: 馬場が「重」です（ダート1400m / 天候:曇 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "第３７回 ＪＲＡ認定　九州ジュニアチャンピオン２歳オープン: 合成オッズ 12.30倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "第３７回 ＪＲＡ認定　九州ジュニアチャンピオン２歳オープン: 期待値 1.43（合成 12.30倍 × 主観的中率 12%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "lone_partner",
+            "message": "第３７回 ＪＲＡ認定　九州ジュニアチャンピオン２歳オープン: 馬連・馬単の相手が 5番の1頭だけです",
+            "remedy": "2着抜けで全滅する構造です。◎絡みのワイドまたは複勝を保険に置けないか検討してください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "第３７回 ＪＲＡ認定　九州ジュニアチャンピオン２歳オープン: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "曇",
+          "going": "重"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 66
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 132
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 66
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 220
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 17:36:24"
+        }
+      },
+      {
+        "race_id": "202609064610",
+        "name": "第２１回 石川テレビ杯【ネクストスター金沢ＴＲ】２歳",
+        "blocked": false,
+        "composite_odds": 27.9,
+        "expected_value": 1.57,
+        "bet_odds": [
+          {
+            "bet": "3連複 1-6-10",
+            "odds": 27.9
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "第２１回 石川テレビ杯【ネクストスター金沢ＴＲ】２歳: ダート1400m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "第２１回 石川テレビ杯【ネクストスター金沢ＴＲ】２歳: 合成オッズ 27.90倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "第２１回 石川テレビ杯【ネクストスター金沢ＴＲ】２歳: 期待値 1.57（合成 27.90倍 × 主観的中率 6%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "第２１回 石川テレビ杯【ネクストスター金沢ＴＲ】２歳: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "曇",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 45
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 90
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 45
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 120
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 17:36:24"
+        }
+      }
+    ]
   }
 ]

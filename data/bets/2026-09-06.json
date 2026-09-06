@@ -690,7 +690,7 @@
       "race_no": 4,
       "start_time": "18:05",
       "confidence": "B",
-      "subjective_hit_rate": 0.0118,
+      "subjective_hit_rate": 0.1166,
       "win_probabilities": {
         "9": 0.36,
         "5": 0.12,
@@ -759,11 +759,10 @@
       ],
       "bets": [
         {
-          "type": "3連複",
+          "type": "馬連",
           "horses": [
-            1,
-            5,
-            9
+            9,
+            5
           ],
           "stake": 100
         }
@@ -777,8 +776,8 @@
       "venue": "金沢",
       "race_no": 10,
       "start_time": "18:15",
-      "confidence": "B",
-      "subjective_hit_rate": 0.3926,
+      "confidence": "A",
+      "subjective_hit_rate": 0.0561,
       "win_probabilities": {
         "10": 0.34,
         "6": 0.16,
@@ -843,26 +842,11 @@
       ],
       "bets": [
         {
-          "type": "馬連",
+          "type": "3連複",
           "horses": [
-            10,
-            6
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            10,
-            7
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            10,
-            9
+            1,
+            6,
+            10
           ],
           "stake": 100
         }
