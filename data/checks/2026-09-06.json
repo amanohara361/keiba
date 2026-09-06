@@ -1109,5 +1109,649 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-06T14:51:58.394640+09:00",
+    "races": [
+      {
+        "race_id": "202601020601",
+        "name": "3歳未勝利",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳未勝利: 既に発走しています（発走 09:50 / 現在 14:51）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202606040210",
+        "name": "セプテンバーステークス",
+        "blocked": false,
+        "composite_odds": 51.3,
+        "expected_value": 1.54,
+        "bet_odds": [
+          {
+            "bet": "3連複 3-5-8",
+            "odds": 51.3
+          }
+        ],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "セプテンバーステークス: 馬場が「重」です（芝1200m / 天候:雨 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "セプテンバーステークス: ◎5番 フクチャンショウ は「重」での出走がありません（重は出走なし / 良[1-2-2-2]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "セプテンバーステークス: 合成オッズ 51.30倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "セプテンバーステークス: 期待値 1.54（合成 51.30倍 × 主観的中率 3%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "セプテンバーステークス: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": "雨",
+          "surface": "芝",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:51:41"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:51:41"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:51:41"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:51:41"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 14:51:41"
+        }
+      },
+      {
+        "race_id": "202606040211",
+        "name": "紫苑ステークス",
+        "blocked": true,
+        "composite_odds": 341.6,
+        "expected_value": 1.54,
+        "bet_odds": [
+          {
+            "bet": "3連複 3-7-11",
+            "odds": 341.6
+          }
+        ],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "紫苑ステークス: 馬場が「重」です（芝2000m / 天候:雨 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "紫苑ステークス: ◎3番 リアライズルミナス は「重」での出走がありません（重は出走なし / 良[1-1-2-3]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "紫苑ステークス: ○9番 ドリームコア は「重」での出走がありません（重は出走なし / 良[3-1-1-1]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "紫苑ステークス: 合成オッズ 341.60倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "紫苑ステークス: 期待値 1.54（合成 341.60倍 × 主観的中率 0%）",
+            "remedy": ""
+          },
+          {
+            "severity": "BLOCK",
+            "code": "mark_contradiction",
+            "message": "紫苑ステークス: 上位印 ○9番 が買い目に無いのに、下位印 ▲11番 が入っています",
+            "remedy": "数値基準は買い目を削る道具であって、印の序列を上書きする根拠ではありません。(1)相手を◎○に絞り点数を減らす (2)◎が堅く2着が絞れないならワイドにする (3)どれも無理なら見送る（勝負度Cへ降格）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "紫苑ステークス: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": "雨",
+          "surface": "芝",
+          "distance": 2000
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:51:46"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:51:46"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:51:46"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:51:46"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 14:51:46"
+        }
+      },
+      {
+        "race_id": "202601020611",
+        "name": "丹頂ステークス",
+        "blocked": true,
+        "composite_odds": 83.6,
+        "expected_value": 1.34,
+        "bet_odds": [
+          {
+            "bet": "3連複 5-12-14",
+            "odds": 83.6
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "丹頂ステークス: 芝2600m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "丹頂ステークス: 合成オッズ 83.60倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "丹頂ステークス: 期待値 1.34（合成 83.60倍 × 主観的中率 2%）",
+            "remedy": ""
+          },
+          {
+            "severity": "BLOCK",
+            "code": "mark_contradiction",
+            "message": "丹頂ステークス: 上位印 ○1番 が買い目に無いのに、下位印 ▲14番 が入っています",
+            "remedy": "数値基準は買い目を削る道具であって、印の序列を上書きする根拠ではありません。(1)相手を◎○に絞り点数を減らす (2)◎が堅く2着が絞れないならワイドにする (3)どれも無理なら見送る（勝負度Cへ降格）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "丹頂ステークス: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 2600
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:52:11"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:52:11"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:52:11"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:52:11"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 14:52:11"
+        }
+      },
+      {
+        "race_id": "202609040210",
+        "name": "オークランドパークステークス",
+        "blocked": true,
+        "composite_odds": 192.1,
+        "expected_value": 2.82,
+        "bet_odds": [
+          {
+            "bet": "3連複 7-9-10",
+            "odds": 192.1
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "オークランドパークステークス: ダート1200m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "オークランドパークステークス: 合成オッズ 192.10倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "オークランドパークステークス: 期待値 2.82（合成 192.10倍 × 主観的中率 1%）",
+            "remedy": ""
+          },
+          {
+            "severity": "BLOCK",
+            "code": "mark_contradiction",
+            "message": "オークランドパークステークス: 上位印 ○5番 が買い目に無いのに、下位印 ▲7番 が入っています",
+            "remedy": "数値基準は買い目を削る道具であって、印の序列を上書きする根拠ではありません。(1)相手を◎○に絞り点数を減らす (2)◎が堅く2着が絞れないならワイドにする (3)どれも無理なら見送る（勝負度Cへ降格）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "オークランドパークステークス: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "曇",
+          "surface": "ダート",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:51:56"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:51:56"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:51:56"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:51:56"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 14:51:56"
+        }
+      },
+      {
+        "race_id": "202609040211",
+        "name": "セントウルステークス",
+        "blocked": false,
+        "composite_odds": 6.25,
+        "expected_value": 1.91,
+        "bet_odds": [
+          {
+            "bet": "ワイド 3-16",
+            "odds": 13.4
+          },
+          {
+            "bet": "ワイド 3-12",
+            "odds": 11.7
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "セントウルステークス: 芝1200m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "セントウルステークス: 合成オッズ 6.25倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "セントウルステークス: 期待値 1.91（合成 6.25倍 × 主観的中率 31%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "セントウルステークス: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "曇",
+          "surface": "芝",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:52:01"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:52:01"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:52:01"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-06 14:52:01"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 14:52:01"
+        }
+      },
+      {
+        "race_id": "202609063610",
+        "name": "第４４回 ビギナーズカップ２歳",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "第４４回 ビギナーズカップ２歳: ダート1400m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第４４回 ビギナーズカップ２歳: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "曇",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 9
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 9
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 36
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 72
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 36
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 84
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 14:52:30"
+        }
+      },
+      {
+        "race_id": "202609065504",
+        "name": "第３７回 ＪＲＡ認定　九州ジュニアチャンピオン２歳オープン",
+        "blocked": false,
+        "composite_odds": 108.2,
+        "expected_value": 1.28,
+        "bet_odds": [
+          {
+            "bet": "3連複 1-5-9",
+            "odds": 108.2
+          }
+        ],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "第３７回 ＪＲＡ認定　九州ジュニアチャンピオン２歳オープン: 馬場が「重」です（ダート1400m / 天候:曇 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "第３７回 ＪＲＡ認定　九州ジュニアチャンピオン２歳オープン: 合成オッズ 108.20倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "第３７回 ＪＲＡ認定　九州ジュニアチャンピオン２歳オープン: 期待値 1.28（合成 108.20倍 × 主観的中率 1%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "第３７回 ＪＲＡ認定　九州ジュニアチャンピオン２歳オープン: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "曇",
+          "going": "重"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 66
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 132
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 66
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 220
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 14:52:30"
+        }
+      },
+      {
+        "race_id": "202609064610",
+        "name": "第２１回 石川テレビ杯【ネクストスター金沢ＴＲ】２歳",
+        "blocked": false,
+        "composite_odds": 3.15,
+        "expected_value": 1.23,
+        "bet_odds": [
+          {
+            "bet": "馬連 10-6",
+            "odds": 7.0
+          },
+          {
+            "bet": "馬連 10-7",
+            "odds": 10.9
+          },
+          {
+            "bet": "馬連 10-9",
+            "odds": 12.0
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "第２１回 石川テレビ杯【ネクストスター金沢ＴＲ】２歳: ダート1400m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "第２１回 石川テレビ杯【ネクストスター金沢ＴＲ】２歳: 合成オッズ 3.15倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "第２１回 石川テレビ杯【ネクストスター金沢ＴＲ】２歳: 期待値 1.23（合成 3.15倍 × 主観的中率 39%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "第２１回 石川テレビ杯【ネクストスター金沢ＴＲ】２歳: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "曇",
+          "going": "良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 10
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 45
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 90
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 45
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 120
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-06 14:52:30"
+        }
+      }
+    ]
   }
 ]
