@@ -653,9 +653,12 @@ def test_end_to_end_passes_a_clean_sheet(tmp_path, monkeypatch, capsys):
 
 
 def test_end_to_end_axis_dependency_is_visible_but_not_blocking(tmp_path, monkeypatch, capsys):
-    """印が◎○△の3頭だと、現状の bet_builder は◎を含まない組み合わせを
-    一切作らないため axis_dependency が必ず立つ（2026-09-02、可視化のみで
-    採否は変えない前提の確認）。EXIT_OKのまま、警告として出るだけ。
+    """印が◎○△の3頭でも、保険（○軸のワイド）の実オッズが引けなければ
+    bet_builder は◎を含まない組み合わせを作れず axis_dependency が立つ
+    （2026-09-02、可視化のみで採否は変えない前提の確認。2026-09-08〜は
+    保険が成立すればこのWARNは立たなくなる——下記
+    test_end_to_end_axis_dependency_is_resolved_when_hedge_succeeds参照）。
+    EXIT_OKのまま、警告として出るだけ。
     """
     monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
     monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
@@ -692,6 +695,49 @@ def test_end_to_end_axis_dependency_is_visible_but_not_blocking(tmp_path, monkey
     out = capsys.readouterr().out
     assert '規律をクリア' not in out
     assert '買い目が全て◎絡み' in out
+
+
+def test_end_to_end_axis_dependency_is_resolved_when_hedge_succeeds(tmp_path, monkeypatch, capsys):
+    """印が◎○△の3頭で、○軸のワイドの実オッズが引けて規律も満たせるなら、
+    bet_builderが保険として追加し axis_dependency は立たなくなる（2026-09-08）。
+    """
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+
+    bets.save_sheet(BetSheet(
+        date=date(2026, 8, 2),
+        races=[make_race(
+            name='クイーンステークス',
+            marks=marks_of(items=[('◎', 7), ('○', 11), ('△', 14)]),
+            bets=[],
+        )],
+    ))
+
+    def fake_fetch(race_id, bet_type):
+        tables = {
+            '単勝': {'07': ['2.9', '3.0', '1'], '11': ['5.0', '5.2', '2'],
+                   '14': ['9.0', '9.4', '3'], '02': ['20.0', '21.0', '4']},
+            '馬連': {'0711': ['11.2', '11.5', '3'], '0714': ['9.5', '9.8', '4']},
+            # ○11-△14のワイドが引けるようにする（◎軸が飛んだ場合の保険）。
+            'ワイド': {'1114': ['8.0', '8.2', '1']},
+        }
+        return {'status': 'middle', 'reason': None,
+                'official_datetime': '14:28:00', 'odds': tables.get(bet_type, {})}
+
+    monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
+    monkeypatch.setattr(conditions_module, 'fetch',
+                        lambda rid, **kw: {'going': '良', 'weather': '晴',
+                                          'surface': '芝', 'distance': 1800})
+
+    exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30',
+                            '--no-email', '--no-save'])
+
+    assert exit_code == check.EXIT_OK
+    out = capsys.readouterr().out
+    assert '買い目が全て◎絡み' not in out
+    assert '規律をすべてクリア' in out
+    assert 'ワイド 11-14' in out
+    assert '保険' in out
 
 
 def test_clean_check_sends_a_short_one_line_email(tmp_path, monkeypatch):
