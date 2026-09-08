@@ -502,6 +502,49 @@ def test_保険は軸になれる印が無ければ何もしない():
     assert '保険' not in note
 
 
+def test_3連複は印が2頭以上あるのに相棒を無印2頭だけで組まない():
+    """2026-09-08 丹頂S・アフター5スター賞の再発防止。
+
+    win_probabilitiesの上書きが無い印(△14)は市場勝率のまま評価され、
+    的中率の数字だけでは市場的に堅いpartners(5,9)の組み合わせに機械的に
+    負けてしまっていた。印(▲2・△14)が2頭以上いるのに、相棒を無印の
+    partners2頭だけで組む3連複は候補にしないことを確認する。
+    """
+    win_odds = {7: 3.0, 11: 5.0, 2: 8.0, 14: 30.0, 5: 6.0, 9: 7.0,
+                1: 20.0, 3: 25.0, 4: 35.0, 6: 40.0, 8: 45.0, 10: 50.0}
+    r = race(
+        marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11},
+               {'mark': '▲', 'umaban': 2}, {'mark': '△', 'umaban': 14}],
+        partners=[{'umaban': 5, 'reason': '穴の中穴候補'},
+                 {'umaban': 9, 'reason': '別の中穴候補'}],
+        win_probabilities={7: 0.35, 11: 0.20},
+    )
+    confidence, built, note = build(r, {
+        ('3連複', frozenset({7, 5, 9})): 25.0,     # 無印partners2頭だけ（除外対象）
+        ('3連複', frozenset({7, 14, 5})): 130.0,   # △14＋partner1頭（採用されるべき）
+    }, win_odds=win_odds)
+    assert confidence in ('A', 'B')
+    assert built, '買い目が組めるはず'
+    assert {b.combination for b in built} == {'5-7-14'}
+    assert '14' in note
+
+
+def test_印が1頭しかいなければ相棒2頭とも無印でも許す():
+    """印が◎(軸)以外に1頭しかいない（もしくは0頭）場合は、相棒を絞る
+    選択肢が無いので、無印2頭の組み合わせも従来どおり候補にする。
+    """
+    r = race(marks=[{'mark': '◎', 'umaban': 7}],
+             partners=[{'umaban': 5, 'reason': '中穴候補'},
+                      {'umaban': 9, 'reason': '別の中穴候補'}],
+             win_probabilities={7: 0.35})
+    p = bet_builder.apply_subjective(
+        bet_builder.market_win_probabilities(WIN_ODDS), r.win_probabilities)
+    cands = bet_builder._build_candidates(
+        7, [5, 9], set(r.marked_horses), p,
+        lookup_from({('3連複', frozenset({7, 5, 9})): 20.0}))
+    assert any(c.bet_type == '3連複' for c in cands)
+
+
 def test_保険は相手候補が無ければ何もしない():
     """○はいるが、保険の相手になれる馬（◎○以外）が1頭も無い。"""
     r = race(marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11}],

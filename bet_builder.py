@@ -93,6 +93,22 @@
 
 保険は◎軸の買い目自体は変えない（あくまで追加の1点）。掛け金は保険も含めて
 既存どおり一律固定（勝率・オッズに応じた配分は別の検討事項として保留）。
+
+## 2026-09-08 の改修（3連複が印よりpartnersを選んでしまう事故の修正）
+
+同じ週次レビューで、9敗中3敗は「◎は的中したが、相棒の選び方が外れた」
+パターンだった。丹頂S・アフター5スター賞を`win_probabilities`まで見て
+確認したところ、△の印にはwin_probabilitiesの上書きが書かれておらず市場
+オッズそのまま評価されており、partners（印すら無い中穴候補）と数値上
+区別が付かなくなっていた。3連複の相手ペアを的中率の数字だけで選んだ結果、
+印(△)を差し置いてpartners2頭だけの組み合わせが選ばれる回があった。
+
+第13章「相手の広げ方」は「相手には中穴馬を最低1頭含める」であって、
+「印を差し置いて中穴馬2頭を選ぶ」ではない。`_build_candidates`の3連複
+1点候補で、**印が2頭以上残っているのに相棒を無印(partners)2頭だけで
+組む候補は作らない**よう制限した。的中率の計算方法自体は変えていない
+（win_probabilitiesの上書きを印に強制する案は、朝タスクの書き方の
+convention変更になるため見送った）。
 """
 
 import itertools
@@ -375,7 +391,18 @@ def _build_candidates(axis, pool, marked, p, lookup):
     def has_dark(combos):
         return any(any(n not in marked for n in c) for c in combos)
 
+    # 印が2頭以上残っているのに、相棒を無印(partners)2頭だけで組まない
+    # （2026-09-08）。第13章は「相手には中穴馬を最低1頭含める」であって
+    # 「印を差し置いて中穴馬2頭を選ぶ」ではない。win_probabilities に
+    # 上書きが無い印（特に△）は市場勝率のままpartnersと数値上区別が
+    # 付かなくなるため、的中率の数字だけで選ぶと印がpartnersに機械的に
+    # 負けることがあった（丹頂S・アフター5スター賞で実際に発生）。
+    marked_in_pool = [h for h in pool if h in marked]
+
     for pair in itertools.combinations(pool, 2):
+        if (pair[0] not in marked and pair[1] not in marked
+                and len(marked_in_pool) >= 2):
+            continue
         combo = sorted([axis, *pair])
         if not has_dark([combo]):
             continue
