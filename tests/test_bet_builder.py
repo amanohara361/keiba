@@ -152,8 +152,13 @@ def test_3連複が候補に入る():
     assert any(c.bet_type == '3連複' for c in cands)
 
 
-def test_3連複はセット全体が印馬だけにならない():
-    """第13章「無印馬が1頭でも絡んだ時点で全点が消滅する」ため判定はセット単位。"""
+def test_3連複はセット全体が印馬だけでも候補にする():
+    """2026-07-26〜09-08は「無印馬が1頭でも絡んだ時点で全点が消滅する」
+    として印馬だけの3連複を一律禁止していたが、2026-08-26以降は組み合わせ
+    ごとの的中率をHarvilleモデルで正確に計算できるようになったため撤廃した
+    （2026-09-06オークランドパークSで、1〜3着が全員印馬だったのにこの
+    禁止規定で候補から除外され外れたことが決め手になった）。
+    """
     r = race(marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11},
                     {'mark': '▲', 'umaban': 2}],
              win_probabilities={7: 0.32, 11: 0.20, 2: 0.14})
@@ -162,8 +167,21 @@ def test_3連複はセット全体が印馬だけにならない():
     cands = bet_builder._build_candidates(
         7, [11, 2], set(r.marked_horses), p,
         lookup_from({('3連複', frozenset({7, 11, 2})): 20.0}))
-    assert not [c for c in cands if c.bet_type == '3連複'], \
-        '◎○▲だけの3連複は候補にしない'
+    assert any(c.bet_type == '3連複' for c in cands), \
+        '◎○▲だけの3連複も候補にする（期待値で判定すれば十分）'
+
+
+def test_印馬だけの3連複でも規律を満たせば実際に選ばれる():
+    """2026-09-06オークランドパークSの再発防止：1〜3着が全員印馬だった。"""
+    r = race(marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11},
+                    {'mark': '▲', 'umaban': 2}],
+             win_probabilities={7: 0.35, 11: 0.20, 2: 0.15})
+    confidence, built, note = build(r, {
+        ('3連複', frozenset({7, 11, 2})): 10.0,
+    })
+    assert confidence in ('A', 'B')
+    assert {b.combination for b in built} >= {'2-7-11'}
+    assert '11' in note
 
 
 def test_期待値1_5以上で勝負度A():
