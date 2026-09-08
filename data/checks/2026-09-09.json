@@ -1,0 +1,66 @@
+[
+  {
+    "checked_at": "2026-09-09T08:18:06.550885+09:00",
+    "races": [
+      {
+        "race_id": "202609094511",
+        "name": "第５５回 戸塚記念３歳オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第５５回 戸塚記念３歳オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第５５回 戸塚記念３歳オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 2100,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 14
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 14
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 91
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 182
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 91
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 364
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-09 08:18:08"
+        }
+      }
+    ]
+  }
+]
