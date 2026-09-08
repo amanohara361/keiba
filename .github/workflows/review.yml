@@ -2,16 +2,24 @@ name: 週次レビュー
 
 on:
   schedule:
-    # cron は UTC 指定。日本時間は +9 時間。月=1。
+    # cron は UTC 指定。日本時間は +9 時間。火=2。
     #
-    # 00:17 UTC = 月曜 09:17 JST。日曜の全レースが確定したあとで回す。
+    # 00:17 UTC = 火曜 09:17 JST（2026-09-08、月曜実行→火曜再取得の
+    # 二度手間をやめて火曜1本に統一）。
+    #
+    # 元は月曜09:17 JSTだったが、netkeiba側の結果反映が稀に翌朝まで
+    # 遅れることがあり（2026-08-17に12レース分の欠けを実測）、月曜だけでは
+    # 取得しきれず火曜に review_retry.yml で再取得する構成になっていた。
+    # 火曜まで待てば確実に反映されている（同事例で火曜には全件取得できた）
+    # ため、二度手間をやめて火曜1回に統一した。
+    #
     # 直前検算と違って時刻の厳密さは要らない（数十分遅れても困らない）ので、
     # 前倒しの細工はしていない。毎時00分だけは混むので避ける。
-    - cron: '17 0 * * 1'
+    - cron: '17 0 * * 2'
   workflow_dispatch:
     inputs:
       end:
-        description: '集計の終わり (YYYY-MM-DD)。空なら実行日。'
+        description: '集計の終わり (YYYY-MM-DD)。空なら実行日の前日（週の区切りが月曜になるよう合わせる）。'
         required: false
       days:
         description: 'さかのぼる日数（既定7）'
@@ -54,8 +62,14 @@ jobs:
           INPUT_DAYS: ${{ inputs.days }}
           INPUT_NO_EMAIL: ${{ inputs.no_email }}
         run: |
-          args=()
-          if [ -n "$INPUT_END" ];  then args+=(--end "$INPUT_END"); fi
+          # --end 省略時は実行日の前日（＝火曜実行なら月曜）を使う。
+          # 週の区切りを月曜のままにして、data/review/ のファイル名や
+          # 過去の集計と揃える（2026-09-08、火曜1本化）。
+          end_arg="$INPUT_END"
+          if [ -z "$end_arg" ]; then
+            end_arg="$(TZ=Asia/Tokyo date -d 'yesterday' +%Y-%m-%d)"
+          fi
+          args=(--end "$end_arg")
           if [ -n "$INPUT_DAYS" ]; then args+=(--days "$INPUT_DAYS"); fi
           if [ "$INPUT_NO_EMAIL" != 'true' ]; then args+=(--mail); fi
           # 終了コード3＝要確認（結果が1件も取れない等）だが通知はできた状態。
