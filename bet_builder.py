@@ -62,12 +62,43 @@
 実質的にすべて見送りになる。**これは意図した挙動である。** 旧 subjective_hit_rate
 へフォールバックすると、上記の検証で棄却された数字をそのまま使うことになる。
 朝タスクは win_probabilities を出すこと。
+
+## 2026-09-08 の改修（◎一極集中への保険レグ追加）
+
+2026-09-01〜07の週次レビューで、9敗中4敗が「◎が着外で、買い目が全て◎絡み
+だったため○▲△が3着以内に来ても拾えなかった」パターンだった
+（discipline.check_axis_dependencyが2026-09-02から可視化のみで警告していた形）。
+サンプルが積み上がったため、可視化から一歩進めて保険を自動で足すようにした。
+
+### 直した内容
+
+`build_bets`が◎軸の買い目を選んだあと、○（無ければ▲△）を軸にした
+**ワイド1点**を保険として追加できないか試す（`_axis_hedge`）。
+
+- 保険をワイドに固定するのは、ワイドが「両馬とも3着以内」という条件で
+  同時的中の判定が`p_trio`ベースで厳密に計算できるため（単勝を保険にすると
+  主候補との同時的中の扱いが複雑になる）。
+- 「主候補が的中 または 保険が的中」の確率は、全馬の1〜3着の並びを
+  Harvilleモデルで総当たりし、どちらかが的中する並びの確率を正確に合算して
+  求める（2026-08-26のp_wide_groupの教訓——単純合算は同時的中を二重に
+  数えて過大評価になる——をここでも踏襲し、近似はしない）。
+- 保険を足した後の合成オッズ・期待値が第13章の基準を満たす場合のみ採用する。
+  満たせない場合は保険を諦めて元のチケットのみに戻す（安全側に倒す）。
+- 保険を試みたが実オッズが取得できない、または基準を満たせず見送った場合は、
+  その理由を買い目メモ（note）に残す（2026-09-08 ユーザー指示）。理由も
+  残さず沈黙すると、2026-08-26のwin_probabilities未記入事故と同じ
+  「規律どおりの見送りに見えて実は入力・データの問題」を繰り返しかねない。
+
+### 触っていないもの
+
+保険は◎軸の買い目自体は変えない（あくまで追加の1点）。掛け金は保険も含めて
+既存どおり一律固定（勝率・オッズに応じた配分は別の検討事項として保留）。
 """
 
 import itertools
 
 import discipline
-from bets import Bet
+from bets import Bet, PARTNER_ORDER
 
 STRONG_EXPECTED_VALUE = 1.5  # これ以上なら勝負度A（2026-08-14 ユーザー承認）
 
@@ -161,6 +192,103 @@ def p_wide_group(p, axis, subset):
         if x in subset or y in subset:
             total += p_trio(p, (axis, x, y))
     return total
+
+
+def _combo_hits(bet_type, combo, top3):
+    """1〜3着の並び top3=(1着,2着,3着) に対し、combo/bet_typeの買い目が
+    的中するかを返す。保険（軸の分散）の同時的中判定に使う。
+    """
+    if bet_type == '単勝':
+        return top3[0] == combo[0]
+    if bet_type == '馬連':
+        return set(top3[:2]) == set(combo)
+    if bet_type == 'ワイド':
+        return set(combo) <= set(top3)
+    if bet_type == '3連複':
+        return set(combo) == set(top3)
+    raise ValueError(f'保険の的中判定に対応していない券種です: {bet_type}')
+
+
+def _harville_top3(p):
+    """全馬の(1着,2着,3着)の並びとHarville確率を列挙する。"""
+    horses = list(p)
+    for a, b, c in itertools.permutations(horses, 3):
+        da, db = 1.0 - p[a], 1.0 - p[a] - p[b]
+        if da > 0 and db > 0:
+            yield (a, b, c), p[a] * p[b] / da * p[c] / db
+
+
+def _union_hit_rate(p, candidate, hedge_combo):
+    """主候補と保険（ワイド1点）のどちらかが的中する確率。
+
+    単純にそれぞれの的中率を足すと、両方が同時に的中する並びを二重に
+    数えて過大評価する（2026-08-26のp_wide_groupと同じ罠）。全馬の
+    1〜3着の並びを総当たりし、どちらかが的中する並びの確率だけを
+    もれなく・重複なく合算することで正確に求める。
+    """
+    total = 0.0
+    for top3, prob in _harville_top3(p):
+        if (any(_combo_hits(candidate.bet_type, c, top3) for c in candidate.combos)
+                or _combo_hits('ワイド', hedge_combo, top3)):
+            total += prob
+    return total
+
+
+def _axis_hedge(race, axis, pool, p, lookup, best, stake):
+    """◎が飛んでも○（無ければ▲△）側で拾えるよう、ワイド1点を保険として
+    足せないか試す（2026-09-08、週次レビューで◎一極集中が9敗中4敗を
+    占めたことを受けて追加）。
+
+    戻り値: (保険のBetまたはNone, noteに追記する文字列またはNone,
+             採用時の合算的中率またはNone, 採用時の合算期待値またはNone)
+    保険が構造的に成立しない（軸になれる印が無い・相手候補が無い）場合は
+    全部Noneで無言で返す。試みたが実オッズが無い・規律を満たせない場合は
+    理由の文字列を返す（採否は変えず note に記録するだけ）。
+    """
+    co_axis = None
+    for mark in PARTNER_ORDER:
+        for h in race.horses_for(mark):
+            if h != axis and h in p:
+                co_axis = h
+                break
+        if co_axis is not None:
+            break
+    if co_axis is None:
+        return None, None, None, None
+
+    hedge_pool = [h for h in pool if h not in (axis, co_axis)]
+    if not hedge_pool:
+        return None, None, None, None
+
+    partner = None
+    odds = None
+    for candidate_partner in hedge_pool:
+        o = lookup('ワイド', [co_axis, candidate_partner])
+        if o is not None and o > 0:
+            partner, odds = candidate_partner, o
+            break
+    if partner is None:
+        return None, (f'◎以外の保険（{co_axis}軸のワイド）を試みましたが、'
+                      f'相手の実オッズを取得できませんでした。'), None, None
+
+    combined_odds = best.odds + [odds]
+    combined_composite = discipline.composite_odds(combined_odds)
+    union_rate = _union_hit_rate(p, best, [co_axis, partner])
+    combined_ev = (combined_composite * union_rate) if combined_composite else None
+
+    if (combined_composite is not None
+            and combined_composite >= discipline.MIN_COMPOSITE_ODDS
+            and combined_ev is not None
+            and combined_ev >= discipline.MIN_EXPECTED_VALUE):
+        hedge_bet = Bet('ワイド', [co_axis, partner], stake)
+        note = (f'保険：ワイド{co_axis}-{partner}（◎が飛んだ場合の備え、'
+                f'{odds:.1f}倍・追加後合成{combined_composite:.2f}倍/'
+                f'期待値{combined_ev:.2f}）')
+        return hedge_bet, note, union_rate, combined_ev
+
+    return None, (f'◎以外の保険（ワイド{co_axis}-{partner}、{odds:.1f}倍）を'
+                  f'試みましたが、追加後の合成オッズ{combined_composite:.2f}倍・'
+                  f'期待値{combined_ev:.2f}が基準未達のため見送りました。'), None, None
 
 
 # ----------------------------------------------------------------------
@@ -354,7 +482,6 @@ def build_bets(race, lookup, win_odds=None, stake=100):
     # 期待値1.2以上という規律を満たすことを最低条件とし、そのうえで最も堅い
     # （的中率が高い）案を採る。合成オッズ3.0倍の下限が点数の増やしすぎを抑える。
     best = max(ok, key=lambda c: (c.hit_rate, c.ev))
-    confidence = 'A' if best.ev >= STRONG_EXPECTED_VALUE else 'B'
     note = (f'{best.label()}（合成{best.composite:.2f}倍・'
             f'主観的中率{best.hit_rate * 100:.2f}%・期待値{best.ev:.2f}）')
     if not overrides:
@@ -363,11 +490,28 @@ def build_bets(race, lookup, win_odds=None, stake=100):
     for w in best.warnings():
         note += f' ※{w}'
 
+    # **◎一極集中への保険（2026-09-08）。** ◎軸のチケットは変えず、
+    # ○（無ければ▲△）を軸にしたワイド1点を追加できないか試す。
+    bets_out = best.to_bets(stake)
+    final_hit_rate = best.hit_rate
+    final_ev = best.ev
+    hedge_bet, hedge_note, union_rate, combined_ev = _axis_hedge(
+        race, axis, pool, p, lookup, best, stake)
+    if hedge_bet is not None:
+        bets_out.append(hedge_bet)
+        final_hit_rate = union_rate
+        final_ev = combined_ev
+    if hedge_note:
+        note += f' {hedge_note}'
+
+    confidence = 'A' if final_ev >= STRONG_EXPECTED_VALUE else 'B'
+
     # **算出した的中率を race に書き戻す。** discipline は期待値を
     # race.subjective_hit_rate から独立に再計算するため、書き戻さないと
     # bet_builder の表示（券種別の的中率）と discipline の表示（申告値）が
     # 食い違う。書き戻せば両者が一致し、さらに data/bets に保存される値も
     # 「実際に使った的中率」になるので、後日の検証で申告値と実測を突き合わせ
-    # られるようになる（2026-08-26 の検証はこれが無くて苦労した）。
-    race.subjective_hit_rate = round(best.hit_rate, 4)
-    return confidence, best.to_bets(stake), note
+    # られるようになる（2026-08-26 の検証はこれが無くて苦労した）。保険を
+    # 足した場合はチケット全体の合算的中率を書き戻す（2026-09-08）。
+    race.subjective_hit_rate = round(final_hit_rate, 4)
+    return confidence, bets_out, note

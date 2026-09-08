@@ -423,3 +423,90 @@ def test_軸の単勝が短くても上限では弾かない():
         ('ワイド', frozenset({7, 2})): 6.0,
     }, win_odds=short)
     assert '推奨レンジ上限' not in note
+
+
+# ----------------------------------------------------------------------
+# 保険（◎一極集中への対策、2026-09-08）
+# ----------------------------------------------------------------------
+# 2026-09-01〜07の週次レビューで9敗中4敗が「◎が着外で、買い目が全て◎絡み
+# だったため○▲△が3着以内に来ても拾えなかった」パターンだった。◎軸の
+# チケットは変えず、○（無ければ▲△）を軸にしたワイド1点を保険として
+# 追加できないか試す仕組みを足した。
+
+HEDGE_MARKS = [{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11},
+              {'mark': '▲', 'umaban': 2}]
+HEDGE_PROBS = {7: 0.35, 11: 0.20, 2: 0.12}
+
+
+def test_保険が規律を満たせば追加される():
+    r = race(marks=HEDGE_MARKS, win_probabilities=HEDGE_PROBS)
+    confidence, built, note = build(r, {
+        ('馬連', frozenset({7, 11})): 12.0,
+        ('ワイド', frozenset({11, 2})): 8.0,
+    })
+    assert confidence in ('A', 'B')
+    combos = {(b.type, b.combination) for b in built}
+    assert ('馬連', '7-11') in combos, '◎軸の主候補はそのまま残る'
+    assert ('ワイド', '11-2') in combos, '○軸の保険が追加される'
+    assert '保険' in note
+
+
+def test_保険を足すと合算的中率をraceへ書き戻す():
+    """◎軸だけの的中率ではなく、保険込みの合算値を書き戻す。"""
+    r = race(marks=HEDGE_MARKS, win_probabilities=HEDGE_PROBS)
+    build(r, {
+        ('馬連', frozenset({7, 11})): 12.0,
+        ('ワイド', frozenset({11, 2})): 8.0,
+    })
+    p = bet_builder.apply_subjective(
+        bet_builder.market_win_probabilities(WIN_ODDS), HEDGE_PROBS)
+    main = bet_builder.Candidate('馬連', [[7, 11]], [12.0],
+                                 bet_builder.p_quinella(p, (7, 11)))
+    expected = bet_builder._union_hit_rate(p, main, [11, 2])
+    assert abs(r.subjective_hit_rate - round(expected, 4)) < 1e-9
+    assert r.subjective_hit_rate > round(main.hit_rate, 4), \
+        '保険を足した分、単独の的中率より高くなるはず'
+
+
+def test_保険の実オッズが無ければ諦めて理由をnoteに残す():
+    r = race(marks=HEDGE_MARKS, win_probabilities=HEDGE_PROBS)
+    confidence, built, note = build(r, {
+        ('馬連', frozenset({7, 11})): 12.0,
+        # ('ワイド', {11, 2}) は用意しない＝実オッズが引けない状況を再現
+    })
+    assert confidence in ('A', 'B')
+    assert [(b.type, b.combination) for b in built] == [('馬連', '7-11')]
+    assert 'オッズを取得できません' in note
+
+
+def test_保険が規律を満たせなければ諦めて理由をnoteに残す():
+    r = race(marks=HEDGE_MARKS, win_probabilities=HEDGE_PROBS)
+    confidence, built, note = build(r, {
+        ('馬連', frozenset({7, 11})): 12.0,
+        # オッズが渋く、追加後の合成オッズ・期待値が基準を割る
+        ('ワイド', frozenset({11, 2})): 3.0,
+    })
+    assert confidence in ('A', 'B')
+    assert [(b.type, b.combination) for b in built] == [('馬連', '7-11')]
+    assert '基準未達のため見送りました' in note
+
+
+def test_保険は軸になれる印が無ければ何もしない():
+    """◎1頭しか印が無いレースは保険の軸を作れない。無言で従来どおり。"""
+    r = race(marks=[{'mark': '◎', 'umaban': 7}],
+             partners=[{'umaban': 11, 'reason': '中穴候補'}],
+             win_probabilities={7: 0.35})
+    confidence, built, note = build(r, {('単勝', frozenset({7})): 4.5})
+    assert confidence in ('A', 'B')
+    assert len(built) == 1
+    assert '保険' not in note
+
+
+def test_保険は相手候補が無ければ何もしない():
+    """○はいるが、保険の相手になれる馬（◎○以外）が1頭も無い。"""
+    r = race(marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11}],
+             win_probabilities={7: 0.35, 11: 0.20})
+    confidence, built, note = build(r, {('馬連', frozenset({7, 11})): 8.0})
+    assert confidence in ('A', 'B')
+    assert len(built) == 1
+    assert '保険' not in note
