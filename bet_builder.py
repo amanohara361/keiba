@@ -109,6 +109,26 @@
 組む候補は作らない**よう制限した。的中率の計算方法自体は変えていない
 （win_probabilitiesの上書きを印に強制する案は、朝タスクの書き方の
 convention変更になるため見送った）。
+
+## 2026-09-08 の改修（印馬だけの3連複を候補から外す制限を撤廃）
+
+同じ週次レビューの③「印馬だけの3連複を避ける規律が、全員印馬で決まった
+回では逆に外した」（2026-09-06オークランドパークS：1〜3着が◎△△で
+全員印馬だったのに、この制限で候補から除外され外れた）を受けて、
+セット全体が印馬だけになる3連複を作らないという制限（2026-07-26導入）を
+撤廃した。
+
+導入当時（2026-07-26）はレース単位の主観的中率1つで全券種を評価しており、
+「印馬だけの組み合わせがどれだけ的中しやすいか」を組み合わせごとに正しく
+見積もる手段が無かったため、構造的な安全策として一律禁止していた。
+2026-08-26以降は`p_trio`が組み合わせごとの実際の的中率をHarvilleモデルで
+正確に算出しており、印馬だけの組み合わせも他の組み合わせと同じ合成オッズ・
+期待値の基準（第13章）で判定すれば十分——**期待値がプラスなら印馬だけで
+あることは欠点にならない**（2026-09-08 ユーザー判断）。合成オッズ3.0倍の
+下限は、堅い人気馬同士の組み合わせ（＝オッズが低くなりがち）を今までどおり
+自然に弾く。
+
+予想メソッド.md 第13章「相手の広げ方」も同時に更新した。
 """
 
 import itertools
@@ -386,11 +406,6 @@ def _build_candidates(axis, pool, marked, p, lookup):
             rate = p_wide_group(p, axis, subset)
             out.append(Candidate('ワイド', combos, vals, rate, f'◎{axis}軸-相手{n}頭'))
 
-    # 第13章：セット全体が印馬だけになる3連複は作らない。原文の理由が
-    # 「無印馬が1頭でも絡んだ時点で全点が消滅する」なので、判定はセット単位。
-    def has_dark(combos):
-        return any(any(n not in marked for n in c) for c in combos)
-
     # 印が2頭以上残っているのに、相棒を無印(partners)2頭だけで組まない
     # （2026-09-08）。第13章は「相手には中穴馬を最低1頭含める」であって
     # 「印を差し置いて中穴馬2頭を選ぶ」ではない。win_probabilities に
@@ -404,8 +419,6 @@ def _build_candidates(axis, pool, marked, p, lookup):
                 and len(marked_in_pool) >= 2):
             continue
         combo = sorted([axis, *pair])
-        if not has_dark([combo]):
-            continue
         vals = priced('3連複', [combo])
         if vals:
             out.append(Candidate('3連複', [combo], vals, p_trio(p, combo),
@@ -415,8 +428,6 @@ def _build_candidates(axis, pool, marked, p, lookup):
         second, rest = pool[0], pool[1:]
         for n in range(len(rest), 1, -1):
             combos = [sorted([axis, second, q]) for q in rest[:n]]
-            if not has_dark(combos):
-                continue
             vals = priced('3連複', combos)
             if vals:
                 rate = sum(p_trio(p, c) for c in combos)
