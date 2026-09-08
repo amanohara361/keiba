@@ -23,12 +23,16 @@ on:
     - cron: '7 7 * * *'    # 07:07 UTC = 16:07 JST  夕方の便
     - cron: '37 9 * * *'   # 09:37 UTC = 18:37 JST  夜の便
     - cron: '37 10 * * *'  # 10:37 UTC = 19:37 JST  ナイター最終便（20時台の発走向け）
-  push:
-    # check.ymlと同じ理由（2026-09-05）。朝タスクのRoutineがdata/bets/をpush
-    # した直後に、GitHub Actionsのコネクターに依存せず即座に検算を走らせる。
-    branches: [main]
-    paths:
-      - 'data/bets/**'
+  # push（data/bets/**）は持たせない（2026-09-08に撤去）。
+  # 呼んでいるcheck.pyはJRA/地方の区別をせず、data/bets/の全レースを見て
+  # 計算する。check.ymlのpushトリガーが既に「印付け直後の即時検算」を
+  # 全レース分カバーしているため、こちらにも同じpushトリガーを持たせると、
+  # 重賞のある日（＝nar_card.pyのgateがrunになる日）だけ両ワークフローが
+  # 同じpushイベントに反応し、同じ`data/checks/{date}.json`を同時に書こうと
+  # してadd/addコンフリクトでpush失敗する（2026-09-08 戸塚記念の回で実際に
+  # 発生・実害はメール送信済みで無かったが、ジョブは赤になった）。
+  # concurrencyグループ（keiba-data）は同一push起因で複数ワークフローが
+  # ほぼ同時に立ち上がるケースまでは直列化しきれなかった。
   workflow_dispatch:
     inputs:
       date:
