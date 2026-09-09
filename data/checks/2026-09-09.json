@@ -170,5 +170,30 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-09T22:51:30.915745+09:00",
+    "races": [
+      {
+        "race_id": "202609094511",
+        "name": "第５５回 戸塚記念３歳オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第５５回 戸塚記念３歳オープン: 既に発走しています（発走 20:10 / 現在 22:51）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
