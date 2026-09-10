@@ -170,5 +170,84 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-10T18:36:27.361377+09:00",
+    "races": [
+      {
+        "race_id": "202609104511",
+        "name": "第４回 若武者（わかむしゃ）賞（鎌倉記念ＴＲ）２歳オープン",
+        "blocked": false,
+        "composite_odds": 8.1,
+        "expected_value": 2.22,
+        "bet_odds": [
+          {
+            "bet": "ワイド 5-10",
+            "odds": 14.0
+          },
+          {
+            "bet": "ワイド 10-2",
+            "odds": 19.2
+          }
+        ],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "第４回 若武者（わかむしゃ）賞（鎌倉記念ＴＲ）２歳オープン: 馬場が「不良」です（ダート1500m / 天候:曇 / 馬場:不良）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "第４回 若武者（わかむしゃ）賞（鎌倉記念ＴＲ）２歳オープン: 合成オッズ 8.10倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "第４回 若武者（わかむしゃ）賞（鎌倉記念ＴＲ）２歳オープン: 期待値 2.22（合成 8.10倍 × 主観的中率 27%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1500,
+          "weather": "曇",
+          "going": "不良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 11
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 11
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 55
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 110
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 55
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 165
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-10 18:36:29"
+        }
+      }
+    ]
   }
 ]
