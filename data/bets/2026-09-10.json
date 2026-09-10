@@ -10,8 +10,8 @@
       "venue": "川崎",
       "race_no": 11,
       "start_time": "20:10",
-      "confidence": "B",
-      "subjective_hit_rate": 0.3235,
+      "confidence": "A",
+      "subjective_hit_rate": 0.2748,
       "win_probabilities": {
         "5": 0.3,
         "2": 0.24,
@@ -77,7 +77,7 @@
       ],
       "bets": [
         {
-          "type": "馬連",
+          "type": "ワイド",
           "horses": [
             5,
             10
@@ -85,26 +85,10 @@
           "stake": 100
         },
         {
-          "type": "馬連",
+          "type": "ワイド",
           "horses": [
-            5,
+            10,
             2
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            5,
-            1
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            5,
-            4
           ],
           "stake": 100
         }
