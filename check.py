@@ -434,6 +434,17 @@ def format_report(sheet, verdicts, now):
     return '\n'.join(lines)
 
 
+def _all_races_already_started(verdicts):
+    """対象日の全レースが発走済みで、今日はもう確認できる対象が無いか。
+
+    review_sheet()は発走済みのレースに meta={'skipped': '発走済みのため
+    取得せず'} を付けて返す（実オッズを取りに行かず、買い目も組み直さない）。
+    レースが1件も無い（見送り0件の空の日など）場合は「まだ何か来るかも
+    しれない」区別が付かないので、ここではFalse扱いにする。
+    """
+    return bool(verdicts) and all(v.meta.get('skipped') for v in verdicts)
+
+
 def format_clean_summary(verdicts, now):
     """規律クリア時に送る1行サマリ（フルレポートは docs/index.html を見てもらう）。"""
     parts = []
@@ -534,14 +545,19 @@ def main(argv=None):
             subject = f'【要確認】朝タスクの入力が欠けています（{missing}件）'
             if not deliver(mailer, subject, body):
                 return EXIT_ERROR
-        elif args.quiet_if_clean:
-            # data/bets/へのpushで即座に検算を走らせるトリガー（2026-09-05）
-            # から来た実行はここを通る。定時実行と違って1日に何度も、
-            # しかも深夜まで連続して起きうるため、そのたびに「問題なし」を
-            # 送ると同じ内容の通知が積み重なって役に立たない
-            # （2026-09-09、同日中に「戸塚記念」の問題なしメールが5通届いた
-            # 実例で発覚）。発注を止めた／入力欠落は上のブロックで通常どおり
-            # 即時に送っているので、ここを黙らせても実害の見落としにはならない。
+        elif args.quiet_if_clean or _all_races_already_started(verdicts):
+            # 黙らせるのは2パターン。
+            # (1) --quiet-if-clean（push起因、2026-09-05）: data/bets/への
+            #     pushのたびに走るので、そのたびに「問題なし」を送ると同じ
+            #     内容が積み重なる（2026-09-09、戸塚記念で5通届いた実例）。
+            # (2) 対象日の全レースが既に発走済み（2026-09-09追加）: schedule
+            #     実行はGitHub Actions側の都合で数時間単位で遅れることがあり
+            #     （このファイル冒頭のコメント参照）、4回の定時実行が軒並み
+            #     遅れて深夜に固まって届いた実例がある。今日はもう何も
+            #     できることが無い回に「問題なし」を送っても、遅延と規律
+            #     クリアの区別という元々の目的（2026-08-13）を果たさない。
+            # 発注を止めた／入力欠落は上のブロックで通常どおり即時に送って
+            # いるので、ここを黙らせても実害の見落としにはならない。
             print(format_clean_summary(verdicts, now))
         else:
             # 「問題なし」を完全に無音にすると、メールが来ないことが
@@ -549,8 +565,8 @@ def main(argv=None):
             # なのか受信側で区別できない（2026-08-13、定時実行が最大92分
             # 遅れる仕様と重なって「壊れてるのでは」と誤認させた）。
             # フルレポートは重いので、1行サマリだけ毎回送る。
-            # ここを通るのは定時実行（1日数回・時刻が決まっている）だけなので、
-            # 上のquiet_if_cleanとは違って積み重ならない。
+            # ここを通るのは、まだ何かしら今日中に確認できる対象が残っている
+            # 定時実行だけなので、上の2パターンとは違って積み重ならない。
             subject = f'直前検算 問題なし（{now:%H:%M}）'
             if not deliver(mailer, subject, format_clean_summary(verdicts, now)):
                 return EXIT_ERROR

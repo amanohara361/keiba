@@ -872,6 +872,108 @@ def test_quiet_if_clean_still_sends_the_blocked_email(tmp_path, monkeypatch):
     assert sent == ['【要確認】直前検算で発注を止めた買い目があります']
 
 
+def test_quiet_when_every_race_has_already_started(tmp_path, monkeypatch, capsys):
+    """対象日の全レースが発走済みなら、`--quiet-if-clean`が無くても黙ること。
+
+    定時実行（schedule）はGitHub Actions側の都合で数時間単位に遅れることが
+    ある（このファイルの元になったcheck.ymlのコメント参照）。2026-09-09、
+    本来14:07/16:07/18:37/19:37 JSTに散らばるはずの4回の定時実行が軒並み
+    大幅に遅れ、21:17〜23:47 JSTに固まって「問題なし」が4通届いた。その
+    時点で対象レースは全て発走済みで、今日はもう何もできることが無かった。
+    こういう「もう手遅れ」な回にまで問題なしメールを送る必要は無い。
+    """
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+
+    sent = []
+    monkeypatch.setattr(check.Mailer, 'is_configured', lambda self: True)
+    monkeypatch.setattr(check.Mailer, 'send',
+                        lambda self, subject, body: sent.append(subject) or True)
+
+    bets.save_sheet(BetSheet(
+        date=date(2026, 8, 2),
+        races=[make_race(
+            name='クイーンステークス',
+            venue='札幌', race_no=11,
+            start_time='14:00',   # 検算時刻(23:47)よりずっと前＝発走済み
+            marks=marks_of(items=[('◎', 7), ('○', 11), ('▲', 2), ('△', 14)]),
+            confidence='B', bets=[Bet('馬連', [7, 11])],   # 発走前に確定済み
+            subjective_hit_rate=0.35,
+        )],
+    ))
+
+    monkeypatch.setattr(conditions_module, 'fetch',
+                        lambda rid, **kw: {'going': '良', 'weather': '晴',
+                                          'surface': '芝', 'distance': 1800})
+
+    # --quiet-if-clean は付けない（scheduleを想定）。
+    exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T23:47',
+                            '--no-save'])
+
+    assert exit_code == check.EXIT_OK
+    assert sent == []   # メールは送らないが、
+    assert '問題なし' in capsys.readouterr().out   # 実行ログには残す
+
+
+def test_still_sends_the_clean_email_when_a_race_is_still_upcoming(tmp_path, monkeypatch):
+    """1鞍でもまだ発走前なら、これまでどおり「問題なし」メールを送ること。
+
+    黙らせてよいのは「今日はもう何もできない」回だけ。まだ確認する意味が
+    ある回まで巻き込んで黙らせると、2026-08-13の教訓（遅延と規律クリアの
+    区別が付かなくなる）が再発する。
+    """
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+
+    sent = []
+    monkeypatch.setattr(check.Mailer, 'is_configured', lambda self: True)
+    monkeypatch.setattr(check.Mailer, 'send',
+                        lambda self, subject, body: sent.append(subject) or True)
+
+    bets.save_sheet(BetSheet(
+        date=date(2026, 8, 2),
+        races=[
+            make_race(
+                race_id='202601020801', name='発走済みレース',
+                venue='札幌', race_no=1,
+                start_time='14:00',   # 検算時刻(14:30)より前＝発走済み
+                marks=marks_of(items=[('◎', 7), ('○', 11), ('▲', 2), ('△', 14)]),
+                confidence='B', bets=[Bet('馬連', [7, 11])],
+                subjective_hit_rate=0.35,
+            ),
+            make_race(
+                race_id='202601020811', name='クイーンステークス',
+                venue='札幌', race_no=11,
+                start_time='15:25',   # 検算時刻(14:30)より後＝まだこれから
+                marks=marks_of(items=[('◎', 7), ('○', 11), ('△', 14)]),
+                bets=[Bet('馬連', [7, 11]), Bet('ワイド', [7, 14])],
+                subjective_hit_rate=0.35,
+            ),
+        ],
+    ))
+
+    def fake_fetch(race_id, bet_type):
+        tables = {
+            '単勝': {'07': ['2.9', '3.0', '1'], '11': ['5.0', '5.2', '2'],
+                   '14': ['9.0', '9.4', '3'], '02': ['20.0', '21.0', '4']},
+            '馬連': {'0711': ['11.2', '11.5', '3']},
+            'ワイド': {'0714': ['9.0', '9.4', '4']},
+        }
+        return {'status': 'middle', 'reason': None,
+                'official_datetime': '14:28:00', 'odds': tables.get(bet_type, {})}
+
+    monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
+    monkeypatch.setattr(conditions_module, 'fetch',
+                        lambda rid, **kw: {'going': '良', 'weather': '晴',
+                                          'surface': '芝', 'distance': 1800})
+
+    exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30',
+                            '--no-save'])
+
+    assert exit_code == check.EXIT_OK
+    assert sent == ['直前検算 問題なし（14:30）']
+
+
 def test_blocked_check_still_sends_an_email(tmp_path, monkeypatch):
     """発注を止めた回は、これまでどおり必ずメールすること。
 
