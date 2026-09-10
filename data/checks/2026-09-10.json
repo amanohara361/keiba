@@ -274,5 +274,30 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-10T22:45:49.764674+09:00",
+    "races": [
+      {
+        "race_id": "202609104511",
+        "name": "第４回 若武者（わかむしゃ）賞（鎌倉記念ＴＲ）２歳オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第４回 若武者（わかむしゃ）賞（鎌倉記念ＴＲ）２歳オープン: 既に発走しています（発走 20:10 / 現在 22:45）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
