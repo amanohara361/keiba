@@ -1,0 +1,41 @@
+[
+  {
+    "checked_at": "2026-09-11T08:21:12.402806+09:00",
+    "races": [
+      {
+        "race_id": "202609114709",
+        "name": "第１１回 西日本３歳優駿・オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第１１回 西日本３歳優駿・オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第１１回 西日本３歳優駿・オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1900,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-09-11 08:21:13"
+        }
+      }
+    ]
+  }
+]
