@@ -82,6 +82,7 @@ jobs:
           INPUT_DATE: ${{ inputs.date }}
           INPUT_NOW: ${{ inputs.now }}
           INPUT_NO_EMAIL: ${{ inputs.no_email }}
+          IS_PUSH: ${{ github.event_name == 'push' }}
         run: |
           args=()
           if [ -n "$INPUT_DATE" ]; then
@@ -92,6 +93,15 @@ jobs:
           fi
           if [ "$INPUT_NO_EMAIL" = 'true' ]; then
             args+=(--no-email)
+          fi
+          if [ "$IS_PUSH" = 'true' ]; then
+            # pushトリガーは1日に何度も、深夜まで連続して起きうる
+            # （朝タスクRoutineが印を打つたびに発火する）。定時実行と違い
+            # 「問題なし」を毎回メールすると同じ内容が積み重なるだけなので、
+            # push起因のときだけ「問題なし」の通知を黙らせる（2026-09-09）。
+            # 発注を止めた／入力欠落のメールはこのフラグの影響を受けず、
+            # 通常どおり即時に届く。
+            args+=(--quiet-if-clean)
           fi
           # 終了コード3＝要確認の事象を検知して正常に通知できた状態。
           # 役目は果たしているのでジョブは成功にする。赤くするのは

@@ -468,6 +468,9 @@ def main(argv=None):
     parser.add_argument('--no-html', action='store_true', help='HTMLレポートを書き出さない')
     parser.add_argument('--no-md', action='store_true',
                          help='data/checks_md/ へのMarkdown書き出しをしない')
+    parser.add_argument('--quiet-if-clean', action='store_true',
+                         help='規律クリア（問題なし）のときだけメールを送らない。'
+                              '発注を止めた／入力欠落のメールは通常どおり送る。')
     args = parser.parse_args(argv)
 
     now = resolve_now(args.now)
@@ -531,12 +534,23 @@ def main(argv=None):
             subject = f'【要確認】朝タスクの入力が欠けています（{missing}件）'
             if not deliver(mailer, subject, body):
                 return EXIT_ERROR
+        elif args.quiet_if_clean:
+            # data/bets/へのpushで即座に検算を走らせるトリガー（2026-09-05）
+            # から来た実行はここを通る。定時実行と違って1日に何度も、
+            # しかも深夜まで連続して起きうるため、そのたびに「問題なし」を
+            # 送ると同じ内容の通知が積み重なって役に立たない
+            # （2026-09-09、同日中に「戸塚記念」の問題なしメールが5通届いた
+            # 実例で発覚）。発注を止めた／入力欠落は上のブロックで通常どおり
+            # 即時に送っているので、ここを黙らせても実害の見落としにはならない。
+            print(format_clean_summary(verdicts, now))
         else:
             # 「問題なし」を完全に無音にすると、メールが来ないことが
             # 「規律クリア」なのか「そもそもまだ実行されていない／遅延中」
             # なのか受信側で区別できない（2026-08-13、定時実行が最大92分
             # 遅れる仕様と重なって「壊れてるのでは」と誤認させた）。
             # フルレポートは重いので、1行サマリだけ毎回送る。
+            # ここを通るのは定時実行（1日数回・時刻が決まっている）だけなので、
+            # 上のquiet_if_cleanとは違って積み重ならない。
             subject = f'直前検算 問題なし（{now:%H:%M}）'
             if not deliver(mailer, subject, format_clean_summary(verdicts, now)):
                 return EXIT_ERROR
