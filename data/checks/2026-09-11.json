@@ -193,5 +193,30 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-11T23:35:57.929367+09:00",
+    "races": [
+      {
+        "race_id": "202609114709",
+        "name": "第１１回 西日本３歳優駿・オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第１１回 西日本３歳優駿・オープン: 既に発走しています（発走 15:40 / 現在 23:35）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
