@@ -37,5 +37,86 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-11T15:05:52.534603+09:00",
+    "races": [
+      {
+        "race_id": "202609114709",
+        "name": "第１１回 西日本３歳優駿・オープン",
+        "blocked": false,
+        "composite_odds": 4.7,
+        "expected_value": 1.47,
+        "bet_odds": [
+          {
+            "bet": "ワイド 4-12",
+            "odds": 4.7
+          }
+        ],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "第１１回 西日本３歳優駿・オープン: 馬場が「重」です（ダート1900m / 天候:曇 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "第１１回 西日本３歳優駿・オープン: 合成オッズ 4.70倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "第１１回 西日本３歳優駿・オープン: 期待値 1.47（合成 4.70倍 × 主観的中率 31%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "第１１回 西日本３歳優駿・オープン: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1900,
+          "weather": "曇",
+          "going": "重"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 66
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 132
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 66
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 220
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-11 15:05:55"
+        }
+      }
+    ]
   }
 ]
