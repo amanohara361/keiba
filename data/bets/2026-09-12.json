@@ -11,7 +11,7 @@
       "race_no": 7,
       "start_time": "13:10",
       "confidence": "B",
-      "subjective_hit_rate": 0.0177,
+      "subjective_hit_rate": 0.0173,
       "win_probabilities": {
         "14": 0.17,
         "3": 0.13,
@@ -354,7 +354,7 @@
       "race_no": 10,
       "start_time": "15:05",
       "confidence": "B",
-      "subjective_hit_rate": 0.2813,
+      "subjective_hit_rate": 0.2812,
       "win_probabilities": {
         "5": 0.17,
         "7": 0.26,
@@ -521,6 +521,8 @@
       "venue": "高知",
       "race_no": 5,
       "start_time": "17:15",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "4": 0.22,
         "2": 0.16,
