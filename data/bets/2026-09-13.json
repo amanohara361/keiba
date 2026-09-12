@@ -114,8 +114,8 @@
       "venue": "中山",
       "race_no": 9,
       "start_time": "14:25",
-      "confidence": "B",
-      "subjective_hit_rate": 0.1651,
+      "confidence": "A",
+      "subjective_hit_rate": 0.1477,
       "win_probabilities": {
         "1": 0.19,
         "2": 0.11,
@@ -185,26 +185,10 @@
       ],
       "bets": [
         {
-          "type": "馬連",
+          "type": "ワイド",
           "horses": [
             3,
             11
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            3,
-            1
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            3,
-            7
           ],
           "stake": 100
         }
@@ -329,8 +313,8 @@
       "venue": "中山",
       "race_no": 10,
       "start_time": "15:05",
-      "confidence": "B",
-      "subjective_hit_rate": 0.1616,
+      "confidence": "A",
+      "subjective_hit_rate": 0.0614,
       "win_probabilities": {
         "1": 0.01,
         "2": 0.2,
@@ -403,18 +387,11 @@
       ],
       "bets": [
         {
-          "type": "馬連",
+          "type": "3連複",
           "horses": [
             2,
+            3,
             8
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            2,
-            3
           ],
           "stake": 100
         }
@@ -650,6 +627,8 @@
       "venue": "金沢",
       "race_no": 6,
       "start_time": "17:45",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "7": 0.24,
         "11": 0.16,
@@ -712,6 +691,8 @@
       "venue": "水沢",
       "race_no": 12,
       "start_time": "18:05",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "5": 0.32,
         "2": 0.16,
@@ -760,6 +741,8 @@
       "venue": "高知",
       "race_no": 7,
       "start_time": "18:15",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "6": 0.22,
         "7": 0.16,
