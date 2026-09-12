@@ -1,0 +1,479 @@
+[
+  {
+    "checked_at": "2026-09-13T07:16:32.540924+09:00",
+    "races": [
+      {
+        "race_id": "202609040409",
+        "name": "能勢特別",
+        "blocked": false,
+        "composite_odds": 28.2,
+        "expected_value": 1.33,
+        "bet_odds": [
+          {
+            "bet": "3連複 5-10-11",
+            "odds": 28.2
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "能勢特別: 芝2000m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "能勢特別: 合成オッズ 28.20倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "能勢特別: 期待値 1.33（合成 28.20倍 × 主観的中率 5%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "marked_only_trifecta",
+            "message": "能勢特別: 3連複 5-10-11 が印馬だけで組まれています",
+            "remedy": "印馬が3着以内を独占する前提に依存します。◎（＋1頭）を軸に、相手へ印を打たなかった中穴を最低1頭含めてください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "能勢特別: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 2000
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:04"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:04"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:04"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:04"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-13 07:15:04"
+        }
+      },
+      {
+        "race_id": "202606040409",
+        "name": "習志野特別",
+        "blocked": false,
+        "composite_odds": 7.35,
+        "expected_value": 1.21,
+        "bet_odds": [
+          {
+            "bet": "馬連 3-11",
+            "odds": 39.0
+          },
+          {
+            "bet": "馬連 3-1",
+            "odds": 11.3
+          },
+          {
+            "bet": "馬連 3-7",
+            "odds": 45.8
+          }
+        ],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "習志野特別: 馬場が「重」です（芝1800m / 天候:曇 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "習志野特別: ◎3番 トレサフィール は「重」での出走がありません（重は出走なし / 良[1-1-0-5]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "習志野特別: 合成オッズ 7.35倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "習志野特別: 期待値 1.21（合成 7.35倍 × 主観的中率 17%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "習志野特別: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": "曇",
+          "surface": "芝",
+          "distance": 1800
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:14:49"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:14:49"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:14:49"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:14:49"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-13 07:14:49"
+        }
+      },
+      {
+        "race_id": "202609040410",
+        "name": "仲秋ステークス",
+        "blocked": false,
+        "composite_odds": 6.07,
+        "expected_value": 1.4,
+        "bet_odds": [
+          {
+            "bet": "ワイド 8-3",
+            "odds": 17.5
+          },
+          {
+            "bet": "ワイド 3-2",
+            "odds": 9.3
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "仲秋ステークス: 芝1600m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "仲秋ステークス: 合成オッズ 6.07倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "仲秋ステークス: 期待値 1.40（合成 6.07倍 × 主観的中率 23%）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1600
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:29"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:29"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:29"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:29"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-13 07:15:29"
+        }
+      },
+      {
+        "race_id": "202606040410",
+        "name": "初風ステークス",
+        "blocked": false,
+        "composite_odds": 7.82,
+        "expected_value": 1.26,
+        "bet_odds": [
+          {
+            "bet": "馬連 2-8",
+            "odds": 11.1
+          },
+          {
+            "bet": "馬連 2-3",
+            "odds": 26.5
+          }
+        ],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "初風ステークス: 馬場が「重」です（ダート1200m / 天候:曇 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "初風ステークス: 合成オッズ 7.82倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "初風ステークス: 期待値 1.26（合成 7.82倍 × 主観的中率 16%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "初風ステークス: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": "曇",
+          "surface": "ダート",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:14"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:14"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:14"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:14"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-13 07:15:14"
+        }
+      },
+      {
+        "race_id": "202609040411",
+        "name": "ローズステークス",
+        "blocked": false,
+        "composite_odds": 10.3,
+        "expected_value": 1.54,
+        "bet_odds": [
+          {
+            "bet": "ワイド 6-1",
+            "odds": 10.3
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "ローズステークス: 芝1800m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "ローズステークス: 合成オッズ 10.30倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "ローズステークス: 期待値 1.54（合成 10.30倍 × 主観的中率 15%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "ローズステークス: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1800
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:34"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:34"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:34"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:34"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-13 07:15:34"
+        }
+      },
+      {
+        "race_id": "202606040411",
+        "name": "セントライト記念",
+        "blocked": false,
+        "composite_odds": 39.3,
+        "expected_value": 1.32,
+        "bet_odds": [
+          {
+            "bet": "3連複 2-5-10",
+            "odds": 39.3
+          }
+        ],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "セントライト記念: 馬場が「重」です（芝2200m / 天候:曇 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "セントライト記念: ◎10番 バステール は「重」での出走がありません（重は出走なし / 良[2-1-1-1]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "セントライト記念: ○5番 アスクエジンバラ は「重」での出走がありません（重は出走なし / 良[2-2-1-4]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "セントライト記念: 合成オッズ 39.30倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "セントライト記念: 期待値 1.32（合成 39.30倍 × 主観的中率 3%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "marked_only_trifecta",
+            "message": "セントライト記念: 3連複 2-5-10 が印馬だけで組まれています",
+            "remedy": "印馬が3着以内を独占する前提に依存します。◎（＋1頭）を軸に、相手へ印を打たなかった中穴を最低1頭含めてください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "セントライト記念: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": "曇",
+          "surface": "芝",
+          "distance": 2200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:19"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:19"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:19"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-13 07:15:19"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-13 07:15:19"
+        }
+      }
+    ]
+  }
+]
