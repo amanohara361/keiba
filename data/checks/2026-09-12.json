@@ -957,5 +957,390 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-12T14:42:04.450062+09:00",
+    "races": [
+      {
+        "race_id": "202606040307",
+        "name": "3歳未勝利",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳未勝利: 既に発走しています（発走 13:10 / 現在 14:42）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202606040309",
+        "name": "御宿特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "御宿特別: 既に発走しています（発走 14:10 / 現在 14:42）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202606040310",
+        "name": "レインボーS",
+        "blocked": false,
+        "composite_odds": 26.6,
+        "expected_value": 1.21,
+        "bet_odds": [
+          {
+            "bet": "3連複 1-9-10",
+            "odds": 26.6
+          }
+        ],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "レインボーS: 馬場が「重」です（芝2000m / 天候:曇 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "レインボーS: 合成オッズ 26.60倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "レインボーS: 期待値 1.21（合成 26.60倍 × 主観的中率 5%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "marked_only_trifecta",
+            "message": "レインボーS: 3連複 1-9-10 が印馬だけで組まれています",
+            "remedy": "印馬が3着以内を独占する前提に依存します。◎（＋1頭）を軸に、相手へ印を打たなかった中穴を最低1頭含めてください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "レインボーS: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": "曇",
+          "surface": "芝",
+          "distance": 2000
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:41:52"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:41:52"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:41:52"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:41:52"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-12 14:41:52"
+        }
+      },
+      {
+        "race_id": "202606040311",
+        "name": "ラジオ日本賞",
+        "blocked": false,
+        "composite_odds": 17.22,
+        "expected_value": 1.34,
+        "bet_odds": [
+          {
+            "bet": "3連複 4-9-15",
+            "odds": 102.3
+          },
+          {
+            "bet": "ワイド 9-4",
+            "odds": 20.7
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "ラジオ日本賞: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "ラジオ日本賞: 合成オッズ 17.22倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "ラジオ日本賞: 期待値 1.34（合成 17.22倍 × 主観的中率 8%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "marked_only_trifecta",
+            "message": "ラジオ日本賞: 3連複 4-9-15 が印馬だけで組まれています",
+            "remedy": "印馬が3着以内を独占する前提に依存します。◎（＋1頭）を軸に、相手へ印を打たなかった中穴を最低1頭含めてください。"
+          }
+        ],
+        "conditions": {
+          "going": null,
+          "weather": "曇",
+          "surface": "ダート",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:42:02"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:42:02"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:42:02"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:42:02"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-12 14:42:02"
+        }
+      },
+      {
+        "race_id": "202609040310",
+        "name": "竹田城S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "竹田城S: ダート1800m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "竹田城S: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1800
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:42:12"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:42:12"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:42:12"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:42:12"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-12 14:42:12"
+        }
+      },
+      {
+        "race_id": "202609040311",
+        "name": "チャレンジC",
+        "blocked": false,
+        "composite_odds": 6.2,
+        "expected_value": 1.26,
+        "bet_odds": [
+          {
+            "bet": "ワイド 10-9",
+            "odds": 6.2
+          }
+        ],
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "チャレンジC: 芝2000m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "チャレンジC: 合成オッズ 6.20倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "チャレンジC: 期待値 1.26（合成 6.20倍 × 主観的中率 20%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "チャレンジC: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 2000
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:41:42"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:41:42"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:41:42"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-12 14:41:42"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-12 14:41:42"
+        }
+      },
+      {
+        "race_id": "202609125405",
+        "name": "ＪＲＡ認定　堆金菊特別２歳２歳",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "ＪＲＡ認定　堆金菊特別２歳２歳: 馬場が「不良」です（ダート1300m / 天候:曇 / 馬場:不良）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "ＪＲＡ認定　堆金菊特別２歳２歳: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1300,
+          "weather": "曇",
+          "going": "不良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 11
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 11
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 55
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 110
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 55
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 165
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-12 14:42:23"
+        }
+      }
+    ]
   }
 ]
