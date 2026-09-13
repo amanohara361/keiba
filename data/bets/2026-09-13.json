@@ -114,8 +114,8 @@
       "venue": "中山",
       "race_no": 9,
       "start_time": "14:25",
-      "confidence": "A",
-      "subjective_hit_rate": 0.1476,
+      "confidence": "B",
+      "subjective_hit_rate": 0.1477,
       "win_probabilities": {
         "1": 0.19,
         "2": 0.11,
@@ -203,7 +203,7 @@
       "race_no": 10,
       "start_time": "14:50",
       "confidence": "B",
-      "subjective_hit_rate": 0.2308,
+      "subjective_hit_rate": 0.2307,
       "win_probabilities": {
         "2": 0.19,
         "3": 0.105,
@@ -634,8 +634,8 @@
       "venue": "金沢",
       "race_no": 6,
       "start_time": "17:45",
-      "confidence": "B",
-      "subjective_hit_rate": 0.1753,
+      "confidence": "A",
+      "subjective_hit_rate": 0.1758,
       "win_probabilities": {
         "7": 0.24,
         "11": 0.16,
@@ -767,7 +767,7 @@
       "race_no": 7,
       "start_time": "18:15",
       "confidence": "B",
-      "subjective_hit_rate": 0.3243,
+      "subjective_hit_rate": 0.2943,
       "win_probabilities": {
         "6": 0.22,
         "7": 0.16,
@@ -822,10 +822,26 @@
       ],
       "bets": [
         {
-          "type": "ワイド",
+          "type": "馬連",
           "horses": [
             6,
             7
+          ],
+          "stake": 100
+        },
+        {
+          "type": "馬連",
+          "horses": [
+            6,
+            10
+          ],
+          "stake": 100
+        },
+        {
+          "type": "馬連",
+          "horses": [
+            6,
+            3
           ],
           "stake": 100
         },
