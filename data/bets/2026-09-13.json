@@ -314,7 +314,7 @@
       "race_no": 10,
       "start_time": "15:05",
       "confidence": "B",
-      "subjective_hit_rate": 0.1616,
+      "subjective_hit_rate": 0.2,
       "win_probabilities": {
         "1": 0.01,
         "2": 0.2,
@@ -387,18 +387,9 @@
       ],
       "bets": [
         {
-          "type": "馬連",
+          "type": "単勝",
           "horses": [
-            2,
-            8
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            2,
-            3
+            2
           ],
           "stake": 100
         }
@@ -635,7 +626,7 @@
       "race_no": 6,
       "start_time": "17:45",
       "confidence": "A",
-      "subjective_hit_rate": 0.1758,
+      "subjective_hit_rate": 0.1762,
       "win_probabilities": {
         "7": 0.24,
         "11": 0.16,
@@ -767,7 +758,7 @@
       "race_no": 7,
       "start_time": "18:15",
       "confidence": "B",
-      "subjective_hit_rate": 0.2943,
+      "subjective_hit_rate": 0.2936,
       "win_probabilities": {
         "6": 0.22,
         "7": 0.16,
