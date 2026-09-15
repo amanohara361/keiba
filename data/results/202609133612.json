@@ -1,0 +1,144 @@
+{
+  "race_id": "202609133612",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 5,
+      "name": "ヒロシクン",
+      "ninki": 1
+    },
+    {
+      "rank": 2,
+      "umaban": 6,
+      "name": "サクラトップキッド",
+      "ninki": 2
+    },
+    {
+      "rank": 3,
+      "umaban": 4,
+      "name": "ウインオーディン",
+      "ninki": 4
+    },
+    {
+      "rank": 4,
+      "umaban": 7,
+      "name": "ヴァトレニ",
+      "ninki": 7
+    },
+    {
+      "rank": 5,
+      "umaban": 1,
+      "name": "バトルバーリライ",
+      "ninki": 6
+    },
+    {
+      "rank": 6,
+      "umaban": 8,
+      "name": "リトルサムシング",
+      "ninki": 5
+    },
+    {
+      "rank": 7,
+      "umaban": 2,
+      "name": "ライアン",
+      "ninki": 3
+    },
+    {
+      "rank": 8,
+      "umaban": 3,
+      "name": "リュウノナポレオン",
+      "ninki": 8
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          5
+        ],
+        "yen": 130
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          5
+        ],
+        "yen": 100
+      },
+      {
+        "combination": [
+          6
+        ],
+        "yen": 120
+      },
+      {
+        "combination": [
+          4
+        ],
+        "yen": 170
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          5,
+          6
+        ],
+        "yen": 250
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          5,
+          6
+        ],
+        "yen": 300
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          5,
+          6
+        ],
+        "yen": 150
+      },
+      {
+        "combination": [
+          4,
+          5
+        ],
+        "yen": 260
+      },
+      {
+        "combination": [
+          4,
+          6
+        ],
+        "yen": 840
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          4,
+          5,
+          6
+        ],
+        "yen": 1380
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          5,
+          6,
+          4
+        ],
+        "yen": 3060
+      }
+    ]
+  }
+}
