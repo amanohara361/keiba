@@ -202,6 +202,35 @@ def test_軸を分散していれば一極集中とは数えない():
     assert review.honmei_only_wipeout(race, settlement, result) is False
 
 
+def test_単一3連複の本命一極集中は数える():
+    """2026-09-14 セントライト記念と同じ形。◎10着外、△6が2着・▲2が3着、
+    買い目は3連複2-5-10の1点。単勝ではないので除外しない。"""
+    race = make_race(
+        marks=[('◎', 10), ('○', 5), ('▲', 2), ('△', 6)],
+        bet_list=[('3連複', [2, 5, 10], 100)],
+    )
+    result = make_result([(1, 7), (2, 6), (3, 2)])
+    settlement = results_module.settle(race, result)
+    assert review.honmei_only_wipeout(race, settlement, result) is True
+
+
+def test_単一3連複でも本命が走っていれば一極集中とは数えない():
+    race = make_race(
+        marks=[('◎', 10), ('○', 5), ('▲', 2), ('△', 6)],
+        bet_list=[('3連複', [2, 5, 10], 100)],
+    )
+    result = make_result([(1, 10), (2, 7), (3, 9)])
+    settlement = results_module.settle(race, result)
+    assert review.honmei_only_wipeout(race, settlement, result) is False
+
+
+def test_買い目が無ければ一極集中も数えない():
+    race = make_race(marks=[('◎', 4)], bet_list=[])
+    result = make_result([(1, 11), (2, 2), (3, 9)])
+    settlement = results_module.settle(race, result)
+    assert review.honmei_only_wipeout(race, settlement, result) is False
+
+
 # ----------------------------------------------------------------------
 # 集計
 # ----------------------------------------------------------------------
