@@ -7,3 +7,6 @@ venv/
 *.log
 github_push_log.txt
 docs/history/
+
+# サブエージェントの一時ワークツリー（Claude Codeが自動生成・削除する）
+.claude/worktrees/
