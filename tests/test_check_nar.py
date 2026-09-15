@@ -75,6 +75,25 @@ def test_地方の買い目も実オッズから組み立てて検算する(monk
     assert not verdict.blocked
 
 
+def test_地方の検算記録にもwin_oddsとpriced_oddsが入る(monkeypatch):
+    """2026-09-15：中央だけでなく地方の経路（_nar_odds_for）でも、
+    Harville に通した市場勝率（単勝全頭）と、bet_builder が値付けした
+    全券種のオッズが verdict.to_dict() に残ることを確かめる。
+    """
+    monkeypatch.setattr(nar, 'race_data',
+                        lambda type_=nar.DAILY, day=None, opener=None:
+                        {'racelist': rows(RACELIST)})
+
+    now = datetime(2026, 8, 12, 13, 0, tzinfo=JST)
+    verdicts = check.review_sheet(_sheet(), now, nar_fetcher=lambda: rows(ODDS))
+
+    data = verdicts[0].to_dict()
+    assert data['win_odds'] == {'1': 3.0, '2': 5.0, '3': 9.0, '4': 20.0}
+    assert data['win_ninki'] == {'1': 1, '2': 2, '3': 3, '4': 4}
+    assert data['priced_odds'].get('馬連', {}).get('1-2') == 8.0
+    assert data['priced_odds'].get('馬連', {}).get('1-3') == 8.0
+
+
 def test_地方でオッズが未発売なら見送りになる(monkeypatch):
     """当日ファイルが空（発売前）のとき、無いオッズで買い目を捏造しない。"""
     monkeypatch.setattr(nar, 'race_data',

@@ -100,19 +100,33 @@ def _build_race_bets(race, tables, odds_for, win_table=None):
     形が違う（中央は券種ごとの表、地方は券種込みの1枚）ので、呼び出し側が
     _jra_odds_for / _nar_odds_for のどちらを渡すかで吸収する。
 
-    戻り値は bet_builder の説明文（その回だけの一時的な情報）。**race.note には
-    書かない。** race.note は朝タスクが書いた分析メモで、data/bets/ に永続化
-    される。ここに毎回追記すると、検算が走るたびに同じ説明文が積み重なって
-    無限に伸びる（2026-08-15、同じ「見送り」文言が3回連結される不具合で発覚）。
+    戻り値は (bet_builder の説明文, 値付け済みオッズ)。説明文は
+    その回だけの一時的な情報。**race.note には書かない。** race.note は
+    朝タスクが書いた分析メモで、data/bets/ に永続化される。ここに毎回追記
+    すると、検算が走るたびに同じ説明文が積み重なって無限に伸びる
+    （2026-08-15、同じ「見送り」文言が3回連結される不具合で発覚）。
+
+    値付け済みオッズは {券種: {"馬番-馬番": オッズ}}。bet_builder が
+    `_build_candidates` / `_axis_hedge` で lookup を呼ぶたびに、None でない
+    結果だけを貯める（2026-09-15、採用されなかった候補のオッズも
+    data/checks/ に残すため）。
     """
-    lookup = lambda bet_type, horses: odds_for(tables, horses, bet_type)  # noqa: E731
+    priced = {}
+
+    def lookup(bet_type, horses):
+        result = odds_for(tables, horses, bet_type)
+        if result is not None:
+            combo = '-'.join(str(h) for h in sorted(horses))
+            priced.setdefault(bet_type, {})[combo] = result
+        return result
+
     # win_table は {馬番: (単勝オッズ, 人気)}。bet_builder が Harville モデルで
     # 券種ごとの的中率を出すのに、出走全頭の勝率分布が要る（2026-08-26）。
     win_odds = {n: v[0] for n, v in (win_table or {}).items() if v and v[0]}
     confidence, built_bets, note = bet_builder.build_bets(race, lookup, win_odds)
     race.confidence = confidence
     race.bets = built_bets
-    return note
+    return note, priced
 
 
 def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
@@ -150,13 +164,14 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
             track = nar_data.conditions(race.race_id)
             tables = nar_data.raw_tables(race.race_id)
             win_table = nar_module.win_odds_table(tables, nar_data.ninki(race.race_id))
-            bet_note = _build_race_bets(race, tables, _nar_odds_for, win_table)
+            bet_note, priced_odds = _build_race_bets(race, tables, _nar_odds_for, win_table)
             bet_odds = [_nar_odds_for(tables, bet.horses, bet.type)
                         for bet in race.bets]
             meta = nar_data.meta(race.race_id)
             verdict = discipline.review_race(
                 race, bet_odds, win_table, meta, now, sheet.date, track, {})
             verdict.bet_note = bet_note
+            verdict.priced_odds = priced_odds
             verdicts.append(verdict)
             continue
 
@@ -180,12 +195,13 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
         # 組み合わせを試せるよう、買い目を先に決めずに券種の表だけ取る）。
         tables, meta = odds_module.fetch_tables(race.race_id, BUILD_BET_TYPES, fetcher)
         win_table = odds_module.win_odds_table(tables.get('単勝', {}))
-        bet_note = _build_race_bets(race, tables, _jra_odds_for, win_table)
+        bet_note, priced_odds = _build_race_bets(race, tables, _jra_odds_for, win_table)
         bet_odds = [_jra_odds_for(tables, bet.horses, bet.type)
                     for bet in race.bets]
         verdict = discipline.review_race(
             race, bet_odds, win_table, meta, now, sheet.date, track, forms)
         verdict.bet_note = bet_note
+        verdict.priced_odds = priced_odds
         verdicts.append(verdict)
     return verdicts
 

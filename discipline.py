@@ -390,6 +390,12 @@ class RaceVerdict:
         # 積み重なる不具合の修正）。既定 None は「bet_builder を経由して
         # いない」（発走済み・データ欠損など）ことを表す。
         self.bet_note = None
+        # bet_builder が候補として値付けした（Noneでないオッズが取れた）
+        # 全券種のオッズ。{券種: {"馬番-馬番": オッズ}}。買われなかった
+        # 候補も含む（2026-09-15、バックテストが「期待値側で落ちたか」を
+        # 再現できるようにするため）。bet_note と同じ理由で check.py が
+        # 代入する。既定は「bet_builder を経由していない」ことを表す空dict。
+        self.priced_odds = {}
 
     @property
     def blocked(self):
@@ -420,6 +426,13 @@ class RaceVerdict:
                 {'bet': str(bet), 'odds': odds}
                 for bet, odds in zip(self.race.bets, self.bet_odds)
             ],
+            # Harvilleモデルに通した市場勝率の元データ（出走全頭の単勝）。
+            # 2026-09-15、後日「あの時なぜ別の候補が落ちたか」を再現するために追加。
+            'win_odds': {str(n): v[0] for n, v in self.win_table.items() if v and v[0]},
+            'win_ninki': {str(n): v[1] for n, v in self.win_table.items() if v and v[1] is not None},
+            # bet_builder が評価した（Noneでないオッズが取れた）全候補のオッズ。
+            # 採用されたか否かに関わらず残す（同上）。
+            'priced_odds': self.priced_odds,
             'findings': [f.to_dict() for f in self.findings],
             'conditions': self.conditions,
             'odds_meta': self.meta,

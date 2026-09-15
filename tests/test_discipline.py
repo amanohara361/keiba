@@ -6,6 +6,7 @@
 同じ形が再発したら必ず落ちるように固定しておく。ネットワークには接続しない。
 """
 
+import json
 import os
 import sys
 from datetime import date, datetime
@@ -783,6 +784,97 @@ def test_clean_check_sends_a_short_one_line_email(tmp_path, monkeypatch):
 
     assert exit_code == check.EXIT_OK
     assert sent == ['直前検算 問題なし（14:30）']
+
+
+def test_検算記録にwin_oddsとpriced_oddsが残る(tmp_path, monkeypatch):
+    """2026-09-15：data/checks/ には**買った券**のオッズ（bet_odds）しか
+    残っておらず、後から「あの時なぜ別の候補が落ちたか」を再現できなかった
+    （バックテスト data/review/pair_coverage_2026-09-15.md が「期待値側で
+    落ちたかは要確認」で止まった原因）。
+
+    Harville に通す市場勝率（単勝全頭）と、bet_builder が値付けした
+    （採用の有無に関わらない）全券種のオッズを、検算記録に残すことを確かめる。
+    基準やロジックは変えていないので、既存の他のテストの結果は変わらない。
+    """
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+
+    bets.save_sheet(BetSheet(
+        date=date(2026, 8, 2),
+        races=[make_race(
+            race_id='202601020811',
+            name='クイーンステークス',
+            marks=marks_of(items=[('◎', 7), ('○', 11), ('△', 14)]),
+            bets=[],
+        )],
+    ))
+
+    def fake_fetch(race_id, bet_type):
+        tables = {
+            '単勝': {'07': ['2.9', '3.0', '1'], '11': ['5.0', '5.2', '2'],
+                   '14': ['9.0', '9.4', '3'], '02': ['20.0', '21.0', '4']},
+            '馬連': {'0711': ['11.2', '11.5', '3'], '0714': ['9.5', '9.8', '4']},
+            'ワイド': {'0711': ['3.3', '3.4', '1'], '0714': ['3.5', '3.6', '2'],
+                     '1114': ['8.0', '8.2', '3']},
+        }
+        return {'status': 'middle', 'reason': None,
+                'official_datetime': '14:28:00', 'odds': tables.get(bet_type, {})}
+
+    monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
+    monkeypatch.setattr(conditions_module, 'fetch',
+                        lambda rid, **kw: {'going': '良', 'weather': '晴',
+                                          'surface': '芝', 'distance': 1800})
+
+    exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30',
+                            '--no-email'])
+    assert exit_code == check.EXIT_OK
+
+    saved = json.loads((tmp_path / 'checks' / '2026-08-02.json').read_text(encoding='utf-8'))
+    race_record = saved[-1]['races'][0]
+
+    # (1) Harville に通す市場勝率＝出走全頭の単勝オッズ・人気
+    assert race_record['win_odds'] == {'7': 2.9, '11': 5.0, '14': 9.0, '2': 20.0}
+    assert race_record['win_ninki'] == {'7': 1, '11': 2, '14': 3, '2': 4}
+
+    # (2) 候補に挙がって採用されたか否かに関わらないワイドのオッズ
+    assert race_record['priced_odds']['ワイド']['7-11'] == 3.3
+    assert race_record['priced_odds']['ワイド']['7-14'] == 3.5
+
+
+def test_発走済みの検算記録はwin_oddsとpriced_oddsが空(tmp_path, monkeypatch, capsys):
+    """発走後は実オッズを取りに行かない（CLAUDE.md「オッズの情報源」）ので、
+    win_table も bet_builder への lookup も発生しない。記録される
+    win_odds・priced_odds が空のままであることを確かめる
+    （2026-08-14摂津盃の実例と同じ形。試験対象は追加した2キーのみ）。
+    """
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+
+    bets.save_sheet(BetSheet(
+        date=date(2026, 8, 14),
+        races=[make_race(
+            race_id='202608145011', name='第５８回 摂津盃３歳以上登録馬',
+            venue='園田', race_no=11, start_time='19:55', org='nar',
+            marks=marks_of(items=[('◎', 7), ('○', 8), ('▲', 3), ('△', 5), ('△', 12)]),
+            confidence='B', bets=[Bet('馬連', [7, 8])],
+            subjective_hit_rate=0.3,
+        )],
+    ))
+
+    import nar as nar_module
+    monkeypatch.setattr(nar_module, 'race_data',
+                        lambda type_=nar_module.DAILY, day=None, opener=None:
+                        {'racelist': []})
+
+    exit_code = check.main(['--date', '2026-08-14', '--now', '2026-08-14T20:23',
+                            '--no-email'])
+    assert exit_code == check.EXIT_OK
+
+    saved = json.loads((tmp_path / 'checks' / '2026-08-14.json').read_text(encoding='utf-8'))
+    race_record = saved[-1]['races'][0]
+    assert race_record['win_odds'] == {}
+    assert race_record['win_ninki'] == {}
+    assert race_record['priced_odds'] == {}
 
 
 def test_quiet_if_clean_suppresses_only_the_clean_email(tmp_path, monkeypatch, capsys):
