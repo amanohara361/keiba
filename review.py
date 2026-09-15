@@ -197,8 +197,20 @@ def honmei_only_wipeout(race, settlement, result):
 
     検証ノートの改訂候補として件数だけ数えておく。規律に足すかどうかは
     人が決めることなので、ここでは判定も警告もしない。
+
+    【2026-09-15 変更】以前は `len(race.bets) < 2` で単一買い目のレースを
+    丸ごと除外していたが、上の「単勝1点買いは数えない」根拠は単勝にしか
+    当てはまらない。bet_builderが実オッズで買い目を組む今の方式では、
+    3連複1点・ワイド1点になるのは合成オッズ・期待値という規律の結果で
+    あって、「軸を分散する選択が無かった」わけではない。そのため除外を
+    「単勝1点買いだけ」に絞った。2026-09-07エントリのパターン①4件のうち
+    3件（セプテンバーS・紫苑S・石川テレビ杯）と2026-09-14のセントライト
+    記念（3連複2-5-10の1点）が、実態は◎一極集中の全滅なのにこの条件で
+    数え漏れていた。
     """
-    if len(race.bets) < 2 or settlement['hit']:
+    if not race.bets or settlement['hit']:
+        return False
+    if len(race.bets) == 1 and race.bets[0].type == '単勝':
         return False
     honmei = set(race.horses_for('◎'))
     if not honmei:
