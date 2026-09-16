@@ -490,5 +490,33 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-16T21:33:42.497127+09:00",
+    "races": [
+      {
+        "race_id": "202609164411",
+        "name": "第６３回 東京記念３上オープン重賞",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第６３回 東京記念３上オープン重賞: 既に発走しています（発走 20:10 / 現在 21:33）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
