@@ -403,7 +403,7 @@ def format_verdict(verdict):
     return lines
 
 
-def format_report(sheet, verdicts, now):
+def format_report(sheet, verdicts, now, changed=()):
     blocked = [v for v in verdicts if v.blocked]
     warned = [v for v in verdicts if not v.blocked and v.warnings]
 
@@ -423,6 +423,8 @@ def format_report(sheet, verdicts, now):
         lines.append('   朝タスクが馬番ごとの主観勝率を書いていません。')
         lines.append('   規律による見送りではないので、書けば買い目が出ます。')
         lines.append('')
+    if changed:
+        lines.extend(_format_bet_changes(changed))
     if blocked:
         lines.append(f'■ 発注を止めたレース: {len(blocked)}件')
         for verdict in blocked:
@@ -450,6 +452,41 @@ def format_report(sheet, verdicts, now):
     return '\n'.join(lines)
 
 
+def _detect_bet_changes(verdicts, previous):
+    """前回の直前検算から、レースごとの買い目が変わったかを調べる。
+
+    比較対象は**同日内の前回の検算結果**（`data/checks/<date>.json`の直近
+    1件）であって、朝タスクが書いた買い目欄（常に空）ではない。オッズが
+    動いてbet_builderの選ぶ候補が変わることがあり、2026-09-16に実際に
+    起きたのに「問題なし」メールが変化に触れなかった（ユーザー指摘）。
+    前回の記録に無いレース（その日の最初の検算・新規追加分）は比較の
+    しようがないので対象外。
+    """
+    if not previous:
+        return []
+    prev_bets = {r['race_id']: {b['bet'] for b in r.get('bet_odds', [])}
+                 for r in previous.get('races', [])}
+    changed = []
+    for v in verdicts:
+        if v.race.race_id not in prev_bets:
+            continue
+        old = prev_bets[v.race.race_id]
+        new = {str(b) for b in v.race.bets}
+        if old != new:
+            changed.append((v.race.name, sorted(old), sorted(new)))
+    return changed
+
+
+def _format_bet_changes(changed):
+    lines = [f'◆ 買い目が変わったレース: {len(changed)}件']
+    for name, old, new in changed:
+        old_label = '／'.join(old) if old else '見送り'
+        new_label = '／'.join(new) if new else '見送り'
+        lines.append(f'   ・{name}：{old_label} → {new_label}')
+    lines.append('')
+    return lines
+
+
 def _all_races_already_started(verdicts):
     """対象日の全レースが発走済みで、今日はもう確認できる対象が無いか。
 
@@ -461,7 +498,7 @@ def _all_races_already_started(verdicts):
     return bool(verdicts) and all(v.meta.get('skipped') for v in verdicts)
 
 
-def format_clean_summary(verdicts, now):
+def format_clean_summary(verdicts, now, changed=()):
     """規律クリア時に送る1行サマリ（フルレポートは docs/index.html を見てもらう）。"""
     parts = []
     for verdict in verdicts:
@@ -473,7 +510,11 @@ def format_clean_summary(verdicts, now):
             piece += '）'
         parts.append(piece)
     races = '／'.join(parts) if parts else '対象レースなし'
-    return f'{now:%H:%M} 直前検算 問題なし：{races}'
+    lines = [f'{now:%H:%M} 直前検算 問題なし：{races}']
+    if changed:
+        lines.append('')
+        lines.extend(_format_bet_changes(changed))
+    return '\n'.join(lines)
 
 
 def write_job_summary(body):
@@ -523,7 +564,10 @@ def main(argv=None):
                 else EXIT_ERROR)
 
     verdicts = review_sheet(sheet, now)
-    body = format_report(sheet, verdicts, now)
+    # 上書きされる前の「前回の検算結果」を読み、買い目が変わったレースを探す。
+    previous = bets.load_last_check(day)
+    changed = _detect_bet_changes(verdicts, previous)
+    body = format_report(sheet, verdicts, now, changed)
     print(body)
     write_job_summary(body)
 
@@ -561,7 +605,7 @@ def main(argv=None):
             subject = f'【要確認】朝タスクの入力が欠けています（{missing}件）'
             if not deliver(mailer, subject, body):
                 return EXIT_ERROR
-        elif args.quiet_if_clean or _all_races_already_started(verdicts):
+        elif (args.quiet_if_clean or _all_races_already_started(verdicts)) and not changed:
             # 黙らせるのは2パターン。
             # (1) --quiet-if-clean（push起因、2026-09-05）: data/bets/への
             #     pushのたびに走るので、そのたびに「問題なし」を送ると同じ
@@ -574,6 +618,10 @@ def main(argv=None):
             #     クリアの区別という元々の目的（2026-08-13）を果たさない。
             # 発注を止めた／入力欠落は上のブロックで通常どおり即時に送って
             # いるので、ここを黙らせても実害の見落としにはならない。
+            # **買い目が変わった回は黙らせない**（2026-09-16）。黙らせる
+            # 前提は「同じ問題なしの繰り返し」であって、買い目が変わったのは
+            # 繰り返しではなく新しい情報。(2)は発走済みレースを組み直さない
+            # ためchangedは常に空だが、(1)ではpush起因でも変化を伝える。
             print(format_clean_summary(verdicts, now))
         else:
             # 「問題なし」を完全に無音にすると、メールが来ないことが
@@ -582,9 +630,12 @@ def main(argv=None):
             # 遅れる仕様と重なって「壊れてるのでは」と誤認させた）。
             # フルレポートは重いので、1行サマリだけ毎回送る。
             # ここを通るのは、まだ何かしら今日中に確認できる対象が残っている
-            # 定時実行だけなので、上の2パターンとは違って積み重ならない。
-            subject = f'直前検算 問題なし（{now:%H:%M}）'
-            if not deliver(mailer, subject, format_clean_summary(verdicts, now)):
+            # 定時実行、または買い目が変わった回（quiet設定でも送る）。
+            if changed:
+                subject = f'直前検算 買い目変更あり（{now:%H:%M}）'
+            else:
+                subject = f'直前検算 問題なし（{now:%H:%M}）'
+            if not deliver(mailer, subject, format_clean_summary(verdicts, now, changed)):
                 return EXIT_ERROR
 
     if any(v.blocked for v in verdicts) or missing:
