@@ -786,6 +786,159 @@ def test_clean_check_sends_a_short_one_line_email(tmp_path, monkeypatch):
     assert sent == ['直前検算 問題なし（14:30）']
 
 
+# ----------------------------------------------------------------------
+# 買い目の変化を知らせる（2026-09-16のユーザー指摘）
+# ----------------------------------------------------------------------
+
+def test_買い目の変化を検出する():
+    class FakeRace:
+        def __init__(self, race_id, name, bets_list):
+            self.race_id = race_id
+            self.name = name
+            self.bets = bets_list
+
+    class FakeVerdict:
+        def __init__(self, race):
+            self.race = race
+
+    previous = {'races': [
+        {'race_id': '111', 'bet_odds': [{'bet': '馬連 1-2', 'odds': 5.0}]},
+        {'race_id': '222', 'bet_odds': [{'bet': 'ワイド 3-4', 'odds': 8.0}]},
+    ]}
+    verdicts = [
+        FakeVerdict(FakeRace('111', 'レースA', [Bet('馬連', [1, 3])])),   # 変わった
+        FakeVerdict(FakeRace('222', 'レースB', [Bet('ワイド', [3, 4])])),  # 変わっていない
+        FakeVerdict(FakeRace('333', 'レースC', [Bet('単勝', [9])])),       # 前回の記録が無い＝対象外
+    ]
+
+    changed = check._detect_bet_changes(verdicts, previous)
+
+    assert len(changed) == 1
+    name, old, new = changed[0]
+    assert name == 'レースA'
+    assert old == ['馬連 1-2']
+    assert new == ['馬連 1-3']
+
+
+def test_前回の記録が無ければ変化なし扱い():
+    assert check._detect_bet_changes([object()], None) == []
+    assert check._detect_bet_changes([object()], {}) == []
+
+
+def test_見送りへの変化も検出する():
+    class FakeRace:
+        race_id = '111'
+        name = 'レースD'
+        bets = []
+
+    class FakeVerdict:
+        race = FakeRace()
+
+    previous = {'races': [{'race_id': '111',
+                           'bet_odds': [{'bet': '馬連 1-2', 'odds': 5.0}]}]}
+    changed = check._detect_bet_changes([FakeVerdict()], previous)
+
+    assert changed == [('レースD', ['馬連 1-2'], [])]
+
+
+def test_買い目が変わった回はquietでも通常メールで知らせる(tmp_path, monkeypatch):
+    """--quiet-if-cleanが付いていても、買い目が変わったのは繰り返しではなく
+    新しい情報なので黙らせない（2026-09-16、「今日買い目が変わったのに
+    メールは問題なしとしか言わなかった」という指摘への対応）。
+    """
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+
+    sent = []
+    monkeypatch.setattr(check.Mailer, 'is_configured', lambda self: True)
+    monkeypatch.setattr(check.Mailer, 'send',
+                        lambda self, subject, body: sent.append((subject, body)) or True)
+
+    bets.save_sheet(BetSheet(
+        date=date(2026, 8, 2),
+        races=[make_race(
+            name='クイーンステークス',
+            marks=marks_of(items=[('◎', 7), ('○', 11), ('△', 14)]),
+            bets=[Bet('馬連', [7, 11]), Bet('ワイド', [7, 14])],
+            subjective_hit_rate=0.35,
+        )],
+    ))
+
+    def fake_fetch(race_id, bet_type):
+        tables = {
+            '単勝': {'07': ['2.9', '3.0', '1'], '11': ['5.0', '5.2', '2'],
+                   '14': ['9.0', '9.4', '3'], '02': ['20.0', '21.0', '4']},
+            '馬連': {'0711': ['11.2', '11.5', '3']},
+            'ワイド': {'0714': ['9.0', '9.4', '4']},
+        }
+        return {'status': 'middle', 'reason': None,
+                'official_datetime': '14:28:00', 'odds': tables.get(bet_type, {})}
+
+    monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
+    monkeypatch.setattr(conditions_module, 'fetch',
+                        lambda rid, **kw: {'going': '良', 'weather': '晴',
+                                          'surface': '芝', 'distance': 1800})
+    # 前回の検算では別の買い目だったことにする（実際にどの候補が選ばれるかに
+    # 依存せず「変わった」を確実に起こすため、あり得ない組み合わせにしておく）。
+    monkeypatch.setattr(
+        bets, 'load_last_check',
+        lambda day: {'races': [{'race_id': '202601020811',
+                                'bet_odds': [{'bet': '馬連 1-2', 'odds': 5.0}]}]})
+
+    exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30',
+                            '--no-save', '--quiet-if-clean'])
+
+    assert exit_code == check.EXIT_OK
+    assert len(sent) == 1
+    subject, body = sent[0]
+    assert subject == '直前検算 買い目変更あり（14:30）'
+    assert '◆ 買い目が変わったレース: 1件' in body
+    assert '馬連 1-2' in body   # 旧
+
+
+def test_買い目が変わらなければquietのまま(tmp_path, monkeypatch):
+    """前回と同じ買い目なら、quiet-if-cleanは従来どおり黙る。"""
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+
+    sent = []
+    monkeypatch.setattr(check.Mailer, 'is_configured', lambda self: True)
+    monkeypatch.setattr(check.Mailer, 'send',
+                        lambda self, subject, body: sent.append(subject) or True)
+
+    bets.save_sheet(BetSheet(
+        date=date(2026, 8, 2),
+        races=[make_race(
+            name='クイーンステークス',
+            marks=marks_of(items=[('◎', 7), ('○', 11), ('△', 14)]),
+            bets=[Bet('馬連', [7, 11]), Bet('ワイド', [7, 14])],
+            subjective_hit_rate=0.35,
+        )],
+    ))
+
+    def fake_fetch(race_id, bet_type):
+        tables = {
+            '単勝': {'07': ['2.9', '3.0', '1'], '11': ['5.0', '5.2', '2'],
+                   '14': ['9.0', '9.4', '3'], '02': ['20.0', '21.0', '4']},
+            '馬連': {'0711': ['11.2', '11.5', '3']},
+            'ワイド': {'0714': ['9.0', '9.4', '4']},
+        }
+        return {'status': 'middle', 'reason': None,
+                'official_datetime': '14:28:00', 'odds': tables.get(bet_type, {})}
+
+    monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
+    monkeypatch.setattr(conditions_module, 'fetch',
+                        lambda rid, **kw: {'going': '良', 'weather': '晴',
+                                          'surface': '芝', 'distance': 1800})
+    monkeypatch.setattr(bets, 'load_last_check', lambda day: None)
+
+    exit_code = check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30',
+                            '--no-save', '--quiet-if-clean'])
+
+    assert exit_code == check.EXIT_OK
+    assert sent == []
+
+
 def test_検算記録にwin_oddsとpriced_oddsが残る(tmp_path, monkeypatch):
     """2026-09-15：data/checks/ には**買った券**のオッズ（bet_odds）しか
     残っておらず、後から「あの時なぜ別の候補が落ちたか」を再現できなかった

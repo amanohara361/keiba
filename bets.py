@@ -360,3 +360,19 @@ def save_check_result(day, payload):
         json.dump(history, f, ensure_ascii=False, indent=2)
         f.write('\n')
     return path
+
+
+def load_last_check(day):
+    """当日の直前検算のうち直近1回分を返す（記録が無ければNone）。
+
+    直前検算は1日に複数回走る。その回のあいだで買い目が変わったかを
+    比較するために、new_checkが上書きする前の「前回の記録」を読む
+    （2026-09-16、買い目が変わったのにメールが「問題なし」としか
+    言わなかった件への対応）。
+    """
+    path = os.path.join(CHECKS_DIR, f'{day.isoformat()}.json')
+    if not os.path.exists(path):
+        return None
+    with open(path, encoding='utf-8') as f:
+        history = json.load(f)
+    return history[-1] if history else None
