@@ -54,6 +54,22 @@
     python3 calibration_check.py
     python3 calibration_check.py --since 2026-09-01 --until 2026-09-30
     python3 calibration_check.py --cap 1.5 --out data/review/calibration_2026-10-15.md
+
+## 指標D（2026-09-17 追加）
+
+上の指標B・Cは**馬番単位**の上限案（2026-08-26提示）を測るものだったが、
+その結果「馬番単位に上限をかけてもセット単位の乖離は1.76→1.45倍までしか
+下がらない」と分かり、案は見送られた。差し替えとして出ているのが
+**セット単位の上限案**（検証ノート「2026-09-17提示：セット的中率の市場からの
+乖離に上限を設ける」）で、`hit_rate = min(主観hit_rate, 市場のみhit_rate * CAP)`
+と、増幅が起きた**後**の数字そのものを頭打ちにする。その CAP をいくつに
+すべきかの判断材料が指標D。
+
+    python3 calibration_check.py --report set-cap
+
+**この分析も基準とロジックを一切変えない。** `bet_builder` の関数を
+そのまま呼んで数字を出すだけで、`bet_builder.py`・`discipline.py`・
+`予想メソッド.md` には触らない。CAP の値も決めない（ユーザーが決める）。
 """
 
 import argparse
@@ -83,10 +99,14 @@ WIN_ODDS_LOGGED_FROM = date(2026, 9, 16)
 # 改訂案が提示している上限（承認も却下もされていない暫定値）。
 DEFAULT_CAP = 1.3
 
+# 指標D（セット単位の上限案）で試す倍率。**どれも候補であって推奨値ではない。**
+SET_CAP_GRID = (1.3, 1.5, 1.8, 2.0, 2.5, 3.0)
+
 # 2026-08-26 の実測値。今回の数字と並べるためだけに置く。
 BASELINE = {'subjective': 0.289, 'market': 0.136, 'actual': 0.071, 'ratio': 2.13}
 
 DEFAULT_OUTPUT = os.path.join('data', 'review', 'calibration_2026-09-17.md')
+SET_CAP_OUTPUT = os.path.join('data', 'review', 'calibration_set_cap_2026-09-17.md')
 
 # 期間の区切り。(開始日, 終了日の翌日, ラベル)。
 PERIODS = [
@@ -660,6 +680,291 @@ def render_cap_impact(rows, cap):
 
 
 # ----------------------------------------------------------------------
+# 指標D：セット単位の上限（2026-09-17提示の改訂案）
+# ----------------------------------------------------------------------
+
+def distributions(row):
+    """1レース分の (市場のみ勝率, 主観込み勝率, 有効な上書き) を作る。
+
+    `bet_builder.build_bets` と同じ手順（出走表に無い馬番を落としてから
+    `apply_subjective`）。使えない行は None を返す。
+    """
+    if not row['win_odds']:
+        return None
+    market = bet_builder.market_win_probabilities(row['win_odds'])
+    if not market:
+        return None
+    overrides = {k: v for k, v in row['race'].win_probabilities.items()
+                 if k in market}
+    return market, bet_builder.apply_subjective(market, overrides), overrides
+
+
+def empty_override_matches_market(rows):
+    """懸念点3の確認：`apply_subjective(market, {})` は素の `market` と一致するか。
+
+    改訂案は市場側の的中率を「`win_probabilities` の上書きを一切使わない」
+    分布で計算すると書いているが、`apply_subjective` には「上書きで削った分を
+    上書きの無い馬へ按分する」処理があるため、素の `market` を使ってよいかを
+    **実データで確かめてから**使う（推測で進めない）。
+
+    戻り値: {'checked': 件数, 'mismatch': [ずれた行の説明, ...], 'max_diff': 最大差}
+    """
+    checked, mismatch, max_diff = 0, [], 0.0
+    for row in rows:
+        if not row['win_odds']:
+            continue
+        market = bet_builder.market_win_probabilities(row['win_odds'])
+        if not market:
+            continue
+        checked += 1
+        empty = bet_builder.apply_subjective(market, {})
+        if set(empty) != set(market):
+            mismatch.append(f"{row['day'].isoformat()} {row['name']}（馬番の集合が違う）")
+            continue
+        diff = max(abs(empty[k] - market[k]) for k in market)
+        max_diff = max(max_diff, diff)
+        if diff > 0:
+            mismatch.append(f"{row['day'].isoformat()} {row['name']}（最大差 {diff:.3e}）")
+    return {'checked': checked, 'mismatch': mismatch, 'max_diff': max_diff}
+
+
+def apply_set_cap(hit_subjective, hit_market, cap):
+    """セット単位の上限：主観の的中率を「市場のみの的中率 × CAP」で頭打ちにする。
+
+    改訂案の `hit_rate = min(主観hit_rate, 市場のみhit_rate * CAP)` そのもの。
+    市場側が出せない（0 や None）ときは頭打ちにしない（下げる根拠が無い）。
+    """
+    if not hit_market:
+        return hit_subjective
+    return min(hit_subjective, hit_market * cap)
+
+
+def set_cap_rows(rows):
+    """採用された買い目セットごとに、主観／市場のみ のセット的中率と比を出す。
+
+    指標Aが「市場推定 ＝ 払戻率 ÷ その点のオッズ」で市場側を作るのに対し、
+    ここは**改訂案が実装で使う経路と同じ**、単勝オッズ由来の市場勝率を
+    `p_trio` 等（実体は `set_hit_rate` と同じ Harville の総当たり）に
+    通して市場側を作る。両方を並べて突き合わせられるようにしてある。
+    """
+    out = []
+    for row in rows:
+        if not row['has_wp'] or not row['legs'] or not row['composite']:
+            continue
+        dist = distributions(row)
+        if dist is None:
+            continue
+        market, p, overrides = dist
+        if not overrides:
+            continue
+        horses = {h for _t, combo in row['legs'] for h in combo}
+        if not horses <= set(market):
+            continue
+        hit_s = set_hit_rate(p, row['legs'])
+        hit_m = set_hit_rate(market, row['legs'])
+        if not hit_m:
+            continue
+        entry = dict(row,
+                     hit_subjective=hit_s,
+                     hit_market=hit_m,
+                     ratio=hit_s / hit_m,
+                     recorded_hit=row['subjective_hit_rate'],
+                     market_hit_from_odds=market_hit_rate(row['legs'], row['odds']),
+                     ev_subjective=row['composite'] * hit_s,
+                     hit=None, staked=0, returned=0)
+        result = review.cached_result(row['race'].race_id)
+        if row['settled'] and result and row['race'].bets:
+            settled = results_module.settle(row['race'], result)
+            entry.update(hit=settled['hit'], staked=settled['staked'],
+                         returned=settled['returned'])
+        out.append(entry)
+    return out
+
+
+def cap_sweep(set_rows, caps):
+    """CAP ごとに、抵触件数・期待値クリア件数・投資回収の変化をまとめる。
+
+    投資回収は**結果確定済みのレースだけ**で、「上限後の期待値が
+    `discipline.MIN_EXPECTED_VALUE` を割ったレースは買わなかったことにする」
+    という置き方をする。買い目そのものは差し替えていないので、的中したレースが
+    残っていればその払戻もそのまま残る。
+    """
+    settled = [r for r in set_rows if r['settled'] and r['staked']]
+    out = []
+    for cap in caps:
+        bound = kept = dropped = 0
+        strong = 0
+        staked = returned = hits = 0
+        ratios = []
+        for r in set_rows:
+            capped = apply_set_cap(r['hit_subjective'], r['hit_market'], cap)
+            if capped < r['hit_subjective'] - 1e-12:
+                bound += 1
+            ratios.append(capped / r['hit_market'])
+        for r in settled:
+            capped = apply_set_cap(r['hit_subjective'], r['hit_market'], cap)
+            ev = r['composite'] * capped
+            if ev >= discipline.MIN_EXPECTED_VALUE:
+                kept += 1
+                staked += r['staked']
+                returned += r['returned']
+                hits += 1 if r['hit'] else 0
+                if ev >= bet_builder.STRONG_EXPECTED_VALUE:
+                    strong += 1
+            else:
+                dropped += 1
+        out.append({'cap': cap, 'bound': bound, 'kept': kept, 'dropped': dropped,
+                    'strong': strong, 'staked': staked, 'returned': returned,
+                    'hits': hits, 'ratio': describe(ratios)})
+    return out
+
+
+def baseline_sweep(set_rows):
+    """上限なし（現状）の同じ集計。CAP の表と同じ形で並べるため。"""
+    settled = [r for r in set_rows if r['settled'] and r['staked']]
+    kept = [r for r in settled
+            if r['ev_subjective'] >= discipline.MIN_EXPECTED_VALUE]
+    return {'cap': None, 'bound': 0, 'kept': len(kept),
+            'dropped': len(settled) - len(kept),
+            'strong': sum(1 for r in kept
+                          if r['ev_subjective'] >= bet_builder.STRONG_EXPECTED_VALUE),
+            'staked': sum(r['staked'] for r in kept),
+            'returned': sum(r['returned'] for r in kept),
+            'hits': sum(1 for r in kept if r['hit']),
+            'ratio': describe([r['ratio'] for r in set_rows])}
+
+
+# ----------------------------------------------------------------------
+# 指標D-2：候補の入れ替わり（懸念点4）
+# ----------------------------------------------------------------------
+
+def priced_odds_records(since, until):
+    """`data/checks` から、候補を組み直せる記録だけを {日付: {race_id: 記録}} で返す。
+
+    候補の再構成には「bet_builder が実際に値付けできた全組み合わせのオッズ」
+    （`priced_odds`）と `win_odds` の両方が要る。どちらも PR #57
+    （2026-09-16 マージ）以降の記録にしか無いので、それ以前は再構成できない。
+    """
+    out = {}
+    if not os.path.isdir(bets.CHECKS_DIR):
+        return out
+    for name in sorted(os.listdir(bets.CHECKS_DIR)):
+        stem, ext = os.path.splitext(name)
+        if ext != '.json':
+            continue
+        try:
+            day = date.fromisoformat(stem)
+        except ValueError:
+            continue
+        if not (since <= day <= until):
+            continue
+        with open(os.path.join(bets.CHECKS_DIR, name), encoding='utf-8') as f:
+            history = json.load(f)
+        per_race = {}
+        for entry in history:
+            for race in entry.get('races', []):
+                if race.get('priced_odds') and race.get('win_odds') and race.get('bet_odds'):
+                    per_race[str(race.get('race_id'))] = race
+        if per_race:
+            out[day] = per_race
+    return out
+
+
+def priced_lookup(priced_odds):
+    """`priced_odds` を bet_builder が使う lookup 関数の形に戻す。
+
+    `check._build_race_bets` が記録するときと同じキー（券種と、昇順の馬番を
+    `-` でつないだ文字列）。値付けできなかった組み合わせは記録に残らないので、
+    この lookup も None を返す＝当時と同じ候補集合になる。
+    """
+    def lookup(bet_type, horses):
+        key = '-'.join(str(h) for h in sorted(horses))
+        return (priced_odds.get(bet_type) or {}).get(key)
+    return lookup
+
+
+def candidate_legs(candidate):
+    return [(candidate.bet_type, combo) for combo in candidate.combos]
+
+
+def _legs_key(legs):
+    """買い目セットを比較できる形（券種＋昇順の馬番）に正規化する。"""
+    return sorted((t, tuple(sorted(h))) for t, h in legs)
+
+
+def choose(candidates, rate_of):
+    """`build_bets` と同じ選び方：規律を満たす候補のうち的中率最大。
+
+    rate_of(candidate) -> 判定と選定に使う的中率。上限をかけた値を渡せば
+    「上限後の数字で選び直したらどうなるか」が出る（改訂案は判定と選定に
+    同じ数字を使うと明記している）。
+    """
+    ok = []
+    for c in candidates:
+        rate = rate_of(c)
+        ev = (c.composite * rate) if c.composite else None
+        if (c.composite is not None
+                and c.composite >= discipline.MIN_COMPOSITE_ODDS
+                and ev is not None
+                and ev >= discipline.MIN_EXPECTED_VALUE):
+            ok.append((c, rate, ev))
+    if not ok:
+        return None
+    return max(ok, key=lambda t: (t[1], t[2]))
+
+
+def rerank_rows(since, until, caps):
+    """`priced_odds` が残っているレースで、上限をかけると選ぶ候補が変わるかを見る。"""
+    records = priced_odds_records(since, until)
+    out = []
+    for day in sorted(records):
+        sheet = bets.load_sheet(day)
+        if not sheet:
+            continue
+        for race in sheet.races:
+            record = records[day].get(race.race_id)
+            if not record:
+                continue
+            win_odds = {int(k): float(v) for k, v in (record.get('win_odds') or {}).items()}
+            market = bet_builder.market_win_probabilities(win_odds)
+            axis_horses = race.horses_for('◎')
+            if not market or not axis_horses or axis_horses[0] not in market:
+                continue
+            axis = axis_horses[0]
+            overrides = {k: v for k, v in race.win_probabilities.items() if k in market}
+            if not overrides:
+                continue
+            p = bet_builder.apply_subjective(market, overrides)
+            pool = [q for q in race.partner_pool if q in p]
+            if not pool:
+                continue
+            candidates = bet_builder._build_candidates(
+                axis, pool, set(race.marked_horses), p, priced_lookup(record['priced_odds']))
+            if not candidates:
+                continue
+            market_rate = {id(c): set_hit_rate(market, candidate_legs(c))
+                           for c in candidates}
+            base = choose(candidates, lambda c: c.hit_rate)
+            recorded, _odds = parse_legs(record.get('bet_odds', []))
+            picks = {}
+            for cap in caps:
+                picks[cap] = choose(
+                    candidates,
+                    lambda c, cap=cap: apply_set_cap(c.hit_rate, market_rate[id(c)], cap))
+            out.append({
+                'day': day, 'name': race.name, 'org': race.org,
+                'candidates': len(candidates),
+                'base': base, 'picks': picks, 'market_rate': market_rate,
+                'recorded': recorded,
+                'reproduced': bool(base) and _legs_key(candidate_legs(base[0])) == _legs_key(recorded),
+                'extra_legs': ([] if not base else
+                               [leg for leg in recorded
+                                if _legs_key([leg])[0] not in _legs_key(candidate_legs(base[0]))]),
+            })
+    return out
+
+
+# ----------------------------------------------------------------------
 # 棚卸しの出力
 # ----------------------------------------------------------------------
 
@@ -715,6 +1020,415 @@ def render_inventory(rows, since, until):
 
 
 # ----------------------------------------------------------------------
+
+def render_market_baseline(check):
+    out = ['## 0　前提の確認：市場側の分布に素の `market` を使ってよいか（懸念点3）', '']
+    out.append('改訂案は市場側の的中率を「`win_probabilities` の上書きを一切'
+               '使わない分布」で計算すると書いているが、`bet_builder.apply_subjective`'
+               'には**上書きで削った確率を上書きの無い馬へ按分する**処理があるため、'
+               '素の `market` と `apply_subjective(market, {})` が一致するかを'
+               '先に確かめた（一致しないなら、どちらを市場側の基準にするかを'
+               '決めないと進めない）。')
+    out.append('')
+    if not check['checked']:
+        out.append('**確認できていない。** 単勝オッズを復元できるレースが無い。')
+        out.append('')
+        return out
+    if check['mismatch']:
+        out.append(f"**一致しなかった。** {check['checked']}レース中"
+                   f"{len(check['mismatch'])}レースでずれる（最大差 "
+                   f"{check['max_diff']:.3e}）。市場側の基準をどちらにするかは"
+                   f"**要確認**。")
+        for line in check['mismatch'][:10]:
+            out.append(f'- {line}')
+    else:
+        out.append(f"**一致した。** 実データ{check['checked']}レース全部で、"
+                   f"`apply_subjective(market, {{}})` は素の `market` と"
+                   f"完全に同じ値を返した（差 0）。実装も"
+                   f"「`if not overrides: return dict(market)`」と先頭で"
+                   f"素通しになっており、按分は上書きが1つ以上あるときしか"
+                   f"起きない。**以降、市場側は素の `market` を使う。**")
+    out.append('')
+    return out
+
+
+def render_set_cap_inventory(all_rows, used, since, until):
+    out = ['## 1　対象にできたレース（除外は推測で埋めていない）', '']
+    no_wp = [r for r in all_rows if not r['has_wp']]
+    no_odds = [r for r in all_rows if r['has_wp'] and not r['win_odds']]
+    rest = [r for r in all_rows if r['has_wp'] and r['win_odds']]
+    keys = {(r['day'], r['race'].race_id) for r in used}
+    no_bets = [r for r in rest if (r['day'], r['race'].race_id) not in keys]
+    out.append(f'対象期間 {since.isoformat()}〜{until.isoformat()}、'
+               f'買い目ファイルのあるレース **{len(all_rows)}件**。')
+    out.append('')
+    out.append('| 区分 | 件数 |')
+    out.append('|---|---|')
+    out.append(f'| `win_probabilities` が無い（{WIN_PROB_START.isoformat()} より前の'
+               f'旧方式。主観と市場を分けて計算できない） | {len(no_wp)} |')
+    out.append(f'| 単勝オッズを復元できない（地方でカードに `odds` が無く、'
+               f'`data/checks` の `win_odds` は {WIN_ODDS_LOGGED_FROM.isoformat()} '
+               f'以降のみ） | {len(no_odds)} |')
+    out.append(f'| 採用された買い目が無い／発走前オッズの記録が無い（見送り等） '
+               f'| {len(no_bets)} |')
+    out.append(f'| **指標Dの対象** | **{len(used)}** |')
+    out.append('')
+    settled = [r for r in used if r['settled']]
+    counts = {}
+    for r in used:
+        key = (r['org'].upper(), r['source'], '確定' if r['settled'] else '未確定')
+        counts[key] = counts.get(key, 0) + 1
+    source_label = {'checks': '`data/checks` の本物のオッズ',
+                    'cards': '朝のカードの代理オッズ'}
+    out.append(f'対象{len(used)}件の内訳（結果確定済み {len(settled)}件）：'
+               + '／'.join(f'{org}・{source_label.get(src, src)}・{state} {n}件'
+                          for (org, src, state), n in sorted(counts.items()))
+               + '。')
+    out.append('')
+    return out
+
+
+def render_set_cap_rows(rows):
+    out = ['## 2　指標D　セット単位の乖離（主観 ÷ 市場のみ）', '']
+    if not rows:
+        out.append('**データ不足。** 対象にできるレースがありません。')
+        out.append('')
+        return out
+    settled = [r for r in rows if r['settled']]
+    pending = [r for r in rows if not r['settled']]
+    out.append(f'対象 **{len(rows)}レース**（結果確定済み {len(settled)}、'
+               f'未確定 {len(pending)}）。実際に採用された買い目セットについて、'
+               f'`bet_builder` と同じ Harville の総当たりで、'
+               f'(a) 主観込みの勝率分布 `apply_subjective(market, overrides)`、'
+               f'(b) 市場のみの勝率分布 `market` の両方でセット的中率を出し、'
+               f'その比を取ったもの。**(a) が `Candidate.hit_rate` そのもの、'
+               f'(b) が改訂案の「市場のみ hit_rate」そのもの。**')
+    out.append('')
+    out.append('| 日付 | レース | 主催 | 券種・点数 | 合成 | 主観 hit | 市場のみ hit | '
+               '比 | 期待値（現状） | 結果 |')
+    out.append('|---|---|---|---|---|---|---|---|---|---|')
+    for r in sorted(rows, key=lambda r: (r['day'], r['name'])):
+        kinds = sorted({t for t, _h in r['legs']})
+        outcome = '—' if not r['settled'] else ('的中' if r['hit'] else '外れ')
+        out.append(f"| {r['day'].isoformat()} | {r['name']} | {r['org'].upper()} | "
+                   f"{'/'.join(kinds)}{len(r['legs'])}点 | {r['composite']:.2f} | "
+                   f"{r['hit_subjective'] * 100:.1f}% | {r['hit_market'] * 100:.1f}% | "
+                   f"**{r['ratio']:.2f}** | {r['ev_subjective']:.2f} | {outcome} |")
+    out.append('')
+    for label, sub in [('結果確定済み', settled), ('未確定', pending)]:
+        if sub:
+            st = describe([r['ratio'] for r in sub])
+            note = '（参考値・件数僅少）' if len(sub) < 10 else ''
+            out.append(f'- **{label} {len(sub)}レース{note}**：比の平均 '
+                       f'**{st["mean"]:.2f}倍**・中央値 {st["median"]:.2f}倍'
+                       f'（{st["min"]:.2f}〜{st["max"]:.2f}倍）。')
+    allst = describe([r['ratio'] for r in rows])
+    out.append(f'- **全体 {len(rows)}レース**：平均 **{allst["mean"]:.2f}倍**・'
+               f'中央値 {allst["median"]:.2f}倍（{allst["min"]:.2f}〜{allst["max"]:.2f}倍）。')
+    out.append('')
+    return out
+
+
+def render_consistency(rows):
+    out = ['### 指標Aとの整合（別経路で出した同じ「セット単位の乖離」）', '']
+    pairs = [(r, r['market_hit_from_odds']) for r in rows if r['market_hit_from_odds']]
+    if not pairs:
+        out.append('**確認できない。** 指標Aの市場推定を出せる行がありません。')
+        out.append('')
+        return out
+    out.append('指標Aは市場側を「払戻率 ÷ その点の発走前オッズ」の合算で作り、'
+               '指標Dは単勝オッズ由来の市場勝率を Harville に通して作る。'
+               '**同じものを別の経路で測っている**ので、近い数字が出なければ'
+                'どちらかの取り方を疑う必要がある。')
+    out.append('')
+    ratio_a = [r['recorded_hit'] / m for r, m in pairs if r['recorded_hit']]
+    ratio_d = [r['ratio'] for r, _m in pairs]
+    market_gap = [r['hit_market'] / m for r, m in pairs]
+    sa, sd = describe(ratio_a), describe(ratio_d)
+    sg = describe(market_gap)
+    out.append('| 指標 | 件数 | 比の平均 / 中央値（範囲） |')
+    out.append('|---|---|---|')
+    if sa:
+        out.append(f'| 指標A（記録済み `subjective_hit_rate` ÷ 払戻率/オッズ） | '
+                   f'{sa["n"]} | {fmt(sa)} |')
+    out.append(f'| 指標D（主観 hit ÷ 市場のみ hit、どちらも Harville） | '
+               f'{sd["n"]} | {fmt(sd)} |')
+    out.append('')
+    out.append(f'市場側どうしの比（Harville ÷ 払戻率/オッズ）は平均 '
+               f'{sg["mean"]:.2f}倍・中央値 {sg["median"]:.2f}倍'
+               f'（{sg["min"]:.2f}〜{sg["max"]:.2f}倍）。'
+               f'**1.0 から離れる分は、単勝オッズだけから Harville で組み立てた'
+               f'確率と、その券種の実オッズが示す確率のズレ**（券種ごとの'
+               f'人気の偏り・控除率の違い）であり、どちらかが間違いというものではない。')
+    out.append('')
+    return out
+
+
+def render_cap_sweep(base, sweep, rows):
+    out = ['## 3　CAP ごとの影響', '']
+    settled = [r for r in rows if r['settled'] and r['staked']]
+    out.append(f'`hit_rate = min(主観 hit_rate, 市場のみ hit_rate × CAP)` を当てたとき。'
+               f'**買い目そのものは差し替えていない**（採用された組を固定し、'
+               f'判定に使う的中率だけを頭打ちにした）。投資・回収は'
+               f'**結果確定済みの{len(settled)}レース**が対象で、'
+               f'「上限後の期待値が{discipline.MIN_EXPECTED_VALUE}を割ったレースは'
+               f'買わなかったことにする」置き方。的中したレースが残っていれば'
+               f'その払戻もそのまま残る。')
+    out.append('')
+    out.append('| CAP | 上限に抵触 | 上限後の比 平均/中央値 | '
+               f'期待値{discipline.MIN_EXPECTED_VALUE}以上を保つ | 買わなくなる | '
+               f'期待値{bet_builder.STRONG_EXPECTED_VALUE}以上（A相当） | '
+               '的中 | 投資 | 回収 | 回収率 |')
+    out.append('|---|---|---|---|---|---|---|---|---|---|')
+    for entry in [base] + list(sweep):
+        label = '上限なし（現状）' if entry['cap'] is None else f"{entry['cap']:.1f}倍"
+        st = entry['ratio']
+        roi = (entry['returned'] / entry['staked'] * 100) if entry['staked'] else 0.0
+        out.append(f"| {label} | {entry['bound']}/{len(rows)} | "
+                   f"{st['mean']:.2f} / {st['median']:.2f} | "
+                   f"**{entry['kept']}** | {entry['dropped']} | {entry['strong']} | "
+                   f"{entry['hits']} | {entry['staked']}円 | {entry['returned']}円 | "
+                   f"{roi:.1f}% |")
+    out.append('')
+    out.append('- 「上限に抵触」は、そのレースのセット的中率が実際に下げられた件数'
+               f'（未確定分を含む{len(rows)}レース中）。')
+    out.append('- 「上限後の比」は `上限後の的中率 ÷ 市場のみの的中率`。定義上 CAP を'
+               '超えられないので、CAP を下げるほど頭打ちになるレースが増えて'
+               '平均が下がる。')
+    out.append('- 投資・回収は `results.settle`（週次レビューと同じ関数）。'
+               '**見送りにしたレースは投資も回収もゼロになる**ので、外れを外せば'
+               '回収率は上がり、的中を外せば下がる。')
+    staked = sum(r['staked'] for r in settled)
+    returned = sum(r['returned'] for r in settled)
+    hits = sum(1 for r in settled if r['hit'])
+    roi = (returned / staked * 100) if staked else 0.0
+    out.append(f'- **参考・実績そのもの**：確定済み{len(settled)}レースを全部買った'
+               f'場合（＝実際に買った内容）は的中{hits}件・投資{staked}円・'
+               f'回収{returned}円・回収率{roi:.1f}%。上の「上限なし（現状）」の行が'
+               f'これと違うのは、**朝のカードの代理オッズで計算し直した期待値**が'
+               f'{discipline.MIN_EXPECTED_VALUE}を割るレースが'
+               f'{base["dropped"]}件あり、そこを差し引いているため'
+               f'（`bet_builder` が直前の実オッズで判定したときは満たしていた）。'
+               f'**CAP どうしの比較は同じ土俵で行われているが、'
+               f'この行を「実績」と読んではいけない。**')
+    missing = [r for r in rows if r['settled'] and not r['staked']]
+    for r in missing:
+        out.append(f"- **除外**：{r['day'].isoformat()} {r['name']} は"
+                   f"`data/checks` に検算時の買い目が残っているのに"
+                   f"`data/bets` 側の買い目が空で、精算できない。"
+                   f"比の集計には入れ、投資・回収の集計からは外してある（要確認）。")
+    out.append('')
+    return out
+
+
+def render_dropped(rows, caps):
+    out = ['### CAP で買わなくなるレース（結果確定済みのみ）', '']
+    settled = [r for r in rows if r['settled'] and r['staked']]
+    if not settled:
+        out.append('**データ不足。** 結果確定済みのレースがありません。')
+        out.append('')
+        return out
+    hits = [r for r in settled if r['hit']]
+    out.append(f'確定済み{len(settled)}レースのうち的中は{len(hits)}レース。'
+               f'**CAP が的中レースを削ってしまうかどうか**が回収率を左右するので、'
+               f'的中したレースが各 CAP で残るかを名指しで確かめる。')
+    out.append('')
+    out.append('| レース | 結果 | 期待値（現状） | '
+               + ' | '.join(f'{c:.1f}倍' for c in caps) + ' |')
+    out.append('|---|---|---|' + '---|' * len(caps))
+    for r in sorted(settled, key=lambda r: (not r['hit'], r['day'])):
+        cells = []
+        for cap in caps:
+            ev = r['composite'] * apply_set_cap(r['hit_subjective'], r['hit_market'], cap)
+            cells.append(f'{ev:.2f}' + ('' if ev >= discipline.MIN_EXPECTED_VALUE else '（見送り）'))
+        outcome = '**的中**' if r['hit'] else '外れ'
+        out.append(f"| {r['day'].isoformat()} {r['name']} | {outcome} | "
+                   f"{r['ev_subjective']:.2f} | " + ' | '.join(cells) + ' |')
+    out.append('')
+    return out
+
+
+def render_rerank(rows, caps, since, until):
+    out = ['## 4　候補の入れ替わり（懸念点4）', '']
+    out.append('上限をかけた値で「規律を満たす候補のうち的中率最大」を選び直すと、'
+               '**そもそも別の買い目が選ばれる**可能性がある（改訂案は判定と選定に'
+               '同じ数字を使うと明記している）。これを確かめるには採用されなかった'
+               '候補のオッズも要る。`data/checks` の `priced_odds`'
+               '（bet_builder が値付けできた全組み合わせ）が記録されるようになったのは'
+               f'**PR #57（{WIN_ODDS_LOGGED_FROM.isoformat()} マージ）以降**なので、'
+               'それ以前のレースは**この節の対象外**。')
+    out.append('')
+    if not rows:
+        out.append(f'**対象0レース。** {since.isoformat()}〜{until.isoformat()} に'
+                   '`priced_odds`・`win_odds`・`bet_odds` が揃った記録がありません。'
+                   '**候補の入れ替わりは、このデータでは測れない（要確認）。**')
+        out.append('')
+        return out
+    ok = sum(1 for r in rows if r['reproduced'])
+    out.append(f'対象 **{len(rows)}レース**。うち{ok}レースで、上限なしの選定が'
+               f'`data/checks` に記録された実際の買い目と**完全に一致**した'
+               f'（再構成が正しいことの確認）。')
+    if ok != len(rows):
+        for r in rows:
+            if not r['reproduced']:
+                out.append(f"- **要確認**：{r['day'].isoformat()} {r['name']} は"
+                           f"再構成が記録と一致しない（記録 "
+                           f"{'／'.join(f'{t} ' + '-'.join(str(n) for n in h) for t, h in r['recorded'])}）。")
+    out.append('')
+    out.append('| 日付 | レース | 候補数 | 上限なしの選定 | '
+               + ' | '.join(f'{c:.1f}倍' for c in caps) + ' |')
+    out.append('|---|---|---|---|' + '---|' * len(caps))
+    changed_total = {c: 0 for c in caps}
+    dropped_total = {c: 0 for c in caps}
+    for r in sorted(rows, key=lambda r: (r['day'], r['name'])):
+        base = r['base']
+        base_label = base[0].label() if base else '見送り'
+        cells = []
+        for cap in caps:
+            pick = r['picks'][cap]
+            if pick is None:
+                cells.append('**見送り**')
+                if base is not None:
+                    dropped_total[cap] += 1
+            elif base is None or pick[0].label() != base_label:
+                cells.append(f'**{pick[0].label()}**（入替）')
+                changed_total[cap] += 1
+            else:
+                cells.append('同じ')
+        out.append(f"| {r['day'].isoformat()} | {r['name']} | {r['candidates']} | "
+                   f"{base_label} | " + ' | '.join(cells) + ' |')
+    out.append('')
+    out.append('| CAP | 同じ候補 | 別の候補に入れ替わる | 見送りになる |')
+    out.append('|---|---|---|---|')
+    for cap in caps:
+        changed, dropped = changed_total[cap], dropped_total[cap]
+        out.append(f'| {cap:.1f}倍 | {len(rows) - changed - dropped} | '
+                   f'{changed} | {dropped} |')
+    out.append('')
+    for r in rows:
+        if r['extra_legs']:
+            out.append(f"※ {r['day'].isoformat()} {r['name']} の記録には主候補以外の"
+                       f"点（◎以外の保険）が含まれる。本節は主候補の選定だけを"
+                       f"比べており、保険の付け外しは見ていない。")
+    out.append('**注意**：この節は `_build_candidates` が作る主候補の選定だけを'
+               '比べている。`_axis_hedge`（◎以外の保険ワイド）は上限後の合算'
+               '的中率で判定が変わりうるが、ここでは扱っていない（要確認）。')
+    out.append('')
+    return out
+
+
+def render_set_cap_findings(rows, base, sweep, rerank, caps):
+    out = ['## 5　所見（CAP の値は決めない）', '']
+    if not rows:
+        out.append('**データ不足で所見を書けない。**')
+        out.append('')
+        return out
+    settled = [r for r in rows if r['settled']]
+    st = describe([r['ratio'] for r in rows])
+    sts = describe([r['ratio'] for r in settled]) if settled else None
+    out.append(f'1. **セット単位の乖離は、確定済み{len(settled)}レースで平均 '
+               f'{sts["mean"]:.2f}倍・中央値 {sts["median"]:.2f}倍**'
+               f'（全{len(rows)}レースでは平均 {st["mean"]:.2f}倍）。'
+               f'再測定（検証ノート「2026-09-17 再測定」指標C）の'
+               f'「27レース平均1.76倍・中央値1.59倍」と同じ土俵の数字で、'
+               f'**別経路で計算しても同じ結論が出る**ことを確認した。')
+    over = {cap: sum(1 for r in rows if r['ratio'] > cap) for cap in caps}
+    out.append('2. **CAP が実際に効き始める水準**：セット単位の比が CAP を'
+               '超えるレース数は '
+               + '／'.join(f'{cap:.1f}倍で{over[cap]}/{len(rows)}件' for cap in caps)
+               + '。**比の分布そのものが「どの CAP なら何件に触るか」を決める**ので、'
+               '上の表と合わせて読むこと。')
+    keep = {e['cap']: e['kept'] for e in sweep}
+    out.append(f'3. **買う鞍数への影響**（確定済み{len([r for r in settled if r["staked"]])}件中、'
+               f'期待値{discipline.MIN_EXPECTED_VALUE}以上を保つ件数）：'
+               f'上限なし {base["kept"]}件 → '
+               + '／'.join(f'{cap:.1f}倍 {keep[cap]}件' for cap in caps) + '。')
+    if rerank:
+        out.append(f'4. **候補の入れ替わりは{len(rerank)}レースでしか測れていない**'
+                   f'（`priced_odds` が {WIN_ODDS_LOGGED_FROM.isoformat()} 以降'
+                   f'しか無いため）。'
+                   f'**この件数で「入れ替わりは起きない／起きる」とは言えない。要確認。**')
+    else:
+        out.append('4. **候補の入れ替わりは測れていない（要確認）。** '
+                   '採用されなかった候補のオッズが残っている記録が期間内に無い。')
+    out.append('')
+    out.append('### どのあたりが妥当そうか（決定はユーザーが行う）')
+    out.append('')
+    out.append('- **CAP は「セット単位の比の分布のどこで切るか」を選ぶ操作**である。'
+               f'今のデータの中央値は{st["median"]:.2f}倍なので、'
+               f'それより下の CAP は「半分以上のレースを削る」、'
+               f'上の CAP は「上振れだけを削る」という効き方になる。')
+    half = [e for e in sweep if e['kept'] * 2 <= base['kept']]
+    mild = [e for e in sweep if e['kept'] >= base['kept'] * 0.9]
+    if half and mild:
+        out.append(f'- **効き方が段違いになる境目が今のデータにはある。** '
+                   f'{max(e["cap"] for e in half):.1f}倍以下では買う鞍数が'
+                   f'現状の半分以下（{base["kept"]}件 → '
+                   f'{max(half, key=lambda e: e["cap"])["kept"]}件）まで落ちるのに対し、'
+                   f'{min(e["cap"] for e in mild):.1f}倍以上では9割'
+                   f'（{min(mild, key=lambda e: e["cap"])["kept"]}件）が残る。'
+                   f'**「上振れだけを削る」のか「全体を絞る」のかという'
+                   f'方針の違いが、この境目のどちら側を選ぶかに直結する。**')
+    out.append('- **回収率だけで選ばないこと。** 確定済みの的中は'
+               f'{sum(1 for r in settled if r["hit"])}件しかなく、'
+               f'CAP がその1〜2件を削るか残すかで回収率は大きく振れる。'
+               f'上の表の回収率は**そのレースが残ったかどうかの副作用**であって、'
+               f'CAP の良し悪しを測る指標としては件数が足りない。')
+    out.append('- **判断を保留した点（推測で埋めない）**：')
+    out.append('  - 買い目の選び直し（候補の入れ替わり）を織り込めていないので、'
+               '上の「買わなくなる件数」は**影響の上限側の目安**。'
+               '実際には別の候補が規律を満たして残ることがある。')
+    out.append('  - 単勝オッズはほぼ全部が**朝のカードの代理値**で、'
+               '`bet_builder` が直前に見た値ではない。比の絶対値は暫定。')
+    out.append('  - 地方（NAR）は 2026-09-16 以降の3レースだけで、'
+               'いずれも結果未確定。**地方に同じ CAP を当ててよいかは未検証。**')
+    out.append('  - `_axis_hedge`（◎以外の保険）の的中率は上限の対象外のままにしてある。'
+               '改訂案の本文も `Candidate.hit_rate` だけを対象にしている。')
+    out.append('')
+    return out
+
+
+def build_set_cap_report(since, until, caps):
+    rows = inventory(since, until)
+    baseline = empty_override_matches_market(rows)
+    d_rows = set_cap_rows(rows)
+    base = baseline_sweep(d_rows)
+    sweep = cap_sweep(d_rows, caps)
+    rerank = rerank_rows(since, until, caps)
+
+    out = [f'# セット単位の的中率に上限をかけた場合のバックテスト（{date.today().isoformat()}）', '']
+    out.append('`検証ノート.md`「メソッド改訂案（ユーザー承認待ち）」の'
+               '**2026-09-17提示「セット的中率の市場からの乖離に上限を設ける」**'
+               'の判断材料。改訂案自身が「CAP の値は未定。承認前に実データで決める」'
+               'と書いており、その数字を出したもの。')
+    out.append('')
+    out.append('**基準もロジックも変更していない。** `予想メソッド.md`・'
+               '`bet_builder.py`・`discipline.py` は無変更で、`bet_builder` の'
+               '確率計算をそのまま呼んで数字を出しているだけ。'
+               '**CAP の値も決めない**（ユーザーが会話で決める）。')
+    out.append('')
+    out.append(f'生成: `python3 calibration_check.py --report set-cap '
+               f'--since {since.isoformat()} --until {until.isoformat()}`（外部通信なし）')
+    out.append('')
+    out.append('測っているもの：')
+    out.append('')
+    out.append('- **主観 hit_rate** … `apply_subjective(market, win_probabilities)` で作った'
+               '勝率分布での、採用された買い目セットの的中率。'
+               '`bet_builder` が規律判定に使っている `Candidate.hit_rate` そのもの。')
+    out.append('- **市場のみ hit_rate** … 同じ組み合わせを、生の '
+               '`market_win_probabilities` の出力だけで計算した的中率。')
+    out.append('- **比** … 主観 ÷ 市場のみ。これが「セット単位の乖離」。')
+    out.append('')
+    out.extend(render_market_baseline(baseline))
+    out.extend(render_set_cap_inventory(rows, d_rows, since, until))
+    out.extend(render_set_cap_rows(d_rows))
+    out.extend(render_consistency(d_rows))
+    out.extend(render_cap_sweep(base, sweep, d_rows))
+    out.extend(render_dropped(d_rows, caps))
+    out.extend(render_rerank(rerank, caps, since, until))
+    out.extend(render_set_cap_findings(d_rows, base, sweep, rerank, caps))
+    return '\n'.join(out) + '\n'
+
 
 def build_report(since, until, cap):
     rows = inventory(since, until)
@@ -880,14 +1594,29 @@ def main(argv=None):
                         help='集計終了日 YYYY-MM-DD（既定 今日）')
     parser.add_argument('--cap', type=float, default=DEFAULT_CAP,
                         help=f'当ててみる乖離上限（既定 {DEFAULT_CAP}＝改訂案の暫定値）')
-    parser.add_argument('--out', default=DEFAULT_OUTPUT, help='Markdown の書き出し先')
+    parser.add_argument('--report', choices=('calibration', 'set-cap'),
+                        default='calibration',
+                        help='calibration＝馬番単位の乖離（既定）／'
+                             'set-cap＝セット単位の上限のバックテスト（指標D）')
+    parser.add_argument('--caps', default=','.join(str(c) for c in SET_CAP_GRID),
+                        help='--report set-cap で試す倍率をカンマ区切りで'
+                             f'（既定 {",".join(str(c) for c in SET_CAP_GRID)}）')
+    parser.add_argument('--out', default=None,
+                        help='Markdown の書き出し先（既定は --report に応じて切り替わる）')
     args = parser.parse_args(argv)
 
-    text = build_report(date.fromisoformat(args.since),
-                        date.fromisoformat(args.until), args.cap)
+    since = date.fromisoformat(args.since)
+    until = date.fromisoformat(args.until)
+    if args.report == 'set-cap':
+        caps = tuple(float(c) for c in args.caps.split(',') if c.strip())
+        text = build_set_cap_report(since, until, caps)
+        out_path = args.out or SET_CAP_OUTPUT
+    else:
+        text = build_report(since, until, args.cap)
+        out_path = args.out or DEFAULT_OUTPUT
     print(text)
-    os.makedirs(os.path.dirname(args.out), exist_ok=True)
-    with open(args.out, 'w', encoding='utf-8') as f:
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with open(out_path, 'w', encoding='utf-8') as f:
         f.write(text)
     return 0
 
