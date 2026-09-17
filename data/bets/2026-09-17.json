@@ -88,7 +88,7 @@
       "race_no": 11,
       "start_time": "20:00",
       "confidence": "B",
-      "subjective_hit_rate": 0.4033,
+      "subjective_hit_rate": 0.4028,
       "win_probabilities": {
         "3": 0.3,
         "12": 0.21,
