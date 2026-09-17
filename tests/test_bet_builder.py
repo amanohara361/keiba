@@ -144,10 +144,10 @@ def test_3連複が候補に入る():
     r = race(marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11}],
              partners=[{'umaban': 9, 'reason': '前走出遅れ'}],
              win_probabilities={7: 0.32, 11: 0.20, 9: 0.12})
-    p = bet_builder.apply_subjective(
-        bet_builder.market_win_probabilities(WIN_ODDS), r.win_probabilities)
+    market = bet_builder.market_win_probabilities(WIN_ODDS)
+    p = bet_builder.apply_subjective(market, r.win_probabilities)
     cands = bet_builder._build_candidates(
-        7, [11, 9], set(r.marked_horses), p,
+        7, [11, 9], set(r.marked_horses), p, market,
         lookup_from({('3連複', frozenset({7, 11, 9})): 20.0}))
     assert any(c.bet_type == '3連複' for c in cands)
 
@@ -162,10 +162,10 @@ def test_3連複はセット全体が印馬だけでも候補にする():
     r = race(marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11},
                     {'mark': '▲', 'umaban': 2}],
              win_probabilities={7: 0.32, 11: 0.20, 2: 0.14})
-    p = bet_builder.apply_subjective(
-        bet_builder.market_win_probabilities(WIN_ODDS), r.win_probabilities)
+    market = bet_builder.market_win_probabilities(WIN_ODDS)
+    p = bet_builder.apply_subjective(market, r.win_probabilities)
     cands = bet_builder._build_candidates(
-        7, [11, 2], set(r.marked_horses), p,
+        7, [11, 2], set(r.marked_horses), p, market,
         lookup_from({('3連複', frozenset({7, 11, 2})): 20.0}))
     assert any(c.bet_type == '3連複' for c in cands), \
         '◎○▲だけの3連複も候補にする（期待値で判定すれば十分）'
@@ -217,6 +217,36 @@ def test_算出した的中率をraceへ書き戻す():
             bet_builder.market_win_probabilities(WIN_ODDS), r.win_probabilities),
         (7, 11))
     assert abs(r.subjective_hit_rate - round(expected, 4)) < 1e-9
+
+
+# ----------------------------------------------------------------------
+# セット的中率の乖離上限（2026-09-17 ユーザー承認、CAP=1.5倍）
+# ----------------------------------------------------------------------
+
+def test_乖離上限は市場のCAP倍を超えない():
+    assert abs(bet_builder._capped_rate(0.30, 0.10, cap=1.5) - 0.15) < 1e-9
+
+
+def test_乖離上限はCAP倍未満なら主観のまま():
+    assert bet_builder._capped_rate(0.12, 0.10, cap=1.5) == 0.12
+
+
+def test_capを無限大にすれば上限なしと同じ():
+    assert bet_builder._capped_rate(0.30, 0.10, cap=float('inf')) == 0.30
+
+
+def test_極端な主観勝率はセット的中率が市場のCAP倍で頭打ちになる():
+    """馬番単位の入力（win_probabilities）自体は市場よりかなり高くても、
+    Candidate.hit_rate（＝raceへ書き戻す最終的中率）は市場の馬連的中率の
+    CAP(1.5)倍を超えない。
+    """
+    r = race(marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11}],
+             win_probabilities={7: 0.60, 11: 0.30})
+    market = bet_builder.market_win_probabilities(WIN_ODDS)
+    market_rate = bet_builder.p_quinella(market, (7, 11))
+    _confidence, built, _note = build(r, {('馬連', frozenset({7, 11})): 5.0})
+    assert built
+    assert r.subjective_hit_rate <= round(market_rate * bet_builder.SET_HIT_RATE_CAP, 4) + 1e-9
 
 
 # ----------------------------------------------------------------------
@@ -555,10 +585,10 @@ def test_印が1頭しかいなければ相棒2頭とも無印でも許す():
              partners=[{'umaban': 5, 'reason': '中穴候補'},
                       {'umaban': 9, 'reason': '別の中穴候補'}],
              win_probabilities={7: 0.35})
-    p = bet_builder.apply_subjective(
-        bet_builder.market_win_probabilities(WIN_ODDS), r.win_probabilities)
+    market = bet_builder.market_win_probabilities(WIN_ODDS)
+    p = bet_builder.apply_subjective(market, r.win_probabilities)
     cands = bet_builder._build_candidates(
-        7, [5, 9], set(r.marked_horses), p,
+        7, [5, 9], set(r.marked_horses), p, market,
         lookup_from({('3連複', frozenset({7, 5, 9})): 20.0}))
     assert any(c.bet_type == '3連複' for c in cands)
 

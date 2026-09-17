@@ -146,6 +146,18 @@ PAYOUT_RATE = {'単勝': 0.80, '複勝': 0.80, '馬連': 0.775,
 LOW_HIT_RATE = 0.05
 WIDE_DIVERGENCE = 1.8
 
+# セット的中率の乖離上限（2026-09-17 ユーザー承認、CAP=1.5倍で試験導入）。
+# `Candidate.hit_rate`（主観込みで計算した、複数頭の組み合わせの的中率）は、
+# 馬番単位の入力が中央値1.25倍程度でも、組み合わせの中で乗算的に増幅され
+# セット単位では平均1.76〜1.83倍まで膨らむと実測で分かった
+# （検証ノート.md「2026-09-17提示：セット的中率の市場からの乖離に上限を
+# 設ける」）。同じ組み合わせを市場推定勝率だけで計算した的中率のCAP倍を
+# 上限とすることで、増幅が起きた後の数字そのものを直接押さえる。
+# 1.5倍は「上振れだけを削る」(1.8倍以上)と「全体を大きく絞る」(1.3倍)の
+# 中間で、やや保守的な側を選んだ試験導入値。実オッズ(win_odds)ベースの
+# 確定結果が積み上がった時点で再検証する。
+SET_HIT_RATE_CAP = 1.5
+
 # 朝タスクが win_probabilities を書かなかったレースに付ける印。
 # **規律を満たさない見送りと、入力が欠けている見送りは別物である。**
 # 2026-08-26、地方の朝タスクが win_probabilities を書かずに push し、
@@ -374,7 +386,20 @@ class Candidate:
         return [Bet(self.bet_type, c, stake) for c in self.combos]
 
 
-def _build_candidates(axis, pool, marked, p, lookup):
+def _capped_rate(subjective_rate, market_rate, cap=SET_HIT_RATE_CAP):
+    """セット的中率の乖離上限を適用する（SET_HIT_RATE_CAP）。
+
+    market_rateは同じ組み合わせを市場推定勝率だけで計算した的中率。
+    apply_subjectiveの按分は上書きが1つ以上あるときしか起きないため、
+    market側はmarket_win_probabilitiesの生の出力をそのまま使う
+    （検証ノート.md 2026-09-17「懸念点3」で実データ61レース全一致を確認済み）。
+    calibration_check.pyがCAP値そのものをバックテストするために
+    上限なし（cap=float('inf')）で呼び出せるよう引数にしてある。
+    """
+    return min(subjective_rate, market_rate * cap)
+
+
+def _build_candidates(axis, pool, marked, p, market, lookup, cap=SET_HIT_RATE_CAP):
     out = []
 
     def priced(bet_type, combos):
@@ -386,7 +411,8 @@ def _build_candidates(axis, pool, marked, p, lookup):
 
     o = priced('単勝', [[axis]])
     if o:
-        out.append(Candidate('単勝', [[axis]], o, p[axis], '◎の単勝1点'))
+        rate = _capped_rate(p[axis], market[axis], cap)
+        out.append(Candidate('単勝', [[axis]], o, rate, '◎の単勝1点'))
 
     for n in range(len(pool), 0, -1):
         subset = pool[:n]
@@ -397,6 +423,8 @@ def _build_candidates(axis, pool, marked, p, lookup):
         vals = priced('馬連', combos)
         if vals:
             rate = sum(p_quinella(p, (axis, q)) for q in subset)
+            market_rate = sum(p_quinella(market, (axis, q)) for q in subset)
+            rate = _capped_rate(rate, market_rate, cap)
             out.append(Candidate('馬連', combos, vals, rate, f'◎{axis}軸-相手{n}頭'))
 
         # ワイドは相手が2頭以上同時に3着以内へ来ると複数組が同時に的中しうる
@@ -404,6 +432,8 @@ def _build_candidates(axis, pool, marked, p, lookup):
         vals = priced('ワイド', combos)
         if vals:
             rate = p_wide_group(p, axis, subset)
+            market_rate = p_wide_group(market, axis, subset)
+            rate = _capped_rate(rate, market_rate, cap)
             out.append(Candidate('ワイド', combos, vals, rate, f'◎{axis}軸-相手{n}頭'))
 
     # 印が2頭以上残っているのに、相棒を無印(partners)2頭だけで組まない
@@ -421,7 +451,8 @@ def _build_candidates(axis, pool, marked, p, lookup):
         combo = sorted([axis, *pair])
         vals = priced('3連複', [combo])
         if vals:
-            out.append(Candidate('3連複', [combo], vals, p_trio(p, combo),
+            rate = _capped_rate(p_trio(p, combo), p_trio(market, combo), cap)
+            out.append(Candidate('3連複', [combo], vals, rate,
                                  f'◎{axis}軸-{pair[0]}/{pair[1]}'))
 
     if len(pool) >= 3:
@@ -431,6 +462,8 @@ def _build_candidates(axis, pool, marked, p, lookup):
             vals = priced('3連複', combos)
             if vals:
                 rate = sum(p_trio(p, c) for c in combos)
+                market_rate = sum(p_trio(market, c) for c in combos)
+                rate = _capped_rate(rate, market_rate, cap)
                 out.append(Candidate('3連複', combos, vals, rate,
                                      f'◎{axis}＋{second}の2頭軸-相手{n}頭'))
     return out
@@ -491,7 +524,7 @@ def build_bets(race, lookup, win_odds=None, stake=100):
     if not pool:
         return 'C', [], '相手候補の単勝オッズが取得できません'
 
-    candidates = _build_candidates(axis, pool, set(race.marked_horses), p, lookup)
+    candidates = _build_candidates(axis, pool, set(race.marked_horses), p, market, lookup)
     if not candidates:
         return 'C', [], '実オッズが揃わず買い目を組めませんでした（要・再検算）'
 

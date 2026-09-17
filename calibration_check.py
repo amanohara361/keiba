@@ -939,7 +939,8 @@ def rerank_rows(since, until, caps):
             if not pool:
                 continue
             candidates = bet_builder._build_candidates(
-                axis, pool, set(race.marked_horses), p, priced_lookup(record['priced_odds']))
+                axis, pool, set(race.marked_horses), p, market,
+                priced_lookup(record['priced_odds']), cap=float('inf'))
             if not candidates:
                 continue
             market_rate = {id(c): set_hit_rate(market, candidate_legs(c))
