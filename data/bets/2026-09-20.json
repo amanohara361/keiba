@@ -11,7 +11,7 @@
       "race_no": 9,
       "start_time": "14:10",
       "confidence": "B",
-      "subjective_hit_rate": 0.0425,
+      "subjective_hit_rate": 0.0432,
       "win_probabilities": {
         "1": 0.083,
         "2": 0.115,
@@ -172,7 +172,7 @@
       "race_no": 10,
       "start_time": "14:50",
       "confidence": "B",
-      "subjective_hit_rate": 0.2592,
+      "subjective_hit_rate": 0.2539,
       "win_probabilities": {
         "1": 0.006,
         "2": 0.1,
@@ -262,7 +262,7 @@
       "race_no": 10,
       "start_time": "15:05",
       "confidence": "B",
-      "subjective_hit_rate": 0.3194,
+      "subjective_hit_rate": 0.1667,
       "win_probabilities": {
         "1": 0.058,
         "2": 0.06,
@@ -345,7 +345,7 @@
       ],
       "bets": [
         {
-          "type": "ワイド",
+          "type": "馬連",
           "horses": [
             8,
             12
@@ -353,9 +353,17 @@
           "stake": 100
         },
         {
-          "type": "ワイド",
+          "type": "馬連",
           "horses": [
             8,
+            6
+          ],
+          "stake": 100
+        },
+        {
+          "type": "ワイド",
+          "horses": [
+            12,
             6
           ],
           "stake": 100
@@ -548,6 +556,8 @@
       "venue": "高知",
       "race_no": 5,
       "start_time": "17:15",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "6": 0.34,
         "3": 0.23,
