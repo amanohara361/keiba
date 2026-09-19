@@ -1,0 +1,777 @@
+[
+  {
+    "checked_at": "2026-09-20T07:23:35.707286+09:00",
+    "races": [
+      {
+        "race_id": "202609040609",
+        "name": "夕月特別",
+        "blocked": false,
+        "composite_odds": 32.0,
+        "expected_value": 1.36,
+        "bet_odds": [
+          {
+            "bet": "3連複 4-5-7",
+            "odds": 32.0
+          }
+        ],
+        "win_odds": {
+          "1": 6.1,
+          "2": 11.4,
+          "3": 49.5,
+          "4": 2.4,
+          "5": 9.5,
+          "6": 5.7,
+          "7": 8.8,
+          "8": 11.0,
+          "9": 14.7,
+          "10": 43.7
+        },
+        "win_ninki": {
+          "1": 3,
+          "2": 7,
+          "3": 10,
+          "4": 1,
+          "5": 5,
+          "6": 2,
+          "7": 4,
+          "8": 6,
+          "9": 8,
+          "10": 9
+        },
+        "priced_odds": {
+          "単勝": {
+            "5": 9.5
+          },
+          "馬連": {
+            "4-5": 7.9,
+            "2-5": 32.4,
+            "5-8": 34.7,
+            "5-7": 49.1,
+            "1-5": 21.3,
+            "5-6": 19.3
+          },
+          "ワイド": {
+            "4-5": 3.1,
+            "2-5": 9.7,
+            "5-8": 9.6,
+            "5-7": 14.2,
+            "1-5": 3.4,
+            "5-6": 6.0,
+            "2-4": 4.0
+          },
+          "3連複": {
+            "2-4-5": 21.1,
+            "4-5-8": 19.8,
+            "4-5-7": 32.0,
+            "1-4-5": 10.4,
+            "4-5-6": 10.4,
+            "2-5-8": 105.6,
+            "2-5-7": 140.6,
+            "1-2-5": 54.6,
+            "2-5-6": 54.6,
+            "5-7-8": 167.2,
+            "1-5-8": 51.2,
+            "5-6-8": 56.2,
+            "1-5-7": 83.1,
+            "5-6-7": 94.6
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "夕月特別: 芝2000m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "夕月特別: 合成オッズ 32.00倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "夕月特別: 期待値 1.36（合成 32.00倍 × 主観的中率 4%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "marked_only_trifecta",
+            "message": "夕月特別: 3連複 4-5-7 が印馬だけで組まれています",
+            "remedy": "印馬が3着以内を独占する前提に依存します。◎（＋1頭）を軸に、相手へ印を打たなかった中穴を最低1頭含めてください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "夕月特別: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 2000
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:27"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:27"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:27"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:27"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-20 07:20:27"
+        }
+      },
+      {
+        "race_id": "202606040609",
+        "name": "松戸特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 22.2,
+          "2": 21.6,
+          "3": 3.7,
+          "4": 42.8,
+          "5": 6.5,
+          "6": 30.6,
+          "7": 31.6,
+          "8": 7.4,
+          "9": 5.2,
+          "10": 3.8,
+          "11": 27.0,
+          "12": 32.8
+        },
+        "win_ninki": {
+          "1": 7,
+          "2": 6,
+          "3": 1,
+          "4": 12,
+          "5": 4,
+          "6": 9,
+          "7": 10,
+          "8": 5,
+          "9": 3,
+          "10": 2,
+          "11": 8,
+          "12": 11
+        },
+        "priced_odds": {
+          "単勝": {
+            "3": 3.7
+          },
+          "馬連": {
+            "3-9": 6.8,
+            "3-10": 7.3,
+            "3-8": 10.7,
+            "3-5": 10.7
+          },
+          "ワイド": {
+            "3-9": 2.5,
+            "3-10": 3.3,
+            "3-8": 3.5,
+            "3-5": 5.1
+          },
+          "3連複": {
+            "3-9-10": 8.6,
+            "3-8-9": 11.4,
+            "3-5-9": 13.1,
+            "3-8-10": 14.2,
+            "3-5-10": 15.5,
+            "3-5-8": 20.2
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "松戸特別: ダート2400m / 天候:雨 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "松戸特別: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "雨",
+          "surface": "ダート",
+          "distance": 2400
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:23:12"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:23:12"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:23:12"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:23:12"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-20 07:23:12"
+        }
+      },
+      {
+        "race_id": "202609040610",
+        "name": "鳥取特別",
+        "blocked": false,
+        "composite_odds": 5.7,
+        "expected_value": 1.48,
+        "bet_odds": [
+          {
+            "bet": "ワイド 12-3",
+            "odds": 5.7
+          }
+        ],
+        "win_odds": {
+          "1": 36.3,
+          "2": 9.5,
+          "3": 3.1,
+          "4": 25.7,
+          "5": 5.1,
+          "6": 8.3,
+          "7": 60.6,
+          "8": 40.1,
+          "9": 53.0,
+          "10": 50.3,
+          "11": 11.2,
+          "12": 7.8,
+          "13": 77.7,
+          "14": 18.0,
+          "15": 12.5
+        },
+        "win_ninki": {
+          "1": 10,
+          "2": 5,
+          "3": 1,
+          "4": 9,
+          "5": 2,
+          "6": 4,
+          "7": 14,
+          "8": 11,
+          "9": 13,
+          "10": 12,
+          "11": 6,
+          "12": 3,
+          "13": 15,
+          "14": 8,
+          "15": 7
+        },
+        "priced_odds": {
+          "単勝": {
+            "12": 7.8
+          },
+          "馬連": {
+            "3-12": 13.0,
+            "5-12": 11.7,
+            "6-12": 27.5,
+            "12-14": 49.8,
+            "11-12": 28.7,
+            "2-12": 20.6
+          },
+          "ワイド": {
+            "3-12": 5.7,
+            "5-12": 5.5,
+            "6-12": 5.6,
+            "12-14": 14.1,
+            "11-12": 9.9,
+            "2-12": 7.1,
+            "3-5": 4.7
+          },
+          "3連複": {
+            "3-5-12": 15.1,
+            "3-6-12": 37.3,
+            "3-12-14": 50.2,
+            "3-11-12": 29.4,
+            "2-3-12": 22.7,
+            "5-6-12": 38.6,
+            "5-12-14": 64.6,
+            "5-11-12": 34.9,
+            "2-5-12": 27.8,
+            "6-12-14": 116.1,
+            "6-11-12": 101.6,
+            "2-6-12": 69.7
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "鳥取特別: ダート1800m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "鳥取特別: 合成オッズ 5.70倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "鳥取特別: 期待値 1.48（合成 5.70倍 × 主観的中率 26%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "鳥取特別: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1800
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:32"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:32"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:32"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:32"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-20 07:20:32"
+        }
+      },
+      {
+        "race_id": "202606040610",
+        "name": "汐留特別",
+        "blocked": false,
+        "composite_odds": 3.76,
+        "expected_value": 1.2,
+        "bet_odds": [
+          {
+            "bet": "ワイド 8-12",
+            "odds": 6.0
+          },
+          {
+            "bet": "ワイド 8-6",
+            "odds": 10.1
+          }
+        ],
+        "win_odds": {
+          "1": 12.7,
+          "2": 12.4,
+          "3": 21.7,
+          "4": 54.4,
+          "5": 23.0,
+          "6": 12.7,
+          "7": 26.2,
+          "8": 2.3,
+          "9": 8.1,
+          "10": 24.2,
+          "11": 28.9,
+          "12": 16.3,
+          "13": 33.3,
+          "14": 83.8,
+          "15": 7.6,
+          "16": 108.1
+        },
+        "win_ninki": {
+          "1": 5,
+          "2": 4,
+          "3": 8,
+          "4": 14,
+          "5": 9,
+          "6": 6,
+          "7": 11,
+          "8": 1,
+          "9": 3,
+          "10": 10,
+          "11": 12,
+          "12": 7,
+          "13": 13,
+          "14": 15,
+          "15": 2,
+          "16": 16
+        },
+        "priced_odds": {
+          "単勝": {
+            "8": 2.3
+          },
+          "馬連": {
+            "8-12": 18.6,
+            "6-8": 41.8,
+            "8-9": 8.2,
+            "1-8": 10.2,
+            "2-8": 11.2,
+            "3-8": 46.7,
+            "8-15": 6.6
+          },
+          "ワイド": {
+            "8-12": 6.0,
+            "6-8": 10.1,
+            "8-9": 3.4,
+            "1-8": 4.6,
+            "2-8": 4.3,
+            "3-8": 15.2,
+            "8-15": 3.9,
+            "6-12": 30.3
+          },
+          "3連複": {
+            "6-8-12": 135.7,
+            "8-9-12": 39.8,
+            "1-8-12": 49.0,
+            "2-8-12": 50.2,
+            "3-8-12": 144.3,
+            "8-12-15": 37.4,
+            "6-8-9": 87.0,
+            "1-6-8": 94.9,
+            "2-6-8": 92.5,
+            "3-6-8": 297.8,
+            "6-8-15": 88.7,
+            "1-8-9": 23.6,
+            "2-8-9": 21.4,
+            "3-8-9": 83.4,
+            "8-9-15": 13.5,
+            "1-2-8": 32.1,
+            "1-3-8": 106.0,
+            "1-8-15": 22.7
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "汐留特別: ダート1200m / 天候:雨 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "汐留特別: 合成オッズ 3.76倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "汐留特別: 期待値 1.20（合成 3.76倍 × 主観的中率 32%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "汐留特別: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "雨",
+          "surface": "ダート",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:17"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:17"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:17"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:17"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-20 07:20:17"
+        }
+      },
+      {
+        "race_id": "202609040611",
+        "name": "道頓堀S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 22.3,
+          "2": 7.0,
+          "3": 28.3,
+          "4": 5.1,
+          "5": 11.4,
+          "6": 47.2,
+          "7": 11.1,
+          "8": 21.3,
+          "9": 4.8,
+          "10": 18.0,
+          "11": 19.5,
+          "12": 10.3,
+          "13": 35.3,
+          "14": 15.4,
+          "15": 15.3,
+          "16": 42.8
+        },
+        "win_ninki": {
+          "1": 12,
+          "2": 3,
+          "3": 13,
+          "4": 2,
+          "5": 6,
+          "6": 16,
+          "7": 5,
+          "8": 11,
+          "9": 1,
+          "10": 9,
+          "11": 10,
+          "12": 4,
+          "13": 14,
+          "14": 8,
+          "15": 7,
+          "16": 15
+        },
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "道頓堀S: 芝1200m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "道頓堀S: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:21:02"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:21:02"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:21:02"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:21:02"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-20 07:21:02"
+        }
+      },
+      {
+        "race_id": "202606040611",
+        "name": "オールカマー",
+        "blocked": false,
+        "composite_odds": 4.73,
+        "expected_value": 1.25,
+        "bet_odds": [
+          {
+            "bet": "馬連 9-7",
+            "odds": 6.3
+          },
+          {
+            "bet": "馬連 9-13",
+            "odds": 19.0
+          }
+        ],
+        "win_odds": {
+          "1": 16.8,
+          "2": 36.1,
+          "3": 29.1,
+          "4": 6.2,
+          "5": 77.5,
+          "6": 8.9,
+          "7": 2.9,
+          "8": 26.7,
+          "9": 4.1,
+          "10": 90.2,
+          "11": 101.5,
+          "12": 10.0,
+          "13": 9.8
+        },
+        "win_ninki": {
+          "1": 7,
+          "2": 10,
+          "3": 9,
+          "4": 3,
+          "5": 11,
+          "6": 4,
+          "7": 1,
+          "8": 8,
+          "9": 2,
+          "10": 12,
+          "11": 13,
+          "12": 6,
+          "13": 5
+        },
+        "priced_odds": {
+          "単勝": {
+            "9": 4.1
+          },
+          "馬連": {
+            "7-9": 6.3,
+            "9-13": 19.0,
+            "6-9": 17.0,
+            "9-12": 14.0
+          },
+          "ワイド": {
+            "7-9": 2.8,
+            "9-13": 6.7,
+            "6-9": 5.8,
+            "9-12": 5.4,
+            "7-13": 6.3
+          },
+          "3連複": {
+            "7-9-13": 16.8,
+            "6-7-9": 19.4,
+            "7-9-12": 17.8,
+            "6-9-13": 56.6,
+            "9-12-13": 47.2,
+            "6-9-12": 38.7
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "オールカマー: 芝2200m / 天候:雨 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "オールカマー: 合成オッズ 4.73倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "オールカマー: 期待値 1.25（合成 4.73倍 × 主観的中率 26%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "オールカマー: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "雨",
+          "surface": "芝",
+          "distance": 2200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:47"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:47"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:47"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-20 07:20:47"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-20 07:20:47"
+        }
+      }
+    ]
+  }
+]
