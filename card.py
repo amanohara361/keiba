@@ -438,6 +438,28 @@ def probe_entries(race_id):
     probe_horse(first['horse_id'])
 
 
+def probe_entries_raw(race_id):
+    """出馬表の生HTMLを見る。
+
+    parse_entries は馬体重（weight/weight_diff）しか読んでおらず、斤量は
+    読んでいない（2026-09-20、ユーザーから「斤量は取れるはずでは」と
+    指摘を受けて判明）。同じページに載っているはずの斤量セルのクラス名を
+    推測で正規表現化する前に、まず実物を見る
+    （決定ログ「ページ構造は推測せず、Actions の probe で実物を見る」）。
+    """
+    page = form_module._fetch(form_module.SHUTUBA_URL.format(race_id=race_id))
+    print(f'取得サイズ: {len(page)} 文字')
+    rows = re.findall(r'<tr class="[^"]*HorseList[^"]*"[^>]*>(.*?)</tr>', page, re.S)
+    print(f'HorseList行: {len(rows)} 件')
+    if not rows:
+        print('HorseList行が見つかりませんでした（ページ構造が変わった可能性）')
+        return
+    row = rows[0]
+    classes = sorted(set(re.findall(r'<td[^>]*class="([^"]*)"', row)))
+    print(f'\n1頭目の<td>クラス一覧: {classes}')
+    print(f'\n1頭目の生HTML:\n{row[:4000]}')
+
+
 def probe_horse_search(name):
     """馬名からnetkeibaのhorse_idを引けるか調べる。
 
@@ -519,9 +541,10 @@ def main(argv=None):
                             '定時実行を二重にかけても取得が二度走らないようにする')
 
     probe = sub.add_parser('probe', help='ページ構造を調べる')
-    probe.add_argument('target', choices=['list', 'entries', 'horse', 'horse-search'])
+    probe.add_argument('target',
+                       choices=['list', 'entries', 'entries-raw', 'horse', 'horse-search'])
     probe.add_argument('value',
-                       help='list なら YYYY-MM-DD、entries なら race_id、'
+                       help='list なら YYYY-MM-DD、entries/entries-raw なら race_id、'
                             'horse なら horse_id、horse-search なら馬名')
 
     args = parser.parse_args(argv)
@@ -531,6 +554,8 @@ def main(argv=None):
             probe_list(date.fromisoformat(args.value))
         elif args.target == 'entries':
             probe_entries(args.value)
+        elif args.target == 'entries-raw':
+            probe_entries_raw(args.value)
         elif args.target == 'horse-search':
             probe_horse_search(args.value)
         else:
