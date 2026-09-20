@@ -468,6 +468,14 @@ def _detect_bet_changes(verdicts, previous):
                  for r in previous.get('races', [])}
     changed = []
     for v in verdicts:
+        # 発走済みレースは組み直さない（review_sheetがbet_odds=[]で記録する
+        # だけでrace.betsは前回のまま）。ここを比較すると、race.betsが
+        # 空でない限り「前回の記録=空」対「今回のrace.bets=中身あり」で
+        # 恒久的にold!=newとなり、発走後何時間経っても「買い目が変わった」
+        # と誤検出し続けてしまう（2026-09-20、全レース発走済みのはずの回に
+        # メールが届き続けた件で発覚）。発走済みは比較対象から外す。
+        if v.meta.get('skipped'):
+            continue
         if v.race.race_id not in prev_bets:
             continue
         old = prev_bets[v.race.race_id]
