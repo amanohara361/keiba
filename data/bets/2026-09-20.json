@@ -370,7 +370,7 @@
       "race_no": 11,
       "start_time": "15:30",
       "confidence": "B",
-      "subjective_hit_rate": 0.1562,
+      "subjective_hit_rate": 0.0743,
       "win_probabilities": {
         "1": 0.0196,
         "2": 0.0862,
@@ -471,38 +471,6 @@
           "horses": [
             7,
             4
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            7,
-            10
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            7,
-            2
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            7,
-            9
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            7,
-            13
           ],
           "stake": 100
         }
@@ -616,7 +584,7 @@
       "race_no": 5,
       "start_time": "17:15",
       "confidence": "A",
-      "subjective_hit_rate": 0.0041,
+      "subjective_hit_rate": 0.0055,
       "win_probabilities": {
         "6": 0.34,
         "3": 0.23,
@@ -692,8 +660,8 @@
           "type": "3連複",
           "horses": [
             4,
-            5,
-            6
+            6,
+            11
           ],
           "stake": 100
         }
