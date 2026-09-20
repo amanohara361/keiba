@@ -74,7 +74,7 @@ def strip_tags(html):
 # ----------------------------------------------------------------------
 
 def parse_entries(page):
-    """出馬表から {馬番: {horse_id, name, weight, weight_diff}} を作る。"""
+    """出馬表から {馬番: {horse_id, name, weight, weight_diff, kinryo}} を作る。"""
     entries = {}
     for row in re.findall(r'<tr class="[^"]*HorseList[^"]*"[^>]*>(.*?)</tr>', page, re.S):
         umaban = re.search(r'<td[^>]*class="[^"]*Umaban[^"]*"[^>]*>\s*(\d+)\s*</td>', row)
@@ -96,11 +96,27 @@ def parse_entries(page):
                 except ValueError:
                     weight_diff = None
 
+        # 斤量：性齢（Barei）セルの直後にある無地の Txt_C セル。
+        # 列順は 枠/馬番/印/馬名/性齢/斤量/騎手/厩舎/馬体重/オッズ/人気で固定
+        # （2026-09-20、probe entries-raw で実物確認。data/probe/last.txt、
+        # 202609040611・ハンデンドレイクで実測。ハンデ戦は各馬ごとに斤量が
+        # 違うため、朝タスクがこれまで「未取得」としていた項目）。
+        kinryo = None
+        kinryo_cell = re.search(
+            r'<td[^>]*class="[^"]*Barei[^"]*"[^>]*>.*?</td>\s*'
+            r'<td class="Txt_C">([\d.]+)</td>', row, re.S)
+        if kinryo_cell:
+            try:
+                kinryo = float(kinryo_cell.group(1))
+            except ValueError:
+                kinryo = None
+
         entries[int(umaban.group(1))] = {
             'horse_id': horse.group(1),
             'name': (name.group(1).strip() if name else ''),
             'weight': weight,
             'weight_diff': weight_diff,
+            'kinryo': kinryo,
         }
     return entries
 

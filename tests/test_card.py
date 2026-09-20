@@ -344,6 +344,74 @@ def test_競走成績が無ければ空で返す():
 
 
 # ----------------------------------------------------------------------
+# 出馬表（馬番→horse_id・馬体重・斤量）
+# ----------------------------------------------------------------------
+#
+# 2026-09-20にActionsのprobe entries-rawで確認した実物の形を縮めて使う
+# （data/probe/last.txt、202609040611・ハンデンドレイクで実測）。
+# 斤量は性齢（Barei）セルの直後の無地Txt_Cセルに入っている。
+
+SHUTUBA_PAGE = '''
+<tr class="HorseList">
+<td class="Waku1 Txt_C"><span>1</span></td>
+<td class="Umaban1 Txt_C">1</td>
+<td class="HorseInfo">
+<span class="HorseName"><a href="https://db.netkeiba.com/horse/2023106194" target="_blank" title="ハンデンドレイク">ハンデンドレイク</a></span>
+</td>
+<td class="Barei Txt_C">牡3</td>
+<td class="Txt_C">56.0</td>
+<td class="Jockey">
+<a href="https://db.netkeiba.com/jockey/result/recent/01034/" target="_blank" title="酒井"> 酒井</a>
+</td>
+<td class="Trainer"><span class="Label3">地方</span><a href="https://db.netkeiba.com/trainer/result/recent/05625/" target="_blank" title="荒山勝">荒山勝</a></td>
+<td class="Weight">
+
+</td>
+</tr>
+<tr class="HorseList">
+<td class="Waku2 Txt_C"><span>2</span></td>
+<td class="Umaban2 Txt_C">2</td>
+<td class="HorseInfo">
+<span class="HorseName"><a href="https://db.netkeiba.com/horse/2022104321" target="_blank" title="ダミーウマ">ダミーウマ</a></span>
+</td>
+<td class="Barei Txt_C">牝4</td>
+<td class="Txt_C">54.0</td>
+<td class="Jockey">
+<a href="https://db.netkeiba.com/jockey/result/recent/00000/" target="_blank" title="ダミー"> ダミー</a>
+</td>
+<td class="Trainer"><a href="https://db.netkeiba.com/trainer/result/recent/00000/" target="_blank" title="ダミー">ダミー</a></td>
+<td class="Weight">
+482(+2)
+</td>
+</tr>
+'''
+
+
+def test_出馬表から斤量を読む():
+    """ハンデ戦は馬ごとに斤量が違い、これまで朝タスクが『未取得』としていた
+    項目（2026-08-30新潟記念など）。出馬表にすでに載っているので読む。
+    """
+    entries = form_module.parse_entries(SHUTUBA_PAGE)
+    assert entries[1]['kinryo'] == 56.0
+    assert entries[2]['kinryo'] == 54.0
+
+
+def test_出馬表の斤量以外の項目は従来どおり():
+    entries = form_module.parse_entries(SHUTUBA_PAGE)
+    assert entries[1]['horse_id'] == '2023106194'
+    assert entries[1]['name'] == 'ハンデンドレイク'
+    assert entries[1]['weight'] is None       # 馬体重は未発表もありうる
+    assert entries[2]['weight'] == 482
+    assert entries[2]['weight_diff'] == 2
+
+
+def test_斤量セルが読めなければNone():
+    page_without_kinryo = SHUTUBA_PAGE.replace('<td class="Txt_C">56.0</td>', '')
+    entries = form_module.parse_entries(page_without_kinryo)
+    assert entries[1]['kinryo'] is None
+
+
+# ----------------------------------------------------------------------
 # 馬名検索（交流重賞のJRA所属馬。地方の公式データにはhorse_idが無い）
 # ----------------------------------------------------------------------
 #
