@@ -1,54 +1,49 @@
-# card-horse-search ラッキーキッド  (2026-08-13T01:01:43Z)
-取得サイズ: 65078 文字
-URL: https://db.netkeiba.com/?pid=horse_list&word=%E3%83%A9%E3%83%83%E3%82%AD%E3%83%BC%E3%82%AD%E3%83%83%E3%83%89
-  /horse/: 30 箇所
-  horse_list: 0 箇所
-  No.: 1 箇所
-  該当: 0 箇所
-  nowrap: 0 箇所
+# card-entries-raw 202609040611  (2026-09-20T04:16:35Z)
+取得サイズ: 258883 文字
+HorseList行: 18 件
 
-title: ラッキーキッド (Lucky Kid) | 競走馬データ - netkeiba
-canonical: https://db.netkeiba.com/horse/2023101148/
-og:url: https://db.netkeiba.com/horse/2023101148/
-  db_h_race_results: 0 箇所
-  RaceKind_result: 0 箇所
-  horse_result: 4 箇所
-  該当馬: 0 箇所
-  件が該当: 0 箇所
+1頭目の<td>クラス一覧: ['Barei Txt_C', 'CheckMark Horse_Select', 'FavMemo', 'FavRegist Txt_C', 'HorseInfo', 'Jockey', 'Note0', 'Note1', 'Popular Popular_Ninki Txt_C', 'Trainer', 'Txt_C', 'Txt_R Popular', 'Umaban1 Txt_C', 'Waku1 Txt_C', 'Weight']
 
-見つかった horse_id 候補: 3件
+1頭目の生HTML:
 
---- 2023101148 の前後400文字 ---
-の全データがご覧いただけます。" />
-<meta name="keywords" content="競馬情報,競走馬,騎手,レース,調教師,馬主,検索,データベース,JRA,netkeiba,ネット競馬" />
-<meta name="thumbnail" content="https://cdnv2.netkeiba.com/img.db.sp/show_photo.php?horse_id=2023101148&no=spdb&tn=&tmp=no&default_image=netkeiba" />
-<!-- ogp用 -->
-<meta property="og:site_name" content="netkeiba" />
-<meta property="og:type" content="article" />
-<meta property="og:title" conte
+<td class="Waku1 Txt_C"><span>1</span></td>
+<td class="Umaban1 Txt_C">1</td>
+<td class="CheckMark Horse_Select">
 
---- 2024100679 の前後400文字 ---
-<th>主な勝鞍</th>
-<td><a href="/race/202605010809/" title="26'ヒヤシンスS(L)">26'ヒヤシンスS(L)</a><!--、<a href="/race/202505040704/" title=25'2歳新馬"">25'2歳新馬</a>--></td>
-</tr>
-<tr>
-<th>近親馬</th>
-<td><a href="/horse/2024100679/" title="ハッピーユー">ハッピーユー</a>、<a href="/horse/2025100762/" title="ハッピーゴラッキーの2025">ハッピーゴラッキーの2025</a></td>
-</tr>
-</table>
-<span id="horse_pedigree_box">
-<img src="https://cdnv2.netkeiba.com/im
+<select class="makeMeFancy_20" name="20" id="mark_20" style="display: none;">
+<option data-html-text="--" value="1_0">--</option><option data-html-text="◎" value="1_1">◎</option><option data-html-text="◯" value="1_2">◯</option><option data-html-text="▲" value="1_3">▲</option><option data-html-text="△" value="1_4">△</option><option data-html-text="☆" value="1_5">☆</option><option data-html-text="&amp;#10003" value="1_98">&amp;#10003</option><option data-html-text="消" value="1_99">消</option>
+</select>
+</td>
+<td class="HorseInfo">
+<div>
+<div>
+<span class="Icon_HorseMark Icon_kakuChi"></span><span class="HorseName"><a href="https://db.netkeiba.com/horse/2023106194" target="_blank" title="ハンデンドレイク">ハンデンドレイク<img id="myhorse_2023106194" class="disp_none Favorite" src="https://cdnv2.netkeiba.com/img.race/common/img/icon/icon_horse.png?2019073001" alt="" width="18"></a></span>
+<img id="myhorse1_2023106194" src="https://cdnv2.netkeiba.com/img.race/common/img/icon/horse_favorite_icon_pc.png" class="disp_none horsebookmark myhorse_2023106194" onmouseover="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/horse_favorite_icon_pc.png'" onmouseout="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/horse_favorite_icon_pc.png'" width="20">
+</div>
+</div>
+</td>
+<td class="Barei Txt_C">牡3</td>
+<td class="Txt_C">56.0</td>
+<td class="Jockey">
+<a  href="https://db.netkeiba.com/jockey/result/recent/01034/" target="_blank" title="酒井"> 酒井</a>
 
---- 2025100762 の前後400文字 ---
-26'ヒヤシンスS(L)">26'ヒヤシンスS(L)</a><!--、<a href="/race/202505040704/" title=25'2歳新馬"">25'2歳新馬</a>--></td>
-</tr>
-<tr>
-<th>近親馬</th>
-<td><a href="/horse/2024100679/" title="ハッピーユー">ハッピーユー</a>、<a href="/horse/2025100762/" title="ハッピーゴラッキーの2025">ハッピーゴラッキーの2025</a></td>
-</tr>
-</table>
-<span id="horse_pedigree_box">
-<img src="https://cdnv2.netkeiba.com/img.db/common/img/gif_loader.gif" />
-</span>
-<script>
-"us
+
+</td>
+<td class="Trainer"><span class="Label3">地方</span><a href="https://db.netkeiba.com/trainer/result/recent/05625/" target="_blank" title="荒山勝">荒山勝</a></td>
+<td class="Weight">
+
+</td>
+<td class="Txt_R Popular"><span id="odds-1_01" style="font-weight : bold">---.-</span></td>
+<td class="Popular Popular_Ninki Txt_C">
+<span id="ninki-1_01">**</span>
+</td>
+<td class="FavRegist Txt_C">
+<a href="https://db.sp.netkeiba.com?pid=horse_bookmark_add&horse_id=2023106194&rtn_url=https://race.netkeiba.com/race/shutuba.html?race_id=202609040611" title="お気に入り馬登録" class="popup_link_04 cboxElement cboxElement_Nologin">
+<img src="https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_03.png" class="horsebookmark myhorse1_2023106194" onmouseover="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_03.png'" onmouseout="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_03.png'" width="18">
+<img id="myhorse1_2023106194" src="https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_04.png" width="18" class="disp_none horsebookmark myhorse_2023106194" onmouseover="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_04.png'" onmouseout="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_04.png'">
+</a>
+</td>
+<td class="FavMemo"><div><a href="../popup/horse_bookmark.html?ketto_num=2023106194&race_id=202609040611" id="Bamei_2023106194" title="" class="popup_link_04 cboxElement"></a></div></td>
+<td id="note0_2023106194" class="Note0"><a class="Note_Inner" href="javascript:void(0);"><span class="Note_Text"></span><span class="NoteIcon">編集</span></a></td>
+<td id="note1_2023106194" class="Note1" style="display:none;"><a class="Note_Inner" href="javascript:void(0);"><span class="Note_Text"></span><span class="NoteIcon">編集</span></a></td>
+
