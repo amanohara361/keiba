@@ -1,0 +1,81 @@
+[
+  {
+    "checked_at": "2026-09-21T08:17:54.402227+09:00",
+    "races": [
+      {
+        "race_id": "202609213612",
+        "name": "第7回 オータムティアラ（フィエールマン賞）3歳牝馬",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第7回 オータムティアラ（フィエールマン賞）3歳牝馬: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第7回 オータムティアラ（フィエールマン賞）3歳牝馬: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1900,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-09-21 08:17:55"
+        }
+      },
+      {
+        "race_id": "202609214609",
+        "name": "第2回 金沢鼓門賞【金沢スプリントカップTR】3歳上",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第2回 金沢鼓門賞【金沢スプリントカップTR】3歳上: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第2回 金沢鼓門賞【金沢スプリントカップTR】3歳上: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-09-21 08:17:55"
+        }
+      }
+    ]
+  }
+]
