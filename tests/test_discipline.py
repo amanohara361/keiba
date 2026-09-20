@@ -800,6 +800,7 @@ def test_買い目の変化を検出する():
     class FakeVerdict:
         def __init__(self, race):
             self.race = race
+            self.meta = {}
 
     previous = {'races': [
         {'race_id': '111', 'bet_odds': [{'bet': '馬連 1-2', 'odds': 5.0}]},
@@ -833,12 +834,38 @@ def test_見送りへの変化も検出する():
 
     class FakeVerdict:
         race = FakeRace()
+        meta = {}
 
     previous = {'races': [{'race_id': '111',
                            'bet_odds': [{'bet': '馬連 1-2', 'odds': 5.0}]}]}
     changed = check._detect_bet_changes([FakeVerdict()], previous)
 
     assert changed == [('レースD', ['馬連 1-2'], [])]
+
+
+def test_発走済みレースは比較対象から除く():
+    """review_sheetは発走済みレースをbet_odds=[]で記録し、race.betsは
+    前回のまま組み直さない。ここを比較すると、race.betsが空でない限り
+    「前回の記録=空」対「今回のrace.bets=中身あり」で恒久的にold!=newと
+    なり、発走から何時間経っても「買い目が変わった」と誤検出し続けて
+    しまう（2026-09-20、全レース発走済みのはずの回にメールが届き続けた
+    件で発覚。全レースが発走済みなのに`changed`が非空になり、
+    `_all_races_already_started`による沈黙が effectively 無効化されていた）。
+    """
+    class FakeRace:
+        race_id = '111'
+        name = 'レースE'
+        bets = [Bet('3連複', [4, 5, 7])]  # 発走済みになる前に確定した買い目
+
+    class FakeVerdict:
+        race = FakeRace()
+        meta = {'skipped': '発走済みのため取得せず'}
+
+    # 発走済みの回はbet_odds=[]で記録される（review_sheetの仕様どおり）。
+    previous = {'races': [{'race_id': '111', 'bet_odds': []}]}
+    changed = check._detect_bet_changes([FakeVerdict()], previous)
+
+    assert changed == []
 
 
 def test_買い目が変わった回はquietでも通常メールで知らせる(tmp_path, monkeypatch):
