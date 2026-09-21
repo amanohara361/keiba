@@ -77,5 +77,56 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-21T19:37:26.685092+09:00",
+    "races": [
+      {
+        "race_id": "202609213612",
+        "name": "第7回 オータムティアラ（フィエールマン賞）3歳牝馬",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第7回 オータムティアラ（フィエールマン賞）3歳牝馬: 既に発走しています（発走 18:05 / 現在 19:37）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202609214609",
+        "name": "第2回 金沢鼓門賞【金沢スプリントカップTR】3歳上",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第2回 金沢鼓門賞【金沢スプリントカップTR】3歳上: 既に発走しています（発走 18:15 / 現在 19:37）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
