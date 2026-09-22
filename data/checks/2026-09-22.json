@@ -151,5 +151,990 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-22T09:01:24.265412+09:00",
+    "races": [
+      {
+        "race_id": "202609224711",
+        "name": "第５４回 ジュニアクラウン２歳・オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第５４回 ジュニアクラウン２歳・オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第５４回 ジュニアクラウン２歳・オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-09-22 09:01:26"
+        }
+      },
+      {
+        "race_id": "202609224611",
+        "name": "第４６回 白山大賞典JpnIII３歳上オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第４６回 白山大賞典JpnIII３歳上オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第４６回 白山大賞典JpnIII３歳上オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 2100,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-09-22 09:01:26"
+        }
+      },
+      {
+        "race_id": "202609224612",
+        "name": "敬馬賞Ｂ級下９歳上",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "敬馬賞Ｂ級下９歳上: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "敬馬賞Ｂ級下９歳上: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-09-22 09:01:26"
+        }
+      },
+      {
+        "race_id": "202609223012",
+        "name": "第７回 ウポポイオータムスプリント（マッドクール賞）一般オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第７回 ウポポイオータムスプリント（マッドクール賞）一般オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第７回 ウポポイオータムスプリント（マッドクール賞）一般オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1200,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-09-22 09:01:26"
+        }
+      },
+      {
+        "race_id": "202606040702",
+        "name": "2歳未勝利",
+        "blocked": false,
+        "composite_odds": 59.2,
+        "expected_value": 1.33,
+        "bet_odds": [
+          {
+            "bet": "3連複 4-10-13",
+            "odds": 59.2
+          }
+        ],
+        "win_odds": {
+          "1": 49.7,
+          "2": 25.5,
+          "3": 40.5,
+          "4": 4.8,
+          "5": 21.1,
+          "6": 46.4,
+          "7": 14.4,
+          "8": 4.2,
+          "9": 5.4,
+          "10": 14.2,
+          "11": 59.1,
+          "12": 13.1,
+          "13": 4.6,
+          "14": 37.5
+        },
+        "win_ninki": {
+          "1": 13,
+          "2": 9,
+          "3": 11,
+          "4": 3,
+          "5": 8,
+          "6": 12,
+          "7": 7,
+          "8": 1,
+          "9": 4,
+          "10": 6,
+          "11": 14,
+          "12": 5,
+          "13": 2,
+          "14": 10
+        },
+        "priced_odds": {
+          "単勝": {
+            "4": 4.8
+          },
+          "馬連": {
+            "4-13": 9.1,
+            "4-8": 9.7,
+            "4-7": 27.2,
+            "4-9": 20.9,
+            "4-12": 31.5,
+            "4-10": 43.6
+          },
+          "ワイド": {
+            "4-13": 3.6,
+            "4-8": 2.5,
+            "4-7": 10.0,
+            "4-9": 9.9,
+            "4-12": 9.7,
+            "4-10": 12.4,
+            "8-13": 3.6
+          },
+          "3連複": {
+            "4-8-13": 11.4,
+            "4-7-13": 29.2,
+            "4-9-13": 27.3,
+            "4-12-13": 31.3,
+            "4-10-13": 59.2,
+            "4-7-8": 35.4,
+            "4-8-9": 29.0,
+            "4-8-12": 35.5,
+            "4-8-10": 54.1,
+            "4-7-9": 86.7,
+            "4-7-12": 95.6,
+            "4-7-10": 150.1,
+            "4-9-12": 96.3,
+            "4-9-10": 103.5
+          }
+        },
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "2歳未勝利: 馬場が「重」です（芝1200m / 天候:晴 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "2歳未勝利: ◎4番 スペシャルサンクス は「重」での出走がありません（重は出走なし / 良[0-0-1-1]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "2歳未勝利: ○13番 トーセンルルド は「重」での出走がありません（重は出走なし / 良[0-1-1-2]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "2歳未勝利: 合成オッズ 59.20倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "2歳未勝利: 期待値 1.33（合成 59.20倍 × 主観的中率 2%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "2歳未勝利: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:00:22"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:00:22"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:00:22"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:00:22"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-22 09:00:22"
+        }
+      },
+      {
+        "race_id": "202606040703",
+        "name": "2歳未勝利",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 31.9,
+          "2": 36.9,
+          "3": 14.0,
+          "4": 17.8,
+          "5": 2.2,
+          "6": 4.0,
+          "7": 17.5,
+          "8": 4.4,
+          "9": 31.0,
+          "10": 27.7,
+          "11": 47.8
+        },
+        "win_ninki": {
+          "1": 9,
+          "2": 10,
+          "3": 4,
+          "4": 6,
+          "5": 1,
+          "6": 2,
+          "7": 5,
+          "8": 3,
+          "9": 8,
+          "10": 7,
+          "11": 11
+        },
+        "priced_odds": {
+          "単勝": {
+            "5": 2.2
+          },
+          "馬連": {
+            "5-8": 4.3,
+            "5-6": 5.5,
+            "3-5": 13.4,
+            "5-7": 15.5,
+            "4-5": 17.6,
+            "5-9": 41.6
+          },
+          "ワイド": {
+            "5-8": 2.0,
+            "5-6": 2.5,
+            "3-5": 5.0,
+            "5-7": 5.6,
+            "4-5": 6.0,
+            "5-9": 11.4
+          },
+          "3連複": {
+            "5-6-8": 6.6,
+            "3-5-8": 12.0,
+            "5-7-8": 15.9,
+            "4-5-8": 20.1,
+            "5-8-9": 35.3,
+            "3-5-6": 19.1,
+            "5-6-7": 19.4,
+            "4-5-6": 23.9,
+            "5-6-9": 62.4,
+            "3-5-7": 42.2,
+            "3-4-5": 46.7,
+            "3-5-9": 104.7,
+            "4-5-7": 54.5,
+            "5-7-9": 146.5
+          }
+        },
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "2歳未勝利: 馬場が「重」です（ダート1200m / 天候:晴 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "2歳未勝利: ◎5番 ドナビッグベン は「重」での出走がありません（重は出走なし / 良[0-1-0-1]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "2歳未勝利: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:00:27"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:00:27"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:00:27"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:00:27"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-22 09:00:27"
+        }
+      },
+      {
+        "race_id": "202606040704",
+        "name": "2歳未勝利",
+        "blocked": false,
+        "composite_odds": 83.1,
+        "expected_value": 1.56,
+        "bet_odds": [
+          {
+            "bet": "馬連 3-8",
+            "odds": 83.1
+          }
+        ],
+        "win_odds": {
+          "1": 12.4,
+          "2": 39.3,
+          "3": 5.0,
+          "4": 2.9,
+          "5": 10.4,
+          "6": 4.3,
+          "7": 7.0,
+          "8": 22.5,
+          "9": 13.4,
+          "10": 61.5
+        },
+        "win_ninki": {
+          "1": 6,
+          "2": 9,
+          "3": 3,
+          "4": 1,
+          "5": 5,
+          "6": 2,
+          "7": 4,
+          "8": 8,
+          "9": 7,
+          "10": 10
+        },
+        "priced_odds": {
+          "単勝": {
+            "3": 5.0
+          },
+          "馬連": {
+            "3-8": 83.1,
+            "3-4": 5.1,
+            "3-5": 27.2,
+            "3-6": 12.5,
+            "3-9": 34.2,
+            "2-3": 177.9
+          },
+          "ワイド": {
+            "3-8": 16.9,
+            "3-4": 2.4,
+            "3-5": 8.2,
+            "3-6": 4.0,
+            "3-9": 8.4,
+            "2-3": 35.4,
+            "4-8": 9.5
+          },
+          "3連複": {
+            "3-4-8": 44.6,
+            "3-5-8": 155.6,
+            "3-6-8": 102.6,
+            "3-8-9": 225.8,
+            "2-3-8": 965.5,
+            "3-4-5": 16.6,
+            "3-4-6": 6.9,
+            "3-4-9": 21.6,
+            "2-3-4": 109.0,
+            "3-5-6": 33.9,
+            "3-5-9": 106.9,
+            "2-3-5": 378.4,
+            "3-6-9": 43.1,
+            "2-3-6": 214.0
+          }
+        },
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "2歳未勝利: 馬場が「重」です（芝1800m / 天候:晴 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "2歳未勝利: ◎3番 アニエーネ は「重」での出走がありません（重は出走なし / 良[0-1-0-1]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "2歳未勝利: ○8番 エレスレイプニル は「重」での出走がありません（重は出走なし / 良[0-0-0-3]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "2歳未勝利: 合成オッズ 83.10倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "2歳未勝利: 期待値 1.56（合成 83.10倍 × 主観的中率 2%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "lone_partner",
+            "message": "2歳未勝利: 馬連・馬単の相手が 8番の1頭だけです",
+            "remedy": "2着抜けで全滅する構造です。◎絡みのワイドまたは複勝を保険に置けないか検討してください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "2歳未勝利: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1800
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:00:37"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:00:37"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:00:37"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:00:37"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-22 09:00:37"
+        }
+      },
+      {
+        "race_id": "202606040709",
+        "name": "鋸山特別",
+        "blocked": true,
+        "composite_odds": 165.5,
+        "expected_value": 1.26,
+        "bet_odds": [
+          {
+            "bet": "3連複 3-14-16",
+            "odds": 165.5
+          }
+        ],
+        "win_odds": {
+          "1": 15.2,
+          "2": 10.9,
+          "3": 4.6,
+          "4": 17.6,
+          "5": 10.3,
+          "6": 5.7,
+          "7": 71.3,
+          "8": 27.3,
+          "9": 62.1,
+          "10": 81.9,
+          "11": 7.4,
+          "12": 27.6,
+          "13": 29.1,
+          "14": 4.6,
+          "15": 36.6,
+          "16": 37.7
+        },
+        "win_ninki": {
+          "1": 7,
+          "2": 6,
+          "3": 1,
+          "4": 8,
+          "5": 5,
+          "6": 3,
+          "7": 15,
+          "8": 9,
+          "9": 14,
+          "10": 16,
+          "11": 4,
+          "12": 10,
+          "13": 11,
+          "14": 2,
+          "15": 12,
+          "16": 13
+        },
+        "priced_odds": {
+          "単勝": {
+            "3": 4.6
+          },
+          "馬連": {
+            "2-3": 21.3,
+            "3-6": 9.4,
+            "3-14": 8.7,
+            "3-13": 78.6,
+            "3-16": 131.9,
+            "3-11": 18.8,
+            "1-3": 30.0
+          },
+          "ワイド": {
+            "2-3": 6.9,
+            "3-6": 4.1,
+            "3-14": 3.9,
+            "3-13": 25.8,
+            "3-16": 25.0,
+            "3-11": 8.7,
+            "1-3": 10.0,
+            "2-6": 10.4
+          },
+          "3連複": {
+            "2-3-6": 31.2,
+            "2-3-14": 32.9,
+            "2-3-13": 239.5,
+            "2-3-16": 323.0,
+            "2-3-11": 89.6,
+            "1-2-3": 78.6,
+            "3-6-14": 12.4,
+            "3-6-13": 95.1,
+            "3-6-16": 166.0,
+            "3-6-11": 31.4,
+            "1-3-6": 35.3,
+            "3-13-14": 91.5,
+            "3-14-16": 165.5,
+            "3-11-14": 29.1,
+            "1-3-14": 41.8,
+            "3-13-16": 1231.2,
+            "3-11-13": 281.9,
+            "1-3-13": 318.4
+          }
+        },
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "鋸山特別: 馬場が「重」です（ダート1800m / 天候:晴 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "鋸山特別: 合成オッズ 165.50倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "鋸山特別: 期待値 1.26（合成 165.50倍 × 主観的中率 1%）",
+            "remedy": ""
+          },
+          {
+            "severity": "BLOCK",
+            "code": "mark_contradiction",
+            "message": "鋸山特別: 上位印 ○2番 が買い目に無いのに、下位印 △14番 が入っています",
+            "remedy": "数値基準は買い目を削る道具であって、印の序列を上書きする根拠ではありません。(1)相手を◎○に絞り点数を減らす (2)◎が堅く2着が絞れないならワイドにする (3)どれも無理なら見送る（勝負度Cへ降格）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "鋸山特別: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1800
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:01:12"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:01:12"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:01:12"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:01:12"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-22 09:01:12"
+        }
+      },
+      {
+        "race_id": "202606040710",
+        "name": "Mディープイ",
+        "blocked": false,
+        "composite_odds": 24.02,
+        "expected_value": 1.45,
+        "bet_odds": [
+          {
+            "bet": "3連複 2-7-9",
+            "odds": 55.6
+          },
+          {
+            "bet": "ワイド 4-7",
+            "odds": 42.3
+          }
+        ],
+        "win_odds": {
+          "1": 12.9,
+          "2": 6.5,
+          "3": 32.2,
+          "4": 53.6,
+          "5": 3.7,
+          "6": 12.6,
+          "7": 7.8,
+          "8": 17.5,
+          "9": 5.9,
+          "10": 73.0,
+          "11": 3.8
+        },
+        "win_ninki": {
+          "1": 7,
+          "2": 4,
+          "3": 9,
+          "4": 10,
+          "5": 1,
+          "6": 6,
+          "7": 5,
+          "8": 8,
+          "9": 3,
+          "10": 11,
+          "11": 2
+        },
+        "priced_odds": {
+          "単勝": {
+            "9": 5.9
+          },
+          "馬連": {
+            "4-9": 187.6,
+            "7-9": 20.6,
+            "9-11": 9.1,
+            "2-9": 23.3,
+            "6-9": 34.0,
+            "5-9": 9.7
+          },
+          "ワイド": {
+            "4-9": 38.4,
+            "7-9": 7.4,
+            "9-11": 3.4,
+            "2-9": 8.1,
+            "6-9": 9.1,
+            "5-9": 4.0,
+            "4-7": 42.3
+          },
+          "3連複": {
+            "4-7-9": 374.1,
+            "4-9-11": 170.5,
+            "2-4-9": 455.5,
+            "4-6-9": 513.5,
+            "4-5-9": 185.3,
+            "7-9-11": 24.1,
+            "2-7-9": 55.6,
+            "6-7-9": 78.7,
+            "5-7-9": 23.1,
+            "2-9-11": 24.9,
+            "6-9-11": 33.1,
+            "5-9-11": 9.2,
+            "2-6-9": 77.3,
+            "2-5-9": 25.1
+          }
+        },
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "Mディープイ: 馬場が「重」です（芝1600m / 天候:晴 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "Mディープイ: ◎9番 アルデトップガン は「重」での出走がありません（重は出走なし / 良[1-0-1-4]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "Mディープイ: 合成オッズ 24.02倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "Mディープイ: 期待値 1.45（合成 24.02倍 × 主観的中率 6%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "marked_only_trifecta",
+            "message": "Mディープイ: 3連複 2-7-9 が印馬だけで組まれています",
+            "remedy": "印馬が3着以内を独占する前提に依存します。◎（＋1頭）を軸に、相手へ印を打たなかった中穴を最低1頭含めてください。"
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1600
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:01:22"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:01:22"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:01:22"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:01:22"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-22 09:01:22"
+        }
+      },
+      {
+        "race_id": "202606040711",
+        "name": "JRAアニバ",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 22.9,
+          "2": 8.8,
+          "3": 6.6,
+          "4": 34.4,
+          "5": 5.8,
+          "6": 40.3,
+          "7": 56.5,
+          "8": 21.8,
+          "9": 13.6,
+          "10": 8.6,
+          "11": 32.1,
+          "12": 5.4,
+          "13": 20.9,
+          "14": 11.1,
+          "15": 12.8,
+          "16": 26.8
+        },
+        "win_ninki": {
+          "1": 11,
+          "2": 5,
+          "3": 3,
+          "4": 14,
+          "5": 2,
+          "6": 15,
+          "7": 16,
+          "8": 10,
+          "9": 8,
+          "10": 4,
+          "11": 13,
+          "12": 1,
+          "13": 9,
+          "14": 6,
+          "15": 7,
+          "16": 12
+        },
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "JRAアニバ: 馬場が「重」です（ダート1800m / 天候:晴 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "JRAアニバ: ○14番 レディーフランシス は「重」での出走がありません（重は出走なし / 良[2-0-0-6]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "JRAアニバ: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1800
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:01:27"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:01:27"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:01:27"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-22 09:01:27"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-22 09:01:27"
+        }
+      }
+    ]
   }
 ]
