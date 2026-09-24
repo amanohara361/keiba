@@ -1,0 +1,44 @@
+[
+  {
+    "checked_at": "2026-09-25T08:14:07.211833+09:00",
+    "races": [
+      {
+        "race_id": "202609255011",
+        "name": "第２３回 園田チャレンジカップ３歳以上登録馬",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第２３回 園田チャレンジカップ３歳以上登録馬: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第２３回 園田チャレンジカップ３歳以上登録馬: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-09-25 08:14:08"
+        }
+      }
+    ]
+  }
+]
