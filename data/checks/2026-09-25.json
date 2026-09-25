@@ -189,5 +189,33 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-25T23:42:47.540316+09:00",
+    "races": [
+      {
+        "race_id": "202609255011",
+        "name": "第２３回 園田チャレンジカップ３歳以上登録馬",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第２３回 園田チャレンジカップ３歳以上登録馬: 既に発走しています（発走 20:00 / 現在 23:42）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
