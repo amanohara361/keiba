@@ -3927,5 +3927,573 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-09-26T15:06:28.101134+09:00",
+    "races": [
+      {
+        "race_id": "202606040810",
+        "name": "勝浦特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "勝浦特別: 既に発走しています（発走 14:50 / 現在 15:06）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202606040811",
+        "name": "秋風S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 15.9,
+          "2": 3.9,
+          "3": 7.5,
+          "4": 6.4,
+          "5": 31.5,
+          "6": 62.3,
+          "7": 83.1,
+          "8": 4.6,
+          "9": 51.7,
+          "10": 12.7,
+          "11": 23.8,
+          "12": 9.0,
+          "13": 11.9,
+          "14": 25.6
+        },
+        "win_ninki": {
+          "1": 8,
+          "2": 1,
+          "3": 4,
+          "4": 3,
+          "5": 11,
+          "6": 13,
+          "7": 14,
+          "8": 2,
+          "9": 12,
+          "10": 7,
+          "11": 9,
+          "12": 5,
+          "13": 6,
+          "14": 10
+        },
+        "priced_odds": {
+          "単勝": {
+            "2": 3.9
+          },
+          "馬連": {
+            "2-8": 9.4,
+            "2-3": 15.3,
+            "2-12": 15.2,
+            "2-4": 13.7,
+            "1-2": 28.9,
+            "2-10": 21.3
+          },
+          "ワイド": {
+            "2-8": 3.7,
+            "2-3": 5.8,
+            "2-12": 6.6,
+            "2-4": 4.7,
+            "1-2": 10.5,
+            "2-10": 8.8
+          },
+          "3連複": {
+            "2-3-8": 23.5,
+            "2-8-12": 20.0,
+            "2-4-8": 18.4,
+            "1-2-8": 36.7,
+            "2-8-10": 27.4,
+            "2-3-12": 38.2,
+            "2-3-4": 31.0,
+            "1-2-3": 53.7,
+            "2-3-10": 57.2,
+            "2-4-12": 31.8,
+            "1-2-12": 60.1,
+            "2-10-12": 46.2,
+            "1-2-4": 55.2,
+            "2-4-10": 44.4
+          }
+        },
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "秋風S: 馬場が「重」です（芝1600m / 天候:雨 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "秋風S: ◎2番 サウンドムーブ は「重」での出走がありません（重は出走なし / 良[1-1-1-3]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "秋風S: ○8番 インパクトシー は「重」での出走がありません（重は出走なし / 良[3-5-3-1]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "秋風S: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": "雨",
+          "surface": "芝",
+          "distance": 1600
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-26 15:06:15"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-26 15:06:15"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-26 15:06:15"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-26 15:06:15"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-26 15:06:15"
+        }
+      },
+      {
+        "race_id": "202606040812",
+        "name": "3歳以上2勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 7.1,
+          "2": 97.3,
+          "3": 55.2,
+          "4": 78.2,
+          "5": 95.2,
+          "6": 11.2,
+          "7": 4.8,
+          "8": 5.4,
+          "9": 17.7,
+          "10": 6.1,
+          "11": 13.4,
+          "12": 15.5,
+          "13": 9.0,
+          "14": 15.9,
+          "15": 24.9,
+          "16": 91.7
+        },
+        "win_ninki": {
+          "1": 4,
+          "2": 16,
+          "3": 12,
+          "4": 13,
+          "5": 15,
+          "6": 6,
+          "7": 1,
+          "8": 2,
+          "9": 10,
+          "10": 3,
+          "11": 7,
+          "12": 8,
+          "13": 5,
+          "14": 9,
+          "15": 11,
+          "16": 14
+        },
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "3歳以上2勝クラス: 馬場が「重」です（ダート1200m / 天候:雨 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "3歳以上2勝クラス: ◎6番 モーゲンセン は「重」での出走がありません（重は出走なし / 良[1-1-1-5]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "3歳以上2勝クラス: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": "雨",
+          "surface": "ダート",
+          "distance": 1200
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-26 15:06:20"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-26 15:06:20"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-26 15:06:20"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-26 15:06:20"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-26 15:06:20"
+        }
+      },
+      {
+        "race_id": "202609040806",
+        "name": "3歳以上1勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳以上1勝クラス: 既に発走しています（発走 12:55 / 現在 15:06）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202609040810",
+        "name": "野分特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "野分特別: 既に発走しています（発走 15:05 / 現在 15:06）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202609040811",
+        "name": "シリウスS",
+        "blocked": false,
+        "composite_odds": 66.0,
+        "expected_value": 1.35,
+        "bet_odds": [
+          {
+            "bet": "3連複 1-6-13",
+            "odds": 66.0
+          }
+        ],
+        "win_odds": {
+          "1": 12.8,
+          "2": 24.8,
+          "3": 16.7,
+          "4": 122.6,
+          "5": 20.1,
+          "6": 4.3,
+          "7": 50.1,
+          "8": 14.5,
+          "9": 26.9,
+          "10": 7.7,
+          "11": 16.3,
+          "12": 15.7,
+          "13": 4.5,
+          "14": 11.6,
+          "15": 21.3,
+          "16": 20.0
+        },
+        "win_ninki": {
+          "1": 5,
+          "2": 13,
+          "3": 9,
+          "4": 16,
+          "5": 11,
+          "6": 1,
+          "7": 15,
+          "8": 6,
+          "9": 14,
+          "10": 3,
+          "11": 8,
+          "12": 7,
+          "13": 2,
+          "14": 4,
+          "15": 12,
+          "16": 10
+        },
+        "priced_odds": {
+          "単勝": {
+            "6": 4.3
+          },
+          "馬連": {
+            "6-13": 12.1,
+            "6-11": 30.9,
+            "6-8": 30.8,
+            "6-15": 49.2,
+            "6-14": 30.4,
+            "2-6": 47.1,
+            "1-6": 38.0
+          },
+          "ワイド": {
+            "6-13": 5.3,
+            "6-11": 13.0,
+            "6-8": 10.3,
+            "6-15": 16.4,
+            "6-14": 12.8,
+            "2-6": 18.5,
+            "1-6": 13.4,
+            "11-13": 10.9
+          },
+          "3連複": {
+            "6-11-13": 46.6,
+            "6-8-13": 54.7,
+            "6-13-15": 73.2,
+            "6-13-14": 50.1,
+            "2-6-13": 85.2,
+            "1-6-13": 66.0,
+            "6-8-11": 104.9,
+            "6-11-15": 196.6,
+            "6-11-14": 133.2,
+            "2-6-11": 190.1,
+            "1-6-11": 181.7,
+            "6-8-15": 229.5,
+            "6-8-14": 126.0,
+            "2-6-8": 188.2,
+            "1-6-8": 150.2,
+            "6-14-15": 223.2,
+            "2-6-15": 273.4,
+            "1-6-15": 267.9,
+            "2-6-14": 214.9,
+            "1-6-14": 161.2
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "シリウスS: ダート2000m / 天候:雨 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "シリウスS: 合成オッズ 66.00倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "シリウスS: 期待値 1.35（合成 66.00倍 × 主観的中率 2%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "シリウスS: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "雨",
+          "surface": "ダート",
+          "distance": 2000
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-26 15:06:30"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-26 15:06:30"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-26 15:06:30"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-09-26 15:06:30"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-26 15:06:30"
+        }
+      },
+      {
+        "race_id": "202609265503",
+        "name": "佐賀オータムダッシュＡ１・Ａ２",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 9.3,
+          "2": 1.6,
+          "3": 4.6,
+          "4": 34.9,
+          "5": 12.8,
+          "6": 13.2,
+          "7": 29.6,
+          "8": 15.3,
+          "9": 27.4
+        },
+        "win_ninki": {
+          "1": 3,
+          "2": 1,
+          "3": 2,
+          "4": 9,
+          "5": 4,
+          "6": 5,
+          "7": 8,
+          "8": 6,
+          "9": 7
+        },
+        "priced_odds": {
+          "単勝": {
+            "3": 4.6
+          },
+          "馬連": {
+            "1-3": 13.0,
+            "2-3": 2.5,
+            "3-9": 16.2,
+            "3-6": 41.9
+          },
+          "ワイド": {
+            "1-3": 3.9,
+            "2-3": 1.2,
+            "3-9": 5.6,
+            "3-6": 6.3
+          },
+          "3連複": {
+            "1-2-3": 6.2,
+            "1-3-9": 55.1,
+            "1-3-6": 63.7,
+            "2-3-9": 7.9,
+            "2-3-6": 13.5,
+            "3-6-9": 72.8
+          }
+        },
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "佐賀オータムダッシュＡ１・Ａ２: 馬場が「不良」です（ダート900m / 天候:雨 / 馬場:不良）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "佐賀オータムダッシュＡ１・Ａ２: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 900,
+          "weather": "雨",
+          "going": "不良"
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 9
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 9
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 36
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 72
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 36
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 84
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-26 15:06:54"
+        }
+      }
+    ]
   }
 ]
