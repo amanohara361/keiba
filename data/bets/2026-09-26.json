@@ -11,7 +11,7 @@
       "race_no": 10,
       "start_time": "14:50",
       "confidence": "B",
-      "subjective_hit_rate": 0.0718,
+      "subjective_hit_rate": 0.0711,
       "win_probabilities": {
         "7": 0.13,
         "11": 0.07,
@@ -250,8 +250,8 @@
       "venue": "阪神",
       "race_no": 6,
       "start_time": "12:55",
-      "confidence": "A",
-      "subjective_hit_rate": 0.0172,
+      "confidence": "B",
+      "subjective_hit_rate": 0.0349,
       "win_probabilities": {
         "13": 0.18,
         "4": 0.06,
@@ -326,8 +326,8 @@
           "type": "3連複",
           "horses": [
             8,
-            12,
-            13
+            13,
+            15
           ],
           "stake": 100
         }
@@ -437,7 +437,7 @@
       "race_no": 11,
       "start_time": "15:45",
       "confidence": "B",
-      "subjective_hit_rate": 0.0204,
+      "subjective_hit_rate": 0.0202,
       "win_probabilities": {
         "6": 0.16,
         "13": 0.18,
