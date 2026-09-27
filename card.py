@@ -304,6 +304,11 @@ RIVAL_MAX_GAP = 0.2      # 秒。相手より遅くてもこの差まで（先�
 RIVAL_MIN_RATIO = 2.0    # 今回の単勝が相手の何倍以上か
 RIVAL_DAYS = 120         # 比べるレースの新しさ
 RIVAL_DIST_TOL = 200     # 距離の許容差（m）
+# 相手は今回の人気上位この頭数に限る。「人気馬と互角なのに人気が無い」だけを拾う。
+# 2026-08-15〜09-27の96レースで、絞らない場合は1着8（見込み5.1）・3着内率は
+# 同じオッズ帯と同じだったが、上位3頭に絞ると1着7（見込み3.2）・単勝回収率178%。
+# 8通り試した中の1つなので、数週分たまったら見直す（docs/決定ログ.md）。
+RIVAL_VS_TOP = 3
 
 
 def _seconds(text):
@@ -314,7 +319,7 @@ def _seconds(text):
 
 
 def close_rivals(race, day):
-    """直近の同条件レースで、今回2倍以上人気の馬と0.2秒差以内だった馬を拾う。
+    """直近の同条件レースで、今回の人気上位3頭（かつ2倍以上人気）と0.2秒差以内だった馬を拾う。
 
     2026-09-27 スプリンターズSの1着ピューロマジック（17倍）はセントウルSで
     ◎フリッカージャブ（7倍）と0.1秒差、3着サウンドモリアーナ（27倍）は
@@ -342,10 +347,11 @@ def close_rivals(race, day):
             shared.setdefault((run['date'], run.get('race') or ''), []).append(
                 (entry['umaban'], entry.get('name'), seconds))
 
+    favourites = set(sorted(odds, key=odds.get)[:RIVAL_VS_TOP])
     best = {}
     for (ran, name), runners in shared.items():
         for horse, rival in ((a, b) for a in runners for b in runners if a is not b):
-            if horse[0] not in odds or rival[0] not in odds:
+            if horse[0] not in odds or rival[0] not in favourites:
                 continue
             if odds[horse[0]] < odds[rival[0]] * RIVAL_MIN_RATIO:
                 continue
