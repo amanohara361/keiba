@@ -98,6 +98,12 @@ Claudeのサンドボックスは外部通信がホワイトリスト方式で�
 - 結果が不自然なときは先に `python jra_bias.py selftest` でページ構造の変化を確認する。
 - Windows側で手動実行するなら従来どおり バイアス確認.bat（fetch経由）が使える。
 - `fetch` が遮断された場合、スクリプト側が代替経路の手順を自動で表示する（2026-08-02追加）。
+- **当日の昼に測るなら、GitHub Actions の `bias.yml` を使う（2026-09-27〜）。** Actions のランナーは
+  netkeiba に到達できるので、`jra_bias.py live`（race.netkeiba.com の結果ページを読み、確定直後から
+  測れる）がそのまま動き、結果は `data/bias/YYYY-MM-DD.txt` に保存される。定時は11:37 JST、急ぐときは
+  workflow_dispatch（inputs.date: YYYYMMDD）で起こす。**サンドボックスから `live` を直接回しても
+  race.netkeiba.com には届かない**（fetch と同じ403）。上のスポーツナビ手動保存の手順は、Actions が
+  使えないときの代替として残す。
 
 ##軽量保存フォーマット（2026-08-02 実測で確立・以降はこれを標準とする）
 スポーツナビの結果ページはナビゲーションや広告が大半を占め、全文をWriteすると
