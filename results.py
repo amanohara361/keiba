@@ -115,21 +115,94 @@ def parse_finishing_order(page):
     return order
 
 
-def fetch(race_id, fetcher=None):
-    """1レースの確定結果。まだ出ていなければ None。"""
-    fetcher = fetcher or jra_bias.fetch_html
-    try:
-        page = fetcher(RACE_URL.format(race_id=race_id))
-    except Exception as exc:
-        raise ResultsError(f'{race_id} の結果を取得できませんでした: {exc}')
+def parse_nk_payouts(page):
+    """race.netkeiba.com の払戻表（Payout_Detail_Table）を parse_payouts と同じ形にする。
 
-    order = parse_finishing_order(page)
+    組み合わせは Result セルの中で、馬連・ワイド等は <ul> 1つが1組、
+    単勝・複勝は数字の入った <span> 1つが1頭。金額は Payout セルの <br> 区切り。
+    """
+    payouts = {}
+    for table in re.findall(
+            r'<table[^>]*class="[^"]*Payout_Detail_Table[^"]*"[^>]*>(.*?)</table>', page, re.S):
+        for row in re.findall(r'<tr[^>]*>(.*?)</tr>', table, re.S):
+            label = re.search(r'<th[^>]*>(.*?)</th>', row, re.S)
+            result = re.search(r'<td class="Result">(.*?)</td>', row, re.S)
+            amount = re.search(r'<td class="Payout">(.*?)</td>', row, re.S)
+            if not (label and result and amount):
+                continue
+            bet_type = BET_TYPE_ALIASES.get(re.sub(r'\s+', '', jra_bias.strip_tags(label.group(1))))
+            if not bet_type:
+                continue
+            groups = re.findall(r'<ul>(.*?)</ul>', result.group(1), re.S)
+            if groups:
+                combinations = [[int(n) for n in re.findall(r'<span>(\d+)</span>', g)]
+                                for g in groups]
+            else:
+                combinations = [[int(n)] for n in re.findall(r'<span>(\d+)</span>', result.group(1))]
+            amounts = [int(re.sub(r'[^\d]', '', a)) for a in _split_lines(amount.group(1))
+                       if re.sub(r'[^\d]', '', a)]
+            entries = [{'combination': c, 'yen': y}
+                       for c, y in zip(combinations, amounts) if c]
+            if entries:
+                payouts[bet_type] = entries
+    return payouts
+
+
+def _nk_finishing_order(page, race_id):
+    parsed = jra_bias.parse_nk_result(page, race_id)
+    if not parsed:
+        return []
+    order = []
+    for h in parsed['horses']:
+        entry = {'rank': h['着順'], 'umaban': h['馬番'], 'name': h['馬名']}
+        if str(h.get('人気', '')).isdigit():
+            entry['ninki'] = int(h['人気'])
+        try:
+            entry['odds'] = float(h['単勝'])
+        except (TypeError, ValueError):
+            pass
+        order.append(entry)
+    return order
+
+
+def fetch(race_id, fetcher=None):
+    """1レースの確定結果。まだ出ていなければ None。
+
+    まず db.netkeiba.com を読み、着順が取れなければ race.netkeiba.com の
+    結果ページを読む。db 側は 2026-09-19 以降のレースで着順が取れなくなり、
+    週次レビューで中央のレースが軒並み「結果未確定」になっていた
+    （2026-09-21締めの週で12レース）。race.netkeiba.com は確定直後から
+    着順と払戻を載せる（jra_bias.py live と同じページ）。
+    """
+    try:
+        page = (fetcher or jra_bias.fetch_html)(RACE_URL.format(race_id=race_id))
+    except Exception as exc:
+        page = ''
+        db_error = exc
+    else:
+        db_error = None
+
+    order = parse_finishing_order(page) if page else []
+    if order:
+        return {
+            'race_id': race_id,
+            'finishing_order': order,
+            'payouts': parse_payouts(page),
+        }
+
+    try:
+        page = (fetcher or jra_bias.fetch_html_utf8)(
+            jra_bias.NK_RESULT_URL.format(race_id=race_id))
+    except Exception as exc:
+        raise ResultsError(f'{race_id} の結果を取得できませんでした: '
+                           f'db={db_error} race={exc}')
+    order = _nk_finishing_order(page, race_id)
     if not order:
         return None
     return {
         'race_id': race_id,
         'finishing_order': order,
-        'payouts': parse_payouts(page),
+        'payouts': parse_nk_payouts(page),
     }
 
 
