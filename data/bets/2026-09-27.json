@@ -11,7 +11,7 @@
       "race_no": 8,
       "start_time": "13:55",
       "confidence": "B",
-      "subjective_hit_rate": 0.0349,
+      "subjective_hit_rate": 0.0348,
       "win_probabilities": {
         "14": 0.17,
         "15": 0.2,
@@ -223,7 +223,7 @@
       "race_no": 11,
       "start_time": "15:40",
       "confidence": "B",
-      "subjective_hit_rate": 0.2993,
+      "subjective_hit_rate": 0.0185,
       "win_probabilities": {
         "15": 0.14,
         "8": 0.045,
@@ -309,26 +309,11 @@
       ],
       "bets": [
         {
-          "type": "ワイド",
+          "type": "3連複",
           "horses": [
-            15,
-            13
-          ],
-          "stake": 100
-        },
-        {
-          "type": "ワイド",
-          "horses": [
-            15,
-            8
-          ],
-          "stake": 100
-        },
-        {
-          "type": "ワイド",
-          "horses": [
-            15,
-            11
+            9,
+            11,
+            15
           ],
           "stake": 100
         }
@@ -415,7 +400,7 @@
       "race_no": 12,
       "start_time": "16:30",
       "confidence": "A",
-      "subjective_hit_rate": 0.0771,
+      "subjective_hit_rate": 0.0775,
       "win_probabilities": {
         "9": 0.15,
         "13": 0.11,
@@ -632,7 +617,7 @@
       "race_no": 11,
       "start_time": "15:20",
       "confidence": "B",
-      "subjective_hit_rate": 0.0056,
+      "subjective_hit_rate": 0.0057,
       "win_probabilities": {
         "10": 0.15,
         "1": 0.12,
@@ -728,7 +713,7 @@
       "race_no": 11,
       "start_time": "17:25",
       "confidence": "A",
-      "subjective_hit_rate": 0.1687,
+      "subjective_hit_rate": 0.1686,
       "win_probabilities": {
         "12": 0.24,
         "3": 0.17,
@@ -822,7 +807,7 @@
       "race_no": 4,
       "start_time": "18:05",
       "confidence": "A",
-      "subjective_hit_rate": 0.2745,
+      "subjective_hit_rate": 0.2717,
       "win_probabilities": {
         "3": 0.3,
         "7": 0.18,
@@ -925,7 +910,7 @@
       "race_no": 7,
       "start_time": "18:15",
       "confidence": "A",
-      "subjective_hit_rate": 0.0779,
+      "subjective_hit_rate": 0.0709,
       "win_probabilities": {
         "11": 0.29,
         "9": 0.27,
