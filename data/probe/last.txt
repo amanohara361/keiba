@@ -1,28 +1,17 @@
-# card-entries 202606040911  (2026-09-27T05:41:19Z)
-出馬表: 16頭
-  1 {"horse_id": "2019105496", "name": "レッドモンレーヴ", "weight": 510, "weight_diff": -2, "kinryo": 58.0}
-  2 {"horse_id": "2022103875", "name": "アイサンサン", "weight": 454, "weight_diff": -4, "kinryo": 56.0}
-  3 {"horse_id": "2019105394", "name": "ママコチャ", "weight": 500, "weight_diff": -2, "kinryo": 56.0}
-  4 {"horse_id": "2021110099", "name": "ジューンブレア", "weight": 496, "weight_diff": 12, "kinryo": 56.0}
-  5 {"horse_id": "2022102057", "name": "サウンドモリアーナ", "weight": 454, "weight_diff": 0, "kinryo": 56.0}
-
-=== レッドモンレーヴ（2019105496）の馬ページ ===
-
-=== トップ: https://db.netkeiba.com/horse/2019105496/ (82029文字) ===
-  table: db_prof_table 
-
-=== 競走成績: https://db.netkeiba.com/horse/result/2019105496/ (165873文字) ===
-  table: db_h_race_results nk_tb_common
-
-=== 血統: https://db.netkeiba.com/horse/ped/2019105496/ (140561文字) ===
-  table: blood_table detail
-  table: nk_tb_common race_table_01
-  table: nk_tb_common race_table_01
-
---- パース結果 ---
-近走 5件:
-  {"date": "2026/09/06", "meeting": "4阪神2", "weather": "曇", "race_no": 11, "race": "産経賞セントウルS(GII)", "field_size": 16, "waku": 6, "umaban": 12, "odds": 24.1, "ninki": 7, "rank": 16, "jockey": "酒井学", "kinryo": 57.0, "distance": 1200, "going": "良", "time": "1:09.5", "margin": "2.6", "passing": "16-16", "pace": "32.8-34.1", "last3f": 32.6, "weight": 512, "winner": "フリッカージャブ", "surface": "芝", "weight_diff": 12}
-  {"date": "2026/03/29", "meeting": "1中京6", "weather": "晴", "race_no": 11, "race": "高松宮記念(GI)", "field_size": 18, "waku": 3, "umaban": 6, "odds": 67.0, "ninki": 15, "rank": 2, "jockey": "酒井学", "kinryo": 58.0, "distance": 1200, "going": "良", "time": "1:06.6", "margin": "0.3", "passing": "13-11", "pace": "32.5-33.8", "last3f": 32.5, "weight": 500, "winner": "サトノレーヴ", "surface": "芝", "weight_diff": -18}
-  {"date": "2026/02/10", "meeting": "1東京4", "weather": "曇", "race_no": 11, "race": "東京新聞杯(GIII)", "field_size": 16, "waku": 6, "umaban": 11, "odds": 25.0, "ninki": 10, "rank": 8, "jockey": "佐々木大", "kinryo": 58.0, "distance": 1600, "going": "良", "time": "1:32.5", "margin": "0.3", "passing": "14-14", "pace": "34.7-34.0", "last3f": 32.9, "weight": 518, "winner": "トロヴァトーレ", "surface": "芝", "weight_diff": 8}
-馬場別: {"良": [5, 6, 1, 11]}
-血統: {"sire": "ロードカナロア", "dam": "ラストグルーヴ", "broodmare_sire": "ディープインパクト"}
+# card-entries-all 202606040911  (2026-09-27T05:43:22Z)
+1 {"horse_id": "2019105496", "name": "レッドモンレーヴ", "weight": 510, "weight_diff": -2, "kinryo": 58.0}
+2 {"horse_id": "2022103875", "name": "アイサンサン", "weight": 454, "weight_diff": -4, "kinryo": 56.0}
+3 {"horse_id": "2019105394", "name": "ママコチャ", "weight": 500, "weight_diff": -2, "kinryo": 56.0}
+4 {"horse_id": "2021110099", "name": "ジューンブレア", "weight": 496, "weight_diff": 12, "kinryo": 56.0}
+5 {"horse_id": "2022102057", "name": "サウンドモリアーナ", "weight": 454, "weight_diff": 0, "kinryo": 56.0}
+6 {"horse_id": "2021105864", "name": "ワールズエンド", "weight": 472, "weight_diff": 2, "kinryo": 58.0}
+7 {"horse_id": "2021102320", "name": "ペアポルックス", "weight": 482, "weight_diff": 4, "kinryo": 58.0}
+8 {"horse_id": "2019105859", "name": "エーティーマクフィ", "weight": 476, "weight_diff": -6, "kinryo": 58.0}
+9 {"horse_id": "2023106920", "name": "スターアニス", "weight": 484, "weight_diff": 4, "kinryo": 54.0}
+10 {"horse_id": "2022103066", "name": "レイピア", "weight": 508, "weight_diff": 0, "kinryo": 58.0}
+11 {"horse_id": "2020106851", "name": "ルガル", "weight": 532, "weight_diff": null, "kinryo": 58.0}
+12 {"horse_id": "2023107008", "name": "ブラックチャリス", "weight": 464, "weight_diff": -6, "kinryo": 54.0}
+13 {"horse_id": "2022101732", "name": "パンジャタワー", "weight": 490, "weight_diff": -4, "kinryo": 58.0}
+14 {"horse_id": "2017101429", "name": "ウインカーネリアン", "weight": 518, "weight_diff": 4, "kinryo": 58.0}
+15 {"horse_id": "2022102020", "name": "フリッカージャブ", "weight": 504, "weight_diff": -2, "kinryo": 58.0}
+16 {"horse_id": "2021107058", "name": "ピューロマジック", "weight": 464, "weight_diff": 4, "kinryo": 56.0}
