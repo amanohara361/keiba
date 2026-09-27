@@ -523,3 +523,60 @@ def test_手がかりを渡しても複数残るなら諦める():
 def test_手がかりが誰にも一致しなければ諦める():
     assert form_module.parse_horse_search(
         _AMBIGUOUS_SEARCH, 'ペンダント', sire='ディープインパクト') is None
+
+
+# ----------------------------------------------------------------------
+# 僅差ライバル（2026-09-27 スプリンターズS）
+# ----------------------------------------------------------------------
+
+def _run(day, race, secs, surface='芝', distance=1200, rank=1):
+    m, s = divmod(secs, 60)
+    return {'date': day, 'race': race, 'surface': surface, 'distance': distance,
+            'rank': rank, 'time': f'{int(m)}:{s:04.1f}'}
+
+
+def _rival_race(runs_by_horse, odds, surface='芝', distance=1200):
+    return {
+        'surface': surface, 'distance': distance,
+        'odds': {'win_odds': {str(k): v for k, v in odds.items()}},
+        'entries': [{'umaban': u, 'name': f'馬{u}', 'recent': runs}
+                    for u, runs in runs_by_horse.items()],
+    }
+
+
+def test_人気馬と僅差だった人気薄を拾う():
+    race = _rival_race({
+        15: [_run('2026/09/06', 'セントウルS', 69.4)],
+        16: [_run('2026/09/06', 'セントウルS', 69.5, rank=2)],
+    }, {15: 7.0, 16: 17.2})
+    got = card.close_rivals(race, date(2026, 9, 27))
+    assert [(r['umaban'], r['vs_umaban'], r['gap']) for r in got] == [(16, 15, 0.1)]
+
+
+def test_差が開いていたりオッズが近ければ拾わない():
+    race = _rival_race({
+        15: [_run('2026/09/06', 'セントウルS', 69.4)],
+        16: [_run('2026/09/06', 'セントウルS', 69.7, rank=5)],   # 0.3秒差
+        3: [_run('2026/09/06', 'セントウルS', 69.5, rank=2)],    # オッズ1.5倍
+    }, {15: 7.0, 16: 17.2, 3: 10.5})
+    assert card.close_rivals(race, date(2026, 9, 27)) == []
+
+
+def test_古いレースや条件違いのレースでは比べない():
+    race = _rival_race({
+        15: [_run('2026/03/01', 'オーシャンS', 68.0),
+             _run('2026/08/01', 'ダート戦', 70.0, surface='ダート'),
+             _run('2026/08/02', '千四の重賞', 81.0, distance=1400 + 400)],
+        16: [_run('2026/03/01', 'オーシャンS', 68.0, rank=2),
+             _run('2026/08/01', 'ダート戦', 70.0, surface='ダート', rank=2),
+             _run('2026/08/02', '千四の重賞', 81.0, distance=1400 + 400, rank=2)],
+    }, {15: 7.0, 16: 17.2})
+    assert card.close_rivals(race, date(2026, 9, 27)) == []
+
+
+def test_相手が今回の人気上位3頭でなければ拾わない():
+    race = _rival_race({
+        12: [_run('2026/09/06', 'セントウルS', 69.4)],
+        16: [_run('2026/09/06', 'セントウルS', 69.5, rank=2)],
+    }, {1: 3.0, 2: 4.0, 3: 5.0, 12: 7.0, 16: 17.2})
+    assert card.close_rivals(race, date(2026, 9, 27)) == []

@@ -298,6 +298,76 @@ def build_entries(race_id, opener=None, interval=HORSE_INTERVAL, sleep=time.slee
     return out
 
 
+# 「僅差ライバル」の条件（2026-09-27 ユーザー承認）。直近の同条件レースで、
+# 今回オッズが半分以下の馬と互角に走っていた馬を拾う。判断はしない。
+RIVAL_MAX_GAP = 0.2      # 秒。相手より遅くてもこの差まで（先着はすべて含む）
+RIVAL_MIN_RATIO = 2.0    # 今回の単勝が相手の何倍以上か
+RIVAL_DAYS = 120         # 比べるレースの新しさ
+RIVAL_DIST_TOL = 200     # 距離の許容差（m）
+# 相手は今回の人気上位この頭数に限る。「人気馬と互角なのに人気が無い」だけを拾う。
+# 2026-08-15〜09-27の96レースで、絞らない場合は1着8（見込み5.1）・3着内率は
+# 同じオッズ帯と同じだったが、上位3頭に絞ると1着7（見込み3.2）・単勝回収率178%。
+# 8通り試した中の1つなので、数週分たまったら見直す（docs/決定ログ.md）。
+RIVAL_VS_TOP = 3
+
+
+def _seconds(text):
+    m = re.match(r'^(?:(\d+):)?(\d+)\.(\d)$', (text or '').strip())
+    if not m:
+        return None
+    return int(m.group(1) or 0) * 60 + int(m.group(2)) + int(m.group(3)) / 10
+
+
+def close_rivals(race, day):
+    """直近の同条件レースで、今回の人気上位3頭（かつ2倍以上人気）と0.2秒差以内だった馬を拾う。
+
+    2026-09-27 スプリンターズSの1着ピューロマジック（17倍）はセントウルSで
+    ◎フリッカージャブ（7倍）と0.1秒差、3着サウンドモリアーナ（27倍）は
+    キーンランドCで○パンジャタワー（5倍）に先着していた。着差ほど実力差が
+    無いのにオッズが開いている馬で、判断側（朝タスク）に吟味させるための材料。
+    1頭につき、差が最も小さかった1件だけを返す。
+    """
+    odds = {int(k): v for k, v in ((race.get('odds') or {}).get('win_odds') or {}).items()}
+    surface, distance = race.get('surface'), race.get('distance')
+    if not odds or not distance:
+        return []
+    shared = {}
+    for entry in race.get('entries') or []:
+        for run in entry.get('recent') or []:
+            seconds = _seconds(run.get('time'))
+            try:
+                ran = datetime.strptime(run.get('date') or '', '%Y/%m/%d').date()
+            except ValueError:
+                continue
+            if (seconds is None or not str(run.get('rank')).isdigit()
+                    or (day - ran).days > RIVAL_DAYS
+                    or run.get('surface') != surface
+                    or abs((run.get('distance') or 0) - distance) > RIVAL_DIST_TOL):
+                continue
+            shared.setdefault((run['date'], run.get('race') or ''), []).append(
+                (entry['umaban'], entry.get('name'), seconds))
+
+    favourites = set(sorted(odds, key=odds.get)[:RIVAL_VS_TOP])
+    best = {}
+    for (ran, name), runners in shared.items():
+        for horse, rival in ((a, b) for a in runners for b in runners if a is not b):
+            if horse[0] not in odds or rival[0] not in favourites:
+                continue
+            if odds[horse[0]] < odds[rival[0]] * RIVAL_MIN_RATIO:
+                continue
+            gap = round(horse[2] - rival[2], 1)
+            if gap > RIVAL_MAX_GAP:
+                continue
+            if horse[0] in best and best[horse[0]]['gap'] <= gap:
+                continue
+            best[horse[0]] = {
+                'umaban': horse[0], 'name': horse[1], 'odds': odds[horse[0]],
+                'vs_umaban': rival[0], 'vs_name': rival[1], 'vs_odds': odds[rival[0]],
+                'date': ran, 'race': name, 'gap': gap,
+            }
+    return sorted(best.values(), key=lambda r: (r['gap'], r['umaban']))
+
+
 def build_card(day, limit=DEFAULT_CANDIDATES, opener=None, sleep=time.sleep,
                with_entries=True):
     import conditions as conditions_module
@@ -326,6 +396,7 @@ def build_card(day, limit=DEFAULT_CANDIDATES, opener=None, sleep=time.sleep,
             race['conditions'] = None
         if with_entries:
             race['entries'] = build_entries(race['race_id'], opener=opener, sleep=sleep)
+            race['close_rivals'] = close_rivals(race, day)
 
     return {
         'date': day.isoformat(),
