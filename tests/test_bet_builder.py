@@ -557,6 +557,10 @@ def test_3連複は印が2頭以上あるのに相棒を無印2頭だけで組�
     的中率の数字だけでは市場的に堅いpartners(5,9)の組み合わせに機械的に
     負けてしまっていた。印(▲2・△14)が2頭以上いるのに、相棒を無印の
     partners2頭だけで組む3連複は候補にしないことを確認する。
+
+    2026-09-27：採用側の組を「△14＋partner」から「○11＋partner」に替えた。
+    △14で組むと○11が買い目から外れ、discipline が mark_contradiction で
+    BLOCK する（本番では発注されない案を正解にしていた）。
     """
     win_odds = {7: 3.0, 11: 5.0, 2: 8.0, 14: 30.0, 5: 6.0, 9: 7.0,
                 1: 20.0, 3: 25.0, 4: 35.0, 6: 40.0, 8: 45.0, 10: 50.0}
@@ -569,12 +573,12 @@ def test_3連複は印が2頭以上あるのに相棒を無印2頭だけで組�
     )
     confidence, built, note = build(r, {
         ('3連複', frozenset({7, 5, 9})): 25.0,     # 無印partners2頭だけ（除外対象）
-        ('3連複', frozenset({7, 14, 5})): 130.0,   # △14＋partner1頭（採用されるべき）
+        ('3連複', frozenset({7, 11, 5})): 60.0,    # ○11＋partner1頭（採用されるべき）
     }, win_odds=win_odds)
     assert confidence in ('A', 'B')
     assert built, '買い目が組めるはず'
-    assert {b.combination for b in built} == {'5-7-14'}
-    assert '14' in note
+    assert {b.combination for b in built} == {'5-7-11'}
+    assert '11' in note
 
 
 def test_印が1頭しかいなければ相棒2頭とも無印でも許す():
@@ -601,3 +605,27 @@ def test_保険は相手候補が無ければ何もしない():
     assert confidence in ('A', 'B')
     assert len(built) == 1
     assert '保険' not in note
+
+
+# ----------------------------------------------------------------------
+# 印の序列（2026-09-27 スプリンターズS）
+# ----------------------------------------------------------------------
+
+SEQ_MARKS = [{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11},
+             {'mark': '△', 'umaban': 2}, {'mark': '△', 'umaban': 14}]
+
+
+def test_対抗を飛ばして下位印2頭と組む3連複は的中率が高くても選ばない():
+    """選ぶと discipline が mark_contradiction で BLOCK し、次善の案があっても見送りに落ちる。"""
+    r = race(SEQ_MARKS, win_probabilities={14: 0.25, 11: 0.03})
+    table = {('3連複', frozenset({7, 2, 14})): 400.0,
+             ('3連複', frozenset({7, 11, 2})): 300.0}
+    _, bets_out, _ = build(r, table)
+    assert [b.horses for b in bets_out] == [[2, 7, 11]]
+
+
+def test_序列を守る案が無ければ理由を添えて見送る():
+    r = race(SEQ_MARKS, win_probabilities={14: 0.25, 11: 0.03})
+    confidence, bets_out, note = build(r, {('3連複', frozenset({7, 2, 14})): 400.0})
+    assert (confidence, bets_out) == ('C', [])
+    assert '序列' in note
