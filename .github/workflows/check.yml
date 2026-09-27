@@ -83,10 +83,17 @@ jobs:
           INPUT_NOW: ${{ inputs.now }}
           INPUT_NO_EMAIL: ${{ inputs.no_email }}
           IS_PUSH: ${{ github.event_name == 'push' }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           args=()
           if [ -n "$INPUT_DATE" ]; then
             args+=(--date "$INPUT_DATE")
+          elif [ "$EVENT_NAME" = 'schedule' ]; then
+            # 定時実行が数時間遅れて日付をまたぐと、「今日」＝翌日の買い目を
+            # 探しに行き「朝の買い目が届いていません」と誤報する（nar_check.yml
+            # で2026-09-23に実際に起きた型）。最も早い枠が10:07なので、10時より
+            # 前に起動した定時実行は前日分の遅刻と分かる。10時間戻した日付を使う。
+            args+=(--date "$(TZ=Asia/Tokyo date -d '-10 hours' +%Y-%m-%d)")
           fi
           if [ -n "$INPUT_NOW" ]; then
             args+=(--now "$INPUT_NOW")

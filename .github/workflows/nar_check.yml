@@ -76,14 +76,31 @@ jobs:
         env:
           INPUT_DATE: ${{ inputs.date }}
           INPUT_FORCE: ${{ inputs.force }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
+          # 対象日を1回だけ決めて、以降のステップ全部に同じ日付を渡す。
+          #
+          # 定時実行は数時間単位で遅れ、最終便（19:37 JST）が日付をまたいで
+          # 0時過ぎに起動することがある（2026-09-22の最終便が09-23 00:09に起動）。
+          # 日付を指定しないと「今日（JST）」＝もう翌日を見に行き、翌日のカードは
+          # まだ作られていない（作成は04:07枠から）ので「地方カード未作成」と
+          # 誤って知らせていた。定時実行の最も早い枠は14:07なので、正午より前に
+          # 起動した定時実行は必ず前日分の遅刻と分かる。12時間戻した日付を使う。
+          # 手動実行（workflow_dispatch）は遅延しないのでこの補正はしない。
+          if [ -n "$INPUT_DATE" ]; then
+            day="$INPUT_DATE"
+          elif [ "$EVENT_NAME" = 'schedule' ]; then
+            day=$(TZ=Asia/Tokyo date -d '-12 hours' +%Y-%m-%d)
+          else
+            day=$(TZ=Asia/Tokyo date +%Y-%m-%d)
+          fi
+          echo "date=$day" >> "$GITHUB_OUTPUT"
+          echo "対象日: $day" >> "$GITHUB_STEP_SUMMARY"
           if [ "$INPUT_FORCE" = 'true' ]; then
             echo 'state=run' >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          args=(--gate)
-          if [ -n "$INPUT_DATE" ]; then args+=(--date "$INPUT_DATE"); fi
-          state=$(python nar_card.py "${args[@]}" | tail -n 1)
+          state=$(python nar_card.py --gate --date "$day" | tail -n 1)
           echo "state=$state" >> "$GITHUB_OUTPUT"
           echo "gate: $state" >> "$GITHUB_STEP_SUMMARY"
 
@@ -97,10 +114,9 @@ jobs:
           SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
           SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
           RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
-          INPUT_DATE: ${{ inputs.date }}
+          RACE_DATE: ${{ steps.gate.outputs.date }}
         run: |
-          args=(--notify-missing)
-          if [ -n "$INPUT_DATE" ]; then args+=(--date "$INPUT_DATE"); fi
+          args=(--notify-missing --date "$RACE_DATE")
           set +e
           python nar_card.py "${args[@]}"
           code=$?
@@ -117,12 +133,11 @@ jobs:
           SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
           SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
           RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
-          INPUT_DATE: ${{ inputs.date }}
+          RACE_DATE: ${{ steps.gate.outputs.date }}
           INPUT_NOW: ${{ inputs.now }}
           INPUT_NO_EMAIL: ${{ inputs.no_email }}
         run: |
-          args=()
-          if [ -n "$INPUT_DATE" ];  then args+=(--date "$INPUT_DATE"); fi
+          args=(--date "$RACE_DATE")
           if [ -n "$INPUT_NOW" ];   then args+=(--now "$INPUT_NOW"); fi
           if [ "$INPUT_NO_EMAIL" = 'true' ]; then args+=(--no-email); fi
           # 終了コード3＝要確認だが通知できた。役目は果たしているので緑にする。

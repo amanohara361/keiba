@@ -143,8 +143,19 @@ PAYOUT_RATE = {'単勝': 0.80, '複勝': 0.80, '馬連': 0.775,
                'ワイド': 0.775, '馬単': 0.75, '3連複': 0.75}
 
 # 警告のしきい値。採否は変えない（基準値の追加は方針変更にあたるため）。
-LOW_HIT_RATE = 0.05
 WIDE_DIVERGENCE = 1.8
+
+# 的中率の足切り（2026-09-27 ユーザー承認）。規律を満たす候補のうち的中率が
+# 最大のものでもこれを下回るなら、そのレースは見送る（別の候補を探さない）。
+# 選び方が「的中率最大」なので、的中率2%の買い目が出てくるのは、それより
+# 当たりやすい候補がどれも期待値1.2を満たさなかったときだけ。つまりモデルが
+# 見積もりの一番当てにならない裾野にしか価値を見出せていない状態で、買う理由
+# ではなく見送りのサインと扱う。2026-08-27〜09-23の確定44レースでは5%未満が
+# 17件（全体の約4割）あり、申告平均2.1%・的中0件だった。
+# 以前はここが警告だけのしきい値（LOW_HIT_RATE）だったのを足切りに格上げした。
+# 将来は「的中率が低いほど要求する期待値を上げる」方式への移行を検討する
+# （検証ノート.md「メソッド改訂案」参照）。
+MIN_HIT_RATE = 0.05
 
 # セット的中率の乖離上限（2026-09-17 ユーザー承認、CAP=1.5倍で試験導入）。
 # `Candidate.hit_rate`（主観込みで計算した、複数頭の組み合わせの的中率）は、
@@ -369,9 +380,6 @@ class Candidate:
     def warnings(self):
         """採否は変えないが、人間が見るべき点を挙げる。"""
         out = []
-        if self.hit_rate is not None and self.hit_rate < LOW_HIT_RATE:
-            out.append(f'的中率{self.hit_rate * 100:.2f}%と低く、'
-                       f'期待値は高配当1点に依存しています')
         mr = self.market_rate
         if mr and self.hit_rate and self.hit_rate / mr >= WIDE_DIVERGENCE:
             out.append(f'主観的中率が市場推定の{self.hit_rate / mr:.1f}倍です。'
@@ -572,6 +580,15 @@ def build_bets(race, lookup, win_odds=None, stake=100):
     # 期待値1.2以上という規律を満たすことを最低条件とし、そのうえで最も堅い
     # （的中率が高い）案を採る。合成オッズ3.0倍の下限が点数の増やしすぎを抑える。
     best = max(ok, key=lambda c: (c.hit_rate, c.ev))
+    if best.hit_rate < MIN_HIT_RATE:
+        note = (f'規律を満たす買い目のうち最も当たりやすい{best.label()}でも'
+                f'的中率{best.hit_rate * 100:.1f}%で、足切り（{MIN_HIT_RATE * 100:.0f}%）'
+                f'を下回ります。当たる見込みの薄い高配当1点に期待値を頼る形に'
+                f'なるため見送り（勝負度C）。')
+        if not overrides:
+            note = (f'{MISSING_INPUT}win_probabilities が無く市場勝率のみで評価しています'
+                    f'（朝タスクの書き漏らし）。' + note)
+        return 'C', [], note
     note = (f'{best.label()}（合成{best.composite:.2f}倍・'
             f'主観的中率{best.hit_rate * 100:.2f}%・期待値{best.ev:.2f}）')
     if not overrides:
