@@ -36,6 +36,10 @@ UA = ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
       '(KHTML, like Gecko) Chrome/124.0 Safari/537.36')
 
 GOING_LEVELS = ['良', '稍重', '重', '不良']
+# netkeiba の競走成績は「稍」「不」と略記する。正式名に直さないと稍重・不良の
+# 出走が黙って捨てられる（2026-09-27：函館SS（稍）1着のピューロマジックが
+# 「稍重は出走なし」になっていた。カード全体で近5走の稍1,055走・不107走が漏れていた）。
+GOING_ABBR = {'良': '良', '稍': '稍重', '稍重': '稍重', '重': '重', '不': '不良', '不良': '不良'}
 
 # サーバへの配慮。jra_bias.py と同じ間隔にそろえる。
 REQUEST_INTERVAL = 1.5
@@ -170,9 +174,9 @@ def parse_going_record(page):
     for cells in rows[1:]:
         if len(cells) <= max(index['着順'], index['馬場']):
             continue
-        going = cells[index['馬場']].strip()
+        going = GOING_ABBR.get(cells[index['馬場']].strip())
         rank = cells[index['着順']].strip()
-        if going not in GOING_LEVELS or not rank.isdigit():
+        if going is None or not rank.isdigit():
             continue   # 中止・除外や、障害の「障」などは数えない
         counts = record.setdefault(going, [0, 0, 0, 0])
         place = int(rank)

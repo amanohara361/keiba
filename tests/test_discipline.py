@@ -1814,3 +1814,15 @@ def test_keeps_what_it_has_when_the_fallback_also_fails():
     assert result['going'] is None
     assert result['weather'] == '曇'             # 取れているぶんは返す
     assert result['distance'] == 1700
+
+
+def test_going_record_reads_netkeiba_abbreviations():
+    """netkeiba の実物は「稍」「不」と略記する（2026-09-27 ピューロマジックの函館SS）。"""
+    import form
+    page = HORSE_RESULTS.replace('<td>稍重</td>', '<td>稍</td>').replace(
+        '<td>中止</td>', '<td>3</td>').replace(
+        '<td>2025/12/01</td><td>阪神</td><td>オープン</td><td>ダ1800</td><td>良</td>',
+        '<td>2025/12/01</td><td>阪神</td><td>オープン</td><td>ダ1800</td><td>不</td>')
+    record = form.parse_going_record(page)
+    assert record['稍重'] == [0, 1, 0, 0]
+    assert record['不良'] == [0, 0, 1, 0]
