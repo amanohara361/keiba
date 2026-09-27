@@ -20,7 +20,8 @@ nar_csv.py の bias 機能をJRA向けに移植したもの。
   python jra_bias.py menu                     # 対話モードでバイアス判定 ※バイアス確認.bat
   python jra_bias.py check                    # 初回の動作確認 ※動作確認.bat
   python jra_bias.py fetch 20260726 札幌      # 当日12R分を取得してdata_jra\ に保存
-  python jra_bias.py fetch 20260726 all       # 当日の開催全場を取得
+  python jra_bias.py fetch 20260726 all       # 当日の開催全場を取得（db.netkeiba。当日中は空振りする）
+  python jra_bias.py live  20260927 all       # 当日の確定済みレースを race.netkeiba から取得（昼のバイアス用）
   python jra_bias.py selftest                 # スポーツナビのページ構造が変わっていないか確認
   python jra_bias.py urls   20260801 202601010311 1 8   # 取得すべきスポーツナビURLを一覧表示
   python jra_bias.py ingest 20260801 札幌      # data_snav\ に保存した結果ページを取り込む
@@ -831,6 +832,189 @@ def parse_snav(page, race_id):
     }
 
 
+# ---------------- 当日の結果（race.netkeiba.com） ----------------
+#
+# db.netkeiba.com は当日中に個別レースを載せないため、fetch は開催日の夜でも
+# 空振りする（bias.yml が一度もコミットできていなかった原因）。
+# race.netkeiba.com の結果ページは確定直後から出るので、当日のバイアスはこちらで測る。
+# 各馬の通過順は当日は空欄だが、レース単位のコーナー通過順位表から復元できる
+# （スポーツナビ経路と同じ方法。2026-09-27 中山2Rで実物を確認）。
+
+NK_RESULT_URL = 'https://race.netkeiba.com/race/result.html?race_id={race_id}'
+
+# 結果ページの馬場表記は1文字の略記（「馬場:稍」）
+GOING_ABBR = {'良': '良', '稍': '稍重', '稍重': '稍重', '重': '重', '不': '不良', '不良': '不良'}
+
+
+def _text(s):
+    return html.unescape(strip_tags(s or '')).replace('\xa0', ' ').strip()
+
+
+def parse_nk_result(page, race_id):
+    """race.netkeiba.com の結果ページを parse_race() 互換の辞書へ。未確定なら None。"""
+    mdata = re.search(r'<div class="RaceData01">(.*?)</div>', page, re.S)
+    head = _text(mdata.group(1)) if mdata else ''
+    mcond = re.search(r'(障芝|障|芝|ダ)\s*(\d{3,4})m', head)
+    if not mcond:
+        return None
+    surface = {'芝': '芝', 'ダ': 'ダ'}.get(mcond.group(1), '障')
+    dist = int(mcond.group(2))
+    mgo = re.search(r'馬場\s*[:：]\s*(不良|稍重|不|稍|重|良)', head)
+    going = GOING_ABBR[mgo.group(1)] if mgo else None
+    mname = re.search(r'<h1 class="RaceName">(.*?)</h1>', page, re.S)
+    name = _text(mname.group(1)) if mname else ''
+
+    horses = []
+    for row in re.split(r'<tr[^>]*class="HorseList"', page)[1:]:
+        row = row.split('</tr>')[0]
+        rank = re.search(r'<div class="Rank">\s*([^<]*?)\s*</div>', row)
+        if not rank or not rank.group(1).isdigit():
+            continue          # 中止・除外・取消は母集団から除く（他経路と同じ）
+        num = re.search(r'<td class="Num Txt_C">\s*<div>\s*(\d+)', row)
+        if not num:
+            continue
+        waku = re.search(r'<td class="Num Waku\d+">\s*<div>\s*(\d+)', row)
+        times = re.findall(r'<span class="RaceTime">([^<]*)</span>', row)
+        agari = re.search(r'<td class="Time[^"]*">\s*(\d+\.\d)\s*</td>', row)
+        weight = re.search(r'<td class="Weight">(.*?)</td>', row, re.S)
+        horses.append({
+            '着順': int(rank.group(1)),
+            '枠番': waku.group(1) if waku else '',
+            '馬番': int(num.group(1)),
+            '馬名': _text((re.search(r'HorseNameSpan">(.*?)</span>', row, re.S) or [None, ''])[1]),
+            '斤量': re.sub(r'\.0$', '', _text((re.search(r'JockeyWeight">(.*?)</span>', row, re.S) or [None, ''])[1])),
+            '騎手': _text((re.search(r'JockeyNameSpan">(.*?)</span>', row, re.S) or [None, ''])[1]),
+            'タイム': times[0].strip() if times else '',
+            '通過': '',
+            '_passes': [],
+            '上り': agari.group(1) if agari else '',
+            # 人気薄は class の無い <span> になる（2026-09-27 中山2R 5着 440.5倍）
+            '単勝': _text((re.search(r'<td class="Odds Txt_R">\s*<span[^>]*>(.*?)</span>', row, re.S)
+                          or [None, ''])[1]),
+            '人気': _text((re.search(r'OddsPeople">(.*?)</span>', row, re.S) or [None, ''])[1]),
+            '馬体重': _text(weight.group(1)) if weight else '',
+        })
+    if not horses:
+        return None
+    horses.sort(key=lambda h: h['着順'])
+    n = len(horses)
+
+    mcorner = re.search(r'<table[^>]*class="[^"]*Corner_Num[^"]*"[^>]*>(.*?)</table>', page, re.S)
+    corners = []
+    if mcorner:
+        biggest = max(h['馬番'] for h in horses)
+        for cell in re.findall(r'<td>(.*?)</td>', mcorner.group(1), re.S):
+            corners.append(parse_corner_order(_text(cell), expected=biggest))
+    for h in horses:
+        seq = [p for p in (c.get(h['馬番']) for c in corners) if p]
+        h['_passes'] = seq
+        h['通過'] = '-'.join(str(p) for p in seq)
+
+    cum, laps = {}, []
+    mlap = re.search(r'<table[^>]*class="[^"]*Race_HaronTime[^"]*"[^>]*>(.*?)</table>', page, re.S)
+    if mlap:
+        labels = [int(x) for x in re.findall(r'<th>\s*(\d+)m\s*</th>', mlap.group(1))]
+        rows = re.findall(r'<tr class="HaronTime">(.*?)</tr>', mlap.group(1), re.S)
+        if len(rows) >= 2:
+            cum_vals = [_text(x) for x in re.findall(r'<td>(.*?)</td>', rows[0], re.S)]
+            lap_vals = [_text(x) for x in re.findall(r'<td>(.*?)</td>', rows[1], re.S)]
+            for lab, c in zip(labels, cum_vals):
+                sec = to_sec(c)
+                if sec is not None:
+                    cum[lab] = sec
+            laps = [float(x) for x in lap_vals if re.fullmatch(r'\d+\.\d', x)]
+
+    win = horses[0]
+    wt = to_sec(win['タイム'])
+    try:
+        ag3 = float(win['上り'])
+    except ValueError:
+        ag3 = None
+    first3 = cum.get(600)
+    if first3 is None and wt and ag3:
+        first3 = round(wt - ag3, 1)
+    last3 = round(sum(laps[-3:]), 1) if len(laps) >= 3 else None
+
+    return {
+        'race_id': str(race_id), 'R': int(str(race_id)[-2:]), 'レース名': name,
+        '馬場': surface, '距離': dist, '馬場状態': going,
+        '頭数': n, '勝ちタイム': wt, '上がり3F': ag3,
+        '前半3F': first3, '後半3F': last3, 'ラップ': laps,
+        'horses': horses, '_source': 'netkeiba-race',
+    }
+
+
+def fetch_html_utf8(url):
+    """race.netkeiba.com は UTF-8（db.netkeiba.com 用の fetch_html は EUC-JP を先に試す）"""
+    req = urllib.request.Request(url, headers={'User-Agent': UA})
+    with urllib.request.urlopen(req, timeout=30) as res:
+        raw = res.read()
+    try:
+        return raw.decode('utf-8')
+    except UnicodeDecodeError:
+        return raw.decode('euc_jp', errors='replace')
+
+
+def card_races(date):
+    """data/cards/ のカードから (race_id, 場名, 発走時刻) を返す。無ければ空。"""
+    path = os.path.join(ROOT, 'data', 'cards', f'{date[:4]}-{date[4:6]}-{date[6:]}.json')
+    if not os.path.exists(path):
+        return []
+    with open(path, encoding='utf-8') as f:
+        card = json.load(f)
+    return [(r['race_id'], r['venue'], r.get('start_time'))
+            for r in card.get('races', []) if r.get('race_id') and r.get('venue')]
+
+
+def do_live(date, venue='all', now=None):
+    """当日の確定済みレースを race.netkeiba.com から取り、data_jra/ に保存する。
+
+    発走から15分経っていないレースは確定前なので叩かない。
+    結果が取れないレース（未確定・中止）は飛ばし、場ごとに保存し直す。
+    """
+    from datetime import datetime, timedelta, timezone
+    jst = timezone(timedelta(hours=9))
+    now = now or datetime.now(jst)
+    races = card_races(date)
+    if not races:
+        print(f'!! data/cards/ に {date} のカードがありません。card.yml を先に回してください')
+        return
+    os.makedirs(DATA, exist_ok=True)
+    byvenue = collections.defaultdict(list)
+    for rid, v, start in races:
+        if venue != 'all' and v != venue:
+            continue
+        if start:
+            hh, mm = (int(x) for x in start.split(':'))
+            posted = datetime(int(date[:4]), int(date[4:6]), int(date[6:]), hh, mm, tzinfo=jst)
+            if now < posted + timedelta(minutes=15):
+                continue
+        byvenue[v].append(rid)
+    if not byvenue:
+        print(f'{date}: 確定済みのレースはまだありません（{now:%H:%M} 時点）')
+        return
+    for v, ids in byvenue.items():
+        got = []
+        for rid in sorted(ids):
+            try:
+                rc = parse_nk_result(fetch_html_utf8(NK_RESULT_URL.format(race_id=rid)), rid)
+            except Exception as e:
+                print(f'   {rid} 取得失敗: {e}')
+                rc = None
+            if rc:
+                rc['競馬場'] = v
+                rc['日付'] = date
+                got.append(rc)
+                print(f'   {v}{rc["R"]:>2}R {rc["馬場"]}{rc["距離"]}m '
+                      f'{rc["馬場状態"] or "?"} {rc["頭数"]}頭  {rc["レース名"][:20]}')
+            time.sleep(1.5)       # サーバへの配慮
+        if got:
+            path = os.path.join(DATA, f'{date}_{v}.json')
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(got, f, ensure_ascii=False, indent=1)
+            print(f'=> {path} に {len(got)}レースを保存（{now:%H:%M} 時点）\n')
+
+
 TESTS = os.path.join(ROOT, 'tests')
 
 # 期待値は netkeiba の同一レースの実データ、および公式確定成績と突き合わせて確定させたもの。
@@ -1196,6 +1380,8 @@ def main():
         show_odds(sys.argv[2], bets)
     elif cmd == 'fetch' and len(sys.argv) >= 4:
         do_fetch(sys.argv[2], sys.argv[3])
+    elif cmd == 'live' and len(sys.argv) >= 3:
+        do_live(sys.argv[2], sys.argv[3] if len(sys.argv) >= 4 else 'all')
     elif cmd == 'selftest':
         sys.exit(selftest())
     elif cmd == 'ingest' and len(sys.argv) >= 4:

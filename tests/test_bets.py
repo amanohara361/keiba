@@ -136,3 +136,33 @@ def test_confidenceに知らない値を入れると弾く():
 def test_Noneのconfidenceも書き出せる():
     r = race([{'mark': '◎', 'umaban': 7}])
     assert r.to_dict()['confidence'] is None
+
+
+# ----------------------------------------------------------------------
+# 昼の見直しの履歴（revisions、2026-09-27 追加）
+# ----------------------------------------------------------------------
+
+REVISION = {
+    'at': '2026-09-27T12:40:00+09:00',
+    'trigger': '馬場区分の変化（重→稍重）',
+    'reason': '◎15の重実績で上げた分を市場寄りに戻した',
+    'marks_before': [{'mark': '◎', 'umaban': 15}],
+    'win_probabilities_before': {'15': 0.17},
+}
+
+
+def test_見直し履歴は書き出しても残る():
+    """check.py は読んだ買い目を書き戻す。履歴が落ちると朝の印と比べられなくなる。"""
+    r = race([{'mark': '◎', 'umaban': 15}], revisions=[REVISION])
+    assert r.to_dict()['revisions'] == [REVISION]
+
+
+def test_見直しが無ければ項目自体を出さない():
+    r = race([{'mark': '◎', 'umaban': 15}])
+    assert 'revisions' not in r.to_dict()
+
+
+def test_見直し履歴に書き換え前の印が無ければ弾く():
+    broken = {k: v for k, v in REVISION.items() if k != 'marks_before'}
+    with pytest.raises(bets.BetsError):
+        race([{'mark': '◎', 'umaban': 15}], revisions=[broken])

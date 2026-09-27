@@ -15,7 +15,7 @@ on:
       target:
         description: '調べる対象'
         type: choice
-        options: [conditions, bias, card-list, card-entries, card-entries-raw, card-horse, card-horse-search, card-build]
+        options: [conditions, bias, result-raw, card-list, card-entries, card-entries-raw, card-horse, card-horse-search, card-build]
         default: conditions
 
 concurrency:
@@ -47,6 +47,23 @@ jobs:
             echo "# $TARGET $RACE_ID  ($(date -u +%Y-%m-%dT%H:%M:%SZ))"
             case "$TARGET" in
               bias)       python jra_bias.py probe "${RACE_ID:0:8}" all || true ;;
+              result-raw) python -c "
+          import re, sys, urllib.request
+          url = 'https://race.netkeiba.com/race/result.html?race_id=' + sys.argv[1]
+          req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+          raw = urllib.request.urlopen(req, timeout=30).read()
+          for enc in ('utf-8', 'euc_jp'):
+              try:
+                  page = raw.decode(enc); break
+              except UnicodeDecodeError:
+                  pass
+          page = re.sub(r'(?s)<(script|style|noscript)[^>]*>.*?</\1>', '', page)
+          page = re.sub(r'(?s)<!--.*?-->', '', page)
+          page = re.sub(r'\n\s*\n+', '\n', page)
+          i = page.find('RaceName')
+          print(url, len(raw))
+          print(page[max(0, i - 2000):max(0, i - 2000) + 60000])
+          " "$RACE_ID" || true ;;
               card-list)  python card.py probe list "$RACE_ID" || true ;;
               # card.yml が既定ブランチに入るまでの通し確認用。RACE_ID に日付を渡す。
               card-build) python card.py build --date "$RACE_ID" --limit 2 || true ;;
