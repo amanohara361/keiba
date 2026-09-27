@@ -15,7 +15,7 @@ on:
       target:
         description: '調べる対象'
         type: choice
-        options: [conditions, bias, result-raw, card-list, card-entries, card-entries-raw, card-horse, card-horse-search, card-build]
+        options: [conditions, bias, result-raw, card-entries-all, card-list, card-entries, card-entries-raw, card-horse, card-horse-search, card-build]
         default: conditions
 
 concurrency:
@@ -68,6 +68,11 @@ jobs:
               # card.yml が既定ブランチに入るまでの通し確認用。RACE_ID に日付を渡す。
               card-build) python card.py build --date "$RACE_ID" --limit 2 || true ;;
               card-entries) python card.py probe entries "$RACE_ID" || true ;;
+              card-entries-all) python -c "
+          import json, sys, form
+          for k, v in sorted(form.fetch_entries(sys.argv[1]).items()):
+              print(k, json.dumps(v, ensure_ascii=False))
+          " "$RACE_ID" || true ;;
               card-entries-raw) python card.py probe entries-raw "$RACE_ID" || true ;;
               card-horse) python card.py probe horse "$RACE_ID" || true ;;
               card-horse-search) python card.py probe horse-search "$RACE_ID" || true ;;
