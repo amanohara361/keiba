@@ -134,7 +134,7 @@ convention変更になるため見送った）。
 import itertools
 
 import discipline
-from bets import Bet, PARTNER_ORDER
+from bets import Bet, JUNIOR_MARKS, PARTNER_ORDER, SENIOR_MARKS
 
 STRONG_EXPECTED_VALUE = 1.5  # これ以上なら勝負度A（2026-08-14 ユーザー承認）
 
@@ -386,6 +386,14 @@ class Candidate:
         return [Bet(self.bet_type, c, stake) for c in self.combos]
 
 
+def _keeps_mark_order(race, candidate):
+    """discipline.check_matched_marks と同じ基準で、序列を崩さない案か。"""
+    horses = {h for combo in candidate.combos for h in combo}
+    missing_senior = [u for m in SENIOR_MARKS for u in race.horses_for(m) if u not in horses]
+    present_junior = [u for m in JUNIOR_MARKS for u in race.horses_for(m) if u in horses]
+    return not (missing_senior and present_junior)
+
+
 def _capped_rate(subjective_rate, market_rate, cap=SET_HIT_RATE_CAP):
     """セット的中率の乖離上限を適用する（SET_HIT_RATE_CAP）。
 
@@ -529,6 +537,17 @@ def build_bets(race, lookup, win_odds=None, stake=100):
         return 'C', [], '実オッズが揃わず買い目を組めませんでした（要・再検算）'
 
     ok = [c for c in candidates if c.clears()]
+    # 印の序列を崩す案は選ばない（2026-09-27）。3連複の相手ペアは「どちらかが
+    # 印馬」なら候補にしているため、○を飛ばして△2頭と組む案が残り、それが
+    # 選ばれると discipline が mark_contradiction で BLOCK して、序列を守る
+    # 次善の案があってもレースごと見送りに落ちていた（スプリンターズSで発生）。
+    if ok:
+        ordered = [c for c in ok if _keeps_mark_order(race, c)]
+        if not ordered:
+            return 'C', [], ('第13章の基準を満たす案はありましたが、どれも上位印（◎○）を'
+                             '外して下位印（▲△）を残す形でした。印の序列を数値基準で'
+                             '上書きしないため見送り（勝負度C）。')
+        ok = ordered
     if not ok:
         if not overrides:
             # 規律の話にしない。**朝タスクの入力が欠けている**と言い切る。
