@@ -21,13 +21,17 @@ import discipline  # noqa: E402
 import conditions as conditions_module  # noqa: E402
 import odds as odds_module  # noqa: E402
 import report_html  # noqa: E402
+import report_md  # noqa: E402
 from bets import JST, Bet, BetSheet, BetsError, RaceBets, parse_sheet  # noqa: E402
 
 
 @pytest.fixture(autouse=True)
 def _isolate_html_report(tmp_path, monkeypatch):
-    """HTMLレポートの書き出し先を一時ディレクトリへ逃がす。実リポジトリの docs/ を汚さない。"""
+    """HTML・Markdownレポートの書き出し先を一時ディレクトリへ逃がす。実リポジトリの docs/ を汚さない。"""
     monkeypatch.setattr(report_html, 'HTML_PATH', str(tmp_path / '_report' / 'index.html'))
+    # Markdown版も同じ。以前はここが漏れていて、テストを回すたびに
+    # data/checks_md/2026-08-02.md などが実リポジトリに残っていた。
+    monkeypatch.setattr(report_md, 'CHECKS_MD_DIR', str(tmp_path / '_checks_md'))
 
 
 def make_race(**kwargs):

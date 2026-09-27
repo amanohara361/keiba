@@ -52,6 +52,10 @@ UNSETTLED = '結果未確定'
 # しきい値。ここを超えたらメソッド側の見直しを検討する（第13章）。
 COUNTER_THRESHOLD = 10
 
+# 案A・案D（予想メソッド第2章運用ルール、2026-09-27 追加）が入った日。
+# 週次レビューはこの日以降だけの列も出し、改訂が効いているかを通算と分けて見る。
+MARK_RULES_SINCE = date(2026, 9, 28)
+
 # (見出し, summarize() のキー, 到達時にすること)。render() とメールの両方が
 # ここを見る。**片方だけ書き換えて対応が崩れる、という事故を構造的に防ぐ。**
 THRESHOLD_COUNTERS = [
@@ -226,6 +230,49 @@ def honmei_only_wipeout(race, settlement, result):
     return bool(others & top3)
 
 
+def mark_vs_popularity(race, result):
+    """印を人気順と比べる（2026-09-27〜、案A・案Dの効き目を測る物差し）。
+
+    145レースを集計したところ、3着以内に来た馬のうち印の中にいたのは59%で、
+    印と同じ頭数を人気上位から選んだ場合（71%）に負けていた。原因は、人気上位を
+    外して人気薄と入れ替えていたこと（`data/review/mark_rules_2026-09-27.md`）。
+    この比較を毎週出して、印が人気順に追いつくかを見る。
+
+    人気は確定時の人気で、印を打った朝の人気とは違うことがある。着順表に
+    人気が欠けている馬がいれば比べられないので None を返す。
+    """
+    order = result['finishing_order']
+    if not race.marks or not order or any(h.get('ninki') is None for h in order):
+        return None
+    top3 = {h['umaban'] for h in order if h['rank'] <= 3}
+    marked = race.marked_horses
+    by_popularity = sorted(order, key=lambda h: h['ninki'])
+    popular_top = {h['umaban'] for h in by_popularity[:len(marked)]}
+
+    # 案A：1〜3番人気を印からも partners からも外した（完全に消した）馬
+    kept = marked | {p['umaban'] for p in race.partners}
+    cut = [h for h in order if h['ninki'] <= 3 and h['umaban'] not in kept]
+
+    # 案D：地方で◎を1番人気から外したレース
+    nar_favorite_off = None
+    honmei = set(race.horses_for('◎'))
+    favorite = next((h for h in order if h['ninki'] == 1), None)
+    if race.org == 'nar' and honmei and favorite and favorite['umaban'] not in honmei:
+        nar_favorite_off = {
+            'favorite_won': favorite['rank'] == 1,
+            'honmei_won': any(h['rank'] == 1 for h in order if h['umaban'] in honmei),
+        }
+
+    return {
+        'top3': len(top3),
+        'marked_top3': len(top3 & marked),
+        'popular_top3': len(top3 & popular_top),
+        'popular_cut': len(cut),
+        'popular_cut_top3': sum(1 for h in cut if h['rank'] <= 3),
+        'nar_favorite_off': nar_favorite_off,
+    }
+
+
 def review_race(race, result, check):
     """1レース分の評価をまとめる。結果が未確定なら分類だけ空にする。"""
     entry = {
@@ -267,6 +314,7 @@ def review_race(race, result, check):
         ],
         'unmarked_good_runs': [h['umaban'] for h in unmarked_good_runs(race, result)],
         'honmei_wipeout': honmei_only_wipeout(race, settlement, result),
+        'mark_vs_popularity': mark_vs_popularity(race, result),
     })
 
     # 印の成績。◎が1着だったか、3着以内だったか。
@@ -345,6 +393,8 @@ def summarize(entries):
         }
 
     honmei_ranked = [e['honmei_rank'] for e in settled if e.get('honmei_rank')]
+    compared = [e['mark_vs_popularity'] for e in settled if e.get('mark_vs_popularity')]
+    favorite_off = [c['nar_favorite_off'] for c in compared if c['nar_favorite_off']]
 
     return {
         'races': len(entries),
@@ -366,6 +416,16 @@ def summarize(entries):
         'unmarked_good_runs': sum(len(e.get('unmarked_good_runs', [])) for e in settled),
         'missed_upside': sum(1 for e in blocked if e['returned'] > e['staked']),
         'honmei_wipeout': sum(1 for e in settled if e.get('honmei_wipeout')),
+        # 印と人気順の比較（案A・案D）
+        'compared_races': len(compared),
+        'top3_total': sum(c['top3'] for c in compared),
+        'top3_marked': sum(c['marked_top3'] for c in compared),
+        'top3_popular': sum(c['popular_top3'] for c in compared),
+        'popular_cut': sum(c['popular_cut'] for c in compared),
+        'popular_cut_top3': sum(c['popular_cut_top3'] for c in compared),
+        'nar_favorite_off': len(favorite_off),
+        'nar_favorite_off_favorite_won': sum(1 for f in favorite_off if f['favorite_won']),
+        'nar_favorite_off_honmei_won': sum(1 for f in favorite_off if f['honmei_won']),
     }
 
 
@@ -451,7 +511,40 @@ def _totals_line(label, t):
             f"収支{t['profit']:+,}円 回収率{_roi(t)}")
 
 
-def render(collected, week_summary, total_summary, period):
+# (見出し, summarize() の戻り値 -> 表示文字列)。印と人気順の比較の表。
+MARK_POPULARITY_ROWS = [
+    ('3着以内の馬を印で拾えた割合', lambda s: _pct(s['top3_marked'], s['top3_total'])),
+    ('同じ頭数を人気上位から選んだ場合', lambda s: _pct(s['top3_popular'], s['top3_total'])),
+    ('1〜3番人気を完全に消した頭数（うち3着以内）',
+     lambda s: f"{s['popular_cut']}頭（{s['popular_cut_top3']}頭）"),
+    ('地方で◎を1番人気から外したレース（1番人気の勝ち／◎の勝ち）',
+     lambda s: (f"{s['nar_favorite_off']}R（{s['nar_favorite_off_favorite_won']}／"
+                f"{s['nar_favorite_off_honmei_won']}）")),
+]
+
+
+def render_mark_popularity(week_summary, total_summary, since_summary=None):
+    """印と人気順の比較（案A・案Dの効き目）。判定はしない、数字だけ。"""
+    lines = [
+        f'## 印と人気上位の比較（案A・案D、{MARK_RULES_SINCE.isoformat()}〜）',
+        '',
+        '人気は確定時点のもの。改訂前（通算）は印59%対人気上位71%で負けていた。',
+        '案Aが効いていれば、印の割合が人気上位に近づき、消した人気馬の3着以内は'
+        '人気なり（改訂前の集計では、印の無い1〜3番人気の3着内率の見込みがおよそ55%）を'
+        '下回る。案Dが効いていれば、地方で'
+        '1番人気から◎を外すレース自体が減る。',
+        '',
+        f'| 指標 | 今週 | {MARK_RULES_SINCE.isoformat()}以降 | 通算 |',
+        '|---|---|---|---|',
+    ]
+    for label, fn in MARK_POPULARITY_ROWS:
+        since = fn(since_summary) if since_summary else '—'
+        lines.append(f'| {label} | {fn(week_summary)} | {since} | {fn(total_summary)} |')
+    lines.append('')
+    return lines
+
+
+def render(collected, week_summary, total_summary, period, since_summary=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -525,6 +618,8 @@ def render(collected, week_summary, total_summary, period):
     for label, fn in rows:
         lines.append(f'| {label} | {fn(week_summary)} | {fn(total_summary)} |')
     lines.append('')
+
+    lines += render_mark_popularity(week_summary, total_summary, since_summary)
 
     # --- しきい値カウンタ ---
     lines.append(f'## カウンタ（通算{COUNTER_THRESHOLD}件でメソッド見直しを検討）')
@@ -648,6 +743,14 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None):
         f"予想ミス {week_summary['predict_miss']}件"
         '　… 印そのものが外れた',
     ]
+    if week_summary.get('top3_total'):
+        lines.append(
+            f"3着以内を印で拾えた {_pct(week_summary['top3_marked'], week_summary['top3_total'])}"
+            f" / 同じ頭数の人気上位なら {_pct(week_summary['top3_popular'], week_summary['top3_total'])}")
+        lines.append(
+            f"1〜3番人気を完全に消した {week_summary['popular_cut']}頭"
+            f"（うち3着以内 {week_summary['popular_cut_top3']}頭）"
+            f" / 地方で1番人気から◎を外した {week_summary['nar_favorite_off']}R")
 
     if collected:
         race_lines = _mail_race_lines(collected)
@@ -697,8 +800,11 @@ def main(argv=None):
 
     week_summary = summarize(week_entries)
     total_summary = summarize(all_entries)
+    since_summary = summarize([e for day in history if day['date'] >= MARK_RULES_SINCE
+                               for e in day['entries']])
 
-    text = render(week, week_summary, total_summary, (start, end))
+    text = render(week, week_summary, total_summary, (start, end),
+                  since_summary=since_summary)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)
