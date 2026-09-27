@@ -250,6 +250,30 @@ def test_極端な主観勝率はセット的中率が市場のCAP倍で頭打�
 
 
 # ----------------------------------------------------------------------
+# 的中率の足切り（2026-09-27 ユーザー承認、5%）
+# ----------------------------------------------------------------------
+
+def test_規律を満たしても的中率が足切り未満なら見送る():
+    """期待値1.2は満たす（合成60倍×2.2%）が、当たる見込みの薄い1点なので買わない。"""
+    r = race(marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11},
+                    {'mark': '▲', 'umaban': 2}],
+             win_probabilities={7: 0.33, 11: 0.10, 2: 0.06})
+    confidence, built, note = build(r, {('3連複', frozenset({7, 11, 2})): 60.0})
+    assert (confidence, built) == ('C', [])
+    assert '足切り' in note
+
+
+def test_足切りで見送っても入力欠落の印は残す():
+    """check.py は MISSING_INPUT の文字列で警告を立てる。足切りがそれを消してはいけない。"""
+    r = race(marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 14},
+                    {'mark': '▲', 'umaban': 9}])
+    confidence, built, note = build(r, {('3連複', frozenset({7, 14, 9})): 200.0})
+    assert (confidence, built) == ('C', [])
+    assert bet_builder.MISSING_INPUT in note
+    assert '足切り' in note
+
+
+# ----------------------------------------------------------------------
 # 見送り・安全側
 # ----------------------------------------------------------------------
 
@@ -615,8 +639,11 @@ SEQ_MARKS = [{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11},
              {'mark': '△', 'umaban': 2}, {'mark': '△', 'umaban': 14}]
 
 
-def test_対抗を飛ばして下位印2頭と組む3連複は的中率が高くても選ばない():
+def test_対抗を飛ばして下位印2頭と組む3連複は的中率が高くても選ばない(monkeypatch):
     """選ぶと discipline が mark_contradiction で BLOCK し、次善の案があっても見送りに落ちる。"""
+    # 候補の選び方だけを見るテスト。的中率1%前後の組み合わせなので、
+    # 足切り（MIN_HIT_RATE）が先に効かないよう外しておく。
+    monkeypatch.setattr(bet_builder, 'MIN_HIT_RATE', 0.0)
     r = race(SEQ_MARKS, win_probabilities={14: 0.25, 11: 0.03})
     table = {('3連複', frozenset({7, 2, 14})): 400.0,
              ('3連複', frozenset({7, 11, 2})): 300.0}
