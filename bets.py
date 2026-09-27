@@ -112,7 +112,8 @@ class RaceBets:
 
     def __init__(self, race_id, name, start_time, marks, bets,
                  confidence=None, subjective_hit_rate=None, venue=None, race_no=None,
-                 note='', org='jra', partners=None, win_probabilities=None):
+                 note='', org='jra', partners=None, win_probabilities=None,
+                 revisions=None):
         self.race_id = str(race_id)
         self.name = name
         self.start_time = start_time          # "15:25"
@@ -147,6 +148,11 @@ class RaceBets:
         # [{'umaban': 9, 'reason': '...'}, ...]。直前検算の bet_builder が
         # 「相手の広げ方」（第13章）の候補プールとして使う。朝タスクが出す。
         self.partners = partners or []
+        # 昼の見直しで印・主観勝率を書き換えたときの履歴。書き換える前の値を
+        # 残し、朝の印と見直し後の印のどちらが当たったかを後から比べられるようにする。
+        # [{'at': ..., 'trigger': ..., 'reason': ..., 'marks_before': [...],
+        #   'win_probabilities_before': {...}}, ...]
+        self.revisions = revisions or []
 
         if org not in self.ORGS:
             raise BetsError(f'org は {"／".join(self.ORGS)} のいずれかです: {org}')
@@ -227,6 +233,7 @@ class RaceBets:
             'partners': self.partners,
             'bets': [b.to_dict() for b in self.bets],
             'note': self.note,
+            **({'revisions': self.revisions} if self.revisions else {}),
         }
 
 
@@ -256,6 +263,20 @@ def _require(obj, key, context):
     if key not in obj:
         raise BetsError(f'{context} に "{key}" がありません')
     return obj[key]
+
+
+REVISION_KEYS = ('at', 'trigger', 'reason', 'marks_before')
+
+
+def _parse_revisions(raw, context):
+    if raw is None:
+        return []
+    if not isinstance(raw, list):
+        raise BetsError(f'{context}: revisions はリストです')
+    for i, rev in enumerate(raw, 1):
+        for key in REVISION_KEYS:
+            _require(rev, key, f'{context}の見直し{i}件目')
+    return raw
 
 
 def parse_sheet(payload):
@@ -315,6 +336,7 @@ def parse_sheet(payload):
             # 既定は中央。**このリポジトリが先に中央だけで動いていたので、
             # org の無い過去の買い目ファイルはすべて中央である。**
             org=raw.get('org', 'jra'),
+            revisions=_parse_revisions(raw.get('revisions'), context),
         ))
 
     return BetSheet(

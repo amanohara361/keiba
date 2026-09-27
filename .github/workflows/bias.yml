@@ -1,6 +1,14 @@
 name: バイアス蓄積
 
-# jra_bias.py fetch を開催終了後に回して data_jra/ を貯める。
+# 当日のトラックバイアスを測り、data_jra/ に貯める。
+#
+# **2026-09-27 に当日経路（jra_bias.py live）へ切り替えた。** それまでの fetch は
+# db.netkeiba.com を読むが、ここは当日中は個別レースを載せないため、21:00 に
+# 回しても空振りしていた（このワークフローは一度もコミットできていなかった）。
+# live は race.netkeiba.com の結果ページを読み、確定直後から測れる。
+#
+# 昼の便は「昼の見直し」（docs/昼の見直し手順.md）に当日の馬場とバイアスを渡すためのもの。
+# 判定結果は data/bias/YYYY-MM-DD.txt に上書き保存する（見直しのセッションが読む）。
 #
 # CLAUDE.md にあるとおり、Claudeのサンドボックスは db.netkeiba.com に到達できず
 # （403 Tunnel connection failed）、スポーツナビの結果ページを手で web_fetch して
@@ -13,7 +21,11 @@ name: バイアス蓄積
 
 on:
   schedule:
-    # 開催が終わってから回す。土日 21:00 JST = 12:00 UTC。
+    # 昼：11:37 JST = 02:37 UTC。午前の5〜6鞍で当日の傾向を測る。
+    # 定時実行は最大85分遅れるので、昼の見直しのセッションは結果が古ければ
+    # workflow_dispatch で起こし直す（手動起動は遅れない）。
+    - cron: '37 2 * * 6,0'
+    # 夜：開催終了後に全レースを蓄積する。21:00 JST = 12:00 UTC。
     - cron: '0 12 * * 6'
     - cron: '0 12 * * 0'
   workflow_dispatch:
@@ -53,7 +65,7 @@ jobs:
           venue_arg="${INPUT_VENUE:-all}"
           echo "対象: $date_arg $venue_arg"
           # レース間に1.5秒のウェイトが入る（jra_bias.py 側の配慮）
-          python jra_bias.py fetch "$date_arg" "$venue_arg"
+          python jra_bias.py live "$date_arg" "$venue_arg"
 
       - name: バイアスを判定して実行ログに残す
         env:
@@ -62,18 +74,20 @@ jobs:
         run: |
           date_arg="${INPUT_DATE:-$(TZ=Asia/Tokyo date +%Y%m%d)}"
           venue_arg="${INPUT_VENUE:-all}"
+          day="${date_arg:0:4}-${date_arg:4:2}-${date_arg:6:2}"
+          mkdir -p data/bias
           {
-            echo '```'
+            echo "# 測定時刻 $(TZ=Asia/Tokyo date +%Y-%m-%dT%H:%M:%S+09:00)"
             python jra_bias.py bias "$date_arg" "$venue_arg" || true
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+          } > "data/bias/$day.txt"
+          { echo '```'; cat "data/bias/$day.txt"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
       - name: 蓄積をコミット
         if: always()
         run: |
           git config user.name  'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data_jra/ 2>/dev/null || true
+          git add data_jra/ data/bias/ 2>/dev/null || true
           if git diff --staged --quiet; then
             echo '新しい蓄積はありません（開催なし、または取得できず）'
           else
