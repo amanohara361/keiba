@@ -264,6 +264,7 @@ def mark_vs_popularity(race, result):
         }
 
     return {
+        'favorite_won': bool(favorite and favorite['rank'] == 1),
         'top3': len(top3),
         'marked_top3': len(top3 & marked),
         'popular_top3': len(top3 & popular_top),
@@ -277,6 +278,7 @@ def review_race(race, result, check):
     """1レース分の評価をまとめる。結果が未確定なら分類だけ空にする。"""
     entry = {
         'race_id': race.race_id,
+        'org': race.org or 'jra',
         'name': race.name,
         'venue': race.venue,
         'confidence': race.confidence,
@@ -418,6 +420,7 @@ def summarize(entries):
         'honmei_wipeout': sum(1 for e in settled if e.get('honmei_wipeout')),
         # 印と人気順の比較（案A・案D）
         'compared_races': len(compared),
+        'favorite_win': sum(1 for c in compared if c['favorite_won']),
         'top3_total': sum(c['top3'] for c in compared),
         'top3_marked': sum(c['marked_top3'] for c in compared),
         'top3_popular': sum(c['popular_top3'] for c in compared),
@@ -544,7 +547,56 @@ def render_mark_popularity(week_summary, total_summary, since_summary=None):
     return lines
 
 
-def render(collected, week_summary, total_summary, period, since_summary=None):
+ORGS = [('jra', '中央'), ('nar', '地方')]
+
+# (見出し, summarize() の戻り値 -> 表示文字列)。中央・地方別の表。
+ORG_ROWS = [
+    ('確定レース', lambda s: str(s['settled'])),
+    ('◎勝率', lambda s: _pct(s['honmei_win'], s['honmei_races'])),
+    ('1番人気の勝率（参考）', lambda s: _pct(s['favorite_win'], s['compared_races'])),
+    ('◎複勝率', lambda s: _pct(s['honmei_place'], s['honmei_races'])),
+    ('3着以内を印で拾えた割合', lambda s: _pct(s['top3_marked'], s['top3_total'])),
+    ('同じ頭数の人気上位なら', lambda s: _pct(s['top3_popular'], s['top3_total'])),
+    ('1〜3番人気を完全に消した（うち3着以内）',
+     lambda s: f"{s['popular_cut']}頭（{s['popular_cut_top3']}頭）"),
+    ('回収率（規律適用後）', lambda s: _roi(s['disciplined'])),
+    ('的中', lambda s: f"{s['disciplined']['hits']}/{s['disciplined']['races']}"),
+]
+
+
+def summarize_by_org(entries):
+    """中央と地方を分けて集計する（2026-09-27〜）。
+
+    メソッドを中央・地方で分けるべきかを数字で判断するための材料。
+    分けるサインは (1) 同じルールが中央と地方で逆に効く、(2)「地方では〜」の
+    例外が本文より長くなる、(3) 印の成績が両者で違う方向に動き続ける、の3つ
+    （docs/決定ログ.md 2026-09-27）。まとめて集計すると (3) が見えない。
+    """
+    return {org: summarize([e for e in entries if e.get('org', 'jra') == org])
+            for org, _ in ORGS}
+
+
+def render_by_org(week_by_org, total_by_org):
+    """中央・地方別の表。判定はしない、数字だけ。"""
+    header = ' | '.join(f'{label} 今週 | {label} 通算' for _, label in ORGS)
+    lines = [
+        '## 中央・地方別',
+        '',
+        '1番人気の勝率は、印を比べられたレース（人気が全頭そろっている）での値。',
+        '',
+        f'| 指標 | {header} |',
+        '|---|' + '---|' * (2 * len(ORGS)),
+    ]
+    for label, fn in ORG_ROWS:
+        cells = ' | '.join(f'{fn(week_by_org[org])} | {fn(total_by_org[org])}'
+                           for org, _ in ORGS)
+        lines.append(f'| {label} | {cells} |')
+    lines.append('')
+    return lines
+
+
+def render(collected, week_summary, total_summary, period, since_summary=None,
+           week_by_org=None, total_by_org=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -620,6 +672,8 @@ def render(collected, week_summary, total_summary, period, since_summary=None):
     lines.append('')
 
     lines += render_mark_popularity(week_summary, total_summary, since_summary)
+    if week_by_org and total_by_org:
+        lines += render_by_org(week_by_org, total_by_org)
 
     # --- しきい値カウンタ ---
     lines.append(f'## カウンタ（通算{COUNTER_THRESHOLD}件でメソッド見直しを検討）')
@@ -669,7 +723,8 @@ def _mail_race_lines(collected):
     return lines
 
 
-def render_mail(week_summary, period, path, total_summary=None, collected=None):
+def render_mail(week_summary, period, path, total_summary=None, collected=None,
+                week_by_org=None):
     """メール本文。**しきい値に達したカウンタがあれば、ここで一言で言い切る。**
 
     通算の件数や「10件」という基準そのものは、レビューの .md ファイルには
@@ -751,6 +806,14 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None):
             f"1〜3番人気を完全に消した {week_summary['popular_cut']}頭"
             f"（うち3着以内 {week_summary['popular_cut_top3']}頭）"
             f" / 地方で1番人気から◎を外した {week_summary['nar_favorite_off']}R")
+    for org, label in ORGS:
+        s = (week_by_org or {}).get(org)
+        if s and s['settled']:
+            lines.append(
+                f"{label} {s['settled']}R：◎勝率 {_pct(s['honmei_win'], s['honmei_races'])}"
+                f"（1番人気 {_pct(s['favorite_win'], s['compared_races'])}）"
+                f" / 印で拾えた {_pct(s['top3_marked'], s['top3_total'])}"
+                f"（人気上位 {_pct(s['top3_popular'], s['top3_total'])}）")
 
     if collected:
         race_lines = _mail_race_lines(collected)
@@ -803,8 +866,12 @@ def main(argv=None):
     since_summary = summarize([e for day in history if day['date'] >= MARK_RULES_SINCE
                                for e in day['entries']])
 
+    week_by_org = summarize_by_org(week_entries)
+    total_by_org = summarize_by_org(all_entries)
+
     text = render(week, week_summary, total_summary, (start, end),
-                  since_summary=since_summary)
+                  since_summary=since_summary,
+                  week_by_org=week_by_org, total_by_org=total_by_org)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)
@@ -818,7 +885,8 @@ def main(argv=None):
         subject = f'週次レビュー {start.isoformat()}〜{end.isoformat()}{args.subject_suffix}'
         rel = os.path.relpath(path, ROOT)
         body = render_mail(week_summary, (start, end), rel,
-                           total_summary=total_summary, collected=week)
+                           total_summary=total_summary, collected=week,
+                           week_by_org=week_by_org)
         if not mailer.send(subject, body):
             logger.error('メール送信に失敗しました')
             return EXIT_ERROR

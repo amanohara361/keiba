@@ -92,3 +92,29 @@ def test_比較できるレースが無くても表は崩れない():
     summary = review.summarize([])
     text = review.render([], summary, summary, (date(2026, 9, 28), date(2026, 10, 4)))
     assert '印と人気上位の比較' in text
+
+
+def test_中央と地方を分けて集計する():
+    jra = review.review_race(make_race([('◎', 1)], org='jra'), make_result(ORDER), None)
+    nar = review.review_race(make_race([('◎', 5), ('○', 1)], org='nar'), make_result(ORDER), None)
+    by_org = review.summarize_by_org([jra, nar])
+    assert by_org['jra']['settled'] == 1 and by_org['nar']['settled'] == 1
+    assert by_org['jra']['honmei_win'] == 1          # ◎1番が1着
+    assert by_org['nar']['honmei_win'] == 0
+    assert by_org['nar']['favorite_win'] == 1        # 1番人気は勝っている
+    text = review.render([], review.summarize([jra, nar]), review.summarize([jra, nar]),
+                         (date(2026, 9, 28), date(2026, 10, 4)),
+                         week_by_org=by_org, total_by_org=by_org)
+    assert '## 中央・地方別' in text
+    assert '| ◎勝率 | 1/1（100%） | 1/1（100%） | 0/1（0%） | 0/1（0%） |' in text
+
+
+def test_片方が0件でも表は崩れない():
+    jra = review.review_race(make_race([('◎', 1)], org='jra'), make_result(ORDER), None)
+    by_org = review.summarize_by_org([jra])
+    assert by_org['nar']['settled'] == 0
+    lines = review.render_by_org(by_org, by_org)
+    assert any(l.startswith('| ◎勝率 |') and '—' in l for l in lines)
+    mail = review.render_mail(review.summarize([jra]), (date(2026, 9, 28), date(2026, 10, 4)),
+                              'x.md', week_by_org=by_org)
+    assert '中央 1R' in mail and '地方 ' not in mail.split('── レース別')[0].split('印の精度')[1]
