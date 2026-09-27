@@ -1,0 +1,231 @@
+{
+  "race_id": "202606040910",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 5,
+      "name": "ハニードレス",
+      "ninki": 6,
+      "odds": 13.0
+    },
+    {
+      "rank": 2,
+      "umaban": 6,
+      "name": "ミツカネベネラ",
+      "ninki": 8,
+      "odds": 21.7
+    },
+    {
+      "rank": 3,
+      "umaban": 8,
+      "name": "ベネスピラ",
+      "ninki": 10,
+      "odds": 35.6
+    },
+    {
+      "rank": 4,
+      "umaban": 4,
+      "name": "コスモイシュタル",
+      "ninki": 5,
+      "odds": 8.6
+    },
+    {
+      "rank": 5,
+      "umaban": 1,
+      "name": "スイートオレンジ",
+      "ninki": 4,
+      "odds": 6.8
+    },
+    {
+      "rank": 6,
+      "umaban": 16,
+      "name": "トレミニョン",
+      "ninki": 15,
+      "odds": 79.9
+    },
+    {
+      "rank": 7,
+      "umaban": 14,
+      "name": "レイヤードレッド",
+      "ninki": 11,
+      "odds": 45.7
+    },
+    {
+      "rank": 8,
+      "umaban": 3,
+      "name": "フナデ",
+      "ninki": 14,
+      "odds": 70.5
+    },
+    {
+      "rank": 9,
+      "umaban": 2,
+      "name": "プリズマジコ",
+      "ninki": 12,
+      "odds": 45.8
+    },
+    {
+      "rank": 10,
+      "umaban": 18,
+      "name": "ジャンビ",
+      "ninki": 18,
+      "odds": 235.7
+    },
+    {
+      "rank": 11,
+      "umaban": 13,
+      "name": "ジェットブレード",
+      "ninki": 9,
+      "odds": 35.2
+    },
+    {
+      "rank": 12,
+      "umaban": 10,
+      "name": "サンライズバブル",
+      "ninki": 2,
+      "odds": 5.3
+    },
+    {
+      "rank": 13,
+      "umaban": 9,
+      "name": "ルージュボヤージュ",
+      "ninki": 3,
+      "odds": 6.7
+    },
+    {
+      "rank": 14,
+      "umaban": 11,
+      "name": "アイキャンドウイッ",
+      "ninki": 16,
+      "odds": 86.7
+    },
+    {
+      "rank": 15,
+      "umaban": 7,
+      "name": "ドナルンバ",
+      "ninki": 1,
+      "odds": 3.4
+    },
+    {
+      "rank": 16,
+      "umaban": 12,
+      "name": "ダノンカゼルタ",
+      "ninki": 7,
+      "odds": 15.4
+    },
+    {
+      "rank": 17,
+      "umaban": 17,
+      "name": "マテンロウギフト",
+      "ninki": 13,
+      "odds": 47.9
+    },
+    {
+      "rank": 18,
+      "umaban": 15,
+      "name": "マイネルバーテクス",
+      "ninki": 17,
+      "odds": 179.0
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          5
+        ],
+        "yen": 1300
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          5
+        ],
+        "yen": 420
+      },
+      {
+        "combination": [
+          6
+        ],
+        "yen": 670
+      },
+      {
+        "combination": [
+          8
+        ],
+        "yen": 1120
+      }
+    ],
+    "枠連": [
+      {
+        "combination": [
+          3,
+          3
+        ],
+        "yen": 14820
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          5,
+          6
+        ],
+        "yen": 15760
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          5,
+          6
+        ],
+        "yen": 4520
+      },
+      {
+        "combination": [
+          5,
+          8
+        ],
+        "yen": 8280
+      },
+      {
+        "combination": [
+          6,
+          8
+        ],
+        "yen": 10090
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          5,
+          6
+        ],
+        "yen": 27260
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          5,
+          6,
+          8
+        ],
+        "yen": 190860
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          5,
+          6,
+          8
+        ],
+        "yen": 1021910
+      }
+    ]
+  }
+}

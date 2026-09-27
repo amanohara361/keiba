@@ -1,0 +1,210 @@
+{
+  "race_id": "202609040610",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 12,
+      "name": "サンライズケヴィン",
+      "ninki": 2,
+      "odds": 3.6
+    },
+    {
+      "rank": 2,
+      "umaban": 5,
+      "name": "ソルチェリア",
+      "ninki": 1,
+      "odds": 3.4
+    },
+    {
+      "rank": 3,
+      "umaban": 2,
+      "name": "マシン",
+      "ninki": 4,
+      "odds": 7.1
+    },
+    {
+      "rank": 4,
+      "umaban": 11,
+      "name": "アートレスマインド",
+      "ninki": 6,
+      "odds": 14.7
+    },
+    {
+      "rank": 5,
+      "umaban": 14,
+      "name": "タイガースパーク",
+      "ninki": 8,
+      "odds": 25.8
+    },
+    {
+      "rank": 6,
+      "umaban": 15,
+      "name": "テイエムパイロット",
+      "ninki": 7,
+      "odds": 17.8
+    },
+    {
+      "rank": 7,
+      "umaban": 9,
+      "name": "フラッシング",
+      "ninki": 10,
+      "odds": 79.6
+    },
+    {
+      "rank": 8,
+      "umaban": 6,
+      "name": "ニシノジェダイ",
+      "ninki": 5,
+      "odds": 8.7
+    },
+    {
+      "rank": 9,
+      "umaban": 3,
+      "name": "ゼンエスポワール",
+      "ninki": 3,
+      "odds": 5.0
+    },
+    {
+      "rank": 10,
+      "umaban": 1,
+      "name": "クリノラピダス",
+      "ninki": 12,
+      "odds": 104.1
+    },
+    {
+      "rank": 11,
+      "umaban": 8,
+      "name": "エリカヴェネチア",
+      "ninki": 11,
+      "odds": 96.4
+    },
+    {
+      "rank": 12,
+      "umaban": 10,
+      "name": "ヒデノレインボー",
+      "ninki": 13,
+      "odds": 168.9
+    },
+    {
+      "rank": 13,
+      "umaban": 13,
+      "name": "チムニートップス",
+      "ninki": 14,
+      "odds": 169.5
+    },
+    {
+      "rank": 14,
+      "umaban": 7,
+      "name": "ゼットレジーナ",
+      "ninki": 15,
+      "odds": 201.6
+    },
+    {
+      "rank": 15,
+      "umaban": 4,
+      "name": "ハイディージェン",
+      "ninki": 9,
+      "odds": 47.1
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          12
+        ],
+        "yen": 360
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          12
+        ],
+        "yen": 160
+      },
+      {
+        "combination": [
+          5
+        ],
+        "yen": 150
+      },
+      {
+        "combination": [
+          2
+        ],
+        "yen": 200
+      }
+    ],
+    "枠連": [
+      {
+        "combination": [
+          3,
+          7
+        ],
+        "yen": 560
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          5,
+          12
+        ],
+        "yen": 500
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          5,
+          12
+        ],
+        "yen": 300
+      },
+      {
+        "combination": [
+          2,
+          12
+        ],
+        "yen": 640
+      },
+      {
+        "combination": [
+          2,
+          5
+        ],
+        "yen": 560
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          12,
+          5
+        ],
+        "yen": 980
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          2,
+          5,
+          12
+        ],
+        "yen": 2070
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          12,
+          5,
+          2
+        ],
+        "yen": 9270
+      }
+    ]
+  }
+}
