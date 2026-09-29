@@ -1,0 +1,156 @@
+[
+  {
+    "checked_at": "2026-09-30T08:11:02.654103+09:00",
+    "races": [
+      {
+        "race_id": "202609304311",
+        "name": "第７３回 日本テレビ盃（指定交流）JpnII",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 276.6,
+          "2": 14.5,
+          "3": 387.2,
+          "4": 27.6,
+          "5": 414.9,
+          "6": 51.8,
+          "7": 1.0,
+          "8": 15.6,
+          "9": 341.6
+        },
+        "win_ninki": {
+          "1": 6,
+          "2": 2,
+          "3": 8,
+          "4": 4,
+          "5": 9,
+          "6": 5,
+          "7": 1,
+          "8": 3,
+          "9": 7
+        },
+        "priced_odds": {
+          "単勝": {
+            "7": 1.0
+          },
+          "馬連": {
+            "7-8": 2.4,
+            "4-7": 3.2,
+            "2-7": 4.6,
+            "6-7": 14.3,
+            "5-7": 86.9
+          },
+          "ワイド": {
+            "7-8": 1.0,
+            "4-7": 1.9,
+            "2-7": 1.5,
+            "6-7": 3.8,
+            "5-7": 10.7
+          },
+          "3連複": {
+            "4-7-8": 2.8,
+            "2-7-8": 4.2,
+            "6-7-8": 9.6,
+            "5-7-8": 47.3,
+            "2-4-7": 5.7,
+            "4-6-7": 14.2,
+            "4-5-7": 63.3,
+            "2-6-7": 12.1,
+            "2-5-7": 50.2,
+            "5-6-7": 105.9
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第７３回 日本テレビ盃（指定交流）JpnII: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第７３回 日本テレビ盃（指定交流）JpnII: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1800,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 9
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 9
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 36
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 72
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 36
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 84
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-09-30 08:11:04"
+        }
+      },
+      {
+        "race_id": "202609303012",
+        "name": "第２６回 サンライズカップ（テーオーケインズ賞）",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第２６回 サンライズカップ（テーオーケインズ賞）: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第２６回 サンライズカップ（テーオーケインズ賞）: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1800,
+          "weather": null,
+          "going": null
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-09-30 08:11:04"
+        }
+      }
+    ]
+  }
+]
