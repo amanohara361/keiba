@@ -113,6 +113,69 @@ def test_tokai_stakes_lone_partner_is_warned():
     assert '2着抜け' in finding.remedy
 
 
+def test_going_based_reason_without_tag_is_warned():
+    """2026-09-26 勝浦特別：「良馬場は1-0-2-11」で下げた馬の前提が重馬場で消えた件。
+
+    馬場に依存した根拠があるのに【馬場依存】が無ければ知らせる（買い目は止めない）。
+    """
+    race = make_race(
+        name='勝浦特別',
+        marks=marks_of(items=[('◎', 7), ('○', 2), ('▲', 11)]),
+        bets=[Bet('ワイド', [7, 2])],
+        note='9と12は前走の勝ちが特殊条件で、良馬場は1-0-2-11。逃げ候補：毎回ハナ＝2。',
+    )
+
+    verdict = review(race, bet_odds=[5.0])
+
+    finding = next(f for f in verdict.warnings if f.code == 'note_going_tag')
+    assert '良馬場は1-0-2-11' in finding.message
+    assert finding.severity == discipline.WARN
+    assert 'note_going_tag' not in [f.code for f in verdict.blocks]
+
+
+def test_going_tag_present_or_no_going_reason_is_not_warned():
+    """タグがあれば警告しない。「重賞」など馬場成績でない語は拾わない。"""
+    tagged = make_race(
+        marks=marks_of(items=[('◎', 7)]),
+        bets=[Bet('単勝', [7])],
+        note='◎7は重馬場向き【馬場依存：重】。逃げ候補：毎回ハナ＝7。',
+    )
+    unrelated = make_race(
+        marks=marks_of(items=[('◎', 7)]),
+        bets=[Bet('単勝', [7])],
+        note='◎7は重賞2勝。斤量が重い。逃げ候補：行ければ行く＝7。',
+    )
+
+    for race in (tagged, unrelated):
+        codes = [f.code for f in review(race, bet_odds=[5.0]).warnings]
+        assert 'note_going_tag' not in codes
+
+
+def test_missing_front_runner_list_is_warned():
+    """2026-09-23 ブルームカップ：勝った逃げ馬を展開図から落としていた件。"""
+    race = make_race(
+        name='ブルームカップ',
+        marks=marks_of(items=[('◎', 10), ('○', 9)]),
+        bets=[Bet('ワイド', [10, 9])],
+        note='逃げ・先行型は9・6・8・1番とそれほど多くない。',
+    )
+
+    codes = [f.code for f in review(race, bet_odds=[5.0]).warnings]
+    assert 'note_front_list' in codes
+
+
+def test_note_checks_skip_races_without_bets():
+    """見送りのレースは「見送り（買い目なし）」のまま。noteの書き方では要検討にしない。"""
+    race = make_race(
+        marks=marks_of(items=[('◎', 10)]),
+        note='良馬場は1-0-2-11。',
+    )
+
+    codes = [f.code for f in review(race).warnings]
+    assert 'note_going_tag' not in codes
+    assert 'note_front_list' not in codes
+
+
 def test_axis_only_bets_are_warned_as_axis_dependency():
     """2026-08-31 検証ノート「◎一極集中で全滅」6件の再発防止。
 
