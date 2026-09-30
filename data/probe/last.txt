@@ -1,5 +1,5 @@
-# card-entries-raw 202609040811  (2026-09-30T22:50:31Z)
-取得サイズ: 264991 文字
+# card-entries-raw 202605010811  (2026-09-30T22:51:38Z)
+取得サイズ: 263076 文字
 HorseList行: 18 件
 
 1頭目の<td>クラス一覧: ['Barei Txt_C', 'CheckMark Horse_Select', 'FavMemo', 'FavRegist Txt_C', 'HorseInfo', 'Jockey', 'Note0', 'Note1', 'Popular Popular_Ninki Txt_C', 'Trainer', 'Txt_C', 'Txt_R Popular', 'Umaban1 Txt_C', 'Waku1 Txt_C', 'Weight']
@@ -10,82 +10,82 @@ HorseList行: 18 件
 <td class="Umaban1 Txt_C">1</td>
 <td class="CheckMark Horse_Select">
 
-<select class="makeMeFancy_5" name="5" id="mark_5" style="display: none;">
+<select class="makeMeFancy_9" name="9" id="mark_9" style="display: none;">
 <option data-html-text="--" value="1_0">--</option><option data-html-text="◎" value="1_1">◎</option><option data-html-text="◯" value="1_2">◯</option><option data-html-text="▲" value="1_3">▲</option><option data-html-text="△" value="1_4">△</option><option data-html-text="☆" value="1_5">☆</option><option data-html-text="&amp;#10003" value="1_98">&amp;#10003</option><option data-html-text="消" value="1_99">消</option>
 </select>
 </td>
 <td class="HorseInfo">
 <div>
 <div>
- <span class="HorseName"><a href="https://db.netkeiba.com/horse/2020100912" target="_blank" title="ジューンアヲニヨシ">ジューンアヲニヨシ<img id="myhorse_2020100912" class="disp_none Favorite" src="https://cdnv2.netkeiba.com/img.race/common/img/icon/icon_horse.png?2019073001" alt="" width="18"></a></span>
-<img id="myhorse1_2020100912" src="https://cdnv2.netkeiba.com/img.race/common/img/icon/horse_favorite_icon_pc.png" class="disp_none horsebookmark myhorse_2020100912" onmouseover="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/horse_favorite_icon_pc.png'" onmouseout="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/horse_favorite_icon_pc.png'" width="20">
+ <span class="HorseName"><a href="https://db.netkeiba.com/horse/2020102904" target="_blank" title="オメガギネス">オメガギネス<img id="myhorse_2020102904" class="disp_none Favorite" src="https://cdnv2.netkeiba.com/img.race/common/img/icon/icon_horse.png?2019073001" alt="" width="18"></a></span>
+<img id="myhorse1_2020102904" src="https://cdnv2.netkeiba.com/img.race/common/img/icon/horse_favorite_icon_pc.png" class="disp_none horsebookmark myhorse_2020102904" onmouseover="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/horse_favorite_icon_pc.png'" onmouseout="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/horse_favorite_icon_pc.png'" width="20">
 </div>
 </div>
 </td>
 <td class="Barei Txt_C">牡6</td>
-<td class="Txt_C">57.0</td>
+<td class="Txt_C">58.0</td>
 <td class="Jockey">
-<a  href="https://db.netkeiba.com/jockey/result/recent/01168/" target="_blank" title="富田"> 富田</a>
+<a  href="https://db.netkeiba.com/jockey/result/recent/05203/" target="_blank" title="岩田康"> 岩田康</a>
 
 
 </td>
-<td class="Trainer"><span class="Label2">栗東</span><a href="https://db.netkeiba.com/trainer/result/recent/01149/" target="_blank" title="松下">松下</a></td>
+<td class="Trainer"><span class="Label2">栗東</span><a href="https://db.netkeiba.com/trainer/result/recent/01164/" target="_blank" title="安田">安田</a></td>
 <td class="Weight">
-496<small>(+6)</small>
+498<small>(-2)</small>
 </td>
 <td class="Txt_R Popular"><span id="odds-1_01" style="font-weight : bold">---.-</span></td>
 <td class="Popular Popular_Ninki Txt_C">
 <span id="ninki-1_01">**</span>
 </td>
 <td class="FavRegist Txt_C">
-<a href="https://db.sp.netkeiba.com?pid=horse_bookmark_add&horse_id=2020100912&rtn_url=https://race.netkeiba.com/race/shutuba.html?race_id=202609040811" title="お気に入り馬登録" class="popup_link_04 cboxElement cboxElement_Nologin">
-<img src="https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_03.png" class="horsebookmark myhorse1_2020100912" onmouseover="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_03.png'" onmouseout="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_03.png'" width="18">
-<img id="myhorse1_2020100912" src="https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_04.png" width="18" class="disp_none horsebookmark myhorse_2020100912" onmouseover="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_04.png'" onmouseout="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_04.png'">
+<a href="https://db.sp.netkeiba.com?pid=horse_bookmark_add&horse_id=2020102904&rtn_url=https://race.netkeiba.com/race/shutuba.html?race_id=202605010811" title="お気に入り馬登録" class="popup_link_04 cboxElement cboxElement_Nologin">
+<img src="https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_03.png" class="horsebookmark myhorse1_2020102904" onmouseover="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_03.png'" onmouseout="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_03.png'" width="18">
+<img id="myhorse1_2020102904" src="https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_04.png" width="18" class="disp_none horsebookmark myhorse_2020102904" onmouseover="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_04.png'" onmouseout="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/prof_icon_favhorse_comp_04.png'">
 </a>
 </td>
-<td class="FavMemo"><div><a href="../popup/horse_bookmark.html?ketto_num=2020100912&race_id=202609040811" id="Bamei_2020100912" title="" class="popup_link_04 cboxElement"></a></div></td>
-<td id="note0_2020100912" class="Note0"><a class="Note_Inner" href="javascript:void(0);"><span class="Note_Text"></span><span class="NoteIcon">編集</span></a></td>
-<td id="note1_2020100912" class="Note1" style="display:none;"><a class="Note_Inner" href="javascript:void(0);"><span class="Note_Text"></span><span class="NoteIcon">編集</span></a></td>
+<td class="FavMemo"><div><a href="../popup/horse_bookmark.html?ketto_num=2020102904&race_id=202605010811" id="Bamei_2020102904" title="" class="popup_link_04 cboxElement"></a></div></td>
+<td id="note0_2020102904" class="Note0"><a class="Note_Inner" href="javascript:void(0);"><span class="Note_Text"></span><span class="NoteIcon">編集</span></a></td>
+<td id="note1_2020102904" class="Note1" style="display:none;"><a class="Note_Inner" href="javascript:void(0);"><span class="Note_Text"></span><span class="NoteIcon">編集</span></a></td>
 
 
 === 装備・追い切り（馬番 馬名: blinker 前走 変化 / 追い切り） ===
-1 ジューンアヲニヨシ: False False same / {'critic': '動き上々', 'rank': 'B'}
-2 ゼットリアン: False False same / {'critic': '出来安定', 'rank': 'B'}
-3 メイショウズイウン: True True same / {'critic': '追毎良化', 'rank': 'B'}
-4 ダイシンピスケス: False False same / {'critic': '末脚良し', 'rank': 'B'}
-5 ハピ: False False same / {'critic': '気配上昇', 'rank': 'B'}
-6 ギュルヴィ: False None None / {'critic': '仕上上々', 'rank': 'B'}
-7 ミッキークレスト: True False on / {'critic': '前走並み', 'rank': 'C'}
-8 ダブルジョーク: False False same / {'critic': '迫力十分', 'rank': 'B'}
-9 ルシュヴァルドール: True False on / {'critic': '目立たず', 'rank': 'C'}
-10 サイモンザナドゥ: False False same / {'critic': '動き軽快', 'rank': 'B'}
-11 ヴァルツァーシャル: False False same / {'critic': '気配抜群', 'rank': 'A'}
-12 マイノワール: False False same / {'critic': '仕上良好', 'rank': 'B'}
-13 ラムジェット: True None None / {'critic': '仕上上々', 'rank': 'B'}
-14 リアレスト: True True same / {'critic': '仕上上々', 'rank': 'B'}
-15 カズタンジャー: True True same / {'critic': '出来安定', 'rank': 'B'}
-16 オニャンコポン: False False same / {'critic': '変わらず', 'rank': 'C'}
-1: prev_race_id=202608030911
-2: prev_race_id=202607020407
-3: prev_race_id=202604030308
-4: prev_race_id=202605020410
-5: prev_race_id=202607030207
-6: prev_race_id=202635072012
-  https://nar.netkeiba.com/race/shutuba_past.html?race_id=202635072012（149766文字、HorseList 14 行、Mark B 0 件）
+1 オメガギネス: False False same / {'critic': 'キビキビ', 'rank': 'B'}
+2 ハッピーマン: False None None / {'critic': '好気合', 'rank': 'B'}
+3 ブライアンセンス: False False same / {'critic': '出来安定', 'rank': 'B'}
+4 ペリエール: False False same / {'critic': '出来は良', 'rank': 'B'}
+5 シックスペンス: False False same / {'critic': '態勢整う', 'rank': 'B'}
+6 ラムジェット: True True same / {'critic': '態勢整う', 'rank': 'B'}
+7 ロングラン: False False same / {'critic': '好気合', 'rank': 'B'}
+8 サクラトゥジュール: False False same / {'critic': '多少良化', 'rank': 'C'}
+9 ダブルハートボンド: False False same / {'critic': '文句なし', 'rank': 'A'}
+10 ロードクロンヌ: False False same / {'critic': '出来安定', 'rank': 'B'}
+11 サンライズホーク: False True off / {'critic': '元気一杯', 'rank': 'B'}
+12 コスタノヴァ: True False on / {'critic': '気配抜群', 'rank': 'A'}
+13 ナチュラルライズ: False None None / {'critic': '前走以上', 'rank': 'B'}
+14 ウィルソンテソーロ: False False same / {'critic': '態勢整う', 'rank': 'B'}
+15 ペプチドナイル: True True same / {'critic': '仕上良好', 'rank': 'B'}
+16 サイモンザナドゥ: False False same / {'critic': '好気配', 'rank': 'B'}
+1: prev_race_id=202605010211
+2: prev_race_id=202550122511
+  https://nar.netkeiba.com/race/shutuba_past.html?race_id=202550122511（131829文字、HorseList 11 行、Mark B 0 件）
   parse_past_table: {}
-  この馬の行（馬名まわり）: 8_98">&amp;#10003</option><option data-html-text="消" value="8_99">消</option> </select> </td> <td class="Horse_Info" data-sort-value="3"> <dl class="fc"> <dt class="Horse01 fc">Nyquist</dt> <dt class="Horse02"> <a href="https://db.netkeiba.com/horse/2022103267/" target="_blank"> ギュルヴィ</a> </dt> <dt class="Horse03">メイディーン</dt> <dt class="Horse04">(Tapit)</dt> <!-- <dt class="Horse05"><a href="https://db.netkeiba.com/trainer/01058/">栗東・大久保龍</a>&nbsp;&nbsp;</dt> --> <dt class="Horse05">栗東・大久保龍&nbsp;&nbsp;</dt> <dt class="Horse06 fc"> <div class="Type Type02"><span>先</span></div> 中7週 </dt> <dt class="Horse07 fc"> <div class="Weight">522kg<span>(+8)</span></div> <div class="Popular"> <span class="Odds_Ninki">&nbsp;7.2</span> <span>(3人気)</span> </div> </dt> </dl> </td> <td class="Jockey"> <span class="Barei">牡4芦</span> <!-- <img src="http://cimg.db.sp.netkeiba.com/common/img/sp/db/fuku/356803.gif" id = "fuku_img8" alt="" width="32" onerror="DefaultImg(8)"><br> --> <!-- <a href="https://db.netkeiba.com/jockey/00666/">武豊</a><br /> --> 武豊<br /> <span>54.0</span> </td> <td class="Past Ranking_1
+  この馬の行（馬名まわり）: _98">&amp;#10003</option><option data-html-text="消" value="3_99">消</option> </select> </td> <td class="Horse_Info" data-sort-value="3"> <dl class="fc"> <dt class="Horse01 fc">ダノンレジェンド</dt> <dt class="Horse02"> <a href="https://db.netkeiba.com/horse/2022100140/" target="_blank"> ハッピーマン</a> </dt> <dt class="Horse03">ベルミュール</dt> <dt class="Horse04">(キングカメハメハ)</dt> <!-- <dt class="Horse05"><a href="https://db.netkeiba.com/trainer/01158/">栗東・寺島良</a>&nbsp;&nbsp;</dt> --> <dt class="Horse05">栗東・寺島良&nbsp;&nbsp;</dt> <dt class="Horse06 fc"> <div class="Type Type02"><span>先</span></div> 中3週 </dt> <dt class="Horse07 fc"> <div class="Weight">474kg<span>(+2)</span></div> <div class="Popular"> <span class="Odds_Ninki">&nbsp;5.4</span> <span>(3人気)</span> </div> </dt> </dl> </td> <td class="Jockey"> <span class="Barei">牡3黒鹿</span> <!-- <img src="http://cimg.db.sp.netkeiba.com/common/img/sp/db/fuku/377034.gif" id = "fuku_img3" alt="" width="32" onerror="DefaultImg(3)"><br> --> <!-- <a href="https://db.netkeiba.com/jockey/01163/">坂井瑠</a><br /> --> 坂井瑠<br /> <span>57.0</span> </td> <td class="Past Rank
   この馬の行の B らしき箇所: []
-7: prev_race_id=202607030207
-8: prev_race_id=202609020612
-9: prev_race_id=202609020711
-10: prev_race_id=202607020407
-11: prev_race_id=202601010511
-12: prev_race_id=202608030110
-13: prev_race_id=202644070111
-  https://nar.netkeiba.com/race/shutuba_past.html?race_id=202644070111（145824文字、HorseList 13 行、Mark B 0 件）
+3: prev_race_id=202608010911
+4: prev_race_id=202507050211
+5: prev_race_id=202507050211
+6: prev_race_id=202507050211
+7: prev_race_id=202508040611
+8: prev_race_id=202605010411
+9: prev_race_id=202507050211
+10: prev_race_id=202608010911
+11: prev_race_id=202605010610
+12: prev_race_id=202505050311
+13: prev_race_id=202544122909
+  https://nar.netkeiba.com/race/shutuba_past.html?race_id=202544122909（167864文字、HorseList 16 行、Mark B 0 件）
   parse_past_table: {}
-  この馬の行（馬名まわり）: amp;#10003</option><option data-html-text="消" value="13_99">消</option> </select> </td> <td class="Horse_Info" data-sort-value="5"> <dl class="fc"> <dt class="Horse01 fc">マジェスティックウォリアー</dt> <dt class="Horse02"> <a href="https://db.netkeiba.com/horse/2021106640/" target="_blank"> ラムジェット</a> </dt> <dt class="Horse03">ネフェルティティ</dt> <dt class="Horse04">(ゴールドアリュール)</dt> <!-- <dt class="Horse05"><a href="https://db.netkeiba.com/trainer/01092/">栗東・松永幹夫</a>&nbsp;&nbsp;</dt> --> <dt class="Horse05">栗東・松永幹夫&nbsp;&nbsp;</dt> <dt class="Horse06 fc"> <div class="Type Type04"><span>追</span></div> 中17週 </dt> <dt class="Horse07 fc"> <div class="Weight">531kg<span>(+1)</span></div> <div class="Popular"> &nbsp;11.5 <span>(5人気)</span> </div> </dt> </dl> </td> <td class="Jockey"> <span class="Barei">牡5黒鹿</span> <!-- <img src="http://cimg.db.sp.netkeiba.com/common/img/sp/db/fuku/117031.gif" id = "fuku_img13" alt="" width="32" onerror="DefaultImg(13)"><br> --> <!-- <a href="https://db.netkeiba.com/jockey/01122/">三浦皇</a><br /> --> 三浦皇<br /> <span>57.0</span> </td> <td class="Past" id="myhorse_202605010811">
+  この馬の行（馬名まわり）: ue="1_98">&amp;#10003</option><option data-html-text="消" value="1_99">消</option> </select> </td> <td class="Horse_Info" data-sort-value="3"> <dl class="fc"> <dt class="Horse01 fc">キズナ</dt> <dt class="Horse02"> <a href="https://db.netkeiba.com/horse/2022103795/" target="_blank"> ナチュラルライズ</a> </dt> <dt class="Horse03">レディマドンナ</dt> <dt class="Horse04">(Distorted Humor)</dt> <!-- <dt class="Horse05"><a href="https://db.netkeiba.com/trainer/01023/">美浦・伊藤圭三</a>&nbsp;&nbsp;</dt> --> <dt class="Horse05">美浦・伊藤圭三&nbsp;&nbsp;</dt> <dt class="Horse06 fc"> <div class="Type Type02"><span>先</span></div> 中11週 </dt> <dt class="Horse07 fc"> <div class="Weight">501kg<span>(+3)</span></div> <div class="Popular"> <span class="Odds_Ninki">&nbsp;5.5</span> <span>(3人気)</span> </div> </dt> </dl> </td> <td class="Jockey"> <span class="Barei">牡3鹿</span> <!-- <img src="http://cimg.db.sp.netkeiba.com/common/img/sp/db/fuku/726031.gif" id = "fuku_img1" alt="" width="32" onerror="DefaultImg(1)"><br> --> <!-- <a href="https://db.netkeiba.com/jockey/01170/">横山武</a><br /> --> 横山武<br /> <span>56.0</span> </td> <td clas
   この馬の行の B らしき箇所: []
-14: prev_race_id=202605030511
-15: prev_race_id=202604030308
-16: prev_race_id=202601010811
+14: prev_race_id=202507050211
+15: prev_race_id=202507050211
+16: prev_race_id=202608010911
