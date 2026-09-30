@@ -15,7 +15,7 @@ on:
       target:
         description: '調べる対象'
         type: choice
-        options: [conditions, bias, result-raw, card-entries-all, card-list, card-entries, card-entries-raw, card-horse, card-horse-search, card-build]
+        options: [conditions, bias, result-raw, url-raw, comments, card-entries-all, card-list, card-entries, card-entries-raw, card-horse, card-horse-search, card-build]
         default: conditions
 
 concurrency:
@@ -64,6 +64,59 @@ jobs:
           print(url, len(raw))
           print(page[max(0, i - 2000):max(0, i - 2000) + 60000])
           " "$RACE_ID" || true ;;
+              # 保存済みカード（RACE_ID に YYYY-MM-DD）の重賞に陣営コメントを付けて表示する（保存はしない）。
+              comments) python -c "
+          import json, sys
+          from datetime import date
+          import card, comments
+          day = date.fromisoformat(sys.argv[1])
+          c = card.load_card(day) or {'races': []}
+          races = [r for r in c['races'] if r.get('grade') in comments.GRADES]
+          print('重賞', [(r['name'], r['grade'], len(r.get('entries') or [])) for r in races])
+          comments.attach(races, day)
+          for r in races:
+              print(json.dumps({'name': r['name'], 'comments': r.get('comments')}, ensure_ascii=False, indent=1))
+          " "$RACE_ID" 2>&1 || true ;;
+              # 陣営コメントの取得先を探す調査用。RACE_ID に URL を渡す（許可したドメインだけ）。
+              url-raw) python -c "
+          import re, sys, urllib.request, urllib.parse
+          allowed = ('keibalab.jp', 'netkeiba.com', 'jra.go.jp', 'sponichi.co.jp', 'nikkansports.com',
+                     'daily.co.jp', 'sanspo.com', 'hochi.news', 'tospo-keiba.jp', 'umanity.jp', 'keibabook.co.jp')
+          for url in sys.argv[1].split():
+              print('=' * 20, url)
+              host = urllib.parse.urlparse(url).hostname or ''
+              if not url.startswith('https://') or not any(host == d or host.endswith('.' + d) for d in allowed):
+                  print('許可していないURL'); continue
+              try:
+                  req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+                  resp = urllib.request.urlopen(req, timeout=20)
+                  raw = resp.read()
+              except Exception as exc:
+                  print('取得失敗:', repr(exc)); continue
+              print('status', resp.status, 'final', resp.geturl(), 'bytes', len(raw))
+              for enc in ('utf-8', 'euc_jp', 'cp932'):
+                  try:
+                      page = raw.decode(enc); break
+                  except UnicodeDecodeError:
+                      pass
+              body_at = max(page.find('<body'), 0)
+              for mark in ('▼', '/kiji/'):
+                  k = page.find(mark, body_at)
+                  if k >= 0:
+                      print('--- raw around', mark, '---')
+                      print(page[max(0, k - 1500):k + 6000])
+              print('--- links ---')
+              for href, body in re.findall(r'(?s)<a[^>]+href=[\\x27\\x22]([^\\x27\\x22]+)[^>]*>(.*?)</a>', page):
+                  label = re.sub(r'\\s+', ' ', re.sub(r'<[^>]+>', ' ', body)).strip()
+                  if re.search(r'kiji|comment|danwa|kaiken|interview|oikiri', href, re.I) and label:
+                      print(href, '|', label[:80])
+              page = re.sub(r'(?s)<(script|style|noscript)[^>]*>.*?</\\1>', '', page)
+              text = re.sub(r'<[^>]+>', ' ', page)
+              text = re.sub(r'[ \\t\\u3000]+', ' ', text)
+              text = re.sub(r'\\n\\s*\\n+', '\\n', text)
+              print('--- text ---')
+              print(text[:15000])
+          " "$RACE_ID" 2>&1 || true ;;
               card-list)  python card.py probe list "$RACE_ID" || true ;;
               # card.yml が既定ブランチに入るまでの通し確認用。RACE_ID に日付を渡す。
               card-build) python card.py build --date "$RACE_ID" --limit 2 || true ;;
