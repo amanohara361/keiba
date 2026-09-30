@@ -130,6 +130,87 @@ def fetch_entries(race_id, opener=None):
 
 
 # ----------------------------------------------------------------------
+# 装備（ブリンカー）と追い切り（第1章 手順2）
+# ----------------------------------------------------------------------
+# 厩舎コメント（race/comment.html）はプレミアム会員向けで、行が1つも返らない。
+# 手順2の材料として機械で取れるのは、馬柱の装備マークと追い切りの短評・評価まで
+# （2026-10-01、シリウスS 202609040811 で probe entries-raw により実物確認）。
+#
+# 出馬表（shutuba.html）には装備が出ない。馬柱（shutuba_past.html）の馬名の横に
+# <span class="Mark">B</span> が付く。過去走のセルには装備が出ないので、
+# 「今回から着けた」は前走の馬柱と見比べて判断する（過去のレースの馬柱も
+# そのレース時点の装備を出す。シリウスSで初ブリンカーの9番にBが付いていた）。
+
+PAST_URL = 'https://race.netkeiba.com/race/shutuba_past.html?race_id={race_id}'
+OIKIRI_URL = 'https://race.netkeiba.com/race/oikiri.html?race_id={race_id}'
+
+# JRAの race_id は5・6桁目が場コード 01〜10。地方・海外の前走は race.netkeiba.com に無い。
+# 地方の前走は追わない：nar.netkeiba.com の馬柱も、主催者公式（keiba.go.jp）の出馬表も
+# 装備を出さない（2026-10-01、帝王賞 202644070111 で確認。前後のJRA戦でBを着けていた
+# ラムジェットにどちらも印が無く、公式ページには「ブリンカー」の語が1つも無い）。
+JRA_PLACE_CODES = {f'{n:02d}' for n in range(1, 11)}
+
+
+def is_jra_race_id(race_id):
+    return bool(race_id) and len(race_id) == 12 and race_id[4:6] in JRA_PLACE_CODES
+
+
+def parse_past_table(page):
+    """馬柱から {馬番: {horse_id, blinker, prev_race_id, past_race_ids}} を作る。
+
+    prev_race_id は過去走の先頭セル（前走）。新馬など前走が無ければ None。
+    past_race_ids は馬柱に載る過去走（最大5走）の race_id を新しい順に。
+    """
+    out = {}
+    for row in re.findall(r'<tr class="HorseList[^"]*"[^>]*>(.*?)</tr>', page, re.S):
+        umaban = re.search(r'<td class="Waku">\s*(\d+)\s*</td>', row)
+        horse = re.search(r'<div class="Horse02">(.*?)</div>', row, re.S)
+        if not umaban or not horse:
+            continue
+        horse_id = re.search(r'/horse/(\d+)', horse.group(1))
+        # 過去走のセルは新しい順。id の末尾が race_id（地方・海外の前走も並ぶ）。
+        past_ids = re.findall(r'<td class="Past[^"]*" id="myhorse_(\w+)"', row)
+        prev = past_ids[0] if past_ids else None
+        out[int(umaban.group(1))] = {
+            'horse_id': horse_id.group(1) if horse_id else None,
+            'blinker': bool(re.search(r'class="Mark">\s*B\s*<', horse.group(1))),
+            'prev_race_id': prev,
+            'past_race_ids': past_ids,
+        }
+    return out
+
+
+def fetch_past_table(race_id, opener=None):
+    return parse_past_table(_fetch(PAST_URL.format(race_id=race_id), opener=opener))
+
+
+def parse_oikiri(page):
+    """追い切りページから {馬番: {critic, rank}} を作る。
+
+    critic は短評（「追毎良化」など）、rank は A〜D の評価。空なら None。
+    """
+    out = {}
+    for row in re.findall(r'<tr class\s*=\s*"OikiriDataHead\d*\s+HorseList"[^>]*>(.*?)</tr>',
+                          page, re.S):
+        umaban = re.search(r'<td[^>]*class="Umaban"[^>]*>\s*(\d+)\s*</td>', row)
+        if not umaban:
+            continue
+        critic = re.search(r'<td[^>]*class="Training_Critic"[^>]*>(.*?)</td>', row, re.S)
+        rank = re.search(r'<td[^>]*class="Rank_[^"]*"[^>]*>(.*?)</td>', row, re.S)
+        critic = strip_tags(critic.group(1)) if critic else ''
+        rank = strip_tags(rank.group(1)) if rank else ''
+        out[int(umaban.group(1))] = {
+            'critic': critic or None,
+            'rank': rank if re.fullmatch(r'[A-E]', rank) else None,
+        }
+    return out
+
+
+def fetch_oikiri(race_id, opener=None):
+    return parse_oikiri(_fetch(OIKIRI_URL.format(race_id=race_id), opener=opener))
+
+
+# ----------------------------------------------------------------------
 # 馬ごとの馬場状態別成績
 # ----------------------------------------------------------------------
 

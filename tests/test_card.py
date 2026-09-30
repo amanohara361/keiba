@@ -580,3 +580,149 @@ def test_相手が今回の人気上位3頭でなければ拾わない():
         16: [_run('2026/09/06', 'セントウルS', 69.5, rank=2)],
     }, {1: 3.0, 2: 4.0, 3: 5.0, 12: 7.0, 16: 17.2})
     assert card.close_rivals(race, date(2026, 9, 27)) == []
+
+
+# ----------------------------------------------------------------------
+# 装備（ブリンカー）と追い切り（第1章 手順2）
+# fixtures は 2026-10-01 に probe entries-raw でシリウスS（202609040811）から採った実物。
+# ----------------------------------------------------------------------
+
+FIXTURES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fixtures')
+
+
+def _fixture(name):
+    with open(os.path.join(FIXTURES, name), encoding='utf-8') as f:
+        return f.read()
+
+
+def test_馬柱からブリンカーと前走を読む():
+    got = form_module.parse_past_table(_fixture('nk_shutuba_past_row_202609040811.html'))
+    assert got == {3: {'horse_id': '2022100154', 'blinker': True,
+                       'prev_race_id': '202604030308',
+                       'past_race_ids': ['202604030308', '202610020611', '202609030311',
+                                         '202605020410', '202609020711']}}
+
+
+def test_Bが無ければブリンカーなし():
+    page = _fixture('nk_shutuba_past_row_202609040811.html').replace(
+        '<span class="Mark">B</span>', '')
+    assert form_module.parse_past_table(page)[3]['blinker'] is False
+
+
+def test_追い切りの短評と評価を読む():
+    got = form_module.parse_oikiri(_fixture('nk_oikiri_202609040811.html'))
+    assert got[3] == {'critic': '追毎良化', 'rank': 'B'}
+    assert got[1] == {'critic': '動き上々', 'rank': 'B'}
+    assert sorted(got) == [1, 2, 3, 4, 5, 6]
+
+
+def test_地方や海外の前走はJRAのrace_idとみなさない():
+    assert form_module.is_jra_race_id('202609040811')
+    assert not form_module.is_jra_race_id('202645100101')   # 地方（場コード45）
+    assert not form_module.is_jra_race_id(None)
+
+
+def test_ブリンカーの変化():
+    assert card.blinker_change(True, False) == 'on'
+    assert card.blinker_change(False, True) == 'off'
+    assert card.blinker_change(True, True) == 'same'
+    assert card.blinker_change(True, None) is None
+
+
+def test_装備と追い切りを各馬に付ける(monkeypatch):
+    tables = {
+        '202609040811': {3: {'horse_id': 'H3', 'blinker': True, 'prev_race_id': '202604030308',
+                             'past_race_ids': ['202604030308']},
+                         4: {'horse_id': 'H4', 'blinker': False, 'prev_race_id': '202645100101',
+                             'past_race_ids': ['202645100101']}},
+        '202604030308': {7: {'horse_id': 'H3', 'blinker': False, 'prev_race_id': None}},
+    }
+    fetched = []
+
+    def fake_past(race_id, opener=None):
+        fetched.append(race_id)
+        return tables[race_id]
+
+    monkeypatch.setattr(form_module, 'fetch_past_table', fake_past)
+    monkeypatch.setattr(form_module, 'fetch_oikiri',
+                        lambda race_id, opener=None: {3: {'critic': '追毎良化', 'rank': 'B'}})
+    entries = [{'umaban': 3, 'horse_id': 'H3'}, {'umaban': 4, 'horse_id': 'H4'},
+               {'umaban': 5, 'horse_id': 'H5'}]
+    card.attach_equipment_and_training('202609040811', entries, sleep=lambda s: None)
+
+    assert entries[0]['blinker'] is True and entries[0]['blinker_prev'] is False
+    assert entries[0]['blinker_change'] == 'on'
+    assert entries[0]['oikiri'] == {'critic': '追毎良化', 'rank': 'B'}
+    # 前走が地方なら前走の装備は分からない。推測で埋めない。
+    assert entries[1]['blinker'] is False and entries[1]['blinker_change'] is None
+    # 馬柱に居ない馬は全部 None
+    assert entries[2]['blinker'] is None and entries[2]['oikiri'] is None
+    assert fetched == ['202609040811', '202604030308']
+
+
+def test_馬柱が取れなくても落ちない(monkeypatch):
+    def boom(race_id, opener=None):
+        raise form_module.FormError('403')
+
+    monkeypatch.setattr(form_module, 'fetch_past_table', boom)
+    monkeypatch.setattr(form_module, 'fetch_oikiri', boom)
+    entries = [{'umaban': 1, 'horse_id': 'H1'}]
+    card.attach_equipment_and_training('202609040811', entries, sleep=lambda s: None)
+    assert entries[0] == {'umaban': 1, 'horse_id': 'H1', 'blinker': None,
+                          'blinker_prev': None, 'blinker_change': None,
+                          'blinker_last_jra': None, 'oikiri': None}
+
+
+def test_前走が地方なら直近のJRA戦と比べて別の欄に置く(monkeypatch):
+    """2026-10-01 シリウスSのラムジェット：前走 帝王賞（地方）はBが分からない。
+    前々走のJRA戦（202605010811）ではBを着けていた。"""
+    tables = {
+        '202609040811': {13: {'horse_id': 'H13', 'blinker': True,
+                              'prev_race_id': '202644070111',
+                              'past_race_ids': ['202644070111', '202605010811',
+                                                '202605010211']}},
+        '202605010811': {6: {'horse_id': 'H13', 'blinker': True}},
+    }
+    fetched = []
+
+    def fake_past(race_id, opener=None):
+        fetched.append(race_id)
+        return tables[race_id]
+
+    monkeypatch.setattr(form_module, 'fetch_past_table', fake_past)
+    monkeypatch.setattr(form_module, 'fetch_oikiri', lambda race_id, opener=None: {})
+    entries = [{'umaban': 13, 'horse_id': 'H13'}]
+    card.attach_equipment_and_training('202609040811', entries, sleep=lambda s: None)
+
+    # 前走との比較の欄は空のまま（推測で埋めない）
+    assert entries[0]['blinker_prev'] is None and entries[0]['blinker_change'] is None
+    assert entries[0]['blinker_last_jra'] == {
+        'runs_back': 2, 'race_id': '202605010811', 'blinker': True, 'change': 'same'}
+    # 直近のJRA戦が見つかったらそれより古い走は取らない
+    assert fetched == ['202609040811', '202605010811']
+
+
+def test_前走がJRAなら直近JRA戦の欄は使わない(monkeypatch):
+    tables = {
+        '202609040811': {1: {'horse_id': 'H1', 'blinker': False,
+                             'prev_race_id': '202604030308',
+                             'past_race_ids': ['202604030308', '202605010811']}},
+        '202604030308': {2: {'horse_id': 'H1', 'blinker': True}},
+    }
+    monkeypatch.setattr(form_module, 'fetch_past_table', lambda race_id, opener=None: tables[race_id])
+    monkeypatch.setattr(form_module, 'fetch_oikiri', lambda race_id, opener=None: {})
+    entries = [{'umaban': 1, 'horse_id': 'H1'}]
+    card.attach_equipment_and_training('202609040811', entries, sleep=lambda s: None)
+    assert entries[0]['blinker_change'] == 'off'
+    assert entries[0]['blinker_last_jra'] is None
+
+
+def test_馬柱の5走にJRA戦が無ければ直近JRA戦もNone(monkeypatch):
+    tables = {'202609040811': {1: {'horse_id': 'H1', 'blinker': True,
+                                   'prev_race_id': '202644070111',
+                                   'past_race_ids': ['202644070111', '202645060511']}}}
+    monkeypatch.setattr(form_module, 'fetch_past_table', lambda race_id, opener=None: tables[race_id])
+    monkeypatch.setattr(form_module, 'fetch_oikiri', lambda race_id, opener=None: {})
+    entries = [{'umaban': 1, 'horse_id': 'H1'}]
+    card.attach_equipment_and_training('202609040811', entries, sleep=lambda s: None)
+    assert entries[0]['blinker_last_jra'] is None

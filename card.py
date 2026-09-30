@@ -295,7 +295,86 @@ def build_entries(race_id, opener=None, interval=HORSE_INTERVAL, sleep=time.slee
                           'error': str(exc)})
             logger.warning('%s の戦績を取得できませんでした: %s', entry.get('name'), exc)
         out.append(entry)
+    attach_equipment_and_training(race_id, out, opener=opener, interval=interval, sleep=sleep)
     return out
+
+
+def blinker_change(now, prev):
+    """今回と前走のブリンカーから変化を言う。どちらかが分からなければ None。"""
+    if now is None or prev is None:
+        return None
+    if now and not prev:
+        return 'on'
+    if prev and not now:
+        return 'off'
+    return 'same'
+
+
+def attach_equipment_and_training(race_id, entries, opener=None,
+                                  interval=HORSE_INTERVAL, sleep=time.sleep):
+    """第1章 手順2の材料のうち、機械で取れるもの（装備・追い切り）を各馬に付ける。
+
+    厩舎コメントそのものはプレミアム会員向けで取れない（form.py 参照）。
+    取れなかった項目は None のまま残す（推測で埋めない。第12章）。
+    """
+    for entry in entries:
+        entry.update({'blinker': None, 'blinker_prev': None, 'blinker_change': None,
+                      'blinker_last_jra': None, 'oikiri': None})
+
+    try:
+        sleep(interval)
+        past = form_module.fetch_past_table(race_id, opener=opener)
+    except Exception as exc:
+        logger.warning('%s の馬柱を取得できませんでした: %s', race_id, exc)
+        past = {}
+
+    prev_tables = {}
+
+    def blinker_in(other_race_id, horse_id):
+        # 同じ過去レースの馬柱は1回だけ取る（同じ前走の馬が多い）。
+        if other_race_id not in prev_tables:
+            try:
+                sleep(interval)
+                prev_tables[other_race_id] = form_module.fetch_past_table(
+                    other_race_id, opener=opener)
+            except Exception as exc:
+                logger.warning('過去走 %s の馬柱を取得できませんでした: %s', other_race_id, exc)
+                prev_tables[other_race_id] = {}
+        for other in prev_tables[other_race_id].values():
+            if other.get('horse_id') == horse_id:
+                return other['blinker']
+        return None
+
+    for entry in entries:
+        info = past.get(entry['umaban'])
+        if not info or info.get('horse_id') != entry.get('horse_id'):
+            continue
+        entry['blinker'] = info['blinker']
+        prev_id = info.get('prev_race_id')
+        if form_module.is_jra_race_id(prev_id):
+            entry['blinker_prev'] = blinker_in(prev_id, entry['horse_id'])
+            entry['blinker_change'] = blinker_change(entry['blinker'], entry['blinker_prev'])
+            continue
+        # 前走が地方・海外なら装備は分からない（地方のページは装備を出さない）。
+        # 代わりに馬柱に載る過去走から直近のJRA戦を探して比べる。**前走との比較ではない**ので
+        # blinker_prev / blinker_change には入れず、何走前かを付けて別の欄に置く。
+        for runs_back, other_id in enumerate(info.get('past_race_ids') or [], start=1):
+            if runs_back == 1 or not form_module.is_jra_race_id(other_id):
+                continue
+            then = blinker_in(other_id, entry['horse_id'])
+            entry['blinker_last_jra'] = {
+                'runs_back': runs_back, 'race_id': other_id, 'blinker': then,
+                'change': blinker_change(entry['blinker'], then)}
+            break
+
+    try:
+        sleep(interval)
+        oikiri = form_module.fetch_oikiri(race_id, opener=opener)
+    except Exception as exc:
+        logger.warning('%s の追い切りを取得できませんでした: %s', race_id, exc)
+        oikiri = {}
+    for entry in entries:
+        entry['oikiri'] = oikiri.get(entry['umaban'])
 
 
 # 「僅差ライバル」の条件（2026-09-27 ユーザー承認）。直近の同条件レースで、
@@ -529,6 +608,15 @@ def probe_entries_raw(race_id):
     classes = sorted(set(re.findall(r'<td[^>]*class="([^"]*)"', row)))
     print(f'\n1頭目の<td>クラス一覧: {classes}')
     print(f'\n1頭目の生HTML:\n{row[:4000]}')
+    # 手順2の材料（装備・追い切り）を本番と同じ経路で付けて並べる。
+    # 装備マークの位置・追い切りの行の形は 2026-10-01 にこの probe で確かめた
+    # （tests/fixtures/nk_shutuba_past_row_*.html・nk_oikiri_*.html）。
+    entries = [dict(v, umaban=k) for k, v in sorted(form_module.fetch_entries(race_id).items())]
+    attach_equipment_and_training(race_id, entries)
+    print('\n=== 装備・追い切り（馬番 馬名: blinker 前走 変化 / 直近JRA戦 / 追い切り） ===')
+    for e in entries:
+        print(f"{e['umaban']} {e.get('name')}: {e['blinker']} {e['blinker_prev']} "
+              f"{e['blinker_change']} / {e['blinker_last_jra']} / {e['oikiri']}")
 
 
 def probe_horse_search(name):
