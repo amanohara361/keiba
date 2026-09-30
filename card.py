@@ -295,7 +295,69 @@ def build_entries(race_id, opener=None, interval=HORSE_INTERVAL, sleep=time.slee
                           'error': str(exc)})
             logger.warning('%s の戦績を取得できませんでした: %s', entry.get('name'), exc)
         out.append(entry)
+    attach_equipment_and_training(race_id, out, opener=opener, interval=interval, sleep=sleep)
     return out
+
+
+def blinker_change(now, prev):
+    """今回と前走のブリンカーから変化を言う。どちらかが分からなければ None。"""
+    if now is None or prev is None:
+        return None
+    if now and not prev:
+        return 'on'
+    if prev and not now:
+        return 'off'
+    return 'same'
+
+
+def attach_equipment_and_training(race_id, entries, opener=None,
+                                  interval=HORSE_INTERVAL, sleep=time.sleep):
+    """第1章 手順2の材料のうち、機械で取れるもの（装備・追い切り）を各馬に付ける。
+
+    厩舎コメントそのものはプレミアム会員向けで取れない（form.py 参照）。
+    取れなかった項目は None のまま残す（推測で埋めない。第12章）。
+    """
+    for entry in entries:
+        entry.update({'blinker': None, 'blinker_prev': None,
+                      'blinker_change': None, 'oikiri': None})
+
+    try:
+        sleep(interval)
+        past = form_module.fetch_past_table(race_id, opener=opener)
+    except Exception as exc:
+        logger.warning('%s の馬柱を取得できませんでした: %s', race_id, exc)
+        past = {}
+
+    prev_tables = {}
+    for entry in entries:
+        info = past.get(entry['umaban'])
+        if not info or info.get('horse_id') != entry.get('horse_id'):
+            continue
+        entry['blinker'] = info['blinker']
+        prev_id = info.get('prev_race_id')
+        if not form_module.is_jra_race_id(prev_id):
+            continue
+        if prev_id not in prev_tables:
+            try:
+                sleep(interval)
+                prev_tables[prev_id] = form_module.fetch_past_table(prev_id, opener=opener)
+            except Exception as exc:
+                logger.warning('前走 %s の馬柱を取得できませんでした: %s', prev_id, exc)
+                prev_tables[prev_id] = {}
+        for prev_info in prev_tables[prev_id].values():
+            if prev_info.get('horse_id') == entry.get('horse_id'):
+                entry['blinker_prev'] = prev_info['blinker']
+                break
+        entry['blinker_change'] = blinker_change(entry['blinker'], entry['blinker_prev'])
+
+    try:
+        sleep(interval)
+        oikiri = form_module.fetch_oikiri(race_id, opener=opener)
+    except Exception as exc:
+        logger.warning('%s の追い切りを取得できませんでした: %s', race_id, exc)
+        oikiri = {}
+    for entry in entries:
+        entry['oikiri'] = oikiri.get(entry['umaban'])
 
 
 # 「僅差ライバル」の条件（2026-09-27 ユーザー承認）。直近の同条件レースで、
@@ -529,43 +591,15 @@ def probe_entries_raw(race_id):
     classes = sorted(set(re.findall(r'<td[^>]*class="([^"]*)"', row)))
     print(f'\n1頭目の<td>クラス一覧: {classes}')
     print(f'\n1頭目の生HTML:\n{row[:4000]}')
-    # ブリンカー等の装備は一部の馬にしか付かないので、1頭目だけでは見えない。
-    # 馬名セルの周辺を全頭ぶん並べ、付いている馬と付いていない馬を見比べる
-    # （2026-10-01、シリウスSの初ブリンカーを拾えなかった件）。
-    print('\n=== 全頭の馬名セル（馬番: 生HTML） ===')
-    for each in rows:
-        umaban = re.search(r'<td[^>]*class="[^"]*Umaban[^"]*"[^>]*>\s*(\d+)\s*</td>', each)
-        cell = re.search(r'<td[^>]*class="[^"]*HorseInfo[^"]*"[^>]*>(.*?)</td>', each, re.S)
-        body = re.sub(r'\s+', ' ', cell.group(1) if cell else each)
-        print(f"{umaban.group(1) if umaban else '?'}: {body[:1200]}")
-    # 装備の表記がどのページのどこにあるか（出馬表／馬柱）を語で探す。
-    past = form_module._fetch(
-        f'https://race.netkeiba.com/race/shutuba_past.html?race_id={race_id}')
-    for label, text in [('出馬表', page), ('馬柱', past)]:
-        hits = [m.start() for m in re.finditer(r'(?i)blinker|ブリンカー|Icon_B\b|>B<', text)]
-        print(f'\n=== {label}: 装備らしき語 {len(hits)} 件（{len(text)}文字） ===')
-        for pos in hits[:12]:
-            print(re.sub(r'\s+', ' ', text[max(0, pos - 300):pos + 200]))
-            print('---')
-    # 馬柱の過去走セルに装備が出るか（「初ブリンカー」を判別できるか）。
-    past_rows = re.findall(r'<tr class="HorseList[^"]*"[^>]*>(.*?)</tr>', past, re.S)
-    for each in past_rows:
-        if 'Mark">B<' in each:
-            print(f'\n=== 馬柱：Bの付いた1頭目の行（{len(each)}文字） ===')
-            print(re.sub(r'\s+', ' ', each)[:6000])
-            break
-    # 追い切り・厩舎コメントのページが取れるか（第1章 手順2）。
-    for name in ('oikiri', 'comment'):
-        url = f'https://race.netkeiba.com/race/{name}.html?race_id={race_id}'
-        try:
-            text = form_module._fetch(url)
-        except Exception as exc:
-            print(f'\n=== {name}: 取得失敗 {exc} ===')
-            continue
-        body = re.sub(r'(?s)<(script|style|noscript)[^>]*>.*?</\1>', '', text)
-        i = body.find('HorseList')
-        print(f'\n=== {name}: {url}（{len(text)}文字、HorseList {body.count("HorseList")} 箇所） ===')
-        print(re.sub(r'\s+', ' ', body[max(0, i - 1500):i + 7000]))
+    # 手順2の材料（装備・追い切り）を本番と同じ経路で付けて並べる。
+    # 装備マークの位置・追い切りの行の形は 2026-10-01 にこの probe で確かめた
+    # （tests/fixtures/nk_shutuba_past_row_*.html・nk_oikiri_*.html）。
+    entries = [dict(v, umaban=k) for k, v in sorted(form_module.fetch_entries(race_id).items())]
+    attach_equipment_and_training(race_id, entries)
+    print('\n=== 装備・追い切り（馬番 馬名: blinker 前走 変化 / 追い切り） ===')
+    for e in entries:
+        print(f"{e['umaban']} {e.get('name')}: {e['blinker']} {e['blinker_prev']} "
+              f"{e['blinker_change']} / {e['oikiri']}")
 
 
 def probe_horse_search(name):
