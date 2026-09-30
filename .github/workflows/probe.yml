@@ -135,20 +135,25 @@ jobs:
           { echo '```'; cat data/probe/last.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
       # 調査結果をリポジトリに残す。実行ログのAPIから読むより、
-      # git pull して読むほうが確実で軽い（ログは巨大なJSONに包まれてくる）。
-      - name: 調査結果をコミット
+      # git fetch して読むほうが確実で軽い（ログは巨大なJSONに包まれてくる）。
+      #
+      # 置き場所は専用ブランチ probe-results（毎回上書き。履歴は持たない）。
+      # 以前は起動したブランチにコミットしていたが、そのブランチに PR が開いていると
+      # 「github-actions[bot] pushed 1 commit」の通知が調査のたびに届き、
+      # 調査結果のファイルが PR の差分にも混ざった（2026-10-01、PR #79・#80）。
+      # 読むとき：git fetch origin probe-results && git show origin/probe-results:data/probe/last.txt
+      - name: 調査結果を probe-results に置く
         if: always()
         run: |
           git config user.name  'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/ 2>/dev/null || true
-          if git diff --staged --quiet; then
-            echo '更新はありません'
-          else
-            git commit -m "調査結果: ${TARGET} ${RACE_ID}"
-            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-          fi
+          [ -f data/probe/last.txt ] || exit 0
+          blob=$(git hash-object -w data/probe/last.txt)
+          probe=$(printf '100644 blob %s\tlast.txt\n' "$blob" | git mktree)
+          data=$(printf '040000 tree %s\tprobe\n' "$probe" | git mktree)
+          root=$(printf '040000 tree %s\tdata\n' "$data" | git mktree)
+          commit=$(git commit-tree "$root" -m "調査結果: ${TARGET} ${RACE_ID}（${GITHUB_REF_NAME} から）")
+          git push -f origin "${commit}:refs/heads/probe-results"
         env:
           RACE_ID: ${{ inputs.race_id }}
           TARGET: ${{ inputs.target }}
