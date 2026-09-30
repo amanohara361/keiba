@@ -1,5 +1,5 @@
-# comments 2026-09-27  (2026-09-30T23:44:42Z)
-INFO 中山 スプリンター：陣営コメント 15頭
+# comments 2026-09-27  (2026-09-30T23:45:59Z)
+INFO 中山 スプリンター：陣営コメント 16頭
 重賞 [('スプリンター', 'G1', 16)]
 {
  "name": "スプリンター",
@@ -265,171 +265,6 @@ INFO 中山 スプリンター：陣営コメント 15頭
     "title": "【スプリンターズS】（16）ピューロマジック 安田師「スピードを生かす形に」ゲートの出方が鍵",
     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048503000c.html",
     "published": "2026-09-26 04:45"
-   },
-   {
-    "title": "【スプリンターズS】生産者の村田牧場はローレルゲレイロ以来17年ぶり2勝目",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048359000c.html",
-    "published": "2026-09-27 19:03"
-   },
-   {
-    "title": "【スプリンターズS】ルメールのジョッキーカメラ公開「気をつけて！」大混戦にファン衝撃「えぐすぎる」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048353000c.html",
-    "published": "2026-09-27 19:02"
-   },
-   {
-    "title": "【スプリンターズS】11番人気サウンドモリアーナ波乱演出3着 吉田隼は不利悔やむ「もっと際どかった」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048345000c.html",
-    "published": "2026-09-27 18:33"
-   },
-   {
-    "title": "【スプリンターズS】アンカツ「まさに行ったもん勝ち」ピューロマジックVの勝因分析",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048340000c.html",
-    "published": "2026-09-27 18:31"
-   },
-   {
-    "title": "【スプリンターズS】初の6F参戦ワールズエンドが首差2着 津村「馬場も苦にせず最後までファイト」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048339000c.html",
-    "published": "2026-09-27 18:30"
-   },
-   {
-    "title": "【スプリンターズS】12着フリッカージャブ 西村「タフ過ぎる馬場は厳しかった」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048332000c.html",
-    "published": "2026-09-27 17:57"
-   },
-   {
-    "title": "【スプリンターズS】売り上げは対前年比わずかにアップ",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048324000c.html",
-    "published": "2026-09-27 17:48"
-   },
-   {
-    "title": "【スプリンターズS】2024年覇者ルガルは14着 鮫島駿「スピードがそがれる馬場。進みが悪かった」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048320000c.html",
-    "published": "2026-09-27 17:45"
-   },
-   {
-    "title": "【スプリンターズS】ベストターンドアウト賞はエーティーマクフィの斎藤助手が受賞",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048316000c.html",
-    "published": "2026-09-27 17:28"
-   },
-   {
-    "title": "【スプリンターズS】岩田望「天性、二の脚で」安田師「いい精神状態」 ピューロマジック逃走V",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048308000c.html",
-    "published": "2026-09-27 17:27"
-   },
-   {
-    "title": "【スプリンターズS】牝馬G1最長ブランクV狙ったママコチャは10着 武豊「流れには乗っていったけど」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048300000c.html",
-    "published": "2026-09-27 17:10"
-   },
-   {
-    "title": "【スプリンターズS】連覇狙った9歳馬ウインカーネリアンは6着 三浦「この馬場でよく頑張ってくれた」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048288000c.html",
-    "published": "2026-09-27 16:54"
-   },
-   {
-    "title": "【スプリンターズS・レース映像】快速牝馬ピューロマジック逃げ切りV！",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927b00004048023000c.html",
-    "published": "2026-09-27 16:38"
-   },
-   {
-    "title": "【スプリンターズS】2番人気パンジャタワー15着大敗 松山「ノメって馬の気持ちが切れてしまった」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048270000c.html",
-    "published": "2026-09-27 16:32"
-   },
-   {
-    "title": "【スプリンターズS】1番人気スターアニス まさかの4着 ルメール「馬場が悪くて反応遅れた」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048268000c.html",
-    "published": "2026-09-27 16:28"
-   },
-   {
-    "title": "【スプリンターズS】スポニチ入矢記者3連単46万円超的中 オサムは◎→○で馬単ズバリ",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048266000c.html",
-    "published": "2026-09-27 16:27"
-   },
-   {
-    "title": "【スプリンターズS】9番人気ピューロマジックG1初制覇！3連単は46万2120円の大荒れ決着",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048237000c.html",
-    "published": "2026-09-27 15:55"
-   },
-   {
-    "title": "【スプリンターズS】9番人気ピューロマジック逃げ切りV！岩田望G1・2勝目「何とか粘ってくれと」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260927s00004048192000c.html",
-    "published": "2026-09-27 15:44"
-   },
-   {
-    "title": "【スプリンターズS】ミスターX ルガル 自慢のスピードを生かして2度目の当レースVへ",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004000402000c.html",
-    "published": "2026-09-27 05:30"
-   },
-   {
-    "title": "【スプリンターズS】パドックのツボ",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004048461000c.html",
-    "published": "2026-09-27 05:28"
-   },
-   {
-    "title": "【スプリンターズS】（1）レッドモンレーヴ 入念にゲートを練習 陣営「流れに乗れれば」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004048412000c.html",
-    "published": "2026-09-27 05:27"
-   },
-   {
-    "title": "【スプリンターズS】（3）ママコチャ 7回目の中山 陣営「逃げたい馬の後ろくらいで運べれば」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004048425000c.html",
-    "published": "2026-09-27 05:26"
-   },
-   {
-    "title": "【スプリンターズS】（4）ジューンブレア 得意舞台に期待 陣営「うまく立ち回ってくれれば」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004048420000c.html",
-    "published": "2026-09-27 05:25"
-   },
-   {
-    "title": "【スプリンターズS】（6）ワールズエンド 千二も脚使える 陣営「調子は良くなっている」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004048437000c.html",
-    "published": "2026-09-27 05:24"
-   },
-   {
-    "title": "【スプリンターズS】（7）ペアポルックス 馬場回復を願う 前原助手「乗ってても右回りの方がいいな」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004048432000c.html",
-    "published": "2026-09-27 05:23"
-   },
-   {
-    "title": "【スプリンターズS】（8）エーティーマクフィ たくましく 陣営「勝負の鍵は富田」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004048439000c.html",
-    "published": "2026-09-27 05:22"
-   },
-   {
-    "title": "【スプリンターズS】（9）スターアニス 日々のパワーアップ実感 陣営「54キロを生かして」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004048433000c.html",
-    "published": "2026-09-27 05:21"
-   },
-   {
-    "title": "【スプリンターズS】（10）レイピア 重賞で好走 陣営「ポテンシャルあるので力を出してさえくれれば」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004048441000c.html",
-    "published": "2026-09-27 05:20"
-   },
-   {
-    "title": "【スプリンターズS】（11）ルガル 王座奪還へ順調 陣営「番手でリズム良く行ければ」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004048428000c.html",
-    "published": "2026-09-27 05:19"
-   },
-   {
-    "title": "【スプリンターズS】（13）パンジャタワー ムードは最高潮 陣営「脱力して、折り合いつつ走れれば」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004048416000c.html",
-    "published": "2026-09-27 05:18"
-   },
-   {
-    "title": "【スプリンターズS】（15）フリッカージャブ 3連勝で勢い屈指 陣営「乗り役と馬に任せるだけ」",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004048430000c.html",
-    "published": "2026-09-27 05:17"
-   },
-   {
-    "title": "【スプリンターズS】（16）ピューロマジック 3年連続の挑戦 経験生かし悲願達成へ",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004048429000c.html",
-    "published": "2026-09-27 05:16"
-   },
-   {
-    "title": "【スプリンターズS】陣営のひと言",
-    "url": "https://www.sponichi.co.jp/gamble/news/2026/09/27/kiji/20260926s00004048423000c.html",
-    "published": "2026-09-27 05:15"
    }
   ],
   "by_umaban": {
@@ -451,6 +286,12 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "サウンドモリアーナ 充実期緩めず調整 武英師「期待通りの走り」",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/24/kiji/20260923s00004048478000c.html",
      "published": "2026-09-24 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（5）サウンドモリアーナ 僚馬を見ながら 武英師「付いていければ」",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048486000c.html",
+     "published": "2026-09-26 04:56"
     }
    ],
    "9": [
@@ -465,6 +306,12 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "スターアニス 坂路11秒8“一番時計” 19年ぶり3歳牝馬V視界「負けたくない」",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/24/kiji/20260923s00004048458000c.html",
      "published": "2026-09-24 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（9）スターアニス 坂路で気配良く 雨予報も高野師「こなしてくれると思う」",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048492000c.html",
+     "published": "2026-09-26 04:52"
     }
    ],
    "11": [
@@ -479,6 +326,12 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "ルガル 坂路で手応え良く4F54秒2 杉山晴師「このぐらい動ければ十分」",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/24/kiji/20260923s00004048494000c.html",
      "published": "2026-09-24 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（11）ルガル 外めの枠を歓迎 杉山晴師「今週はしっかり動いた」",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048495000c.html",
+     "published": "2026-09-26 04:50"
     }
    ],
    "13": [
@@ -493,6 +346,12 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "パンジャタワー 馬なりで好時計4F52秒4 橋口師も納得「過去一番」",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/25/kiji/20260924s00004048402000c.html",
      "published": "2026-09-25 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（13）パンジャタワー 外枠も前向きに 橋口師「いいリズムで運べる」",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048498000c.html",
+     "published": "2026-09-26 04:48"
     }
    ],
    "15": [
@@ -513,6 +372,12 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "フリッカージャブ スプリント血統光る 不安要素は…",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/24/kiji/20260923s00004048464000c.html",
      "published": "2026-09-24 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（15）フリッカージャブ 重賞連勝中 西園師「自分のリズムで運べれば」",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048501000c.html",
+     "published": "2026-09-26 04:46"
     }
    ],
    "16": [
@@ -527,6 +392,12 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "ピューロマジック サマーSS優勝の風格だ! 我慢の併入4F52秒6",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/24/kiji/20260923s00004048488000c.html",
      "published": "2026-09-24 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（16）ピューロマジック 安田師「スピードを生かす形に」ゲートの出方が鍵",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048503000c.html",
+     "published": "2026-09-26 04:45"
     }
    ],
    "2": [
@@ -535,6 +406,12 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "アイサンサン 坂路ラスト力強く1F12秒3 橋田師「上向いている」",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/24/kiji/20260923s00004048472000c.html",
      "published": "2026-09-24 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（2）アイサンサン 内の好枠生かす 橋田師「ぶれずに走れたら」",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048477000c.html",
+     "published": "2026-09-26 04:59"
     }
    ],
    "8": [
@@ -543,6 +420,12 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "エーティーマクフィ 坂路4F56秒3 武英師「しっかり負荷をかけた」",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/24/kiji/20260923s00004048474000c.html",
      "published": "2026-09-24 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（8）エーティーマクフィ 武英師「いい意味でピリッと」いい枠当たった",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048491000c.html",
+     "published": "2026-09-26 04:53"
     }
    ],
    "4": [
@@ -551,6 +434,12 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "ジューンブレア 仕上がりに太鼓判 武英師「ここ目標に」",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/24/kiji/20260923s00004048481000c.html",
      "published": "2026-09-24 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（4）ジューンブレア 武英師「内に入ってがしやすそう」",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048484000c.html",
+     "published": "2026-09-26 04:57"
     }
    ],
    "12": [
@@ -559,6 +448,12 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "ブラックチャリス 軽快に上昇ムード4F54秒3 武幸師「ガス抜き程度に」",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/24/kiji/20260923s00004048484000c.html",
      "published": "2026-09-24 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（12）ブラックチャリス 出たなりに運ぶ 武幸師「気持ち良く走ってもらえれば」",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048497000c.html",
+     "published": "2026-09-26 04:49"
     }
    ],
    "1": [
@@ -567,6 +462,12 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "レッドモンレーヴ 併せ馬で楽々併入1F11秒5 蛯名正師「非常にいい動き」",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/24/kiji/20260923s00004048490000c.html",
      "published": "2026-09-24 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（1）レッドモンレーヴ 好天願う 蛯名正師「いい感じです」",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048420000c.html",
+     "published": "2026-09-26 05:00"
     }
    ],
    "7": [
@@ -575,6 +476,12 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "ペアポルックス 速い時計を封印 梅田師「馬のメンタルを重視した」",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/25/kiji/20260924s00004048403000c.html",
      "published": "2026-09-25 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（7）ペアポルックス 梅田師「様子を見ながら調整」 内めの枠に安ど",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048490000c.html",
+     "published": "2026-09-26 04:54"
     }
    ],
    "3": [
@@ -583,6 +490,12 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "ママコチャ 叩いた効果十分 雨予報には不安「パンパンの良馬場の方がいい」",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/25/kiji/20260924s00004048405000c.html",
      "published": "2026-09-25 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（3）ママコチャ 岩崎助手「いい雰囲気」 武豊に託す",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048481000c.html",
+     "published": "2026-09-26 04:58"
     }
    ],
    "10": [
@@ -591,6 +504,12 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "レイピア 坂路4F52秒3 陣営期待「タイトルを獲らせてやりたい」",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/25/kiji/20260924s00004048406000c.html",
      "published": "2026-09-25 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（10）レイピア 金曜に中山移動 木曜発表の体重は12キロ増",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048493000c.html",
+     "published": "2026-09-26 04:51"
     }
    ],
    "6": [
@@ -599,6 +518,20 @@ INFO 中山 スプリンター：陣営コメント 15頭
      "text": "ワールズエンド 単走で抜群反応1F12秒1 池添師「状態はずっといい」",
      "url": "https://www.sponichi.co.jp/gamble/news/2026/09/25/kiji/20260924s00004048410000c.html",
      "published": "2026-09-25 05:30"
+    },
+    {
+     "kind": "見出し",
+     "text": "（6）ワールズエンド 枠に満足げ 池添師「道悪になっても大丈夫」",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048487000c.html",
+     "published": "2026-09-26 04:55"
+    }
+   ],
+   "14": [
+    {
+     "kind": "見出し",
+     "text": "（14）ウインカーネリアン 連覇へ 椎名厩務員「去年より状態はいいかも」",
+     "url": "https://www.sponichi.co.jp/gamble/news/2026/09/26/kiji/20260925s00004048499000c.html",
+     "published": "2026-09-26 04:47"
     }
    ]
   }
