@@ -477,6 +477,12 @@ def build_card(day, limit=DEFAULT_CANDIDATES, opener=None, sleep=time.sleep,
             race['entries'] = build_entries(race['race_id'], opener=opener, sleep=sleep)
             race['close_rivals'] = close_rivals(race, day)
 
+    if with_entries:
+        # 手順2の材料。重賞だけ、スポーツ紙の追い切り談話を各馬に付ける（comments.py）。
+        import comments as comments_module
+        comments_module.attach(candidates, day, fetch=(lambda url: form_module._fetch(url, opener=opener))
+                               if opener else None, sleep=sleep)
+
     return {
         'date': day.isoformat(),
         'generated_at': bets.now_jst().isoformat(timespec='seconds'),
