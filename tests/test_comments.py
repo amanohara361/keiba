@@ -125,3 +125,27 @@ def test_長い談話は切り詰める():
     long_line = '<p>▼ヴィンセンシオ（森一師）' + 'あ' * 500 + '</p>'
     rows = comments.parse_hitokoto(long_line)
     assert len(rows[0]['text']) == comments.MAX_TEXT
+
+
+def test_見出しの馬番と馬名を読む():
+    assert comments.headline_horse('（10）レイピア 坂路4F52秒3') == ('10', 'レイピア')
+    assert comments.headline_horse('ルガル 心身共に衰えなし') == (None, 'ルガル')
+
+
+def test_G1の陣営のひと言と番号付き見出しと当日以降の記事():
+    index = INDEX.replace('【毎日王冠】追ってひと言', '【毎日王冠】陣営のひと言') + \
+        '<a href="/gamble/news/2026/10/03/kiji/a.html">【毎日王冠】（9）シャンパンカラー 外枠歓迎［ 2026年10月3日 05:00 ］</a>' + \
+        '<a href="/gamble/news/2026/10/04/kiji/b.html">【毎日王冠】7番人気シャンパンカラー3着［ 2026年10月4日 17:00 ］</a>' + \
+        '<a href="/gamble/news/2026/10/03/kiji/c.html">【毎日王冠】（4）ヴィンセンシオ 取り違え［ 2026年10月3日 05:00 ］</a>'
+    article_url = 'https://www.sponichi.co.jp/gamble/news/2026/10/01/kiji/20261001s00004048061000c.html'
+    races = [race()]
+    comments.attach(races, date(2026, 10, 4),
+                    fetch=fake_fetch({'https://www.sponichi.co.jp/gamble/news/2026/10/01/': index,
+                                      article_url: ARTICLE}),
+                    sleep=lambda s: None)
+    got = races[0]['comments']['by_umaban']
+    assert got['1'][0]['kind'] == '追ってひと言'           # 「陣営のひと言」も読む
+    texts9 = [c['text'] for c in got['9']]
+    assert '（9）シャンパンカラー 外枠歓迎' in texts9      # 番号付きの見出し
+    assert not any('3着' in x for x in texts9)             # 当日以降の記事は使わない
+    assert all('取り違え' not in c['text'] for c in got.get('4', []))  # 馬番と馬名が食い違えば付けない
