@@ -22,7 +22,14 @@
                     印を打ちながら買い目が全て◎絡みで、◎が着外だと○▲△が
                     3着以内でも何も拾えなかった。可視化のみ（2026-09-02 ユーザー
                     承認）。基準値・買い目選定ロジックは変えない。
+  note_going_tag  … 2026-09-22〜28週 勝浦特別・中山12R ほか6鞍。印・減点の根拠が
+  note_front_list   良／重の一方の馬場に依存していたのに明記が無く、馬場が変わって
+                    崩れた。逃げ候補の数え違い・展開図からの脱落も5鞍。予想メソッド
+                    第1章ステップ1・4（2026-09-30 追加）の書き忘れを知らせる。
+                    WARNのみで買い目は止めない（2026-09-30 ユーザー承認）。
 """
+
+import re
 
 from bets import JUNIOR_MARKS, SENIOR_MARKS
 
@@ -265,6 +272,47 @@ def check_axis_dependency(race):
     )
 
 
+# 特定の馬場での成績・適性を根拠にした記述。「良馬場は1-0-1-10」「重0-0-0-2」
+# 「重馬場向き」「道悪向き」「良馬場成績2-2-2-1」など。「重賞」は拾わない。
+GOING_BASED_PATTERN = re.compile(
+    r'(良馬場|稍重|重馬場|不良|道悪|重)(は|で|の)?(成績|実績|向き|巧者|得意|苦手|\d+-\d+-\d+-\d+)')
+GOING_TAG = '【馬場依存'
+FRONT_LIST = '逃げ候補'
+
+
+def check_note_going_tag(race):
+    """馬場に依存した根拠があるのに【馬場依存：良／重】が無ければ知らせる。
+
+    予想メソッド第1章ステップ1（2026-09-30 追加）。発表馬場が想定と違ったとき
+    見直す印を拾えるようにするためのタグで、書き忘れの検出だけを行う。
+    """
+    note = race.note or ''
+    if not note or not race.marks or GOING_TAG in note:
+        return None
+    hit = GOING_BASED_PATTERN.search(note)
+    if not hit:
+        return None
+    return Finding(
+        WARN, 'note_going_tag',
+        f'{race.name}: 馬場に依存した根拠（「{hit.group(0)}」など）があるのに【馬場依存】の明記がありません',
+        '該当する印・減点に【馬場依存：良】【馬場依存：重】を付け、'
+        '発表馬場が想定と違う場合に上げる馬・下げる馬を確認してください（第1章ステップ1）。',
+    )
+
+
+def check_note_front_list(race):
+    """noteに全頭の逃げ候補一覧が無ければ知らせる（第1章ステップ4、2026-09-30 追加）。"""
+    note = race.note or ''
+    if not note or not race.marks or FRONT_LIST in note:
+        return None
+    return Finding(
+        WARN, 'note_front_list',
+        f'{race.name}: noteに「逃げ候補一覧」がありません',
+        '無印馬を含む全頭から「毎回ハナを主張する馬」「行ければ行く馬」を分けて書き、'
+        '展開の前提にしてください（第1章ステップ4）。',
+    )
+
+
 def check_win_odds_range(race, win_table):
     """単勝は4.0〜9.9倍を中心ゾーンとする（第8章）。
 
@@ -470,6 +518,13 @@ def review_race(race, bet_odds, win_table, meta, now, day, conditions=None,
             INFO, 'no_bets', f'{race.name}: 買い目なし（勝負度{race.confidence or "未評価"}）'))
         return RaceVerdict(race, findings, None, bet_odds, win_table, meta,
                            conditions, forms)
+
+    # noteの書き方（第1章ステップ1・4）。買うレースだけを見る。見送りのレースまで
+    # 「要検討」にすると、見送りの表示と本物の警告が埋もれるため。
+    for note_check in (check_note_going_tag, check_note_front_list):
+        finding = note_check(race)
+        if finding:
+            findings.append(finding)
 
     composite = composite_odds(bet_odds)
     findings.append(check_composite_odds(race, composite))
