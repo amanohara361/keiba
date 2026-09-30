@@ -538,6 +538,15 @@ def probe_entries_raw(race_id):
         cell = re.search(r'<td[^>]*class="[^"]*HorseInfo[^"]*"[^>]*>(.*?)</td>', each, re.S)
         body = re.sub(r'\s+', ' ', cell.group(1) if cell else each)
         print(f"{umaban.group(1) if umaban else '?'}: {body[:1200]}")
+    # 装備の表記がどのページのどこにあるか（出馬表／馬柱）を語で探す。
+    past = form_module._fetch(
+        f'https://race.netkeiba.com/race/shutuba_past.html?race_id={race_id}')
+    for label, text in [('出馬表', page), ('馬柱', past)]:
+        hits = [m.start() for m in re.finditer(r'(?i)blinker|ブリンカー|Icon_B\b|>B<', text)]
+        print(f'\n=== {label}: 装備らしき語 {len(hits)} 件（{len(text)}文字） ===')
+        for pos in hits[:12]:
+            print(re.sub(r'\s+', ' ', text[max(0, pos - 300):pos + 200]))
+            print('---')
 
 
 def probe_horse_search(name):
