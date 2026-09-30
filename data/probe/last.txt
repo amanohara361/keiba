@@ -1,0 +1,593 @@
+# url-raw https://www.sponichi.co.jp/gamble/news/2026/10/01/  (2026-09-30T23:56:05Z)
+==================== https://www.sponichi.co.jp/gamble/news/2026/10/01/
+status 200 final https://www.sponichi.co.jp/gamble/news/2026/10/01/ bytes 88444
+--- raw around ▼ ---
+KEY); } catch (e) {}
+
+    if (typeof window.fetch !== 'function') {
+        loadPianoTag(null);
+        return;
+    }
+
+    var controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    if (controller) {
+        setTimeout(function() { controller.abort(); }, FETCH_TIMEOUT_MS);
+    }
+
+    fetch('/api/piano-token/', {
+        method: 'GET',
+        credentials: 'same-origin',
+        cache: 'no-store',
+        signal: controller ? controller.signal : undefined
+    }).then(function(res) {
+        if (!res.ok) {
+            return null;
+        }
+        return res.json();
+    }).then(function(data) {
+        if (data && data.token && data.exp && data.sub) {
+            try {
+                sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+                    token: data.token,
+                    exp:   data.exp,
+                    sub:   data.sub
+                }));
+            } catch (e) {}
+
+            loadPianoTag(data.token);
+        } else {
+            loadPianoTag(null);
+        }
+    }).catch(function() {
+        loadPianoTag(null);
+    });
+})();
+</script>
+<!-- piano Script End -->
+
+
+
+<style>
+.toast-message a {
+    text-decoration: underline;
+}
+</style>
+
+
+</head>
+
+
+<body>
+
+
+    <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5LFQDRM"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+
+
+    <!-- ▼▼HEADER▼▼ -->
+<div class="document-wrapper" id="documentWrapper">
+    <header class="has-secondary " data-component="global-header" data-js-component="GlobalHeader">
+                    <div class="top-bar">
+    <div class="left">
+        <span class="btn-hamburger"><i></i></span><a class="logo" href="/"></a><span class="sponichi-date"></span>
+    </div>
+    <div class="right" style="align-items: center;">
+        <div id="auth-container">
+            <span id="login-container">
+                <a class="register-btn no-event" href="/annexz/info/" data-type="signup">会員登録</a>
+                <a class="login-btn" href="javascript:void(0);">ログイン</a>
+            </span>
+            <span id="logout-container">
+                <a id="member_page-btn" href="javascript:void(0);">会員ページ</a>
+            </span>
+        </div>
+
+        <div id="wrapper-search">
+            <form action="https://www.sponichi.co.jp/search">
+                <input id="searchBox" name="kw" type="text" value="" class="field" />
+                <button for="searchbox" type="submit" value=""><i></i>検索</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+        
+        
+
+                    <nav class="primary navi_horizontal_list">
+    <ul class="swiper-wrapper">
+        <li class="slide"><a href="/?from=glonavi">トップ</a></li>
+        <li class="slide"><a href="/all/kijilist/?from=glonavi">新着</a></li>
+        <li class="slide"><a href="/annexz/?from=glonavi">アネックスZ</a></li>
+        <li class="slide"><a href="/baseball/?from=glonavi">野球</a></li>
+        <li class="slide"><a href="/baseball/tokusyu/mlb/?from=glonavi">MLB</a></li>
+        <li class="slide"><a href="/soccer/?from=glonavi">サッカー</a></li>
+        <li class="slide"><a href="/sports/tokusyu/golf/?from=glonavi">ゴルフ</a></li>
+        <li class="slide"><a href="/battle/?from=glonavi">格闘技</a></li>
+        <li class="slide"><a href="/sports/?from=glonavi">スポーツ</a></li>
+        <li class="slide"><a href="/olympic/?from=glonavi">五輪</a></li>
+        <li class="slide"><a href="/entertainment/?from=glonavi">芸能</a></li>
+        <li class="slide"><a href="/society/?from=glonavi">社会</a></li>
+        <li class="slide"><a href="/gamble/tokusyu/keiba/?from=glonavi">競馬</a></li>
+        <li class="slide"><a href="/gamble/tokusyu/kouei/?from=glonavi">公営競技</a></li>
+        <li class="slide"><a href="/society/yomimono/fishing_news/?from=glonavi">釣り</a></li>
+        <li class="slide"><a href="/car/?from=glonavi">クルマ</a></li>
+        <li class="slide"><a href="/osaka/?from=glonavi">大阪・阪神</a></li>
+        <li class="slide"><a href="/tokusyu/?from=glonavi">特集</a></li>
+        <li class="slide"><a href="/ranking/?from=glonavi">ランキング</a></li>
+        <li class="slide"><a href="/shimen/ichimen/?from=glonavi">今日の一面</a></li>
+        <li class="slide"><a href="/yomimono/?from=glonavi">コラム</a></li>
+        <li class="slide"><a href="/society/uranai/?from=glonavi">占い</a></li>
+        <li class="slide"><a href="/movie/top/?from=glonavi">動画</a></li>
+        <li class="slide"><a href="/all/gazolist/?from=glonavi">フォト</a></li>
+        <li class="slide"><a href="/schedule/?from=glonavi">日程・結果</a></li>
+        <li class="slide"><a href="https://shop.sponichi-plus-alpha.sponichi.net/products/list" target="_blank">ショップ</a></li>
+        <li class="slide"><a href="https://sponichi-plus-alpha.sponichi.net/" target="_blank">スポニチプラスα</a></li>
+        <li class="slide"><a href="https://www.idolreport.jp/gravure/" target="_blank">グラビア</a></li>
+        <li class="slide"><a href="https://www.cocorone.tokyo/" target="_blank">CoCorone</a></li>
+    </ul>
+    <div class="swiper-button-prev swiper-button-disabled">&lt;</div>
+    <div class="swiper-button-next swiper-button-disabled">&gt;</div>
+</nav>
+
+        
+        <script>
+    var path = location.pathname;
+    if (path === undefined) {
+        path = '/';
+    }
+
+    var target = {};
+
+    if (path == '/') {
+        $('nav.primary a[href="/"]').addClass('active');
+        $('nav.global-nav a[href="/"]').addClass('active');
+    } else {
+        var selector = 'nav.primary';
+        if ($('nav.global-nav').length) {
+            selector = 'nav.global-nav';
+        }
+        $($(selector + ' a').get().reverse()).each(function () {
+            var href = $(this).attr('href');
+            
+            if (href == '/') {
+                return true;
+            }
+
+            // プロフィールページの場合はURLからではなくpersonオブジェクトからカテゴリ取得
+            
+            
+            if (path.indexOf('/gamble/horseracing/') === 0 || path.indexOf('/gamble/tokusyu/nar2021/') === 0) {
+                path = '/gamble/tokusyu/keiba/';
+            }
+
+            
+            if (path.indexOf('/gamble/tokusyu/keirin/') === 0 || path.indexOf('/gamble/tokusyu/boatrace/') === 0 || path.indexOf('/gamble/tokusyu/auto/') === 0) {
+                path = '/gamble/tokusyu/kouei/';
+            }
+
+            
+            if (path.indexOf('/sports/tokusyu/golf/') === 0) {
+                path = '/sports/tokusyu/golf/';
+            }
+
+            
+            if (path.indexOf('/baseball/tokusyu/mlb/') === 0) {
+                path = '/baseball/tokusyu/mlb/';
+            }
+
+            if (path.indexOf(href) === 0) {
+                target[href] = $(this);
+            }
+        });
+
+        if (Object.keys(target).length > 0) {
+            var tmp = Object.keys(target).sort(function(a, b) { return b.length - a.length; });
+            var longestKey = tmp[0];
+            target[longestKey].addClass('active');
+        }
+    }
+</script>
+
+
+        
+  <nav class="secondary">
+  <div>
+<a href="/gamble/tokusyu/horseracing/triomphe/">凱旋門賞</a>
+<a href="/gamble/tokusyu/horseracing/mainichioukan/">毎日王冠</a>
+<a href="/gamble/tokusyu/horseracing/kyotodaishoten/">京都大賞典</a>
+
+
+
+
+
+
+
+		<a href="/gamble/horseracing/">競馬</a>
+		<a href="/gamble/tokusyu/nar2021/">地方競馬</a>
+		<a href="/gamble/tokusyu/keirin/">競輪</a>
+		<a href="/gamble/tokusyu/boatrace/">ボートレース</a>
+		<a href="/gamble/tokusyu/auto/">オートレース</a>
+		<a h
+--- raw around /kiji/ ---
+a-component="category-header">ニュース一覧</h1>
+        <nav data-component="category-nav">
+            <a href="/all/kijilist/2026/10/01/">総合</a>
+            <a href="/baseball/news/2026/10/01/">野球</a>
+            <a href="/soccer/news/2026/10/01/">サッカー</a>
+            <a href="/battle/news/2026/10/01/">格闘技</a>
+            <a href="/sports/news/2026/10/01/">スポーツ</a>
+            <a href="/olympic/news/2026/10/01/">五輪</a>
+            <a href="/society/news/2026/10/01/">社会</a>
+            <a href="/entertainment/news/2026/10/01/">芸能</a>
+            <a class="active" href="/gamble/news/2026/10/01/">ギャンブル</a>
+            <a href="/car/news/2026/10/01/">クルマ</a>
+        </nav>
+    </div>
+    <div>
+        <h2 data-component="section-header">ギャンブル            <div class="form-control-wrapper">
+                <input type="text" id="datepicker" class="form-control floating-label" placeholder="日付選択">
+            </div>
+        </h2>
+        <div class="mb40" data-component="more-list" data-js-component="MoreList" data-add-count="999" data-initial-count="20">
+            <ul class="border-top" data-component="basic-list">
+                    <div class="mb40" data-component="more-list" data-js-component="MoreList" data-add-count="999" data-initial-count="20">
+        <ul class="border-top" data-component="basic-list">
+                                                                        <li data-component="list-item" class="cateGamble " >
+                    <a href="/gamble/news/2026/10/01/kiji/20261001s00004050090000c.html">
+                        <figure> 
+                                                            <img class="after_load object-fit0" src="/gamble/news/2025/10/05/jpeg/20251005s10004050383000p_thum.webp" loading="lazy">
+                                                    </figure>
+                        <div class="text">
+                            <p class="title">英国の新星モルティーズクロス「誰もが凱旋門賞を勝ちたい」名伯楽の夢を乗せ、伝説の父に続くか</p>
+                            <p data-component="date-format">［ 2026年10月1日 08:30 ］&nbsp;競馬</p>
+                        </div>
+                    </a>
+                </li>
+
+                                                                                            <li data-component="list-item" class="cateGamble " >
+                    <a href="/gamble/news/2026/10/01/kiji/20261001b00004050016000c.html">
+                        <figure> 
+                                                            <img class="after_load object-fit0" src="/gamble/news/2026/10/01/jpeg/20261001b00004050017000p_thum.webp" loading="lazy">
+                                                    </figure>
+                        <div class="text">
+                            <p class="title">【凱旋門賞】ABEMAの無料生中継が今年も！福永祐一師＆川田将雅がゲスト出演　アドマイヤテラ、メイショウタバルが日本勢の悲願に挑む</p>
+                            <p data-component="date-format">［ 2026年10月1日 07:31 ］&nbsp;競馬</p>
+                        </div>
+                    </a>
+                </li>
+
+                                                                                            <li data-component="list-item" class="cateGamble " >
+                    <a href="/gamble/news/2026/10/01/kiji/20260930s00004000419000c.html">
+                        <figure> 
+                                                            <img class="after_load object-fit0" src="/gamble/news/2026/10/01/jpeg/20260930s10004000475000p_thum.webp" loading="lazy">
+                                                    </figure>
+                        <div class="text">
+                            <p class="title">【根本康広　我が道1】競馬とは全く無縁の幼少期　スポーツもせず、ゴジラやモスラ、月光仮面が大好き</p>
+                            <p data-component="date-format">［ 2026年10月1日 07:00 ］&nbsp;競馬</p>
+                        </div>
+                    </a>
+                </li>
+
+                                                                                            <li data-component="list-item" class="cateGamble " >
+                    <a href="/gamble/news/2026/10/01/kiji/20261001s00004050055000c.html">
+                        <figure> 
+                                                            <img class="after_load object-fit0" src="/gamble/news/2026/09/30/jpeg/20260930s10004050382000p_thum.webp" loading="lazy">
+                                                    </figure>
+                        <div class="text">
+                            <p class="title">【凱旋門賞】メイショウタバル　戦闘モード　本来の動き戻った　武豊の合図でスッと加速</p>
+                            <p data-component="date-format">［ 2026年10月1日 05:30 ］&nbsp;競馬</p>
+                        </div>
+                    </a>
+                </li>
+
+                                                                                            <li data-component="list-item" class="cateGamble " >
+                    <a href="/gamble/news/2026/10/01/kiji/20261001s00004050056000c.html">
+                        <figure> 
+                                                            <img class="after_load object-fit0" src="/gamble/news/2026/10/01/jpeg/20261001s10004050057000p_thum.webp" loading="lazy">
+                                                    </figure>
+                        <div class="text">
+                            <p class="title">【凱旋門賞】メイショウタバル　間近で見続けた上籠助手の期待と不安</p>
+                            <p data-component="date-format">［ 2026年10月1日 05:30 ］&nbsp;競馬</p>
+                        </div>
+                    </a>
+                </li>
+
+                                                                                            <li data-component="list-item" class="cateGamble " >
+                    <a href="/gamble/news/2026/10/01/kiji/20261001s00004048059000c.html">
+                        <figure> 
+                                                            <img class="after_load object-fit0" src="/gamble/news/2026/10/01/jpeg/20261001s10004048062000p_thum.webp" loading="lazy">
+                                                    </figure>
+                        <div class="text">
+                            <p class="title">【毎日王冠】リアライズシリウス　余力たっぷり併入　左回りに替わって動きスムーズに</p>
+                            <p data-component="date-format">［ 2026年10月1日 05:25 ］&nbsp;競馬</p>
+                        </div>
+                    </a>
+                </li>
+
+                                                                                            <li data-component="list-item" class="cateGamble " >
+                    <a href="/gamble/news/2026/10/01/kiji/20261001s00004048060000c.html">
+                        <figure> 
+                                                            <img class="after_load object-fit0" src="/gamble/news/2026/10/01/jpeg/20261001s10004048063000p_thum.webp" loading="lazy">
+                                                    </figure>
+                        <div class="text">
+                            <p class="title">【毎日王冠】アドマイヤクワッズ　坂路をサラリ　安田助手「いつも通りの調整で順調」</p>
+                            <p data-component="date-format">［ 2026年10月1日 05:24 ］&nbsp;競馬</p>
+                        </div>
+                    </a>
+                </li>
+
+                                                                                            <li data-component="list-item" class="cateGamble " >
+                    <a href="/gamble/news/2026/10/01/kiji/20261001s00004048061000c.html">
+                        <figure> 
+                                                            
+    
+                
+<img src="/gamble/images/thumbnail/007.webp">
+                                          
+--- links ---
+/all/kijilist/?from=glonavi | 新着
+/all/kijilist/2026/10/01/ | ニュース一覧
+/all/kijilist/2026/10/01/ | 総合
+/gamble/news/2026/10/01/kiji/20261001s00004050090000c.html | 英国の新星モルティーズクロス「誰もが凱旋門賞を勝ちたい」名伯楽の夢を乗せ、伝説の父に続くか ［ 2026年10月1日 08:30 ］&nbsp;競馬
+/gamble/news/2026/10/01/kiji/20261001b00004050016000c.html | 【凱旋門賞】ABEMAの無料生中継が今年も！福永祐一師＆川田将雅がゲスト出演 アドマイヤテラ、メイショウタバルが日本勢の悲願に挑む ［ 2026年10月1日 0
+/gamble/news/2026/10/01/kiji/20260930s00004000419000c.html | 【根本康広 我が道1】競馬とは全く無縁の幼少期 スポーツもせず、ゴジラやモスラ、月光仮面が大好き ［ 2026年10月1日 07:00 ］&nbsp;競馬
+/gamble/news/2026/10/01/kiji/20261001s00004050055000c.html | 【凱旋門賞】メイショウタバル 戦闘モード 本来の動き戻った 武豊の合図でスッと加速 ［ 2026年10月1日 05:30 ］&nbsp;競馬
+/gamble/news/2026/10/01/kiji/20261001s00004050056000c.html | 【凱旋門賞】メイショウタバル 間近で見続けた上籠助手の期待と不安 ［ 2026年10月1日 05:30 ］&nbsp;競馬
+/gamble/news/2026/10/01/kiji/20261001s00004048059000c.html | 【毎日王冠】リアライズシリウス 余力たっぷり併入 左回りに替わって動きスムーズに ［ 2026年10月1日 05:25 ］&nbsp;競馬
+/gamble/news/2026/10/01/kiji/20261001s00004048060000c.html | 【毎日王冠】アドマイヤクワッズ 坂路をサラリ 安田助手「いつも通りの調整で順調」 ［ 2026年10月1日 05:24 ］&nbsp;競馬
+/gamble/news/2026/10/01/kiji/20261001s00004048061000c.html | 【毎日王冠】追ってひと言 ［ 2026年10月1日 05:23 ］&nbsp;競馬
+/gamble/news/2026/10/01/kiji/20261001s00004048062000c.html | 【京都大賞典】アクアヴァーナル 松山背に弾んだ 四位師「騎手の表情も晴れやか」 ［ 2026年10月1日 05:20 ］&nbsp;競馬
+/gamble/news/2026/10/01/kiji/20261001s00004048063000c.html | 【京都大賞典】ヘデントール 強めに3頭併せ 太田助手「スムーズにギアを上げていけるかが好走の鍵」 ［ 2026年10月1日 05:19 ］&nbsp;競馬
+/gamble/news/2026/10/01/kiji/20261001s00004048064000c.html | 【京都大賞典】追ってひと言 ［ 2026年10月1日 05:18 ］&nbsp;競馬
+/gamble/news/2026/10/01/kiji/20261001s00004050065000c.html | アメリカンステージも米国遠征へ BCスプリントまたはBCターフスプリントへの出走を目指す ［ 2026年10月1日 05:15 ］&nbsp;競馬
+/gamble/news/2026/10/01/kiji/20261001s00004048066000c.html | 【次走】ルシュヴァルドールはブラジルCへ ［ 2026年10月1日 05:05 ］&nbsp;競馬
+/gamble/news/2026/10/01/kiji/20260930s00052000284000c.html | 【松阪競輪 G3蒲生氏郷杯王座競輪 初日】12Rは浅井康太 郡司浩平とのワンツー再び ［ 2026年10月1日 04:40 ］&nbsp;競輪
+/gamble/news/2026/10/01/kiji/20260930s00052000323000c.html | 【久留米競輪 本間正則コラム「ホンマでっか！？」】1Rは古川大輔 ここはチャンス ［ 2026年10月1日 04:30 ］&nbsp;競輪
+/gamble/news/2026/10/01/kiji/20260930s00053000328000c.html | 【児島ボート G1児島キングカップ 4日目】12Rは桐生順平 的確に踏み込んで押し切る ［ 2026年10月1日 04:30 ］&nbsp;ボートレース
+/gamble/news/2026/09/30/kiji/20260930s00004050357000c.html | 1 フランス滞在の武豊に英国調教馬の騎乗依頼！10月2日サンクル…
+/gamble/news/2026/10/01/kiji/20261001s00004050055000c.html | 2 【凱旋門賞】メイショウタバル 戦闘モード 本来の動き戻った…
+/gamble/news/2026/10/01/kiji/20261001s00004050056000c.html | 3 【凱旋門賞】メイショウタバル 間近で見続けた上籠助手の期待…
+/gamble/news/2026/09/30/kiji/20260930s00052000290000c.html | 4 【松阪競輪 G3蒲生氏郷杯王座競輪】新山響平 連覇で“賞金小…
+/gamble/news/2026/09/30/kiji/20260930s00004050352000c.html | 5 【凱旋門賞】メイショウタバルが武豊を背に最終追い「戦闘モー…
+/gamble/news/2026/09/28/kiji/20260928s00004050322000c.html | 1 凱旋門賞の第1回登録取消 日本馬はアドマイヤテラ、メイショ…
+/gamble/news/2026/09/23/kiji/20260922s00052000363000c.html | 2 【競輪】諸橋愛さん死去 井上茂徳氏提言 落車を減らすには「…
+/gamble/news/2026/09/27/kiji/20260927s00004048007000c.html | 3 【スプリンターズS】AI予想 パンジャタワー 荒れた馬場歓迎
+/gamble/news/2026/09/22/kiji/20260922s00004048003000c.html | 4 【菊花賞を占う】ロブチェン距離延長楽しみ シートゥサミット…
+/gamble/news/2026/09/23/kiji/20260923s00004048182000c.html | 5 国枝栄氏、厩務員生活再開へ「近いうちに戻りたい」トークショ…
+/gamble/news/2026/07/19/kiji/20260719s00052000389000c.html | 1 【競輪】新田祐大 兄弟子・伏見さんの訃報に号泣「僕たちは結…
+/gamble/news/2026/07/28/kiji/20260727s00052000224000c.html | 2 【競輪 浅井康太コラム「虎視眈々」】伏見俊昭さんの情熱を忘…
+/gamble/news/2026/05/26/kiji/20260526s00004000097000c.html | 3 【オークス】今村聖奈「勝手に前が開いた」 最後の直線で導か…
+/gamble/news/2026/05/26/kiji/20260526s00004000095000c.html | 4 今村聖奈「カッコよくしたいのにダサくなってしまう」 オーク…
+/gamble/news/2023/01/15/kiji/20230115s00004048185000c.html | 5 武豊を苦境から救ったダービー馬「勝っていなかったら今、いる…
+--- text ---
+ 
+ ニュース&フォト一覧(ギャンブル) 2026年10月01日 - スポニチ Sponichi Annex ギャンブル 
+ or you may place it once per section. If it exists more than once on your page, it will only be loaded once.
+===================================================-->
+ 会員登録 
+ ログイン 
+ 会員ページ 
+ 検索 
+ トップ 
+ 新着 
+ アネックスZ 
+ 野球 
+ MLB 
+ サッカー 
+ ゴルフ 
+ 格闘技 
+ スポーツ 
+ 五輪 
+ 芸能 
+ 社会 
+ 競馬 
+ 公営競技 
+ 釣り 
+ クルマ 
+ 大阪・阪神 
+ 特集 
+ ランキング 
+ 今日の一面 
+ コラム 
+ 占い 
+ 動画 
+ フォト 
+ 日程・結果 
+ ショップ 
+ スポニチプラスα 
+ グラビア 
+ CoCorone 
+ &lt; 
+ &gt; 
+ 凱旋門賞 
+ 毎日王冠 
+ 京都大賞典 
+ 競馬 
+ 地方競馬 
+ 競輪 
+ ボートレース 
+ オートレース 
+ カジノニュース 
+ スポニチ競馬Web 
+ 京成杯AH 
+ 札幌2歳S 
+ その他 -->
+ トップ &gt; 
+ ニュース一覧 &gt; 
+ ギャンブル 
+ ニュース一覧 
+ 総合 
+ 野球 
+ サッカー 
+ 格闘技 
+ スポーツ 
+ 五輪 
+ 社会 
+ 芸能 
+ ギャンブル 
+ クルマ 
+ ギャンブル 
+ 英国の新星モルティーズクロス「誰もが凱旋門賞を勝ちたい」名伯楽の夢を乗せ、伝説の父に続くか 
+ ［ 2026年10月1日 08:30 ］&nbsp;競馬 
+ 【凱旋門賞】ABEMAの無料生中継が今年も！福永祐一師＆川田将雅がゲスト出演 アドマイヤテラ、メイショウタバルが日本勢の悲願に挑む 
+ ［ 2026年10月1日 07:31 ］&nbsp;競馬 
+ 【根本康広 我が道1】競馬とは全く無縁の幼少期 スポーツもせず、ゴジラやモスラ、月光仮面が大好き 
+ ［ 2026年10月1日 07:00 ］&nbsp;競馬 
+ 【凱旋門賞】メイショウタバル 戦闘モード 本来の動き戻った 武豊の合図でスッと加速 
+ ［ 2026年10月1日 05:30 ］&nbsp;競馬 
+ 【凱旋門賞】メイショウタバル 間近で見続けた上籠助手の期待と不安 
+ ［ 2026年10月1日 05:30 ］&nbsp;競馬 
+ 【毎日王冠】リアライズシリウス 余力たっぷり併入 左回りに替わって動きスムーズに 
+ ［ 2026年10月1日 05:25 ］&nbsp;競馬 
+ 【毎日王冠】アドマイヤクワッズ 坂路をサラリ 安田助手「いつも通りの調整で順調」 
+ ［ 2026年10月1日 05:24 ］&nbsp;競馬 
+ 【毎日王冠】追ってひと言 
+ ［ 2026年10月1日 05:23 ］&nbsp;競馬 
+ 【京都大賞典】アクアヴァーナル 松山背に弾んだ 四位師「騎手の表情も晴れやか」 
+ ［ 2026年10月1日 05:20 ］&nbsp;競馬 
+ 【京都大賞典】ヘデントール 強めに3頭併せ 太田助手「スムーズにギアを上げていけるかが好走の鍵」 
+ ［ 2026年10月1日 05:19 ］&nbsp;競馬 
+ 【京都大賞典】追ってひと言 
+ ［ 2026年10月1日 05:18 ］&nbsp;競馬 
+ アメリカンステージも米国遠征へ BCスプリントまたはBCターフスプリントへの出走を目指す 
+ ［ 2026年10月1日 05:15 ］&nbsp;競馬 
+ 【次走】ルシュヴァルドールはブラジルCへ 
+ ［ 2026年10月1日 05:05 ］&nbsp;競馬 
+ 【松阪競輪 G3蒲生氏郷杯王座競輪 初日】12Rは浅井康太 郡司浩平とのワンツー再び 
+ ［ 2026年10月1日 04:40 ］&nbsp;競輪 
+ 【久留米競輪 本間正則コラム「ホンマでっか！？」】1Rは古川大輔 ここはチャンス 
+ ［ 2026年10月1日 04:30 ］&nbsp;競輪 
+ 【児島ボート G1児島キングカップ 4日目】12Rは桐生順平 的確に踏み込んで押し切る 
+ ［ 2026年10月1日 04:30 ］&nbsp;ボートレース 
+ もっと見る 
+ 人気ランキング（ギャンブル） 
+ 最新 一週間 おすすめ 動画 
+ 1 
+ フランス滞在の武豊に英国調教馬の騎乗依頼！10月2日サンクル… 
+ 2 
+ 【凱旋門賞】メイショウタバル 戦闘モード 本来の動き戻った… 
+ 3 
+ 【凱旋門賞】メイショウタバル 間近で見続けた上籠助手の期待… 
+ 4 
+ 【松阪競輪 G3蒲生氏郷杯王座競輪】新山響平 連覇で“賞金小… 
+ 5 
+ 【凱旋門賞】メイショウタバルが武豊を背に最終追い「戦闘モー… 
+ 1 
+ 凱旋門賞の第1回登録取消 日本馬はアドマイヤテラ、メイショ… 
+ 2 
+ 【競輪】諸橋愛さん死去 井上茂徳氏提言 落車を減らすには「… 
+ 3 
+ 【スプリンターズS】AI予想 パンジャタワー 荒れた馬場歓迎 
+ 4 
+ 【菊花賞を占う】ロブチェン距離延長楽しみ シートゥサミット… 
+ 5 
+ 国枝栄氏、厩務員生活再開へ「近いうちに戻りたい」トークショ… 
+ 1 
+ 【競輪】新田祐大 兄弟子・伏見さんの訃報に号泣「僕たちは結… 
+ 2 
+ 【競輪 浅井康太コラム「虎視眈々」】伏見俊昭さんの情熱を忘… 
+ 3 
+ 【オークス】今村聖奈「勝手に前が開いた」 最後の直線で導か… 
+ 4 
+ 今村聖奈「カッコよくしたいのにダサくなってしまう」 オーク… 
+ 5 
+ 武豊を苦境から救ったダービー馬「勝っていなかったら今、いる… 
+ ランキングをもっと見る 
+ クイックアクセス 
+ スポニチ競馬Web 
+ 先週のヒット 
+ WEB取材班 
+ スポニチ競馬Webとは？ 
+ 競馬 
+ 今週のレース 
+ 重賞日程 
+ 次走情報 
+ サウジＣ 
+ ドバイワールドカップデー 
+ 凱旋門賞 
+ 香港国際競走 
+ 毎日王冠 
+ 京都大賞典 
+ 競輪 
+ ボートレース 
+ ニュース 
+ 下関Ｇ１ 中国地区選手権 
+ 大村Ｇ１ 海の王者決定戦 
+ ＳＧカウントダウンコラム 
+ オートレース 
+ スペシャルコンテンツ 
+ このサイトについて | 
+ 編集ポリシー | 
+ 個人情報について | 
+ 情報の外部送信について | 
+ 外部配信提供先 | 
+ 著者情報 | 
+ 免責事項 | 
+ 総合案内 
+ ご意見 | 
+ 購読申し込み | 
+ 会社案内 
+ Copyright &copy; SPORTS NIPPON NEWSPAPERS. All Rights Reserved. 
+ Sponichi Annexに掲載の記事・写真・カット等の転載を禁じます。すべての著作権はスポーツニッポン新聞社と情報提供者に帰属します。 
+ 広告なしで読む 
+ スポニチ編集局で働いてみませんか 
+ 募集詳細はこちら 
+ スポニチNEW 
+ 「TWS新聞2026」発売！ソロページ＆特大ポスター2種収録 特製ステッカー付き 
+ SEKAI NO OWARI新聞発売 ライブ全編撮り下ろし 終演直後４ショット特大ポスター付き 
+ THE ALFEE新聞 夏イベ特集号発売 特大ポスター＆特製トレカ付き 
+ 広告なしで快適閲覧「スポニチアネックスＺ」がスタート！深掘り記事満載 月額990円、初月半額!! 
+ 新メディア「CoCorone（ココロネ）」がスタート 女性たちの生活のヒントをお届けします 
+ コンビニでスポニチの予想が買えるスポニチプリントサービス開始 
+ 加賀まりこ、青木功ら「我が道」発売中 
+ その他･･･ 
+ コンテンツ 
+ 今日の東京版一面 
+ 今日の大阪版一面 
+ 大阪 
+ ランキング 
+ フォト（写真一覧） 
+ コラム 
+ 編集・専門委員のコラム 
+ 特集 
+ 日程・結果 
+ SNSアカウント一覧 
+ 記事カテゴリー 
+ 野球 
+ サッカー 
+ 芸能 
+ スポーツ 
+ 社会 
+ 格闘技 
+ ギャンブル 
+ 五輪 
+ クルマ 
+ スポニチ 
+ スポニチのイベント 
+ スポニチジュニア 
+ 推しが見つかる!ダンス&ボーカルグループ専門情報サイト|トピクル 
+ 毎日新聞 
+ 広告掲載資料 
+ 新聞購読の申込み 
+ 特集号・バックナンバー購入 
+ 掲載写真お分けします 
+ 紙面、掲載写真の２次使用のご案内 
+ このサイトについて 
+ 個人情報について 
+ 情報の外部送信について 
+ 免責事項 
+ ご意見 
+ 会社案内 
+ 社会人採用のお知らせ 
+ アルバイト募集・東京 
+ アルバイト募集・大阪 
+ アルバイト募集・福岡 
+ Copyright &copy; SPORTS NIPPON NEWSPAPERS. All Right Reserved. 
+ Sponichi Annexに掲載の記事・写真・カット等の転載を禁じます。すべての著作権はスポーツニッポン新聞社と情報提供者に帰属します。 
+ タグ内の最下位に記述をオススメします ここから-->
+
