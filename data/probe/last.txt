@@ -1,4 +1,4 @@
-# card-entries-raw 202609040811  (2026-09-30T22:38:26Z)
+# card-entries-raw 202609040811  (2026-09-30T22:39:02Z)
 取得サイズ: 264991 文字
 HorseList行: 18 件
 
@@ -67,3 +67,27 @@ HorseList行: 18 件
 16:  <div> <div> <span class="HorseName"><a href="https://db.netkeiba.com/horse/2019104756" target="_blank" title="オニャンコポン">オニャンコポン<img id="myhorse_2019104756" class="disp_none Favorite" src="https://cdnv2.netkeiba.com/img.race/common/img/icon/icon_horse.png?2019073001" alt="" width="18"></a></span> <img id="myhorse1_2019104756" src="https://cdnv2.netkeiba.com/img.race/common/img/icon/horse_favorite_icon_pc.png" class="disp_none horsebookmark myhorse_2019104756" onmouseover="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/horse_favorite_icon_pc.png'" onmouseout="this.src='https://cdnv2.netkeiba.com/img.race/common/img/icon/horse_favorite_icon_pc.png'" width="20"> </div> </div> 
 ?:  <td class="Num Waku1 Sticky"> <div>1</div> </td> <td class="Horse_Info Horse_Link"><a href="https://db.netkeiba.com/horse/2020100912">ジューンアヲニヨシ</a></td> <td class="Txt_R">35.7</td> <td class="Txt_R">38.4</td> 
 ?:  <td><img src="https://cdnv2.netkeiba.com/img.race/common/img/race/develop/table_dummy_01.png" alt=""></td> <td><img src="https://cdnv2.netkeiba.com/img.race/common/img/race/develop/table_dummy_02.png" alt=""></td> <td><img src="https://cdnv2.netkeiba.com/img.race/common/img/race/develop/table_dummy_03.png" alt=""></td> <td><img src="https://cdnv2.netkeiba.com/img.race/common/img/race/develop/table_dummy_03.png" alt=""></td> 
+
+=== 出馬表: 装備らしき語 0 件（264991文字） ===
+
+=== 馬柱: 装備らしき語 10 件（171141文字） ===
+-text="消" value="3_99">消</option> </select> </td> <td class="Horse_Info" data-sort-value="99999999" id="Horse_Info_Data"> <div class="fc"> <div class="Horse01 fc">ホッコータルマエ</div> <div class="Horse02"> <a href="https://db.netkeiba.com/horse/2022100154" target="_blank"> メイショウズイウン</a><span class="Mark">B</span> </div> <div class="Horse03">アクアブルーハート</div> <div class="Horse04">(エンパイアメーカー)</div> <div class="Horse05"><a href="https://db.netkeiba.com/trainer/result/recent/01099" target="_blank">栗東・本田</a
+---
+ml-text="消" value="7_99">消</option> </select> </td> <td class="Horse_Info" data-sort-value="99999999" id="Horse_Info_Data"> <div class="fc"> <div class="Horse01 fc">ジャスタウェイ</div> <div class="Horse02"> <a href="https://db.netkeiba.com/horse/2021105112" target="_blank"> ミッキークレスト</a><span class="Mark">B</span> </div> <div class="Horse03">ダヌスカズマイガール</div> <div class="Horse04">(Shackleford)</div> <div class="Horse05"><a href="https://db.netkeiba.com/trainer/result/recent/01058" target="_blank">栗東・大久
+---
+-text="消" value="9_99">消</option> </select> </td> <td class="Horse_Info" data-sort-value="99999999" id="Horse_Info_Data"> <div class="fc"> <div class="Horse01 fc">リアルスティール</div> <div class="Horse02"> <a href="https://db.netkeiba.com/horse/2021105630" target="_blank"> ルシュヴァルドール</a><span class="Mark">B</span> </div> <div class="Horse03">ソーメニーウェイズ</div> <div class="Horse04">(Sightseeing)</div> <div class="Horse05"><a href="https://db.netkeiba.com/trainer/result/recent/01075" target="_blank">栗東・矢作<
+---
+xt="消" value="13_99">消</option> </select> </td> <td class="Horse_Info" data-sort-value="99999999" id="Horse_Info_Data"> <div class="fc"> <div class="Horse01 fc">マジェスティックウォリアー</div> <div class="Horse02"> <a href="https://db.netkeiba.com/horse/2021106640" target="_blank"> ラムジェット</a><span class="Mark">B</span> </div> <div class="Horse03">ネフェルティティ</div> <div class="Horse04">(ゴールドアリュール)</div> <div class="Horse05"><a href="https://db.netkeiba.com/trainer/result/recent/01092" target="_blank">栗東・松永幹</a
+---
+tml-text="消" value="14_99">消</option> </select> </td> <td class="Horse_Info" data-sort-value="99999999" id="Horse_Info_Data"> <div class="fc"> <div class="Horse01 fc">リアルスティール</div> <div class="Horse02"> <a href="https://db.netkeiba.com/horse/2021105496" target="_blank"> リアレスト</a><span class="Mark">B</span> </div> <div class="Horse03">クィーンズベスト</div> <div class="Horse04">(ワークフォース)</div> <div class="Horse05"><a href="https://db.netkeiba.com/trainer/result/recent/01103" target="_blank">美浦・尾関</a>&n
+---
+html-text="消" value="15_99">消</option> </select> </td> <td class="Horse_Info" data-sort-value="99999999" id="Horse_Info_Data"> <div class="fc"> <div class="Horse01 fc">ドレフォン</div> <div class="Horse02"> <a href="https://db.netkeiba.com/horse/2021101259" target="_blank"> カズタンジャー</a><span class="Mark">B</span> </div> <div class="Horse03">ダウンタウンブギ</div> <div class="Horse04">(アサクサキングス)</div> <div class="Horse05"><a href="https://db.netkeiba.com/trainer/result/recent/01172" target="_blank">栗東・新谷</a>&
+---
+g.race/common/img/race/Horse_Info_sample.png?2019073001" alt=""> </div> <div class="table_container"> <table class="Shutuba_Table Shutuba_Past5_Table table02"> <tr class="HorseList"><td class="Horse_Info"><dl> <dt class="Horse01">父名</dt> <dt class="Horse02">[馬記号] <span class="color_blue">馬名</span> [ブリンカー]</dt> <dt class="Horse03">母名</dt> <dt class="Horse04">(母父名)</dt> <dt class="Horse05 color_blue">厩舎</dt> <dt class="Horse06">脚質<div class="Popular">前走からの間隔</div></dt> <dt class="Horse07"><div cla
+---
+ class="TokeiColor02">25.2<span class="RapTime">(12.7)</span></li><li class="TokeiColor02">12.5<span class="RapTime">(12.5)</span></li> </ul> </td> <td nowrap=""></td> <td nowrap="" class="TrainingLoad">仕掛</td> <td nowrap="" class="Training_Critic">動き上々</td> <td width="25" nowrap="" class="Rank_B">B</td> <td nowrap=""> </td> </tr><tr class = "OikiriDataHead2 HorseList" id="tr_"> <td rowspan="2" class="Waku1" nowrap=""><span>1</span></td> <td rowspan="2" nowrap="" class="Umaban">2</td> <td r
+---
+6.0)</span></li><li >39.7<span class="RapTime">(27.6)</span></li><li class="TokeiColor02">12.1<span class="RapTime">(12.1)</span></li> </ul> </td> <td nowrap="">7</td> <td nowrap="" class="TrainingLoad">馬也</td> <td nowrap="" class="Training_Critic">出来安定</td> <td width="25" nowrap="" class="Rank_B">B</td> <td nowrap=""> </td> </tr><tr class = "OikiriDataHead3 HorseList" id="tr_"> <td rowspan="2" class="Waku2" nowrap=""><span>2</span></td> <td rowspan="2" nowrap="" class="Umaban">3</td> <td r
+---
+></li> </ul> <div class="Comment_Cell"> <p>外<a href="https://db.netkeiba.com/horse/2022102550" target="_blank">メイショウピリカ</a>馬也と併入</p> </div> </td> <td nowrap="">8</td> <td nowrap="" class="TrainingLoad">強め</td> <td nowrap="" class="Training_Critic">追毎良化</td> <td width="25" nowrap="" class="Rank_B">B</td> <td nowrap=""> <a href="oikiri_movie.html?race_id=202609040811&id=2022100154"><img src="https://cdnv2.netkeiba.com/img.race/common/img/icon/icon_movie_01.gif?2019073001"></a> </td> </tr> </tab
+---
