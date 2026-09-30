@@ -156,9 +156,10 @@ def is_jra_race_id(race_id):
 
 
 def parse_past_table(page):
-    """馬柱から {馬番: {horse_id, blinker, prev_race_id}} を作る。
+    """馬柱から {馬番: {horse_id, blinker, prev_race_id, past_race_ids}} を作る。
 
     prev_race_id は過去走の先頭セル（前走）。新馬など前走が無ければ None。
+    past_race_ids は馬柱に載る過去走（最大5走）の race_id を新しい順に。
     """
     out = {}
     for row in re.findall(r'<tr class="HorseList[^"]*"[^>]*>(.*?)</tr>', page, re.S):
@@ -167,11 +168,14 @@ def parse_past_table(page):
         if not umaban or not horse:
             continue
         horse_id = re.search(r'/horse/(\d+)', horse.group(1))
-        prev = re.search(r'<td class="Past[^"]*" id="myhorse_(\d{12})"', row)
+        # 過去走のセルは新しい順。id の末尾が race_id（地方・海外の前走も並ぶ）。
+        past_ids = re.findall(r'<td class="Past[^"]*" id="myhorse_(\w+)"', row)
+        prev = past_ids[0] if past_ids else None
         out[int(umaban.group(1))] = {
             'horse_id': horse_id.group(1) if horse_id else None,
             'blinker': bool(re.search(r'class="Mark">\s*B\s*<', horse.group(1))),
-            'prev_race_id': prev.group(1) if prev else None,
+            'prev_race_id': prev,
+            'past_race_ids': past_ids,
         }
     return out
 
