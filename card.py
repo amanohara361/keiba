@@ -600,6 +600,25 @@ def probe_entries_raw(race_id):
     for e in entries:
         print(f"{e['umaban']} {e.get('name')}: {e['blinker']} {e['blinker_prev']} "
               f"{e['blinker_change']} / {e['oikiri']}")
+    # 前走が地方のとき、地方版の馬柱にも装備が出るか（2026-10-01）。
+    past = form_module.fetch_past_table(race_id)
+    for umaban, info in sorted(past.items()):
+        prev = info.get('prev_race_id')
+        print(f'{umaban}: prev_race_id={prev}')
+        if not prev or form_module.is_jra_race_id(prev):
+            continue
+        url = f'https://nar.netkeiba.com/race/shutuba_past.html?race_id={prev}'
+        try:
+            page = form_module._fetch(url)
+        except Exception as exc:
+            print(f'  {url} 取得失敗: {exc}')
+            continue
+        rows = re.findall(r'<tr class="HorseList[^"]*"[^>]*>(.*?)</tr>', page, re.S)
+        print(f'  {url}（{len(page)}文字、HorseList {len(rows)} 行、'
+              f'Mark B {page.count(chr(34) + "Mark" + chr(34) + ">B<")} 件）')
+        print(f'  parse_past_table: {form_module.parse_past_table(page)}')
+        if rows:
+            print('  1行目: ' + re.sub(r'\s+', ' ', rows[0])[:2500])
 
 
 def probe_horse_search(name):
