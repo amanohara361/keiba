@@ -600,45 +600,6 @@ def probe_entries_raw(race_id):
     for e in entries:
         print(f"{e['umaban']} {e.get('name')}: {e['blinker']} {e['blinker_prev']} "
               f"{e['blinker_change']} / {e['oikiri']}")
-    # 前走が地方のとき、地方版の馬柱にも装備が出るか（2026-10-01）。
-    past = form_module.fetch_past_table(race_id)
-    for umaban, info in sorted(past.items()):
-        prev = info.get('prev_race_id')
-        print(f'{umaban}: prev_race_id={prev}')
-        if not prev or form_module.is_jra_race_id(prev):
-            continue
-        url = f'https://nar.netkeiba.com/race/shutuba_past.html?race_id={prev}'
-        try:
-            page = form_module._fetch(url)
-        except Exception as exc:
-            print(f'  {url} 取得失敗: {exc}')
-            continue
-        rows = re.findall(r'<tr class="HorseList[^"]*"[^>]*>(.*?)</tr>', page, re.S)
-        print(f'  {url}（{len(page)}文字、HorseList {len(rows)} 行、'
-              f'Mark B {page.count(chr(34) + "Mark" + chr(34) + ">B<")} 件）')
-        print(f'  parse_past_table: {form_module.parse_past_table(page)}')
-        me = [r for r in rows if info.get('horse_id') and info['horse_id'] in r]
-        if me:
-            text = re.sub(r'\s+', ' ', me[0])
-            i = text.find('Horse02')
-            print('  この馬の行（馬名まわり）: ' + text[max(0, i - 200):i + 900])
-            print('  この馬の行の B らしき箇所: '
-                  + str([text[max(0, m.start() - 120):m.start() + 30]
-                         for m in re.finditer(r'>\s*B\s*<|[Bb]linker|ブリンカー', text)][:5]))
-    # 地方の主催者公式（keiba.go.jp）の出馬表に装備が出るか。帝王賞（大井=20、2026/07/01 11R）で見る。
-    url = ('https://www.keiba.go.jp/KeibaWeb/TodayRaceInfo/DebaTable'
-           '?k_raceDate=2026%2f07%2f01&k_raceNo=11&k_babaCode=20')
-    try:
-        page = form_module._fetch(url)
-        text = re.sub(r'\s+', ' ', re.sub(r'(?s)<(script|style)[^>]*>.*?</\1>', '', page))
-        print(f'\n=== 公式 {url}（{len(page)}文字） ===')
-        for word in ('ブリンカー', 'ラムジェット', '帝王賞'):
-            hits = [m.start() for m in re.finditer(word, text)]
-            print(f'{word}: {len(hits)} 件')
-            for pos in hits[:2]:
-                print('  ' + text[max(0, pos - 400):pos + 600])
-    except Exception as exc:
-        print(f'\n=== 公式 {url} 取得失敗: {exc} ===')
 
 
 def probe_horse_search(name):

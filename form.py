@@ -145,6 +145,9 @@ PAST_URL = 'https://race.netkeiba.com/race/shutuba_past.html?race_id={race_id}'
 OIKIRI_URL = 'https://race.netkeiba.com/race/oikiri.html?race_id={race_id}'
 
 # JRAの race_id は5・6桁目が場コード 01〜10。地方・海外の前走は race.netkeiba.com に無い。
+# 地方の前走は追わない：nar.netkeiba.com の馬柱も、主催者公式（keiba.go.jp）の出馬表も
+# 装備を出さない（2026-10-01、帝王賞 202644070111 で確認。前後のJRA戦でBを着けていた
+# ラムジェットにどちらも印が無く、公式ページには「ブリンカー」の語が1つも無い）。
 JRA_PLACE_CODES = {f'{n:02d}' for n in range(1, 11)}
 
 
