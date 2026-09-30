@@ -529,6 +529,15 @@ def probe_entries_raw(race_id):
     classes = sorted(set(re.findall(r'<td[^>]*class="([^"]*)"', row)))
     print(f'\n1頭目の<td>クラス一覧: {classes}')
     print(f'\n1頭目の生HTML:\n{row[:4000]}')
+    # ブリンカー等の装備は一部の馬にしか付かないので、1頭目だけでは見えない。
+    # 馬名セルの周辺を全頭ぶん並べ、付いている馬と付いていない馬を見比べる
+    # （2026-10-01、シリウスSの初ブリンカーを拾えなかった件）。
+    print('\n=== 全頭の馬名セル（馬番: 生HTML） ===')
+    for each in rows:
+        umaban = re.search(r'<td[^>]*class="[^"]*Umaban[^"]*"[^>]*>\s*(\d+)\s*</td>', each)
+        cell = re.search(r'<td[^>]*class="[^"]*HorseInfo[^"]*"[^>]*>(.*?)</td>', each, re.S)
+        body = re.sub(r'\s+', ' ', cell.group(1) if cell else each)
+        print(f"{umaban.group(1) if umaban else '?'}: {body[:1200]}")
 
 
 def probe_horse_search(name):
