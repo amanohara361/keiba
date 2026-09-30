@@ -617,8 +617,14 @@ def probe_entries_raw(race_id):
         print(f'  {url}（{len(page)}文字、HorseList {len(rows)} 行、'
               f'Mark B {page.count(chr(34) + "Mark" + chr(34) + ">B<")} 件）')
         print(f'  parse_past_table: {form_module.parse_past_table(page)}')
-        if rows:
-            print('  1行目: ' + re.sub(r'\s+', ' ', rows[0])[:2500])
+        me = [r for r in rows if info.get('horse_id') and info['horse_id'] in r]
+        if me:
+            text = re.sub(r'\s+', ' ', me[0])
+            i = text.find('Horse02')
+            print('  この馬の行（馬名まわり）: ' + text[max(0, i - 200):i + 900])
+            print('  この馬の行の B らしき箇所: '
+                  + str([text[max(0, m.start() - 120):m.start() + 30]
+                         for m in re.finditer(r'>\s*B\s*<|[Bb]linker|ブリンカー', text)][:5]))
 
 
 def probe_horse_search(name):
