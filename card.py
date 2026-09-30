@@ -547,6 +547,25 @@ def probe_entries_raw(race_id):
         for pos in hits[:12]:
             print(re.sub(r'\s+', ' ', text[max(0, pos - 300):pos + 200]))
             print('---')
+    # 馬柱の過去走セルに装備が出るか（「初ブリンカー」を判別できるか）。
+    past_rows = re.findall(r'<tr class="HorseList[^"]*"[^>]*>(.*?)</tr>', past, re.S)
+    for each in past_rows:
+        if 'Mark">B<' in each:
+            print(f'\n=== 馬柱：Bの付いた1頭目の行（{len(each)}文字） ===')
+            print(re.sub(r'\s+', ' ', each)[:6000])
+            break
+    # 追い切り・厩舎コメントのページが取れるか（第1章 手順2）。
+    for name in ('oikiri', 'comment'):
+        url = f'https://race.netkeiba.com/race/{name}.html?race_id={race_id}'
+        try:
+            text = form_module._fetch(url)
+        except Exception as exc:
+            print(f'\n=== {name}: 取得失敗 {exc} ===')
+            continue
+        body = re.sub(r'(?s)<(script|style|noscript)[^>]*>.*?</\1>', '', text)
+        i = body.find('HorseList')
+        print(f'\n=== {name}: {url}（{len(text)}文字、HorseList {body.count("HorseList")} 箇所） ===')
+        print(re.sub(r'\s+', ' ', body[max(0, i - 1500):i + 7000]))
 
 
 def probe_horse_search(name):
