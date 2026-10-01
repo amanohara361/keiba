@@ -419,5 +419,79 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-02T02:07:26.950639+09:00",
+    "races": [
+      {
+        "race_id": "202610015011",
+        "name": "第６６回 姫山菊花賞３歳以上登録馬",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第６６回 姫山菊花賞３歳以上登録馬: 既に発走しています（発走 15:55 / 現在 02:07）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610014311",
+        "name": "第３０回 マリーンカップ（指定交流）JpnIII３歳牝馬オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第３０回 マリーンカップ（指定交流）JpnIII３歳牝馬オープン: 既に発走しています（発走 20:05 / 現在 02:07）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610013012",
+        "name": "第４回 ネクストスター門別（イスラボニータ賞）２歳オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第４回 ネクストスター門別（イスラボニータ賞）２歳オープン: 既に発走しています（発走 20:30 / 現在 02:07）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
