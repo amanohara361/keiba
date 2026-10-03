@@ -10,6 +10,8 @@
       "venue": "京都",
       "race_no": 8,
       "start_time": "13:40",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "6": 0.22,
         "10": 0.08,
@@ -68,6 +70,8 @@
       "venue": "京都",
       "race_no": 9,
       "start_time": "14:15",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "18": 0.4,
         "8": 0.07
@@ -137,6 +141,8 @@
       "venue": "京都",
       "race_no": 10,
       "start_time": "14:50",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "14": 0.21,
         "15": 0.09,
@@ -212,6 +218,8 @@
       "venue": "京都",
       "race_no": 11,
       "start_time": "15:30",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "18": 0.17,
         "3": 0.1,
@@ -288,6 +296,8 @@
       "venue": "東京",
       "race_no": 10,
       "start_time": "15:10",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "10": 0.105,
         "8": 0.08
@@ -352,6 +362,8 @@
       "venue": "東京",
       "race_no": 11,
       "start_time": "15:45",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "2": 0.3,
         "14": 0.055,
