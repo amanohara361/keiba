@@ -3682,5 +3682,171 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-03T21:27:10.353863+09:00",
+    "races": [
+      {
+        "race_id": "202608040108",
+        "name": "3歳以上2勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳以上2勝クラス: 既に発走しています（発走 13:40 / 現在 21:27）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608040110",
+        "name": "大山崎S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "大山崎S: 既に発走しています（発走 14:50 / 現在 21:27）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608040111",
+        "name": "オパールS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "オパールS: 既に発走しています（発走 15:30 / 現在 21:27）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040109",
+        "name": "八ヶ岳特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "八ヶ岳特別: 既に発走しています（発走 14:35 / 現在 21:27）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040110",
+        "name": "白秋S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "白秋S: 既に発走しています（発走 15:10 / 現在 21:27）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040111",
+        "name": "グリーンCC",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "グリーンCC: 既に発走しています（発走 15:45 / 現在 21:27）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610035405",
+        "name": "ＪＲＡ認定 潮菊特別２歳",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "ＪＲＡ認定 潮菊特別２歳: 既に発走しています（発走 17:15 / 現在 21:27）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
