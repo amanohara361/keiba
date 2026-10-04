@@ -1889,3 +1889,47 @@ def test_going_record_reads_netkeiba_abbreviations():
     record = form.parse_going_record(page)
     assert record['稍重'] == [0, 1, 0, 0]
     assert record['不良'] == [0, 0, 1, 0]
+
+
+def _run_with_partner(tmp_path, monkeypatch, sub):
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / sub / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / sub / 'checks'))
+    race = make_race(race_id='202601020811', name='クイーンステークス',
+                     marks=marks_of(items=[('◎', 7), ('○', 11), ('△', 14)]), bets=[])
+    race.partners = [{'umaban': 2, 'reason': 'テスト'}]
+    bets.save_sheet(BetSheet(date=date(2026, 8, 2), races=[race]))
+
+    def fake_fetch(race_id, bet_type):
+        tables = {
+            '単勝': {'07': ['2.9', '3.0', '1'], '11': ['5.0', '5.2', '2'],
+                   '14': ['9.0', '9.4', '3'], '02': ['20.0', '21.0', '4']},
+            '馬連': {'0711': ['11.2', '11.5', '3'], '0714': ['9.5', '9.8', '4'],
+                   '0207': ['60.0', '61.0', '9']},
+            'ワイド': {'0711': ['3.3', '3.4', '1'], '0714': ['3.5', '3.6', '2'],
+                     '1114': ['8.0', '8.2', '3'], '0207': ['15.0', '15.5', '8']},
+        }
+        return {'status': 'middle', 'reason': None,
+                'official_datetime': '14:28:00', 'odds': tables.get(bet_type, {})}
+
+    monkeypatch.setattr(odds_module, 'fetch', fake_fetch)
+    monkeypatch.setattr(conditions_module, 'fetch',
+                        lambda rid, **kw: {'going': '良', 'weather': '晴',
+                                          'surface': '芝', 'distance': 1800})
+    assert check.main(['--date', '2026-08-02', '--now', '2026-08-02T14:30',
+                       '--no-email']) == check.EXIT_OK
+    saved = json.loads((tmp_path / sub / 'checks' / '2026-08-02.json').read_text(encoding='utf-8'))
+    sheet = bets.load_sheet(date(2026, 8, 2))
+    return saved[-1]['races'][0], [str(b) for b in sheet.races[0].bets], sheet.races[0].confidence
+
+
+def test_本命と中穴候補の組も値付けして記録するが買い目は変えない(tmp_path, monkeypatch):
+    """2026-10-04：◎×partners の組は bet_builder の候補にならず、オッズが記録に
+    残らなかった。記録用に値付けだけ足す。買い目（bets・勝負度）は値付けを足す前と同じ。"""
+    with monkeypatch.context() as m:
+        m.setattr(check, '_price_axis_partner_pairs', lambda race, lookup: None)
+        before_record, before_bets, before_conf = _run_with_partner(tmp_path, m, 'before')
+    record, after_bets, after_conf = _run_with_partner(tmp_path, monkeypatch, 'after')
+
+    assert record['priced_odds']['ワイド']['2-7'] == 15.0
+    assert record['priced_odds']['馬連']['2-7'] == 60.0
+    assert (after_bets, after_conf) == (before_bets, before_conf)
