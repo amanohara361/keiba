@@ -126,7 +126,33 @@ def _build_race_bets(race, tables, odds_for, win_table=None):
     confidence, built_bets, note = bet_builder.build_bets(race, lookup, win_odds)
     race.confidence = confidence
     race.bets = built_bets
+    _price_axis_partner_pairs(race, lookup)
     return note, priced
+
+
+# ◎×partners の組を記録用に値付けする券種（2026-10-04〜）。
+AXIS_PARTNER_BET_TYPES = ('ワイド', '馬連')
+
+
+def _price_axis_partner_pairs(race, lookup):
+    """◎×partners（中穴候補）の組のオッズも取って priced_odds に残す。**買い目は変えない。**
+
+    bet_builder は相手を「印馬が先、partners が後」の順に取るので、印馬がいる限り
+    ◎×partners の組は候補にならず、オッズも記録に残らなかった（2026-10-04 の
+    バックテストで判明、data/review/wide_axis_backtest_2026-10-04.md）。
+    「相手も期待値で選ぶべきでは」というユーザーの提案を、同じレースで今の方式と
+    比べられるようにするための記録。lookup は値が取れた組だけを priced に貯める。
+    """
+    honmei = race.horses_for('◎')
+    if not honmei:
+        return
+    axis = honmei[0]
+    for partner in race.partners:
+        umaban = partner.get('umaban')
+        if umaban is None or umaban == axis:
+            continue
+        for bet_type in AXIS_PARTNER_BET_TYPES:
+            lookup(bet_type, [axis, umaban])
 
 
 def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
