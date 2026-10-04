@@ -118,3 +118,35 @@ def test_片方が0件でも表は崩れない():
     mail = review.render_mail(review.summarize([jra]), (date(2026, 9, 28), date(2026, 10, 4)),
                               'x.md', week_by_org=by_org)
     assert '中央 1R' in mail and '地方 ' not in mail.split('── レース別')[0].split('印の精度')[1]
+
+
+def wide_result(order, wide):
+    r = make_result(order)
+    r['payouts'] = {'ワイド': [{'combination': list(c), 'yen': y} for c, y in wide]}
+    return r
+
+
+def test_仮想の本命と中穴候補のワイドを精算する():
+    race = make_race([('◎', 1), ('○', 2)], partners=[7, 6])
+    result = wide_result(ORDER, [((1, 2), 300), ((1, 7), 1500), ((2, 7), 2000)])
+    v = review.virtual_axis_partner_wide(race, result)
+    assert v == {'bets': 2, 'hits': 1, 'staked': 200, 'returned': 1500}
+
+
+def test_中穴候補が無ければ仮想ワイドは組まない():
+    assert review.virtual_axis_partner_wide(make_race([('◎', 1)]), make_result(ORDER)) is None
+    assert review.virtual_axis_partner_wide(make_race([('○', 1)], partners=[7]), make_result(ORDER)) is None
+
+
+def test_仮想ワイドを集計してレビューとメールに出す():
+    race = make_race([('◎', 1), ('○', 2)], partners=[7, 6])
+    entry = review.review_race(race, wide_result(ORDER, [((1, 7), 1500)]), None)
+    s = review.summarize([entry])
+    assert (s['vwide_races'], s['vwide_bets'], s['vwide_hits']) == (1, 2, 1)
+    assert s['vwide_returned'] == 1500
+    text = review.render([], s, s, (date(2026, 9, 28), date(2026, 10, 4)), wide_since_summary=s)
+    assert '仮想：◎×中穴候補（partners）のワイド' in text
+    assert '| 回収率 | 750% | 750% | 750% |' in text
+    mail = review.render_mail(s, (date(2026, 9, 28), date(2026, 10, 4)), 'x.md',
+                              week_by_org=review.summarize_by_org([entry]))
+    assert '仮想：◎×中穴候補のワイド 2点 的中1 回収率750%' in mail

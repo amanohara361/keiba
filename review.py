@@ -56,6 +56,15 @@ COUNTER_THRESHOLD = 10
 # 週次レビューはこの日以降だけの列も出し、改訂が効いているかを通算と分けて見る。
 MARK_RULES_SINCE = date(2026, 9, 28)
 
+# 仮想の買い目「◎×partners（中穴候補）のワイド」の観察（2026-10-04〜）。
+# 凱旋門賞（◎ダリズ1着・妙味馬ベイシティローラー2着）から出た発想で、
+# バックテスト（data/review/wide_axis_backtest_2026-10-04.md）では現行の買い目より
+# 良かったが、偶然と区別できなかった。実際には買わず、ここで数え続ける。
+# 9/16 以降（発走前オッズが記録に残る期間）で VIRTUAL_WIDE_REVIEW_AT レースに
+# 達したら、bet_builder の候補に加えるかを判断する。
+VIRTUAL_WIDE_SINCE = date(2026, 9, 16)
+VIRTUAL_WIDE_REVIEW_AT = 150
+
 # (見出し, summarize() のキー, 到達時にすること)。render() とメールの両方が
 # ここを見る。**片方だけ書き換えて対応が崩れる、という事故を構造的に防ぐ。**
 THRESHOLD_COUNTERS = [
@@ -274,6 +283,22 @@ def mark_vs_popularity(race, result):
     }
 
 
+def virtual_axis_partner_wide(race, result):
+    """◎×partners 全頭のワイドを各100円買っていたらどうだったか。
+
+    ◎か partners が無いレースは None（買い目が組めない）。払戻は確定払戻で精算する。
+    """
+    honmei = race.horses_for('◎')
+    partners = [p['umaban'] for p in race.partners if p.get('umaban') not in honmei]
+    if not honmei or not partners:
+        return None
+    axis = honmei[0]
+    payouts = result.get('payouts') or {}
+    returned = [results_module.payout_for(payouts, 'ワイド', [axis, p]) for p in partners]
+    return {'bets': len(partners), 'hits': sum(1 for y in returned if y > 0),
+            'staked': 100 * len(partners), 'returned': sum(returned)}
+
+
 def review_race(race, result, check):
     """1レース分の評価をまとめる。結果が未確定なら分類だけ空にする。"""
     entry = {
@@ -317,6 +342,7 @@ def review_race(race, result, check):
         'unmarked_good_runs': [h['umaban'] for h in unmarked_good_runs(race, result)],
         'honmei_wipeout': honmei_only_wipeout(race, settlement, result),
         'mark_vs_popularity': mark_vs_popularity(race, result),
+        'virtual_wide': virtual_axis_partner_wide(race, result),
     })
 
     # 印の成績。◎が1着だったか、3着以内だったか。
@@ -397,6 +423,7 @@ def summarize(entries):
     honmei_ranked = [e['honmei_rank'] for e in settled if e.get('honmei_rank')]
     compared = [e['mark_vs_popularity'] for e in settled if e.get('mark_vs_popularity')]
     favorite_off = [c['nar_favorite_off'] for c in compared if c['nar_favorite_off']]
+    virtual = [e['virtual_wide'] for e in settled if e.get('virtual_wide')]
 
     return {
         'races': len(entries),
@@ -429,6 +456,12 @@ def summarize(entries):
         'nar_favorite_off': len(favorite_off),
         'nar_favorite_off_favorite_won': sum(1 for f in favorite_off if f['favorite_won']),
         'nar_favorite_off_honmei_won': sum(1 for f in favorite_off if f['honmei_won']),
+        # 仮想：◎×partners のワイド（観察中、実際には買っていない）
+        'vwide_races': len(virtual),
+        'vwide_bets': sum(v['bets'] for v in virtual),
+        'vwide_hits': sum(v['hits'] for v in virtual),
+        'vwide_staked': sum(v['staked'] for v in virtual),
+        'vwide_returned': sum(v['returned'] for v in virtual),
     }
 
 
@@ -595,8 +628,45 @@ def render_by_org(week_by_org, total_by_org):
     return lines
 
 
+def _vwide_roi(s):
+    return f"{s['vwide_returned'] / s['vwide_staked'] * 100:.0f}%" if s['vwide_staked'] else '—'
+
+
+VIRTUAL_WIDE_ROWS = [
+    ('レース数', lambda s: str(s['vwide_races'])),
+    ('点数（的中）', lambda s: f"{s['vwide_bets']}点（{s['vwide_hits']}）"),
+    ('投資 → 払戻', lambda s: f"{_yen(s['vwide_staked'])} → {_yen(s['vwide_returned'])}"),
+    ('回収率', _vwide_roi),
+]
+
+
+def render_virtual_wide(week_summary, wide_since_summary, total_summary):
+    """仮想の買い目「◎×partners のワイド」。実際には買っていない。判定はしない。"""
+    n = wide_since_summary['vwide_races'] if wide_since_summary else 0
+    lines = [
+        '## 仮想：◎×中穴候補（partners）のワイド（観察中・実際には買っていない）',
+        '',
+        f'◎と partners の全頭とのワイドを各100円買っていたら、の成績。'
+        f'{VIRTUAL_WIDE_SINCE.isoformat()} 以降で {VIRTUAL_WIDE_REVIEW_AT} レースに達したら、'
+        f'買い目の候補に加えるかを判断する（現在 {n} レース）。'
+        '比べる相手は、上の「規律適用後」の回収率と、ワイドの控除後の水準（約77.5%）。',
+        '',
+        f'| 指標 | 今週 | {VIRTUAL_WIDE_SINCE.isoformat()}以降 | 通算 |',
+        '|---|---|---|---|',
+    ]
+    for label, fn in VIRTUAL_WIDE_ROWS:
+        since = fn(wide_since_summary) if wide_since_summary else '—'
+        lines.append(f'| {label} | {fn(week_summary)} | {since} | {fn(total_summary)} |')
+    if n >= VIRTUAL_WIDE_REVIEW_AT:
+        lines.append('')
+        lines.append(f'> **見直しどき**：{VIRTUAL_WIDE_REVIEW_AT} レースに達した。'
+                     'bet_builder の候補に加えるかを検討する（検証ノート「メソッド改訂案」）。')
+    lines.append('')
+    return lines
+
+
 def render(collected, week_summary, total_summary, period, since_summary=None,
-           week_by_org=None, total_by_org=None):
+           week_by_org=None, total_by_org=None, wide_since_summary=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -674,6 +744,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
     lines += render_mark_popularity(week_summary, total_summary, since_summary)
     if week_by_org and total_by_org:
         lines += render_by_org(week_by_org, total_by_org)
+    lines += render_virtual_wide(week_summary, wide_since_summary, total_summary)
 
     # --- しきい値カウンタ ---
     lines.append(f'## カウンタ（通算{COUNTER_THRESHOLD}件でメソッド見直しを検討）')
@@ -814,6 +885,10 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None,
                 f"（1番人気 {_pct(s['favorite_win'], s['compared_races'])}）"
                 f" / 印で拾えた {_pct(s['top3_marked'], s['top3_total'])}"
                 f"（人気上位 {_pct(s['top3_popular'], s['top3_total'])}）")
+    if week_summary.get('vwide_bets'):
+        lines.append(
+            f"仮想：◎×中穴候補のワイド {week_summary['vwide_bets']}点 的中{week_summary['vwide_hits']}"
+            f" 回収率{_vwide_roi(week_summary)}（観察中・買っていない）")
 
     if collected:
         race_lines = _mail_race_lines(collected)
@@ -866,12 +941,15 @@ def main(argv=None):
     since_summary = summarize([e for day in history if day['date'] >= MARK_RULES_SINCE
                                for e in day['entries']])
 
+    wide_since_summary = summarize([e for day in history if day['date'] >= VIRTUAL_WIDE_SINCE
+                                    for e in day['entries']])
     week_by_org = summarize_by_org(week_entries)
     total_by_org = summarize_by_org(all_entries)
 
     text = render(week, week_summary, total_summary, (start, end),
                   since_summary=since_summary,
-                  week_by_org=week_by_org, total_by_org=total_by_org)
+                  week_by_org=week_by_org, total_by_org=total_by_org,
+                  wide_since_summary=wide_since_summary)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)
