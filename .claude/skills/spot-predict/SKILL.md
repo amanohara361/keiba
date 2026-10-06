@@ -60,7 +60,8 @@ description: >
    候補レースに印を打つ。** CLAUDE.mdの指示どおり、印付け本体は
    Agentツールで`model: "opus"`のサブエージェントに行わせる
    （`予想に関してはmodelはopusをhighで使う`）。渡す情報はカードの
-   出走馬データ一式と、可能なら`予想メソッド.md`の該当章。
+   出走馬データ一式と、可能なら`予想メソッド.md`の該当章（京都開催なら
+   `docs/コース特性_京都.md` も）。
    `marks`・`partners`・`win_probabilities`まで埋める。**`bets`・
    `confidence`は書かない**（直前検算が実オッズで確定する。書き方の
    詳細は`data/bets/README.md`）。
