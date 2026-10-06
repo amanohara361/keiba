@@ -704,3 +704,16 @@ def test_作りたてでもJRA所属馬の近走が取れていなければ作�
     built.clear()
     nar_card.main(['--date', '2026-10-06', '--skip-if-fresh', '3'])
     assert built == []                                      # 取れていれば従来どおり何もしない
+
+
+def test_JRA所属馬の近走は一時的な失敗なら1回取り直す():
+    calls = []
+
+    def flaky(name, **kw):
+        calls.append(name)
+        if len(calls) == 1:
+            raise nar_card.form_module.FormError('timeout')
+        return [{'race': 'X'}]
+    card = _card_with(flaky)
+    entry = next(e for e in card['races'][0]['entries'] if e['belongs_jra'])
+    assert entry['jra_lookup'] == 'ok' and len(calls) == 2
