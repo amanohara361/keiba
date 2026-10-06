@@ -22,6 +22,7 @@ import os
 from datetime import datetime
 
 import bets
+import card as card_module
 import conditions as conditions_module
 import discipline
 import nar_card
@@ -151,9 +152,8 @@ def _esc(value):
     return html.escape(str(value)) if value is not None else ''
 
 
-def _nar_horse_names(day):
-    """当日の地方カードから {race_id: {umaban: 馬名}} を作る。ローカルファイルのみ、追加アクセスなし。"""
-    path = nar_card.card_path(day)
+def _card_horse_names(path):
+    """カードJSONから {race_id: {umaban: 馬名}} を作る。ローカルファイルのみ、追加アクセスなし。"""
     if not os.path.exists(path):
         return {}
     try:
@@ -164,16 +164,32 @@ def _nar_horse_names(day):
     names = {}
     for race in card.get('races') or []:
         names[str(race.get('race_id'))] = {
-            e['umaban']: e['name'] for e in race.get('entries') or [] if e.get('name')
+            e['umaban']: e['name'] for e in race.get('entries') or []
+            if e.get('name') and e.get('umaban') is not None
         }
     return names
 
 
-def _horse_name(verdict, nar_names):
-    if verdict.race.org == 'nar':
-        table = nar_names.get(str(verdict.race.race_id)) or {}
-    else:
-        table = {u: d.get('name') for u, d in (verdict.forms or {}).items()}
+def _horse_names(sheet):
+    """当日のカード（中央は data/cards/、地方は data/cards/nar/）から馬名表を作る。
+
+    中央のカードには買い目対象のレースだけ出走表（entries）が入っている。
+    """
+    day = sheet.date
+    names = {}
+    if any(r.org != 'nar' for r in sheet.races):
+        names.update(_card_horse_names(os.path.join(card_module.CARDS_DIR, f'{day.isoformat()}.json')))
+    if any(r.org == 'nar' for r in sheet.races):
+        names.update(_card_horse_names(nar_card.card_path(day)))
+    return names
+
+
+def _horse_name(verdict, card_names):
+    table = dict(card_names.get(str(verdict.race.race_id)) or {})
+    # 馬場が渋った日に check.py が引いた各馬の戦績にも馬名がある。カードに無ければそちらを使う。
+    for umaban, detail in (verdict.forms or {}).items():
+        if not table.get(umaban) and (detail or {}).get('name'):
+            table[umaban] = detail['name']
 
     def lookup(umaban):
         return table.get(umaban)
@@ -207,9 +223,9 @@ def _status_pill(verdict):
     return '<span class="pill pill-good">クリア</span>'
 
 
-def _race_block(verdict, nar_names):
+def _race_block(verdict, card_names):
     race = verdict.race
-    name_of = _horse_name(verdict, nar_names)
+    name_of = _horse_name(verdict, card_names)
 
     meta_bits = []
     if race.venue and race.race_no:
@@ -337,7 +353,7 @@ def _race_block(verdict, nar_names):
 
 def render(sheet, verdicts, now):
     day = sheet.date
-    nar_names = _nar_horse_names(day) if any(r.org == 'nar' for r in sheet.races) else {}
+    card_names = _horse_names(sheet)
 
     blocked = [v for v in verdicts if v.blocked]
     orderable = [v for v in verdicts if v.race.bets and not v.blocked]
@@ -356,7 +372,7 @@ def render(sheet, verdicts, now):
       <div class="stat-note">買い目作成 {_esc(sheet.generated_at or "-")}</div></div>
   </div>'''
 
-    races_html = ''.join(_race_block(v, nar_names) for v in verdicts)
+    races_html = ''.join(_race_block(v, card_names) for v in verdicts)
 
     return _page(
         eyebrow='直前検算（予想メソッド 第13章）',
