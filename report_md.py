@@ -32,9 +32,9 @@ def _status_label(verdict):
     return 'クリア'
 
 
-def _race_section(verdict, nar_names):
+def _race_section(verdict, card_names):
     race = verdict.race
-    name_of = report_html._horse_name(verdict, nar_names)
+    name_of = report_html._horse_name(verdict, card_names)
 
     meta_bits = []
     if race.venue and race.race_no:
@@ -111,7 +111,7 @@ def _race_section(verdict, nar_names):
 
 def render(sheet, verdicts, now):
     day = sheet.date
-    nar_names = report_html._nar_horse_names(day) if any(r.org == 'nar' for r in sheet.races) else {}
+    card_names = report_html._horse_names(sheet)
 
     blocked = [v for v in verdicts if v.blocked]
     orderable = [v for v in verdicts if v.race.bets and not v.blocked]
@@ -123,7 +123,7 @@ def render(sheet, verdicts, now):
         '', '本検算は買い目設計の規律のみを見ています。印の判断には関与しません。', '',
     ]
     for v in verdicts:
-        lines.append(_race_section(v, nar_names))
+        lines.append(_race_section(v, card_names))
     return '\n'.join(lines)
 
 

@@ -178,6 +178,34 @@ def test_nar_horse_names_are_looked_up_from_the_local_card(tmp_path, monkeypatch
     assert 'キャッシュブリッツ' in out
 
 
+def test_jra_horse_names_are_looked_up_from_the_local_card(tmp_path, monkeypatch):
+    import card as card_module
+    monkeypatch.setattr(card_module, 'CARDS_DIR', str(tmp_path))
+    card = {
+        'date': '2026-08-12',
+        'races': [
+            {'race_id': '202605040811', 'entries': [
+                {'umaban': 3, 'name': 'レーベンスティール'},
+                {'umaban': 9, 'name': 'シャンパンカラー'},
+            ]},
+            {'race_id': '202605040801'},          # 対象外のレースには出走表が無い
+        ],
+    }
+    (tmp_path / '2026-08-12.json').write_text(json.dumps(card, ensure_ascii=False), encoding='utf-8')
+
+    race = make_race(race_id='202605040811', venue='東京', race_no=11,
+                     marks=[{'mark': '◎', 'umaban': 3}, {'mark': '○', 'umaban': 9},
+                            {'mark': '▲', 'umaban': 12}])
+    verdict = review(race, day=date(2026, 8, 12))
+
+    out = report_html.render(FakeSheet([race], day=date(2026, 8, 12)), [verdict],
+                             datetime(2026, 8, 12, 9, 0, tzinfo=JST))
+
+    assert 'レーベンスティール' in out
+    assert 'シャンパンカラー' in out
+    assert '12番' in out                          # カードに無い馬は番号だけで落ちない
+
+
 def test_missing_sheet_page_names_the_expected_file():
     out = report_html.render_missing(date(2026, 8, 12), datetime(2026, 8, 12, 10, 7, tzinfo=JST))
     assert '2026-08-12.json' in out
