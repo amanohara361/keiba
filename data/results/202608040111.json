@@ -1,0 +1,231 @@
+{
+  "race_id": "202608040111",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 6,
+      "name": "リリージョワ",
+      "ninki": 2,
+      "odds": 6.5
+    },
+    {
+      "rank": 2,
+      "umaban": 18,
+      "name": "ディアナザール",
+      "ninki": 3,
+      "odds": 6.5
+    },
+    {
+      "rank": 3,
+      "umaban": 8,
+      "name": "レッドエヴァンス",
+      "ninki": 7,
+      "odds": 10.1
+    },
+    {
+      "rank": 4,
+      "umaban": 1,
+      "name": "カルチャーデイ",
+      "ninki": 6,
+      "odds": 9.5
+    },
+    {
+      "rank": 5,
+      "umaban": 10,
+      "name": "ヒシアイラ",
+      "ninki": 1,
+      "odds": 5.1
+    },
+    {
+      "rank": 6,
+      "umaban": 13,
+      "name": "クラスペディア",
+      "ninki": 10,
+      "odds": 18.1
+    },
+    {
+      "rank": 7,
+      "umaban": 17,
+      "name": "ヨシノイースター",
+      "ninki": 11,
+      "odds": 24.9
+    },
+    {
+      "rank": 8,
+      "umaban": 11,
+      "name": "オタルエバー",
+      "ninki": 17,
+      "odds": 160.4
+    },
+    {
+      "rank": 9,
+      "umaban": 7,
+      "name": "テーオーダヴィンチ",
+      "ninki": 18,
+      "odds": 169.0
+    },
+    {
+      "rank": 10,
+      "umaban": 5,
+      "name": "フィオライア",
+      "ninki": 12,
+      "odds": 25.6
+    },
+    {
+      "rank": 11,
+      "umaban": 4,
+      "name": "メイショウヨゾラ",
+      "ninki": 4,
+      "odds": 8.8
+    },
+    {
+      "rank": 12,
+      "umaban": 15,
+      "name": "タガノアラリア",
+      "ninki": 9,
+      "odds": 17.7
+    },
+    {
+      "rank": 13,
+      "umaban": 2,
+      "name": "ショウナンアビアス",
+      "ninki": 15,
+      "odds": 77.0
+    },
+    {
+      "rank": 14,
+      "umaban": 14,
+      "name": "ヤマニンアルリフラ",
+      "ninki": 13,
+      "odds": 47.0
+    },
+    {
+      "rank": 15,
+      "umaban": 9,
+      "name": "タマモブラックタイ",
+      "ninki": 14,
+      "odds": 59.0
+    },
+    {
+      "rank": 16,
+      "umaban": 3,
+      "name": "タマモイカロス",
+      "ninki": 5,
+      "odds": 9.3
+    },
+    {
+      "rank": 17,
+      "umaban": 16,
+      "name": "フロムダスク",
+      "ninki": 8,
+      "odds": 15.0
+    },
+    {
+      "rank": 18,
+      "umaban": 12,
+      "name": "デイトナモード",
+      "ninki": 16,
+      "odds": 138.2
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          6
+        ],
+        "yen": 650
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          6
+        ],
+        "yen": 290
+      },
+      {
+        "combination": [
+          18
+        ],
+        "yen": 250
+      },
+      {
+        "combination": [
+          8
+        ],
+        "yen": 270
+      }
+    ],
+    "枠連": [
+      {
+        "combination": [
+          3,
+          8
+        ],
+        "yen": 1340
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          6,
+          18
+        ],
+        "yen": 3030
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          6,
+          18
+        ],
+        "yen": 1380
+      },
+      {
+        "combination": [
+          6,
+          8
+        ],
+        "yen": 1510
+      },
+      {
+        "combination": [
+          8,
+          18
+        ],
+        "yen": 1040
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          6,
+          18
+        ],
+        "yen": 5330
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          6,
+          8,
+          18
+        ],
+        "yen": 8200
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          6,
+          18,
+          8
+        ],
+        "yen": 38250
+      }
+    ]
+  }
+}
