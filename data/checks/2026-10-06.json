@@ -946,5 +946,56 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-06T23:07:39.933955+09:00",
+    "races": [
+      {
+        "race_id": "202610064610",
+        "name": "第２回 金沢クイーン賞【ハクサンアマゾネス記念】３歳上牝馬",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第２回 金沢クイーン賞【ハクサンアマゾネス記念】３歳上牝馬: 既に発走しています（発走 18:00 / 現在 23:07）。買い目は直近の検算結果のとおりです（勝負度A）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610064411",
+        "name": "第２３回 レディスプレリュードJpnII",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第２３回 レディスプレリュードJpnII: 既に発走しています（発走 20:10 / 現在 23:07）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
