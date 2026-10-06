@@ -461,11 +461,25 @@ def test_search_horse_idはfetchしたページをparse_horse_searchに渡す(mo
 
     def fake_fetch(url, opener=None):
         calls.append(url)
-        return SINGLE_MATCH_PAGE
+        return SINGLE_MATCH_PAGE, url
 
-    monkeypatch.setattr(form_module, '_fetch', fake_fetch)
+    monkeypatch.setattr(form_module, '_fetch_with_url', fake_fetch)
     assert form_module.search_horse_id('ラッキーキッド') == '2023101148'
     assert 'word=' in calls[0]
+
+
+def test_馬名検索の検索語はEUC_JPでエンコードする():
+    """2026-10-06：UTF-8 で渡すと db.netkeiba.com で化けて1件も当たらず、
+    JRA所属馬の中央の近走がカードから抜けていた（レディスプレリュードの5頭）。"""
+    url = form_module.horse_search_url('ダブルハートボンド')
+    assert url.endswith('word=%A5%C0%A5%D6%A5%EB%A5%CF%A1%BC%A5%C8%A5%DC%A5%F3%A5%C9')
+
+
+def test_1頭に決まって馬のページへ転送されたらそのIDを使う(monkeypatch):
+    monkeypatch.setattr(form_module, '_fetch_with_url',
+                        lambda url, opener=None: ('<html>馬のページ</html>',
+                                                  'https://db.netkeiba.com/horse/2021105700/'))
+    assert form_module.search_horse_id('ダブルハートボンド') == '2021105700'
 
 
 def test_fetch_jra_recent_runsは見つからなければNoneを返す(monkeypatch):
