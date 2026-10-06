@@ -635,7 +635,7 @@ def probe_horse_search(name):
     （決定ログ「ページ構造は推測せず、Actions の probe で実物を見る」）。
     """
     import urllib.parse
-    url = f'https://db.netkeiba.com/?pid=horse_list&word={urllib.parse.quote(name)}'
+    url = form_module.horse_search_url(name)
     page = form_module._fetch(url)
     print(f'取得サイズ: {len(page)} 文字')
     print(f'URL: {url}')

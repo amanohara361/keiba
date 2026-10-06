@@ -274,10 +274,13 @@ def _annotate_jra_horse(entry, fetcher, sleep, day):
                        birth_year=birth_year, limit=JRA_RECENT_RUNS)
     except form_module.FormError as exc:
         logger.warning('%s（JRA所属）の近走を取得できませんでした: %s', entry['name'], exc)
+        entry['jra_lookup'] = JRA_LOOKUP_ERROR
         return
     if runs is None:
-        logger.info('%s（JRA所属）はnetkeibaで馬名を1頭に絞れませんでした', entry['name'])
+        logger.warning('%s（JRA所属）はnetkeibaで馬名を1頭に絞れませんでした', entry['name'])
+        entry['jra_lookup'] = JRA_LOOKUP_UNRESOLVED
         return
+    entry['jra_lookup'] = JRA_LOOKUP_OK
     entry['jra_recent_runs'] = runs
     note = ('中央（JRA）所属。netkeibaの競走成績を jra_recent_runs に入れた'
             if runs else
@@ -415,6 +418,30 @@ def gate(day):
         f"{r['venue']}{r['race_no']}R {r['name']}（{r['start_time']}）" for r in races)
 
 
+# JRA所属馬の近走を netkeiba から取れたか（2026-10-06〜）。
+#   ok         … 取れた（0件＝新馬の可能性も含む）
+#   unresolved … 馬名で1頭に絞れなかった（同名馬。推測で選ばない）
+#   error      … 取りに行けなかった（netkeiba に届かない Claude のサンドボックスで作った等）
+# 記録が無い・error のカードは「作りたて」でも作り直す。2026-10-06 は定時実行が
+# 5時間半遅れ、08:00 の朝タスクがサンドボックスでカードを作った（中央の近走が入らない）。
+# 遅れて走った Actions は「作りたてのカードがある」で何もしなかった。
+JRA_LOOKUP_OK = 'ok'
+JRA_LOOKUP_UNRESOLVED = 'unresolved'
+JRA_LOOKUP_ERROR = 'error'
+
+
+def jra_lookup_incomplete(card):
+    """JRA所属馬のうち、近走を取りに行けていない馬（馬番つき）を返す。"""
+    missing = []
+    for race in card.get('races') or []:
+        for entry in race.get('entries') or []:
+            if entry.get('belongs_jra') and entry.get('jra_lookup') not in (
+                    JRA_LOOKUP_OK, JRA_LOOKUP_UNRESOLVED):
+                missing.append(f"{race.get('venue', '')}{race.get('race_no', '')}R "
+                               f"{entry.get('umaban')} {entry.get('name')}")
+    return missing
+
+
 def card_age_hours(day):
     """既にあるカードが何時間前のものか。無ければ None。"""
     path = card_path(day)
@@ -486,8 +513,13 @@ def main(argv=None):
     if args.skip_if_fresh:
         age = card_age_hours(day)
         if age is not None and age <= args.skip_if_fresh:
-            logger.info('%s のカードは%.1f時間前に作成済みです。何もしません。', day, age)
-            return EXIT_OK
+            with open(card_path(day), encoding='utf-8') as f:
+                incomplete = jra_lookup_incomplete(json.load(f))
+            if not incomplete:
+                logger.info('%s のカードは%.1f時間前に作成済みです。何もしません。', day, age)
+                return EXIT_OK
+            logger.warning('%s のカードは作りたてですが、JRA所属馬の近走を取れていない馬が'
+                           'います（%s）。作り直します。', day, '、'.join(incomplete))
 
     try:
         card = build_card(day, levels=levels, with_entries=not args.no_entries)

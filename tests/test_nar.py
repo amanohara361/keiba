@@ -653,3 +653,54 @@ def test_データに無い日はカードを書かない():
 
     with pytest.raises(nar_card.CardError):
         nar_card.build_card(date(2026, 1, 1), fetcher=fake, today=date(2026, 9, 1))
+
+
+def _card_with(jra_fetcher):
+    def fake(type_, month=None):
+        return {'racelist': rows(RACELIST), 'horselist': rows(HORSELIST), 'payback': []}
+    return nar_card.build_card(date(2026, 8, 12), fetcher=fake, today=date(2026, 8, 12),
+                               jra_fetcher=jra_fetcher, jra_sleep=lambda seconds: None)
+
+
+def test_JRA所属馬の近走の取得結果をカードに残す():
+    """2026-10-06：取れなかった馬が「定型文のまま」で静かに残り、朝タスクが
+    中央の近走なしで印を打った。取れたか・絞れなかったか・届かなかったかを残す。"""
+    def jra_entry(card):
+        return next(e for e in card['races'][0]['entries'] if e['belongs_jra'])
+
+    assert jra_entry(_card_with(lambda name, **kw: [{'race': 'X'}]))['jra_lookup'] == 'ok'
+    assert jra_entry(_card_with(lambda name, **kw: None))['jra_lookup'] == 'unresolved'
+
+    def unreachable(name, **kw):
+        raise nar_card.form_module.FormError('403 Tunnel connection failed')
+    card = _card_with(unreachable)
+    assert jra_entry(card)['jra_lookup'] == 'error'
+    assert nar_card.jra_lookup_incomplete(card)          # 作り直しの対象になる
+    assert not nar_card.jra_lookup_incomplete(_card_with(lambda name, **kw: []))
+
+
+def test_作りたてでもJRA所属馬の近走が取れていなければ作り直す(tmp_path, monkeypatch):
+    monkeypatch.setattr(nar_card, 'CARDS_DIR', str(tmp_path))
+    day = date(2026, 10, 6)
+    incomplete = {'generated_at': nar_card.nar.datetime.now(nar_card.nar.JST).isoformat(),
+                  'races': [{'venue': '大井', 'race_no': 11,
+                             'entries': [{'umaban': 2, 'name': 'ダブルハートボンド',
+                                          'belongs_jra': True}]}]}
+    import json, os
+    os.makedirs(tmp_path, exist_ok=True)
+    with open(nar_card.card_path(day), 'w', encoding='utf-8') as f:
+        json.dump(incomplete, f, ensure_ascii=False)
+
+    built = []
+    monkeypatch.setattr(nar_card, 'build_card',
+                        lambda d, **kw: built.append(d) or (_ for _ in ()).throw(
+                            nar_card.CardError('stop here')))
+    nar_card.main(['--date', '2026-10-06', '--skip-if-fresh', '3'])
+    assert built == [day]                                   # 作り直しに進んだ
+
+    incomplete['races'][0]['entries'][0]['jra_lookup'] = 'ok'
+    with open(nar_card.card_path(day), 'w', encoding='utf-8') as f:
+        json.dump(incomplete, f, ensure_ascii=False)
+    built.clear()
+    nar_card.main(['--date', '2026-10-06', '--skip-if-fresh', '3'])
+    assert built == []                                      # 取れていれば従来どおり何もしない
