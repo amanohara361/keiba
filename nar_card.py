@@ -269,13 +269,20 @@ def _annotate_jra_horse(entry, fetcher, sleep, day):
     if entry.get('age'):
         # 馬齢は「年 − 生年」（2001年からの満年齢表記）。
         birth_year = day.year - entry['age']
-    try:
-        runs = fetcher(entry['name'], sire=entry.get('sire'),
-                       birth_year=birth_year, limit=JRA_RECENT_RUNS)
-    except form_module.FormError as exc:
-        logger.warning('%s（JRA所属）の近走を取得できませんでした: %s', entry['name'], exc)
-        entry['jra_lookup'] = JRA_LOOKUP_ERROR
-        return
+    # 一時的な取得失敗は1回だけ取り直す（2026-10-06、同じ馬が3分前は取れて
+    # 次の実行では取れなかった）。
+    for attempt in range(JRA_RETRIES + 1):
+        try:
+            runs = fetcher(entry['name'], sire=entry.get('sire'),
+                           birth_year=birth_year, limit=JRA_RECENT_RUNS)
+            break
+        except form_module.FormError as exc:
+            if attempt < JRA_RETRIES:
+                sleep(JRA_REQUEST_INTERVAL * 2)
+                continue
+            logger.warning('%s（JRA所属）の近走を取得できませんでした: %s', entry['name'], exc)
+            entry['jra_lookup'] = JRA_LOOKUP_ERROR
+            return
     if runs is None:
         logger.warning('%s（JRA所属）はnetkeibaで馬名を1頭に絞れませんでした', entry['name'])
         entry['jra_lookup'] = JRA_LOOKUP_UNRESOLVED
@@ -425,6 +432,7 @@ def gate(day):
 # 記録が無い・error のカードは「作りたて」でも作り直す。2026-10-06 は定時実行が
 # 5時間半遅れ、08:00 の朝タスクがサンドボックスでカードを作った（中央の近走が入らない）。
 # 遅れて走った Actions は「作りたてのカードがある」で何もしなかった。
+JRA_RETRIES = 1
 JRA_LOOKUP_OK = 'ok'
 JRA_LOOKUP_UNRESOLVED = 'unresolved'
 JRA_LOOKUP_ERROR = 'error'
