@@ -421,13 +421,18 @@ def fetch_pedigree(horse_id, opener=None):
 #     という形で並ぶ。馬名が完全一致する行が1つだけなら、それを採用する。
 #     0件または2件以上一致したら None（同姓同名を推測で選ばない）。
 
+# 2026-10-06 に netkeiba の検索結果の書き方が変わった（チェックボックスの id が
+# chk_horse → i-horse_{ID}、馬へのリンクが相対 → 絶対URL）。旧形式も残して両方読む。
+# 旧形式だけを見ていたため、同名馬が複数いると1頭も拾えず「絞れない」になっていた
+# （10/6 レディスプレリュードのテンカジョウ。2021年生と2002年生の同名馬）。
 _SEARCH_ROW = re.compile(
-    r'value="(\d{10})" id="chk_horse">.*?<a href="/horse/\1/" title="([^"]+)"',
+    r'value="(\d{10})" id="(?:chk_horse|i-horse_\1)">.*?'
+    r'<a href="(?:https?://db\.netkeiba\.com)?/horse/\1/" title="([^"]+)"',
     re.S)
 
 # 候補行の全体（父名・生年を読むために行ごと取る）。
 _SEARCH_ROW_FULL = re.compile(
-    r'value="(\d{10})" id="chk_horse">(.*?)</tr>', re.S)
+    r'value="(\d{10})" id="(?:chk_horse|i-horse_\1)">(.*?)</tr>', re.S)
 
 _TAGS = re.compile(r'<[^>]+>')
 

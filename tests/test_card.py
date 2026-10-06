@@ -740,3 +740,35 @@ def test_馬柱の5走にJRA戦が無ければ直近JRA戦もNone(monkeypatch):
     entries = [{'umaban': 1, 'horse_id': 'H1'}]
     card.attach_equipment_and_training('202609040811', entries, sleep=lambda s: None)
     assert entries[0]['blinker_last_jra'] is None
+
+
+# 2026-10-06 時点の検索結果の形（probe card-horse-search テンカジョウ で実物確認）。
+# 父名・生年の列は旧形式のテストと同じく行の中の文字列として持つ。
+_NEW_FORMAT_SEARCH = """
+<table><tr><th>馬名</th></tr>
+    <tr>
+	<td nowrap="nowrap">
+	    <input type="checkbox" name="i-horse_2021102729" value="2021102729" id="i-horse_2021102729">
+	</td>
+	<td class="bml txt_l" nowrap="nowrap">
+	    <a href="https://db.netkeiba.com/horse/2021102729/" title="テンカジョウ">テンカジョウ</a>
+	</td>
+	<td>牝</td><td>2021</td><td>サンダースノー</td>
+    </tr>
+    <tr>
+	<td nowrap="nowrap">
+	    <input type="checkbox" name="i-horse_2002104662" value="2002104662" id="i-horse_2002104662">
+	</td>
+	<td class="xml txt_l" nowrap="nowrap">
+	    <a href="https://db.netkeiba.com/horse/2002104662/" title="テンカジョウ">テンカジョウ</a>
+	</td>
+	<td>牡</td><td>2002</td><td>別の父</td>
+    </tr>
+</table>
+"""
+
+
+def test_新しい形式の検索結果でも同名馬を父名と生年で絞る():
+    assert form_module.parse_horse_search(_NEW_FORMAT_SEARCH, 'テンカジョウ') is None
+    assert form_module.parse_horse_search(_NEW_FORMAT_SEARCH, 'テンカジョウ',
+                                          sire='サンダースノー', birth_year=2021) == '2021102729'
