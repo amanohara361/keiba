@@ -196,5 +196,78 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-07T14:51:51.185678+09:00",
+    "races": [
+      {
+        "race_id": "202610074711",
+        "name": "オータムカップ",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "オータムカップ: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "オータムカップ: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "per_type": {},
+          "errors": [
+            "https://www.keiba.go.jp/KeibaWeb/DataDownload/OddsDataDownload?type=daily を取得できませんでした: HTTP Error 404: Not Found"
+          ],
+          "status": null,
+          "official_datetime": "2026-10-07 14:51:56"
+        }
+      },
+      {
+        "race_id": "202610074411",
+        "name": "ジャパンダートクラシック(JpnI)",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "ジャパンダートクラシック(JpnI): 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "ジャパンダートクラシック(JpnI): 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "odds_meta": {
+          "per_type": {},
+          "errors": [
+            "https://www.keiba.go.jp/KeibaWeb/DataDownload/OddsDataDownload?type=daily を取得できませんでした: HTTP Error 404: Not Found"
+          ],
+          "status": null,
+          "official_datetime": "2026-10-07 14:51:56"
+        }
+      }
+    ]
   }
 ]
