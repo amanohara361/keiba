@@ -79,7 +79,7 @@
       "race_no": 11,
       "start_time": "20:05",
       "confidence": "B",
-      "subjective_hit_rate": 0.3017,
+      "subjective_hit_rate": 0.0666,
       "win_probabilities": {
         "15": 0.28,
         "10": 0.16,
@@ -139,10 +139,11 @@
       ],
       "bets": [
         {
-          "type": "ワイド",
+          "type": "3連複",
           "horses": [
-            15,
-            10
+            10,
+            11,
+            15
           ],
           "stake": 100
         }
