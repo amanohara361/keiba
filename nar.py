@@ -23,6 +23,7 @@ CSV の各項目の意味・検証済みの注意点（ハロンタイムは南�
 import csv
 import io
 import logging
+import time
 import urllib.error
 import urllib.request
 import zipfile
@@ -81,6 +82,7 @@ UA = ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
       '(KHTML, like Gecko) Chrome/124.0 Safari/537.36')
 
 TIMEOUT = 90
+RETRY_WAITS = (3, 10, 20)
 
 
 class NarError(RuntimeError):
@@ -108,12 +110,21 @@ def fetch_zip(kind, type_=DAILY, day=None, opener=None):
     """
     url = _url(kind, type_, day)
     request = urllib.request.Request(url, headers={'User-Agent': UA})
-    try:
-        open_url = opener or urllib.request.urlopen
-        with open_url(request, timeout=TIMEOUT) as response:
-            data = response.read()
-    except (urllib.error.URLError, OSError) as exc:
-        raise NarError(f'{url} を取得できませんでした: {exc}')
+    open_url = opener or urllib.request.urlopen
+    # 公式サイトは更新の合間などに一瞬404/5xxを返すことがある（2026-10-07 14:51、
+    # 同じURLが数分後には200）。1回の失敗で見送りにしないよう数秒空けて再試行する。
+    waits = RETRY_WAITS if opener is None else ()
+    for attempt in range(len(waits) + 1):
+        try:
+            with open_url(request, timeout=TIMEOUT) as response:
+                data = response.read()
+            break
+        except (urllib.error.URLError, OSError) as exc:
+            if attempt < len(waits):
+                logger.warning('%s の取得に失敗（%s）。%s秒後に再試行', url, exc, waits[attempt])
+                time.sleep(waits[attempt])
+                continue
+            raise NarError(f'{url} を取得できませんでした: {exc}')
     if not data[:2] == b'PK':
         raise NarError(f'{url} がZIPを返しませんでした（{len(data)}バイト）')
     return data
