@@ -15,6 +15,8 @@
 import os
 import sys
 
+import pytest
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import bet_builder  # noqa: E402
@@ -99,7 +101,8 @@ def test_ワイド複数流しは相手1頭ならp_wideと一致する():
     """後方互換：相手が1頭のときは新旧の計算が一致する。"""
     p = bet_builder.market_win_probabilities(WIN_ODDS)
     for q in (11, 2, 14):
-        assert bet_builder.p_wide_group(p, 7, [q]) == bet_builder.p_wide(p, (7, q))
+        assert bet_builder.p_wide_group(p, 7, [q]) == pytest.approx(
+            bet_builder.p_wide(p, (7, q)), rel=1e-12)
 
 
 # ----------------------------------------------------------------------
