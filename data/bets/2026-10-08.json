@@ -79,7 +79,7 @@
       "race_no": 11,
       "start_time": "20:10",
       "confidence": "B",
-      "subjective_hit_rate": 0.3701,
+      "subjective_hit_rate": 0.3413,
       "win_probabilities": {
         "5": 0.4,
         "7": 0.13,
@@ -142,14 +142,6 @@
           "horses": [
             5,
             7
-          ],
-          "stake": 100
-        },
-        {
-          "type": "ワイド",
-          "horses": [
-            7,
-            13
           ],
           "stake": 100
         }
