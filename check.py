@@ -192,12 +192,15 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
             track = nar_data.conditions(race.race_id)
             tables = nar_data.raw_tables(race.race_id)
             win_table = nar_module.win_odds_table(tables, nar_data.ninki(race.race_id))
-            bet_note, priced_odds = _build_race_bets(race, tables, _nar_odds_for, win_table)
+            entries = nar_data.entries(race.race_id)
+            bet_note, priced_odds = _build_race_bets(
+                race, tables, _nar_odds_for, win_table,
+                discipline.weight_withdrawals(race, entries))
             bet_odds = [_nar_odds_for(tables, bet.horses, bet.type)
                         for bet in race.bets]
             meta = nar_data.meta(race.race_id)
             verdict = discipline.review_race(
-                race, bet_odds, win_table, meta, now, sheet.date, track, {})
+                race, bet_odds, win_table, meta, now, sheet.date, track, {}, entries)
             verdict.bet_note = bet_note
             verdict.priced_odds = priced_odds
             verdicts.append(verdict)
@@ -219,7 +222,7 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
             except form_module.FormError as exc:
                 logger.warning('%s の各馬の戦績を取得できませんでした: %s', race.name, exc)
 
-        # 馬体重は発走の約1時間前に出る。出馬表1ページで全頭分取れるので、
+        # 馬体重は発走の1時間前に出る。出馬表1ページで全頭分取れるので、
         # 馬場に関わらず毎回引く（2026-10-08。それまでは道悪の日しか見ていなかった）。
         try:
             entries = entries_fetcher(race.race_id)
@@ -257,11 +260,13 @@ class _NarDay:
         self._odds_error = None
         self._fetcher = fetcher
         self._races = {}
+        self._horses = []
         self._parsed_cache = {}
         try:
-            rows = nar_module.parse_races(
-                nar_module.race_data(nar_module.DAILY)['racelist'], sheet.date)
+            data = nar_module.race_data(nar_module.DAILY)
+            rows = nar_module.parse_races(data['racelist'], sheet.date)
             self._races = {r['race_id']: r for r in rows}
+            self._horses = data.get('horselist') or []
         except nar_module.NarError as exc:
             logger.warning('地方のレース情報を取得できませんでした: %s', exc)
             self.errors.append(str(exc))
@@ -277,6 +282,27 @@ class _NarDay:
             'weather': race['weather'] or None,
             'going': race['going'] or None,
         }
+
+    def entries(self, race_id):
+        """出馬表CSVの馬体重を中央の form.parse_entries と同じ形で返す（2026-10-08）。
+
+        公式CSVの「馬体重」「馬体重増減」は発走の直前まで空のことがある。
+        空は None のまま（0 と読み替えない）。
+        """
+        try:
+            rows = nar_module.parse_entries(self._horses, race_id)
+        except nar_module.NarError:
+            return {}
+        out = {}
+        for e in rows:
+            diff = e.get('horse_weight_diff')
+            try:
+                diff = int(diff.replace('±', '')) if diff else None
+            except ValueError:
+                diff = None
+            out[e['umaban']] = {'name': e['name'], 'age': e['age'],
+                                'weight': e['horse_weight'], 'weight_diff': diff}
+        return out
 
     def _rows(self):
         """当日オッズCSVの行を1度だけ取り、以後はキャッシュを返す。
