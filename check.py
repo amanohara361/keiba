@@ -91,7 +91,7 @@ def _nar_odds_for(tables, numbers, bet_type):
     return nar_module.odds_for(tables, numbers, bet_type)
 
 
-def _build_race_bets(race, tables, odds_for, win_table=None):
+def _build_race_bets(race, tables, odds_for, win_table=None, withdrawn=None):
     """race.bets/confidence を実オッズで確定する（bet_builder、第13章）。
 
     印は朝タスクが確定済み。ここが決めるのは買い目だけ（2026-08-14ユーザー承認）。
@@ -123,7 +123,8 @@ def _build_race_bets(race, tables, odds_for, win_table=None):
     # win_table は {馬番: (単勝オッズ, 人気)}。bet_builder が Harville モデルで
     # 券種ごとの的中率を出すのに、出走全頭の勝率分布が要る（2026-08-26）。
     win_odds = {n: v[0] for n, v in (win_table or {}).items() if v and v[0]}
-    confidence, built_bets, note = bet_builder.build_bets(race, lookup, win_odds)
+    confidence, built_bets, note = bet_builder.build_bets(race, lookup, win_odds,
+                                                          withdrawn=withdrawn)
     race.confidence = confidence
     race.bets = built_bets
     _price_axis_partner_pairs(race, lookup)
@@ -156,7 +157,7 @@ def _price_axis_partner_pairs(race, lookup):
 
 
 def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
-                 forms_fetcher=None, nar_fetcher=None):
+                 forms_fetcher=None, nar_fetcher=None, entries_fetcher=None):
     """買い目ファイル全体を検算して、レースごとの判定を返す。
 
     中央と地方が同じファイルに混ざっていてよい。**違うのはオッズと馬場の
@@ -166,6 +167,7 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
     fetcher = fetcher or odds_module.fetch
     conditions_fetcher = conditions_fetcher or conditions_module.fetch
     forms_fetcher = forms_fetcher or form_module.collect
+    entries_fetcher = entries_fetcher or form_module.fetch_entries
 
     # 地方の公式CSVは1回のダウンロードで全場・全レース・全券種が入る。
     # レースごとに叩き直さない（サーバへの配慮であり、速度の話ではない）。
@@ -190,12 +192,15 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
             track = nar_data.conditions(race.race_id)
             tables = nar_data.raw_tables(race.race_id)
             win_table = nar_module.win_odds_table(tables, nar_data.ninki(race.race_id))
-            bet_note, priced_odds = _build_race_bets(race, tables, _nar_odds_for, win_table)
+            entries = nar_data.entries(race.race_id)
+            bet_note, priced_odds = _build_race_bets(
+                race, tables, _nar_odds_for, win_table,
+                discipline.weight_withdrawals(race, entries))
             bet_odds = [_nar_odds_for(tables, bet.horses, bet.type)
                         for bet in race.bets]
             meta = nar_data.meta(race.race_id)
             verdict = discipline.review_race(
-                race, bet_odds, win_table, meta, now, sheet.date, track, {})
+                race, bet_odds, win_table, meta, now, sheet.date, track, {}, entries)
             verdict.bet_note = bet_note
             verdict.priced_odds = priced_odds
             verdicts.append(verdict)
@@ -217,15 +222,25 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
             except form_module.FormError as exc:
                 logger.warning('%s の各馬の戦績を取得できませんでした: %s', race.name, exc)
 
+        # 馬体重は発走の1時間前に出る。出馬表1ページで全頭分取れるので、
+        # 馬場に関わらず毎回引く（2026-10-08。それまでは道悪の日しか見ていなかった）。
+        try:
+            entries = entries_fetcher(race.race_id)
+        except form_module.FormError as exc:
+            logger.warning('%s の馬体重を取得できませんでした: %s', race.name, exc)
+            entries = {}
+        withdrawn = discipline.weight_withdrawals(race, entries)
+
         # 単勝・馬連・ワイドをまとめて1回で取得する（bet_builder が任意の
         # 組み合わせを試せるよう、買い目を先に決めずに券種の表だけ取る）。
         tables, meta = odds_module.fetch_tables(race.race_id, BUILD_BET_TYPES, fetcher)
         win_table = odds_module.win_odds_table(tables.get('単勝', {}))
-        bet_note, priced_odds = _build_race_bets(race, tables, _jra_odds_for, win_table)
+        bet_note, priced_odds = _build_race_bets(race, tables, _jra_odds_for, win_table,
+                                                 withdrawn)
         bet_odds = [_jra_odds_for(tables, bet.horses, bet.type)
                     for bet in race.bets]
         verdict = discipline.review_race(
-            race, bet_odds, win_table, meta, now, sheet.date, track, forms)
+            race, bet_odds, win_table, meta, now, sheet.date, track, forms, entries)
         verdict.bet_note = bet_note
         verdict.priced_odds = priced_odds
         verdicts.append(verdict)
@@ -245,11 +260,13 @@ class _NarDay:
         self._odds_error = None
         self._fetcher = fetcher
         self._races = {}
+        self._horses = []
         self._parsed_cache = {}
         try:
-            rows = nar_module.parse_races(
-                nar_module.race_data(nar_module.DAILY)['racelist'], sheet.date)
+            data = nar_module.race_data(nar_module.DAILY)
+            rows = nar_module.parse_races(data['racelist'], sheet.date)
             self._races = {r['race_id']: r for r in rows}
+            self._horses = data.get('horselist') or []
         except nar_module.NarError as exc:
             logger.warning('地方のレース情報を取得できませんでした: %s', exc)
             self.errors.append(str(exc))
@@ -265,6 +282,27 @@ class _NarDay:
             'weather': race['weather'] or None,
             'going': race['going'] or None,
         }
+
+    def entries(self, race_id):
+        """出馬表CSVの馬体重を中央の form.parse_entries と同じ形で返す（2026-10-08）。
+
+        公式CSVの「馬体重」「馬体重増減」は発走の直前まで空のことがある。
+        空は None のまま（0 と読み替えない）。
+        """
+        try:
+            rows = nar_module.parse_entries(self._horses, race_id)
+        except nar_module.NarError:
+            return {}
+        out = {}
+        for e in rows:
+            diff = e.get('horse_weight_diff')
+            try:
+                diff = int(diff.replace('±', '')) if diff else None
+            except ValueError:
+                diff = None
+            out[e['umaban']] = {'name': e['name'], 'age': e['age'],
+                                'weight': e['horse_weight'], 'weight_diff': diff}
+        return out
 
     def _rows(self):
         """当日オッズCSVの行を1度だけ取り、以後はキャッシュを返す。
@@ -367,16 +405,18 @@ def format_verdict(verdict):
     going = (verdict.conditions or {}).get('going')
     for entry in race.marks:
         detail = verdict.forms.get(entry['umaban'])
-        if not detail:
+        weight = verdict.entries.get(entry['umaban']) or detail or {}
+        if not detail and not weight.get('weight'):
             continue
         bits = []
-        if detail.get('weight'):
-            diff = detail.get('weight_diff')
-            bits.append(f"{detail['weight']}kg"
+        if weight.get('weight'):
+            diff = weight.get('weight_diff')
+            bits.append(f"{weight['weight']}kg"
                         + (f'({diff:+d})' if diff is not None else ''))
-        bits.append(form_module.summarise(detail.get('record') or {}, going))
+        if detail:
+            bits.append(form_module.summarise(detail.get('record') or {}, going))
         lines.append(f"    {entry['mark']}{entry['umaban']} "
-                     f"{detail.get('name', '')} " + ' / '.join(bits))
+                     f"{weight.get('name', '')} " + ' / '.join(bits))
 
     if race.bets:
         lines.append('  買い目:')

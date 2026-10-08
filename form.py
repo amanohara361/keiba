@@ -78,7 +78,7 @@ def strip_tags(html):
 # ----------------------------------------------------------------------
 
 def parse_entries(page):
-    """出馬表から {馬番: {horse_id, name, weight, weight_diff, kinryo}} を作る。"""
+    """出馬表から {馬番: {horse_id, name, age, weight, weight_diff, kinryo}} を作る。"""
     entries = {}
     for row in re.findall(r'<tr class="[^"]*HorseList[^"]*"[^>]*>(.*?)</tr>', page, re.S):
         umaban = re.search(r'<td[^>]*class="[^"]*Umaban[^"]*"[^>]*>\s*(\d+)\s*</td>', row)
@@ -115,8 +115,15 @@ def parse_entries(page):
             except ValueError:
                 kinryo = None
 
+        # 年齢：性齢（Barei）セルの「牡3」。成長期のプラス体重の判定に使う。
+        age = None
+        barei = re.search(r'<td[^>]*class="[^"]*Barei[^"]*"[^>]*>[^<\d]*(\d+)', row)
+        if barei:
+            age = int(barei.group(1))
+
         entries[int(umaban.group(1))] = {
             'horse_id': horse.group(1),
+            'age': age,
             'name': (name.group(1).strip() if name else ''),
             'weight': weight,
             'weight_diff': weight_diff,
