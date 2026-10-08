@@ -41,6 +41,11 @@ MIN_EXPECTED_VALUE = 1.2
 WIN_ODDS_MIN = 4.0
 WIN_ODDS_MAX = 9.9
 
+# 馬体重の大幅増減（第1章 -2点「馬体重が±15kg以上変動」、2026-10-08 ユーザー依頼で買い目に反映）。
+WEIGHT_SWING_KG = 15
+# 成長期（2〜3歳）のプラス体重はポジティブに捉える（第2章 馬体重の増減）。
+WEIGHT_GROWTH_MAX_AGE = 3
+
 # 重大度
 BLOCK = 'BLOCK'   # 発注しない（メソッドが「発注しない」「組み直す」と定めるもの）
 WARN = 'WARN'     # 要検討（メソッドが「原則避ける」「検討する」と定めるもの）
@@ -406,6 +411,56 @@ def check_going_experience(race, conditions, forms):
     return findings
 
 
+def weight_swings(race, entries):
+    """印馬・中穴候補のうち、馬体重が前走比±15kg以上動いた馬を返す。
+
+    戻り値は {馬番: {name, weight, weight_diff, age, growth}}。growth は
+    2〜3歳のプラス体重（第2章でポジティブ扱い）で、警告は出すが勝率は戻さない。
+    体重が未発表（発走約1時間前まで）・前走比が無い馬は対象にしない（推測で埋めない）。
+    """
+    out = {}
+    targets = set(race.marked_horses) | {p['umaban'] for p in race.partners}
+    for umaban in sorted(targets):
+        entry = (entries or {}).get(umaban) or {}
+        diff = entry.get('weight_diff')
+        if diff is None or abs(diff) < WEIGHT_SWING_KG:
+            continue
+        age = entry.get('age')
+        out[umaban] = {
+            'name': entry.get('name', ''),
+            'weight': entry.get('weight'),
+            'weight_diff': diff,
+            'age': age,
+            'growth': diff > 0 and age is not None and age <= WEIGHT_GROWTH_MAX_AGE,
+        }
+    return out
+
+
+def weight_withdrawals(race, entries):
+    """主観勝率の上乗せを取り消す馬番の集合（成長期のプラス体重を除く）。"""
+    return {u for u, s in weight_swings(race, entries).items() if not s['growth']}
+
+
+def check_weight_swing(race, entries):
+    """馬体重の大幅増減を知らせる。勝率の扱いは bet_builder が行う。"""
+    findings = []
+    for umaban, swing in weight_swings(race, entries).items():
+        marks = [m['mark'] for m in race.marks if m['umaban'] == umaban]
+        label = (marks[0] if marks else '候補') + f'{umaban}番'
+        text = (f'{race.name}: {label} {swing["name"]} の馬体重が'
+                f'{swing["weight"]}kg（{swing["weight_diff"]:+d}）です')
+        if swing['growth']:
+            findings.append(Finding(
+                INFO, 'weight_growth', text,
+                f'{swing["age"]}歳のプラス体重は成長分とみて勝率は据え置きます（第2章）。'))
+        else:
+            findings.append(Finding(
+                WARN, 'weight_swing', text,
+                f'±{WEIGHT_SWING_KG}kg以上の変動（第1章 -2点）。朝の主観勝率の上乗せを'
+                '取り消し、市場勝率で買い目を組み直しました。'))
+    return findings
+
+
 def check_confidence(race):
     """勝負度Cは印だけ記録して購入しない（第13章）。"""
     if race.confidence == 'C' and race.bets:
@@ -423,7 +478,7 @@ def check_confidence(race):
 
 class RaceVerdict:
     def __init__(self, race, findings, composite, bet_odds, win_table, meta,
-                 conditions=None, forms=None):
+                 conditions=None, forms=None, entries=None):
         self.race = race
         self.findings = findings
         self.composite = composite
@@ -432,6 +487,8 @@ class RaceVerdict:
         self.meta = meta
         self.conditions = conditions or {}
         self.forms = forms or {}
+        # 出馬表（馬体重。中央のみ・発表前は weight が None）。
+        self.entries = entries or {}
         # bet_builder の説明文（その回だけの一時的な情報）。discipline.py は
         # bet_builder を知らないので、呼び出し側（check.py）がここに直接
         # 代入する。race.note には書かない（2026-08-15、note が無限に
@@ -483,13 +540,23 @@ class RaceVerdict:
             'priced_odds': self.priced_odds,
             'findings': [f.to_dict() for f in self.findings],
             'conditions': self.conditions,
+            # 印馬・中穴候補の馬体重（2026-10-08〜）。±15kgルールの効き目を後で検証するため。
+            'weights': {
+                str(u): {'weight': e.get('weight'), 'diff': e.get('weight_diff'),
+                         'age': e.get('age')}
+                for u, e in self.entries.items()
+                if u in set(self.race.marked_horses) | {p['umaban'] for p in self.race.partners}
+            },
             'odds_meta': self.meta,
         }
 
 
 def review_race(race, bet_odds, win_table, meta, now, day, conditions=None,
-                forms=None):
-    """1レースに第13章の規律を全部あてる。"""
+                forms=None, entries=None):
+    """1レースに第13章の規律を全部あてる。
+
+    entries は出馬表（form.fetch_entries）。馬体重の照会に使う（中央のみ）。
+    """
     findings = []
 
     started = check_already_started(race, now, day)
@@ -508,6 +575,7 @@ def review_race(race, bet_odds, win_table, meta, now, day, conditions=None,
     # 馬場は買い目の有無に関わらず知らせる（朝は未発表のことが多いため）
     findings.append(check_going(race, conditions))
     findings.extend(check_going_experience(race, conditions, forms))
+    findings.extend(check_weight_swing(race, entries))
 
     confidence = check_confidence(race)
     if confidence:
@@ -517,7 +585,7 @@ def review_race(race, bet_odds, win_table, meta, now, day, conditions=None,
         findings.append(Finding(
             INFO, 'no_bets', f'{race.name}: 買い目なし（勝負度{race.confidence or "未評価"}）'))
         return RaceVerdict(race, findings, None, bet_odds, win_table, meta,
-                           conditions, forms)
+                           conditions, forms, entries)
 
     # noteの書き方（第1章ステップ1・4）。買うレースだけを見る。見送りのレースまで
     # 「要検討」にすると、見送りの表示と本物の警告が埋もれるため。
@@ -547,4 +615,4 @@ def review_race(race, bet_odds, win_table, meta, now, day, conditions=None,
     findings.extend(check_win_odds_range(race, win_table))
 
     return RaceVerdict(race, findings, composite, bet_odds, win_table, meta,
-                       conditions, forms)
+                       conditions, forms, entries)

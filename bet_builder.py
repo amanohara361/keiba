@@ -485,13 +485,14 @@ def _build_candidates(axis, pool, marked, p, market, lookup, cap=SET_HIT_RATE_CA
     return out
 
 
-def build_bets(race, lookup, win_odds=None, stake=100):
+def build_bets(race, lookup, win_odds=None, stake=100, withdrawn=None):
     """1レース分の買い目を組み立てる。
 
     race:     marks・partners・win_probabilities を持つ RaceBets。
               race.bets は使わない（呼び出し前の値に関わらず組み直す）。
     lookup:   (bet_type, [umaban, ...]) -> オッズ or None。
     win_odds: {馬番: 単勝オッズ}。Harville に渡す勝率分布を作るのに使う。
+    withdrawn: 主観勝率の上乗せを取り消す馬番（馬体重の大幅増減。discipline.weight_withdrawals）。
     戻り値:   (勝負度, [Bet, ...], 説明文)
     """
     axis_horses = race.horses_for('◎')
@@ -535,11 +536,33 @@ def build_bets(race, lookup, win_odds=None, stake=100):
     # 出走表に無い馬番の指定は無視する（取消・入力ミス）。全部無効なら
     # 「指定なし」と同じ扱いにして、説明文でもそう伝える。
     overrides = {k: v for k, v in race.win_probabilities.items() if k in market}
-    p = apply_subjective(market, overrides)
+    # **馬体重の大幅増減（±15kg以上）で上乗せを取り消す（2026-10-08 ユーザー依頼）。**
+    # 朝の主観勝率は馬体重を知らずに付けている。第1章は±15kg以上を-2点とし、
+    # 第2章は「何kgで評価を下げるか事前に決めておく」としている。印は朝タスクの
+    # 領分なので動かさず、市場より上げていた分だけを市場勝率に戻す（下げる方向の
+    # 主観はそのまま）。体重発表後の単勝オッズには増減が織り込まれている。
+    # race.win_probabilities 自体は書き換えない（朝の値を data/bets に残すため）。
+    pulled = sorted(u for u in (withdrawn or ()) if u in overrides and overrides[u] > market[u])
+    p = apply_subjective(market, {k: v for k, v in overrides.items() if k not in pulled})
     pool = [q for q in pool if q in p]
     if not pool:
         return 'C', [], '相手候補の単勝オッズが取得できません'
 
+    weight_note = ''
+    if pulled:
+        weight_note = ('【馬体重】' + '・'.join(f'{u}番' for u in pulled) +
+                       'は±15kg以上の増減のため主観勝率の上乗せを取り消し、市場勝率で評価。')
+    confidence, bets_out, note = _choose_bets(race, axis, pool, p, market, lookup,
+                                               overrides, stake)
+    return confidence, bets_out, weight_note + note
+
+
+def _choose_bets(race, axis, pool, p, market, lookup, overrides, stake):
+    """build_bets の後半：候補を作り、規律を満たす最も堅い案を選ぶ。
+
+    overrides は朝タスクが書いた主観勝率の有無の判定にだけ使う（馬体重で
+    取り消す前のもの。取り消しを「書き漏らし」と誤報しないため）。
+    """
     candidates = _build_candidates(axis, pool, set(race.marked_horses), p, market, lookup)
     if not candidates:
         return 'C', [], '実オッズが揃わず買い目を組めませんでした（要・再検算）'
