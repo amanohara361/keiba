@@ -271,8 +271,8 @@
       "venue": "東京",
       "race_no": 10,
       "start_time": "15:10",
-      "confidence": "A",
-      "subjective_hit_rate": 0.2738,
+      "confidence": "B",
+      "subjective_hit_rate": 0.2698,
       "win_probabilities": {
         "7": 0.17,
         "3": 0.13,
