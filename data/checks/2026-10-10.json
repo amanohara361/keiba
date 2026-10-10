@@ -5797,5 +5797,304 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-10T16:08:43.240126+09:00",
+    "races": [
+      {
+        "race_id": "202608040301",
+        "name": "2歳未勝利",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "2歳未勝利: 既に発走しています（発走 09:50 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608040310",
+        "name": "宇治川特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "宇治川特別: 既に発走しています（発走 14:50 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608040311",
+        "name": "御陵S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "御陵S: 既に発走しています（発走 15:30 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040309",
+        "name": "陣馬特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "陣馬特別: 既に発走しています（発走 14:35 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040310",
+        "name": "JRA電話",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "JRA電話: 既に発走しています（発走 15:10 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040311",
+        "name": "サウジアラビアロイヤルカップ(G3)",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "サウジアラビアロイヤルカップ(G3): 既に発走しています（発走 15:45 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610105404",
+        "name": "横浜特別（ベストウォーリア賞）３歳以上",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 21.6,
+          "2": 2.9,
+          "3": 75.0,
+          "4": 18.4,
+          "5": 43.2,
+          "6": 23.9,
+          "7": 10.5,
+          "8": 34.1,
+          "9": 40.2,
+          "10": 9.9,
+          "11": 8.4,
+          "12": 2.7
+        },
+        "win_ninki": {
+          "1": 7,
+          "2": 2,
+          "3": 12,
+          "4": 6,
+          "5": 11,
+          "6": 8,
+          "7": 5,
+          "8": 9,
+          "9": 10,
+          "10": 4,
+          "11": 3,
+          "12": 1
+        },
+        "priced_odds": {
+          "単勝": {
+            "12": 2.7
+          },
+          "馬連": {
+            "2-12": 3.9,
+            "11-12": 8.7,
+            "1-12": 18.9,
+            "7-12": 24.7,
+            "10-12": 19.1
+          },
+          "ワイド": {
+            "2-12": 1.7,
+            "11-12": 3.0,
+            "1-12": 5.8,
+            "7-12": 7.7,
+            "10-12": 5.2
+          },
+          "3連複": {
+            "2-11-12": 5.0,
+            "1-2-12": 11.2,
+            "2-7-12": 16.5,
+            "2-10-12": 9.2,
+            "1-11-12": 28.3,
+            "7-11-12": 40.3,
+            "10-11-12": 20.6,
+            "1-7-12": 87.1,
+            "1-10-12": 54.3,
+            "7-10-12": 68.6
+          }
+        },
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "横浜特別（ベストウォーリア賞）３歳以上: 馬場が「稍重」です（ダート1400m / 天候:晴 / 馬場:稍重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "横浜特別（ベストウォーリア賞）３歳以上: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "晴",
+          "going": "稍重"
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 8
+          },
+          "11": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 66
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 132
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 66
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 220
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-10 16:08:45"
+        }
+      }
+    ]
   }
 ]
