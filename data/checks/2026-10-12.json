@@ -1,0 +1,1051 @@
+[
+  {
+    "checked_at": "2026-10-12T07:41:08.731330+09:00",
+    "races": [
+      {
+        "race_id": "202608040508",
+        "name": "3歳以上1勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 5.4,
+          "2": 24.8,
+          "3": 5.0,
+          "4": 13.5,
+          "5": 7.8,
+          "6": 9.9,
+          "7": 22.6,
+          "8": 15.5,
+          "9": 5.8,
+          "10": 12.9,
+          "11": 5.8
+        },
+        "win_ninki": {
+          "1": 2,
+          "2": 11,
+          "3": 1,
+          "4": 8,
+          "5": 5,
+          "6": 6,
+          "7": 10,
+          "8": 9,
+          "9": 3,
+          "10": 7,
+          "11": 4
+        },
+        "priced_odds": {
+          "単勝": {
+            "5": 7.8
+          },
+          "馬連": {
+            "1-5": 22.0,
+            "5-11": 16.5,
+            "3-5": 13.9,
+            "5-9": 19.0,
+            "4-5": 45.5,
+            "2-5": 47.6
+          },
+          "ワイド": {
+            "1-5": 9.5,
+            "5-11": 4.4,
+            "3-5": 7.1,
+            "5-9": 7.2,
+            "4-5": 11.1,
+            "2-5": 18.2
+          },
+          "3連複": {
+            "1-5-11": 41.9,
+            "1-3-5": 47.4,
+            "1-5-9": 49.0,
+            "1-4-5": 133.0,
+            "1-2-5": 129.5,
+            "3-5-11": 20.4,
+            "5-9-11": 17.9,
+            "4-5-11": 86.9,
+            "2-5-11": 65.6,
+            "3-5-9": 22.2,
+            "3-4-5": 115.1,
+            "2-3-5": 98.7,
+            "4-5-9": 106.7,
+            "2-5-9": 89.7
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "3歳以上1勝クラス: 芝2000m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "3歳以上1勝クラス: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 2000
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "11": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:39:43"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:39:43"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:39:43"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:39:43"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-12 07:39:43"
+        }
+      },
+      {
+        "race_id": "202608040509",
+        "name": "蹴上特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 18.2,
+          "2": 27.1,
+          "3": 7.9,
+          "4": 5.9,
+          "5": 4.4,
+          "6": 18.3,
+          "7": 13.0,
+          "8": 69.4,
+          "9": 106.7,
+          "10": 4.4,
+          "11": 47.6,
+          "12": 4.1
+        },
+        "win_ninki": {
+          "1": 7,
+          "2": 9,
+          "3": 5,
+          "4": 4,
+          "5": 2,
+          "6": 8,
+          "7": 6,
+          "8": 11,
+          "9": 12,
+          "10": 3,
+          "11": 10,
+          "12": 1
+        },
+        "priced_odds": {
+          "単勝": {
+            "4": 5.9
+          },
+          "馬連": {
+            "4-10": 10.1,
+            "4-6": 23.1,
+            "4-12": 10.8,
+            "4-7": 48.3,
+            "4-5": 15.5,
+            "3-4": 15.1
+          },
+          "ワイド": {
+            "4-10": 3.2,
+            "4-6": 9.2,
+            "4-12": 4.8,
+            "4-7": 11.6,
+            "4-5": 6.6,
+            "3-4": 5.4
+          },
+          "3連複": {
+            "4-6-10": 40.7,
+            "4-10-12": 14.4,
+            "4-7-10": 53.0,
+            "4-5-10": 20.6,
+            "3-4-10": 21.0,
+            "4-6-12": 38.7,
+            "4-6-7": 138.6,
+            "4-5-6": 51.9,
+            "3-4-6": 38.8,
+            "4-7-12": 78.1,
+            "4-5-12": 25.2,
+            "3-4-12": 24.1,
+            "4-5-7": 105.2,
+            "3-4-7": 68.3
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "蹴上特別: ダート1800m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "蹴上特別: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "ダート",
+          "distance": 1800
+        },
+        "weights": {
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:08"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:08"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:08"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:08"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-12 07:40:08"
+        }
+      },
+      {
+        "race_id": "202605040510",
+        "name": "昇仙峡S",
+        "blocked": false,
+        "composite_odds": 22.3,
+        "expected_value": 1.25,
+        "bet_odds": [
+          {
+            "bet": "3連複 1-2-11",
+            "odds": 22.3
+          }
+        ],
+        "win_odds": {
+          "1": 5.5,
+          "2": 14.3,
+          "3": 30.6,
+          "4": 12.9,
+          "5": 10.6,
+          "6": 14.1,
+          "7": 11.4,
+          "8": 31.5,
+          "9": 31.5,
+          "10": 14.0,
+          "11": 1.9
+        },
+        "win_ninki": {
+          "1": 2,
+          "2": 8,
+          "3": 9,
+          "4": 5,
+          "5": 3,
+          "6": 7,
+          "7": 4,
+          "8": 10,
+          "9": 11,
+          "10": 6,
+          "11": 1
+        },
+        "priced_odds": {
+          "単勝": {
+            "11": 1.9
+          },
+          "馬連": {
+            "1-11": 5.2,
+            "2-11": 15.8,
+            "5-11": 9.6,
+            "7-11": 8.8,
+            "10-11": 7.8,
+            "6-11": 22.0
+          },
+          "ワイド": {
+            "1-11": 2.7,
+            "2-11": 7.9,
+            "5-11": 4.1,
+            "7-11": 3.0,
+            "10-11": 3.7,
+            "6-11": 6.7,
+            "1-2": 13.9
+          },
+          "3連複": {
+            "1-2-11": 22.3,
+            "1-5-11": 14.2,
+            "1-7-11": 14.9,
+            "1-10-11": 11.0,
+            "1-6-11": 31.2,
+            "2-5-11": 41.6,
+            "2-7-11": 43.7,
+            "2-10-11": 34.0,
+            "2-6-11": 120.9,
+            "5-7-11": 21.8,
+            "5-10-11": 18.1,
+            "5-6-11": 58.0,
+            "7-10-11": 19.1,
+            "6-7-11": 49.1
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "昇仙峡S: 芝2400m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "昇仙峡S: 合成オッズ 22.30倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "昇仙峡S: 期待値 1.25（合成 22.30倍 × 主観的中率 6%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "marked_only_trifecta",
+            "message": "昇仙峡S: 3連複 1-2-11 が印馬だけで組まれています",
+            "remedy": "印馬が3着以内を独占する前提に依存します。◎（＋1頭）を軸に、相手へ印を打たなかった中穴を最低1頭含めてください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "昇仙峡S: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 2400
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "11": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:39:58"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:39:58"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:39:58"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:39:58"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-12 07:39:58"
+        }
+      },
+      {
+        "race_id": "202608040510",
+        "name": "堀川特別",
+        "blocked": false,
+        "composite_odds": 19.9,
+        "expected_value": 1.23,
+        "bet_odds": [
+          {
+            "bet": "3連複 2-5-10",
+            "odds": 19.9
+          }
+        ],
+        "win_odds": {
+          "1": 63.9,
+          "2": 6.2,
+          "3": 65.2,
+          "4": 10.3,
+          "5": 1.9,
+          "6": 20.8,
+          "7": 7.0,
+          "8": 86.9,
+          "9": 6.2,
+          "10": 10.6
+        },
+        "win_ninki": {
+          "1": 8,
+          "2": 2,
+          "3": 9,
+          "4": 5,
+          "5": 1,
+          "6": 7,
+          "7": 4,
+          "8": 10,
+          "9": 3,
+          "10": 6
+        },
+        "priced_odds": {
+          "単勝": {
+            "5": 1.9
+          },
+          "馬連": {
+            "2-5": 6.1,
+            "5-9": 5.5,
+            "5-7": 7.3,
+            "4-5": 12.2,
+            "5-10": 15.8,
+            "5-6": 24.9
+          },
+          "ワイド": {
+            "2-5": 2.5,
+            "5-9": 2.4,
+            "5-7": 2.8,
+            "4-5": 4.5,
+            "5-10": 5.2,
+            "5-6": 8.8,
+            "2-9": 4.2
+          },
+          "3連複": {
+            "2-5-9": 7.6,
+            "2-5-7": 10.8,
+            "2-4-5": 16.8,
+            "2-5-10": 19.9,
+            "2-5-6": 38.7,
+            "5-7-9": 7.6,
+            "4-5-9": 14.0,
+            "5-9-10": 19.0,
+            "5-6-9": 30.8,
+            "4-5-7": 18.5,
+            "5-7-10": 26.4,
+            "5-6-7": 37.2,
+            "4-5-10": 40.1,
+            "4-5-6": 63.5
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "堀川特別: 芝1800m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "堀川特別: 合成オッズ 19.90倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "堀川特別: 期待値 1.23（合成 19.90倍 × 主観的中率 6%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "堀川特別: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1800
+        },
+        "weights": {
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:13"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:13"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:13"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:13"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-12 07:40:13"
+        }
+      },
+      {
+        "race_id": "202605040511",
+        "name": "オクトーバーS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 7.3,
+          "2": 3.9,
+          "3": 19.6,
+          "4": 14.1,
+          "5": 11.3,
+          "6": 59.5,
+          "7": 17.6,
+          "8": 69.5,
+          "9": 9.0,
+          "10": 10.2,
+          "11": 84.9,
+          "12": 11.8,
+          "13": 17.7,
+          "14": 43.7,
+          "15": 26.6,
+          "16": 19.2,
+          "17": 66.6,
+          "18": 13.5
+        },
+        "win_ninki": {
+          "1": 2,
+          "2": 1,
+          "3": 12,
+          "4": 8,
+          "5": 5,
+          "6": 15,
+          "7": 9,
+          "8": 17,
+          "9": 3,
+          "10": 4,
+          "11": 18,
+          "12": 6,
+          "13": 10,
+          "14": 14,
+          "15": 13,
+          "16": 11,
+          "17": 16,
+          "18": 7
+        },
+        "priced_odds": {
+          "単勝": {
+            "2": 3.9
+          },
+          "馬連": {
+            "1-2": 9.3,
+            "2-9": 14.9,
+            "2-18": 20.8,
+            "2-7": 27.9,
+            "2-3": 31.2,
+            "2-12": 30.7,
+            "2-4": 44.9
+          },
+          "ワイド": {
+            "1-2": 4.1,
+            "2-9": 6.2,
+            "2-18": 9.3,
+            "2-7": 9.9,
+            "2-3": 11.7,
+            "2-12": 13.8,
+            "2-4": 14.6
+          },
+          "3連複": {
+            "1-2-9": 24.1,
+            "1-2-18": 32.9,
+            "1-2-7": 42.1,
+            "1-2-3": 53.1,
+            "1-2-12": 45.2,
+            "1-2-4": 64.9,
+            "2-9-18": 46.8,
+            "2-7-9": 61.8,
+            "2-3-9": 94.1,
+            "2-9-12": 71.3,
+            "2-4-9": 114.7,
+            "2-7-18": 82.8,
+            "2-3-18": 113.4,
+            "2-12-18": 110.8,
+            "2-4-18": 172.9,
+            "2-3-7": 150.2,
+            "2-7-12": 144.9,
+            "2-4-7": 200.1
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "オクトーバーS: 芝2000m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "オクトーバーS: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 2000
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "18": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:23"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:23"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:23"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:23"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-12 07:40:23"
+        }
+      },
+      {
+        "race_id": "202608040511",
+        "name": "スワンS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 7.0,
+          "2": 18.2,
+          "3": 75.1,
+          "4": 16.4,
+          "5": 52.9,
+          "6": 18.8,
+          "7": 125.9,
+          "8": 30.0,
+          "9": 4.7,
+          "10": 28.0,
+          "11": 31.7,
+          "12": 13.5,
+          "13": 9.3,
+          "14": 23.1,
+          "15": 7.7,
+          "16": 75.1,
+          "17": 15.4,
+          "18": 6.4
+        },
+        "win_ninki": {
+          "1": 3,
+          "2": 9,
+          "3": 16,
+          "4": 8,
+          "5": 15,
+          "6": 10,
+          "7": 18,
+          "8": 13,
+          "9": 1,
+          "10": 12,
+          "11": 14,
+          "12": 6,
+          "13": 5,
+          "14": 11,
+          "15": 4,
+          "16": 17,
+          "17": 7,
+          "18": 2
+        },
+        "priced_odds": {
+          "単勝": {
+            "1": 7.0
+          },
+          "馬連": {
+            "1-9": 14.2,
+            "1-13": 31.5,
+            "1-18": 28.5,
+            "1-15": 33.5,
+            "1-11": 108.0,
+            "1-4": 87.9,
+            "1-17": 58.4,
+            "1-8": 146.2,
+            "1-12": 67.0
+          },
+          "ワイド": {
+            "1-9": 5.7,
+            "1-13": 12.0,
+            "1-18": 12.9,
+            "1-15": 13.1,
+            "1-11": 23.8,
+            "1-4": 28.3,
+            "1-17": 23.0,
+            "1-8": 37.6,
+            "1-12": 24.3
+          },
+          "3連複": {
+            "1-9-13": 36.3,
+            "1-9-18": 32.0,
+            "1-9-15": 36.6,
+            "1-9-11": 132.6,
+            "1-4-9": 101.4,
+            "1-9-17": 63.5,
+            "1-8-9": 213.7,
+            "1-9-12": 84.0,
+            "1-13-18": 86.9,
+            "1-13-15": 80.2,
+            "1-11-13": 402.3,
+            "1-4-13": 229.0,
+            "1-13-17": 142.6,
+            "1-8-13": 626.2,
+            "1-12-13": 176.3,
+            "1-15-18": 75.6,
+            "1-11-18": 351.1,
+            "1-4-18": 310.0,
+            "1-17-18": 137.4,
+            "1-8-18": 518.6,
+            "1-12-18": 177.5,
+            "1-11-15": 245.1,
+            "1-4-15": 271.4,
+            "1-15-17": 139.3,
+            "1-8-15": 527.5,
+            "1-12-15": 208.0
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "スワンS: 芝1400m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "スワンS: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "晴",
+          "surface": "芝",
+          "distance": 1400
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "11": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "13": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "15": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "17": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "18": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:38"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:38"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:38"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-12 07:40:38"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-12 07:40:38"
+        }
+      }
+    ]
+  }
+]
