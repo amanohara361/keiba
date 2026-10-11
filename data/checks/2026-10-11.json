@@ -9349,5 +9349,178 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-11T22:56:05.157201+09:00",
+    "races": [
+      {
+        "race_id": "202608040408",
+        "name": "3歳以上2勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳以上2勝クラス: 既に発走しています（発走 13:40 / 現在 22:56）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608040409",
+        "name": "円山特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "円山特別: 既に発走しています（発走 14:15 / 現在 22:56）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608040410",
+        "name": "三年坂S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "三年坂S: 既に発走しています（発走 14:50 / 現在 22:56）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608040411",
+        "name": "太秦S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "太秦S: 既に発走しています（発走 15:30 / 現在 22:56）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040410",
+        "name": "テレビ静岡賞",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "テレビ静岡賞: 既に発走しています（発走 15:10 / 現在 22:56）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040411",
+        "name": "アイルランドT",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "アイルランドT: 既に発走しています（発走 15:45 / 現在 22:56）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610114608",
+        "name": "能登波の花賞Ｂ１級",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "能登波の花賞Ｂ１級: 既に発走しています（発走 17:15 / 現在 22:56）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
