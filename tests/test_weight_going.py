@@ -16,7 +16,7 @@ def _race(rid, state, horses, track='芝'):
                        for fin, o, w in horses]}
 
 
-def test_ダート・取消・5頭未満は対象から外れる(tmp_path):
+def test_ダートと取消と5頭未満は対象から外れる(tmp_path):
     ok = _race('1', '良', [(1, 2.0, 500), (2, 3.0, 480), (3, 5.0, 460),
                            (4, 9.0, 440), (5, 20.0, 420)])
     dirt = _race('2', '良', [(i, 3.0, 480) for i in range(1, 6)], track='ダ')
@@ -42,7 +42,7 @@ def test_重い馬が人気より下に来るほど傾きは負になる():
     assert weight_going.slope(rs) < 0
 
 
-def test_馬場区分は稍重以外の道悪を重・不良にまとめる():
+def test_馬場区分は稍重以外の道悪を重と不良にまとめる():
     assert weight_going.going_class('良') == '良'
     assert weight_going.going_class('稍重') == '稍重'
     assert weight_going.going_class('重') == '重・不良'
