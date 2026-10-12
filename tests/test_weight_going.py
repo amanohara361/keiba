@@ -47,3 +47,40 @@ def test_馬場区分は稍重以外の道悪を重と不良にまとめる():
     assert weight_going.going_class('稍重') == '稍重'
     assert weight_going.going_class('重') == '重・不良'
     assert weight_going.going_class('不良') == '重・不良'
+
+
+# --- 週次レビューへの組み込み（review.py） ---
+
+from datetime import date  # noqa: E402
+
+import review  # noqa: E402
+
+PERIOD = (date(2026, 10, 6), date(2026, 10, 12))
+
+
+def test_メールに重不良の鞍数が1行出て目安未満なら検討どきは出ない():
+    body = review.render_mail(review.summarize([]), PERIOD, 'x.md', wg_heavy=33)
+    assert '道悪×馬体重（観察中）：重・不良 33/60鞍' in body
+    assert '検討どき' not in body
+
+
+def test_目安に届いたらメールの冒頭で知らせる():
+    body = review.render_mail(review.summarize([]), PERIOD, 'x.md', wg_heavy=60)
+    assert '■ 道悪×馬体重の検討どきです（重・不良 60鞍' in body
+
+
+def test_集計できないときはメールにも詳細にも出さない(tmp_path):
+    assert review.weight_going_report(str(tmp_path)) == (None, 0)
+    body = review.render_mail(review.summarize([]), PERIOD, 'x.md', wg_heavy=None)
+    assert '道悪×馬体重' not in body
+    assert review.render_weight_going(None) == []
+
+
+def test_詳細ファイル用の行は通算の表と残り鞍数を含む(tmp_path):
+    horses = [(1, 2.0, 500), (2, 3.0, 480), (3, 5.0, 460), (4, 9.0, 440), (5, 20.0, 420)]
+    p = tmp_path / '20260101_東京.json'
+    p.write_text(json.dumps([_race('1', '重', horses)], ensure_ascii=False), encoding='utf-8')
+    lines, heavy = review.weight_going_report(str(tmp_path))
+    assert heavy == 1
+    assert lines[-1] == '重・不良は1鞍（目安60鞍まであと59鞍）。'
+    assert '## 道悪×相対馬体重（観察中・規則化前）' in review.render_weight_going(lines)

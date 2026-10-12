@@ -34,6 +34,7 @@ from datetime import date, timedelta
 import bets
 import nar as nar_module
 import results as results_module
+import weight_going
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s %(message)s')
 logger = logging.getLogger(__name__)
@@ -665,8 +666,34 @@ def render_virtual_wide(week_summary, wide_since_summary, total_summary):
     return lines
 
 
+def weight_going_report(data_dir=None):
+    """道悪×相対馬体重の集計（weight_going.py）を週次レビューに載せるための行。
+
+    2026-10-12 決定ログ「道悪と馬体重」：重・不良60鞍たまるまで規則にしない。
+    毎週同じ物差しで数字を出し、到達したらメールで知らせる。数字を出すだけで判定はしない。
+    集計の失敗で週次レビュー全体を落とさないよう、例外はここで止めて (None, 0) を返す。
+    """
+    try:
+        summary, paths = weight_going.analyze(data_dir or os.path.join(ROOT, 'data_jra'))
+    except Exception:  # noqa: BLE001 - 付録の集計なので本体を止めない
+        logger.exception('道悪×馬体重の集計に失敗しました')
+        return None, 0
+    if not paths:
+        return None, 0
+    return weight_going.render_lines(summary, paths), weight_going.heavy_races(summary)
+
+
+def render_weight_going(wg_lines):
+    if not wg_lines:
+        return []
+    return (['## 道悪×相対馬体重（観察中・規則化前）', '',
+             '`weight_going.py` の出力。芝・通算。根拠は決定ログ 2026-10-12。', '', '```']
+            + wg_lines + ['```', ''])
+
+
 def render(collected, week_summary, total_summary, period, since_summary=None,
-           week_by_org=None, total_by_org=None, wide_since_summary=None):
+           week_by_org=None, total_by_org=None, wide_since_summary=None,
+           wg_lines=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -745,6 +772,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
     if week_by_org and total_by_org:
         lines += render_by_org(week_by_org, total_by_org)
     lines += render_virtual_wide(week_summary, wide_since_summary, total_summary)
+    lines += render_weight_going(wg_lines)
 
     # --- しきい値カウンタ ---
     lines.append(f'## カウンタ（通算{COUNTER_THRESHOLD}件でメソッド見直しを検討）')
@@ -795,7 +823,7 @@ def _mail_race_lines(collected):
 
 
 def render_mail(week_summary, period, path, total_summary=None, collected=None,
-                week_by_org=None):
+                week_by_org=None, wg_heavy=None):
     """メール本文。**しきい値に達したカウンタがあれば、ここで一言で言い切る。**
 
     通算の件数や「10件」という基準そのものは、レビューの .md ファイルには
@@ -845,6 +873,12 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None,
             lines.append('  （検証ノート.md へ転記して判断してください）')
             lines.append('')
 
+    if wg_heavy is not None and wg_heavy >= weight_going.READY_RACES:
+        lines += [f'■ 道悪×馬体重の検討どきです（重・不良 {wg_heavy}鞍、目安{weight_going.READY_RACES}鞍）',
+                  '  → 詳細ファイルの「道悪×相対馬体重」を見て、規則にするか判断してください'
+                  '（決定ログ 2026-10-12）',
+                  '']
+
     lines += [
         '── 収支 ' + '─' * 30,
         f"仮想成績   {v['races']}R 的中{v['hits']} 収支{v['profit']:+,}円 回収率{_roi(v)}"
@@ -889,6 +923,9 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None,
         lines.append(
             f"仮想：◎×中穴候補のワイド {week_summary['vwide_bets']}点 的中{week_summary['vwide_hits']}"
             f" 回収率{_vwide_roi(week_summary)}（観察中・買っていない）")
+
+    if wg_heavy is not None:
+        lines.append(f'道悪×馬体重（観察中）：重・不良 {wg_heavy}/{weight_going.READY_RACES}鞍')
 
     if collected:
         race_lines = _mail_race_lines(collected)
@@ -946,10 +983,12 @@ def main(argv=None):
     week_by_org = summarize_by_org(week_entries)
     total_by_org = summarize_by_org(all_entries)
 
+    wg_lines, wg_heavy = weight_going_report()
     text = render(week, week_summary, total_summary, (start, end),
                   since_summary=since_summary,
                   week_by_org=week_by_org, total_by_org=total_by_org,
-                  wide_since_summary=wide_since_summary)
+                  wide_since_summary=wide_since_summary,
+                  wg_lines=wg_lines)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)
@@ -964,7 +1003,8 @@ def main(argv=None):
         rel = os.path.relpath(path, ROOT)
         body = render_mail(week_summary, (start, end), rel,
                            total_summary=total_summary, collected=week,
-                           week_by_org=week_by_org)
+                           week_by_org=week_by_org,
+                           wg_heavy=wg_heavy if wg_lines else None)
         if not mailer.send(subject, body):
             logger.error('メール送信に失敗しました')
             return EXIT_ERROR

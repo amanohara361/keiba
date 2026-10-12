@@ -82,11 +82,20 @@ def residuals(rows):
 
 
 def slope(rs):
-    """残差を相対体重で回帰した傾き（10kgあたり）。"""
-    mx = st.mean(r[2] for r in rs)
-    my = st.mean(r[3] for r in rs)
-    sxx = sum((r[2] - mx) ** 2 for r in rs)
-    return 10 * sum((r[2] - mx) * (r[3] - my) for r in rs) / sxx if sxx else 0.0
+    """残差を相対体重で回帰した傾き（10kgあたり）。
+
+    ブートストラップで数千回呼ぶので、statistics.mean を使わず和だけで計算する。
+    """
+    n = sx = sy = sxx = sxy = 0.0
+    for r in rs:
+        x, y = r[2], r[3]
+        n += 1
+        sx += x
+        sy += y
+        sxx += x * x
+        sxy += x * y
+    var = sxx - sx * sx / n if n else 0.0
+    return 10 * (sxy - sx * sy / n) / var if var > 1e-12 else 0.0
 
 
 def bootstrap_ci(by_race, n_iter=2000, seed=1):
@@ -120,26 +129,46 @@ def summarize(rs):
     return out
 
 
-def main(argv):
-    d = argv[1] if len(argv) > 1 else 'data_jra'
-    paths = sorted(glob.glob(os.path.join(d, '*.json')))
+def analyze(data_dir='data_jra'):
+    """集計結果（馬場区分→要約）と対象ファイル一覧を返す。データが無ければ ({}, [])。"""
+    paths = sorted(glob.glob(os.path.join(data_dir, '*.json')))
     if not paths:
-        print(f'{d} にデータがありません')
-        return 1
-    summary = summarize(residuals(load_rows(paths)))
-    print(f'対象: {os.path.basename(paths[0])} 〜 {os.path.basename(paths[-1])}（芝）')
-    print('残差は＋なら人気より上位。軽=平均−20kg以下 / 重=平均＋20kg以上')
-    print(f"{'馬場':6s}{'鞍数':>5s}  {'軽':>14s}{'中':>14s}{'重':>14s}   傾き/10kg [95%区間]")
+        return {}, []
+    return summarize(residuals(load_rows(paths))), paths
+
+
+def heavy_races(summary):
+    return summary.get('重・不良', {}).get('races', 0)
+
+
+def progress_line(summary):
+    """重・不良の鞍数と目安までの残り。週次レビューのメールにもこの1行を載せる。"""
+    heavy = heavy_races(summary)
+    if heavy >= READY_RACES:
+        return f'重・不良が{heavy}鞍（目安{READY_RACES}鞍に到達）。規則化の検討に進めます。'
+    return f'重・不良は{heavy}鞍（目安{READY_RACES}鞍まであと{READY_RACES - heavy}鞍）。'
+
+
+def render_lines(summary, paths):
+    lines = [f'対象: {os.path.basename(paths[0])} 〜 {os.path.basename(paths[-1])}（芝）',
+             '残差は＋なら人気より上位。軽=平均−20kg以下 / 重=平均＋20kg以上',
+             f"{'馬場':6s}{'鞍数':>5s}  {'軽':>14s}{'中':>14s}{'重':>14s}   傾き/10kg [95%区間]"]
     for g, s in summary.items():
         cells = ''.join(f'{m:+.3f}({n:4d})'.rjust(14) if m is not None else '-'.rjust(14)
                         for n, m in s['bands'].values())
         lo, hi = s['ci']
-        print(f"{g:6s}{s['races']:5d}  {cells}   {s['slope']:+.4f} [{lo:+.4f},{hi:+.4f}]")
-    heavy = summary.get('重・不良', {}).get('races', 0)
-    if heavy >= READY_RACES:
-        print(f'\n重・不良が{heavy}鞍（目安{READY_RACES}鞍に到達）。規則化の検討に進めます。')
-    else:
-        print(f'\n重・不良は{heavy}鞍（目安{READY_RACES}鞍まであと{READY_RACES - heavy}鞍）。')
+        lines.append(f"{g:6s}{s['races']:5d}  {cells}   {s['slope']:+.4f} [{lo:+.4f},{hi:+.4f}]")
+    lines += ['', progress_line(summary)]
+    return lines
+
+
+def main(argv):
+    d = argv[1] if len(argv) > 1 else 'data_jra'
+    summary, paths = analyze(d)
+    if not paths:
+        print(f'{d} にデータがありません')
+        return 1
+    print('\n'.join(render_lines(summary, paths)))
     return 0
 
 
