@@ -640,7 +640,7 @@
       "race_no": 12,
       "start_time": "18:15",
       "confidence": "A",
-      "subjective_hit_rate": 0.24,
+      "subjective_hit_rate": 0.2452,
       "win_probabilities": {
         "2": 0.45,
         "5": 0.14,
