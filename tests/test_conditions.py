@@ -31,3 +31,47 @@ def test_当日の結果ページのヘッダから稍重を読む():
     with open(path, encoding='utf-8') as f:
         got = conditions.parse(f.read())
     assert got == {'going': '稍重', 'weather': '曇', 'surface': '芝', 'distance': 2000}
+
+
+# 2026-10-13、probe で取った京都8R（202608040408）の RaceData02 の実物。
+RACE_DATA02_FEMALE = """
+<div class="RaceData02">
+<span>4回</span>
+<span>京都</span>
+<span>4日目</span>
+<span>サラ系３歳以上</span>
+<span>２勝クラス</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>牝[指]</span>
+<span>定量</span>
+<span>16頭</span>
+<br>
+<span>本賞金:1190,480,300,180,119万円</span>
+</div>
+"""
+
+
+def test_競走条件から牝馬限定と斤量の決め方を読む():
+    got = conditions.parse_terms(RACE_DATA02_FEMALE)
+    assert got['female_only'] is True
+    assert got['weight_rule'] == '定量'
+    assert got['race_terms'].startswith('4回 京都 4日目 サラ系３歳以上 ２勝クラス 牝[指] 定量')
+
+
+def test_混合戦は牝馬限定にしない():
+    """「牝」を含む語でも、牝で始まる語でなければ数えない。"""
+    page = RACE_DATA02_FEMALE.replace('<span>牝[指]</span>', '<span>(混)[指]</span>')
+    assert conditions.parse_terms(page)['female_only'] is False
+    page = RACE_DATA02_FEMALE.replace('<span>牝[指]</span>', '<span>牡・牝(特指)</span>')
+    assert conditions.parse_terms(page)['female_only'] is False
+
+
+def test_ハンデ戦を読む():
+    page = RACE_DATA02_FEMALE.replace('<span>定量</span>', '<span>ハンデ</span>')
+    assert conditions.parse_terms(page)['weight_rule'] == 'ハンデ'
+
+
+def test_競走条件の欄が無ければNone():
+    got = conditions.parse_terms('<div class="RaceData01">ダ1800m</div>')
+    assert got == {'female_only': None, 'weight_rule': None, 'race_terms': None}
+

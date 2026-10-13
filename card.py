@@ -208,10 +208,15 @@ def screen(race, odds_view=None):
         score += 2
         reasons.append(f'{klass}クラス（上位クラス）')
 
-    if 'ハンデ' in name:
+    # 中央のレース名には競走条件が入らない（「京成杯AH」「ローズS」）。出馬表の
+    # 競走条件（conditions.parse_terms）を優先し、読めなかったときだけ名前に頼る。
+    terms = race.get('conditions') or {}
+    handicap = (terms.get('weight_rule') == 'ハンデ') if terms.get('weight_rule') else ('ハンデ' in name)
+    female_only = terms['female_only'] if terms.get('female_only') is not None else ('牝' in name)
+    if handicap:
         score += 1
         reasons.append('ハンデ戦（第13章の高配当条件）')
-    if '牝' in name and klass in SENIOR_CLASSES:
+    if female_only and klass in SENIOR_CLASSES:
         score += 1
         reasons.append('牝馬限定重賞（第5章・第9章が働きやすい）')
 
@@ -297,6 +302,20 @@ def build_entries(race_id, opener=None, interval=HORSE_INTERVAL, sleep=time.slee
         out.append(entry)
     attach_equipment_and_training(race_id, out, opener=opener, interval=interval, sleep=sleep)
     return out
+
+
+def all_female(entries):
+    """出走全頭が牝馬か。牝馬限定戦の予備の目印にする。
+
+    正は出馬表の競走条件（conditions.female_only）。そちらが読めなかったときの
+    予備として残す。性別が1頭でも読めなければ None（分からない）を返し、推測で埋めない。
+    """
+    if not entries:
+        return None
+    sexes = [e.get('sex') for e in entries]
+    if any(s is None for s in sexes):
+        return None
+    return all(s == '牝' for s in sexes)
 
 
 def blinker_change(now, prev):
@@ -459,6 +478,13 @@ def build_card(day, limit=DEFAULT_CANDIDATES, opener=None, sleep=time.sleep,
         view = None
         if not (race.get('surface') == '障' or '新馬' in (race.get('name') or '')):
             view = odds_view(race['race_id'], opener=opener)
+            # 競走条件（牝馬限定・ハンデ）は1次スクリーニングの加点に使うので、先に読む。
+            # 予備経路（db.netkeiba.com）は候補に絞ってから当たる。
+            sleep(REQUEST_INTERVAL)
+            try:
+                race['conditions'] = conditions_module.fetch(race['race_id'], fallback=False)
+            except Exception as exc:
+                logger.warning('%s の競走条件を取得できませんでした: %s', race['race_id'], exc)
         race['odds'] = view
         race['screening'] = screen(race, view)
 
@@ -468,13 +494,19 @@ def build_card(day, limit=DEFAULT_CANDIDATES, opener=None, sleep=time.sleep,
 
     for race in candidates:
         race['candidate'] = True
-        try:
-            race['conditions'] = conditions_module.fetch(race['race_id'])
-        except Exception as exc:
-            logger.warning('%s の馬場を取得できませんでした: %s', race['race_id'], exc)
-            race['conditions'] = None
+        if not (race.get('conditions') or {}).get('going'):
+            try:
+                fetched = conditions_module.fetch(race['race_id'])
+                # 先に読んだ競走条件は残し、馬場など足りない項目だけ埋める。
+                merged = dict(race.get('conditions') or {})
+                merged.update({k: v for k, v in fetched.items() if v is not None})
+                race['conditions'] = merged
+            except Exception as exc:
+                logger.warning('%s の馬場を取得できませんでした: %s', race['race_id'], exc)
+                race.setdefault('conditions', None)
         if with_entries:
             race['entries'] = build_entries(race['race_id'], opener=opener, sleep=sleep)
+            race['all_female'] = all_female(race['entries'])
             race['close_rivals'] = close_rivals(race, day)
 
     if with_entries:

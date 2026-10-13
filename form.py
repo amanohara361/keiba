@@ -78,7 +78,7 @@ def strip_tags(html):
 # ----------------------------------------------------------------------
 
 def parse_entries(page):
-    """出馬表から {馬番: {horse_id, name, age, weight, weight_diff, kinryo}} を作る。"""
+    """出馬表から {馬番: {horse_id, name, age, sex, weight, weight_diff, kinryo}} を作る。"""
     entries = {}
     for row in re.findall(r'<tr class="[^"]*HorseList[^"]*"[^>]*>(.*?)</tr>', page, re.S):
         umaban = re.search(r'<td[^>]*class="[^"]*Umaban[^"]*"[^>]*>\s*(\d+)\s*</td>', row)
@@ -121,9 +121,18 @@ def parse_entries(page):
         if barei:
             age = int(barei.group(1))
 
+        # 性別：同じセルの先頭1文字（牡・牝・セ）。牝馬限定戦かどうかと斤量の比較に使う。
+        # 2026-10-11 京都8R は牝馬限定だったが、カードに性別が無く、朝の note は
+        # 「古馬牡馬は56kg」の前提で斤量を比べていた（検証ノート 2026-10-12週）。
+        sex = None
+        sex_cell = re.search(r'<td[^>]*class="[^"]*Barei[^"]*"[^>]*>\s*(牡|牝|セ)', row)
+        if sex_cell:
+            sex = sex_cell.group(1)
+
         entries[int(umaban.group(1))] = {
             'horse_id': horse.group(1),
             'age': age,
+            'sex': sex,
             'name': (name.group(1).strip() if name else ''),
             'weight': weight,
             'weight_diff': weight_diff,
