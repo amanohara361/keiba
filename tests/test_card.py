@@ -405,6 +405,32 @@ def test_出馬表の斤量以外の項目は従来どおり():
     assert entries[2]['weight_diff'] == 2
 
 
+def test_出馬表から性別を読む():
+    """牝馬限定戦の判定と斤量の比較に使う（検証ノート 2026-10-12週・京都8R）。"""
+    entries = form_module.parse_entries(SHUTUBA_PAGE)
+    assert entries[1]['sex'] == '牡'
+    assert entries[2]['sex'] == '牝'
+    assert entries[1]['age'] == 3      # 年齢の読み取りは変わらない
+
+
+def test_性齢セルが読めなければ性別はNone():
+    page = SHUTUBA_PAGE.replace('<td class="Barei Txt_C">牡3</td>', '<td class="Barei Txt_C"></td>')
+    entries = form_module.parse_entries(page)
+    assert entries[1]['sex'] is None
+
+
+def test_全頭牝馬なら牝馬限定の目印を立てる():
+    assert card.all_female([{'sex': '牝'}, {'sex': '牝'}]) is True
+    assert card.all_female([{'sex': '牝'}, {'sex': '牡'}]) is False
+    assert card.all_female([{'sex': '牝'}, {'sex': 'セ'}]) is False
+
+
+def test_性別が1頭でも不明なら牝馬限定は判定しない():
+    assert card.all_female([{'sex': '牝'}, {'sex': None}]) is None
+    assert card.all_female([{'sex': '牝'}, {}]) is None
+    assert card.all_female([]) is None
+
+
 def test_斤量セルが読めなければNone():
     page_without_kinryo = SHUTUBA_PAGE.replace('<td class="Txt_C">56.0</td>', '')
     entries = form_module.parse_entries(page_without_kinryo)

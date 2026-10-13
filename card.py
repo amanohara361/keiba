@@ -299,6 +299,20 @@ def build_entries(race_id, opener=None, interval=HORSE_INTERVAL, sleep=time.slee
     return out
 
 
+def all_female(entries):
+    """出走全頭が牝馬か。牝馬限定戦の目印にする。
+
+    レース名には「牝」が付かない平場の牝馬限定戦がある（2026-10-11 京都8R）。
+    性別が1頭でも読めなければ None（分からない）を返し、推測で埋めない。
+    """
+    if not entries:
+        return None
+    sexes = [e.get('sex') for e in entries]
+    if any(s is None for s in sexes):
+        return None
+    return all(s == '牝' for s in sexes)
+
+
 def blinker_change(now, prev):
     """今回と前走のブリンカーから変化を言う。どちらかが分からなければ None。"""
     if now is None or prev is None:
@@ -475,6 +489,7 @@ def build_card(day, limit=DEFAULT_CANDIDATES, opener=None, sleep=time.sleep,
             race['conditions'] = None
         if with_entries:
             race['entries'] = build_entries(race['race_id'], opener=opener, sleep=sleep)
+            race['all_female'] = all_female(race['entries'])
             race['close_rivals'] = close_rivals(race, day)
 
     if with_entries:
