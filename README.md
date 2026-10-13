@@ -199,12 +199,12 @@ CLAUDE.md        運用ルール
 
 ## 朝タスクのクラウド化（方針B）
 
-netkeiba に到達できるのは Actions のランナーだけで、印を打つ判断ができるのは
-Claude だけ。そこで**取得と判断を分け、リポジトリのファイルを受け渡し場所にする**。
+定時の取得は Actions のランナーが行い（2026-10-13 からはセッションも netkeiba に届くが、
+定時の収集は Actions のまま）、印を打つ判断ができるのは Claude だけ。そこで**取得と判断を分け、リポジトリのファイルを受け渡し場所にする**。
 
 ```
 GitHub Actions（card.yml）        Claude のセッション
-netkeiba に到達できる              netkeiba に到達できない
+定時に取得する                    判断する
 判断しない                         判断する
 ↓                                 ↓
 data/cards/YYYY-MM-DD.json ─読む→ data/bets/YYYY-MM-DD.json
