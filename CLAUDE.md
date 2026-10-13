@@ -33,20 +33,20 @@
 
 | 時刻（JST） | 何が | 中身・手順 |
 |---|---|---|
-| 金土 21:07（予備 01:07 / 03:07） | `card.yml` | 中央のカードを `data/cards/` に置く |
+| 金土 21:07（予備 01:07 / 03:07） | `card.yml`（Routine「収集キック・中央カード」が起動） | 中央のカードを `data/cards/` に置く。`docs/収集キック手順.md` |
 | 土日 07:00 | 朝の予想（Routine） | 印・partners・勝率を `data/bets/` へ。`docs/朝タスク手順.md` |
 | 土日 10:07 / 12:07 / 13:07 / 14:07 / 15:07、`data/bets/` へのpush時 | `check.yml`（Routine「検算キック・中央」が起動） | 実オッズで買い目・勝負度を確定し、規律を適用。馬体重±15kgの馬は勝率の上乗せを取り消す → メール |
-| 土日 11:37 | `bias.yml`（`live`） | 当日のバイアスを `data/bias/YYYY-MM-DD.txt` へ |
+| 土日 11:37 | `bias.yml`（`live`。Routine「収集キック・バイアス」が起動） | 当日のバイアスを `data/bias/YYYY-MM-DD.txt` へ |
 | 土日 12:17 | 昼の見直し（Routine） | バイアスと食い違ったレースだけ印を直す。`docs/昼の見直し手順.md` |
-| 土日 21:00 | `bias.yml`（`fetch`） | 結果を `data_jra/` に蓄積 |
-| 毎日 04:07（予備 06:07） | `nar_card.yml` | 地方の重賞・準重賞のカードを `data/cards/nar/` に置く |
+| 土日 21:37（schedule は 21:00） | `bias.yml`（`live`。Routine「収集キック・バイアス」が起動） | 結果を `data_jra/` に蓄積 |
+| 毎日 04:07（予備 06:07） | `nar_card.yml`（Routine「収集キック・地方カード」が起動） | 地方の重賞・準重賞のカードを `data/cards/nar/` に置く |
 | 毎日 08:00 | 地方の予想（Routine） | 対象がある日だけ。`docs/地方競馬手順.md` |
 | 毎日 14:07 / 16:07 / 18:37 / 19:37 | `nar_check.yml`（Routine「検算キック・地方」が起動） | 対象がある日だけ。実オッズで確定（馬体重ルールは中央と同じ） → メール |
 | 火 09:17 | `review.yml` | 前週の成績を `data/review/` に出す → メール |
 | 火 16:52 | 週次検証（Routine） | `review.yml` の結果を読んで振り返る |
 | 臨時 | `spot-predict` スキル | 祝日のJRA・海外重賞など、定時実行が拾わないレース |
 
-- GitHub Actions の schedule は数時間遅れることがある（`docs/決定ログ.md` 2026-09-23・2026-09-30）。「定時に走ったはず」と決めつけず、実行記録を確かめる。
+- GitHub Actions の schedule は**遅れるのが普通**（2026-10-13 実測：中央値1〜3.5時間、最大8時間）。定時は Routine（検算キック・収集キック）が `workflow_dispatch` で起こし、schedule は保険として残す（`docs/検算キック手順.md`・`docs/収集キック手順.md`）。それでも「定時に走ったはず」と決めつけず、実行記録を確かめる。
 - 全体像は `README.md`「動くもの」。
 
 ##作業のルール
@@ -64,7 +64,7 @@
 #JRAトラックバイアス実測（jra_bias.py）の実行方法
 **基本は GitHub Actions の `bias.yml`。** Actions のランナーは netkeiba に到達できる。
 - **当日の昼**：`jra_bias.py live`（race.netkeiba.com の結果ページを読み、確定直後から測れる）。定時は土日11:37 JST、結果は `data/bias/YYYY-MM-DD.txt`。急ぐときは workflow_dispatch（inputs.date: YYYYMMDD）で起こす。
-- **蓄積**：土日21:00 JST に `jra_bias.py fetch` で `data_jra/` に貯める。
+- **蓄積**：土日の夜に同じ `jra_bias.py live` を回して `data_jra/` に貯める（2026-09-27 に fetch から切り替え済み）。
 
 Claude のセッション（Routine・対話）の外部通信は、環境の許可リストで決まる。
 2026-10-13 に netkeiba（race・db）・スポーツナビ・地方競馬情報（keiba.go.jp）・スポニチを足し、
