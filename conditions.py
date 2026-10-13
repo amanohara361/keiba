@@ -97,6 +97,30 @@ def parse(page):
     }
 
 
+def parse_course(page):
+    """出馬表の RaceData01 から、回り・内外回り・コース区分（A〜D）を読む。
+
+    2026-10-13 に実物で確認した書き方（距離の直後の括弧）：
+    「芝1400m (右 外 A)」（京都・スワンS）、「芝2000m (左 A)」（東京・オクトーバーS）、
+    「ダ1800m (右)」（京都8R。ダートはコース区分が付かない）。
+    宇治川特別（10/10）では、noteがコース区分と内外回りを「カードに無く要確認」の
+    まま空欄にしていた（検証ノート 2026-10-12週）。
+
+    読めない項目は None。括弧の中身は course_note にそのまま残す。
+    """
+    header = re.search(r'<div class="RaceData01"[^>]*>(.*?)</div>', page, re.S)
+    text = strip_tags(header.group(1)) if header else ''
+    found = re.search(r'(?:芝|ダ|障)[^\d(（]{0,3}\d{3,4}\s*m\s*[(（]([^)）]*)[)）]', text)
+    if not found:
+        return {'turn': None, 'loop': None, 'rail': None, 'course_note': None}
+    note = found.group(1).strip()
+    tokens = note.split()
+    turn = next((t for t in tokens if t in ('右', '左', '直線')), None)
+    loop = next((t for t in tokens if t in ('内', '外', '外-内', '内2周')), None)
+    rail = next((t for t in tokens if re.fullmatch(r'[A-D]', t)), None)
+    return {'turn': turn, 'loop': loop, 'rail': rail, 'course_note': note}
+
+
 # 斤量の決め方。RaceData02 に単独の語として出る（2026-10-13、probe で実物確認）。
 WEIGHT_RULES = ('ハンデ', '別定', '定量', '馬齢')
 
@@ -154,6 +178,7 @@ def fetch(race_id, timeout=30, opener=None, fallback=True):
     page = _get(SHUTUBA_URL.format(race_id=race_id), timeout, opener)
     conditions = parse(page)
     conditions.update(parse_terms(page))
+    conditions.update(parse_course(page))
     if conditions.get('going') or not fallback:
         return conditions
 

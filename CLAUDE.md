@@ -66,11 +66,17 @@
 - **当日の昼**：`jra_bias.py live`（race.netkeiba.com の結果ページを読み、確定直後から測れる）。定時は土日11:37 JST、結果は `data/bias/YYYY-MM-DD.txt`。急ぐときは workflow_dispatch（inputs.date: YYYYMMDD）で起こす。
 - **蓄積**：土日21:00 JST に `jra_bias.py fetch` で `data_jra/` に貯める。
 
-Claude のセッション（Routine・対話）のサンドボックスは外部通信がホワイトリスト方式で、
-db.netkeiba.com にも race.netkeiba.com にも届かない（403 Tunnel connection failed）。
-**サンドボックスから `fetch` や `live` を直接回さない。**
+Claude のセッション（Routine・対話）の外部通信は、環境の許可リストで決まる。
+2026-10-13 に netkeiba（race・db）・スポーツナビ・地方競馬情報（keiba.go.jp）・スポニチを足し、
+セッションからも直接取れるようになった（経緯：`docs/決定ログ.md` 2026-10-13）。
+- **定時の収集と蓄積（`data/cards/`・`data_jra/`・`data/bias/` へのコミット）は、引き続き Actions に任せる。**
+  セッションから同じファイルをコミットすると、Actions のコミットとぶつかる。
+- セッションから直接取るのは、その場の確認（ページの書き方・発走前オッズ・結果の確認）と、カードに無い事実の補完に限る。
+  `jra_bias.py live`・`bias` を回して結果を読むのはよいが、`data_jra/` と `data/bias/` はコミットしない。
+- 環境が違う（Routine が別の環境で動いている等）と届かないことがある。使う前に
+  `curl -sS -o /dev/null -w '%{http_code}' https://race.netkeiba.com/` で 200 を確かめ、403 なら下の代替に回る。
 
-##代替：スポーツナビの手動保存（Actions が使えないときだけ）
+##代替：スポーツナビの手動保存（セッションから netkeiba に届かず、Actions も使えないときだけ）
 1. `python jra_bias.py urls YYYYMMDD <対象レースのrace_id> 1 8` でURLと保存先を一覧表示
 2. 各URL（スポーツナビの結果ページ）を WebFetch し、`data_snav/YYYYMMDD_{race_id}.txt` に Write で保存（全文は不要。下記の4ブロックだけ）
 3. `python jra_bias.py ingest YYYYMMDD 場名` → `python jra_bias.py bias YYYYMMDD 場名`

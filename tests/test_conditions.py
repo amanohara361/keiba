@@ -75,3 +75,35 @@ def test_競走条件の欄が無ければNone():
     got = conditions.parse_terms('<div class="RaceData01">ダ1800m</div>')
     assert got == {'female_only': None, 'weight_rule': None, 'race_terms': None}
 
+
+
+# 2026-10-13、セッションから直接取った出馬表の RaceData01 の実物。
+RACE_DATA01_KYOTO_TURF = ('<div class="RaceData01">\n14:50発走 /<!-- <span class="Turf"> --><span> 芝1400m</span> '
+                          '(右 外&nbsp;A)\n/ 天候:晴<span class="Icon_Weather Weather01"></span>\n'
+                          '<span class="Item03">/ 馬場:良</span>\n\n</div>')    # 宇治川特別 202608040310
+RACE_DATA01_TOKYO_TURF = ('<div class="RaceData01">\n15:30発走 /<!-- <span class="Turf"> --><span> 芝2000m</span> '
+                          '(左&nbsp;A)\n/ 天候:晴<span class="Icon_Weather Weather01"></span>\n'
+                          '<span class="Item03">/ 馬場:良</span>\n\n</div>')    # オクトーバーS 202605040511
+RACE_DATA01_KYOTO_DIRT = ('<div class="RaceData01">\n13:40発走 /<!-- <span class="Turf"> --><span> ダ1800m</span> (右)\n'
+                          '/ 天候:晴<span class="Icon_Weather Weather01"></span>\n\n'
+                          '<span class="Item04">/ 馬場:良</span>\n</div>')     # 京都8R 202608040408
+
+
+def test_コース区分と内外回りを読む():
+    got = conditions.parse_course(RACE_DATA01_KYOTO_TURF)
+    assert got == {'turn': '右', 'loop': '外', 'rail': 'A', 'course_note': '右 外 A'}
+
+
+def test_内外回りの無いコースはNone():
+    got = conditions.parse_course(RACE_DATA01_TOKYO_TURF)
+    assert got == {'turn': '左', 'loop': None, 'rail': 'A', 'course_note': '左 A'}
+
+
+def test_ダートはコース区分が付かない():
+    got = conditions.parse_course(RACE_DATA01_KYOTO_DIRT)
+    assert got == {'turn': '右', 'loop': None, 'rail': None, 'course_note': '右'}
+
+
+def test_コースの欄が無ければNone():
+    got = conditions.parse_course('<div class="RaceData02">2勝クラス</div>')
+    assert got == {'turn': None, 'loop': None, 'rail': None, 'course_note': None}
