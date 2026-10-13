@@ -1,0 +1,231 @@
+{
+  "race_id": "202605040511",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 2,
+      "name": "アスクセクシーモア",
+      "ninki": 1,
+      "odds": 3.4
+    },
+    {
+      "rank": 2,
+      "umaban": 16,
+      "name": "ミッキーゴールド",
+      "ninki": 4,
+      "odds": 7.9
+    },
+    {
+      "rank": 3,
+      "umaban": 10,
+      "name": "ジュンブロッサム",
+      "ninki": 8,
+      "odds": 15.3
+    },
+    {
+      "rank": 4,
+      "umaban": 1,
+      "name": "メイショウハチコウ",
+      "ninki": 3,
+      "odds": 7.5
+    },
+    {
+      "rank": 5,
+      "umaban": 9,
+      "name": "ディマイザキッド",
+      "ninki": 5,
+      "odds": 9.3
+    },
+    {
+      "rank": 6,
+      "umaban": 15,
+      "name": "メリオーレム",
+      "ninki": 13,
+      "odds": 33.0
+    },
+    {
+      "rank": 7,
+      "umaban": 6,
+      "name": "ブレイヴロッカー",
+      "ninki": 15,
+      "odds": 134.8
+    },
+    {
+      "rank": 8,
+      "umaban": 17,
+      "name": "コスモブッドレア",
+      "ninki": 18,
+      "odds": 230.3
+    },
+    {
+      "rank": 9,
+      "umaban": 5,
+      "name": "ボーンディスウェイ",
+      "ninki": 6,
+      "odds": 13.8
+    },
+    {
+      "rank": 10,
+      "umaban": 7,
+      "name": "シルトホルン",
+      "ninki": 10,
+      "odds": 23.7
+    },
+    {
+      "rank": 11,
+      "umaban": 3,
+      "name": "ニシノレヴナント",
+      "ninki": 11,
+      "odds": 24.1
+    },
+    {
+      "rank": 12,
+      "umaban": 8,
+      "name": "シルブロン",
+      "ninki": 17,
+      "odds": 207.6
+    },
+    {
+      "rank": 13,
+      "umaban": 13,
+      "name": "ナムラエイハブ",
+      "ninki": 9,
+      "odds": 18.8
+    },
+    {
+      "rank": 14,
+      "umaban": 18,
+      "name": "トーセンリョウ",
+      "ninki": 7,
+      "odds": 14.6
+    },
+    {
+      "rank": 15,
+      "umaban": 4,
+      "name": "テリオスララ",
+      "ninki": 12,
+      "odds": 24.6
+    },
+    {
+      "rank": 16,
+      "umaban": 14,
+      "name": "グランドカリナン",
+      "ninki": 14,
+      "odds": 81.5
+    },
+    {
+      "rank": 17,
+      "umaban": 12,
+      "name": "ジュタ",
+      "ninki": 2,
+      "odds": 6.7
+    },
+    {
+      "rank": 18,
+      "umaban": 11,
+      "name": "セイウンプラチナ",
+      "ninki": 16,
+      "odds": 144.7
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          2
+        ],
+        "yen": 340
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          2
+        ],
+        "yen": 160
+      },
+      {
+        "combination": [
+          16
+        ],
+        "yen": 300
+      },
+      {
+        "combination": [
+          10
+        ],
+        "yen": 400
+      }
+    ],
+    "枠連": [
+      {
+        "combination": [
+          1,
+          8
+        ],
+        "yen": 770
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          2,
+          16
+        ],
+        "yen": 2430
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          2,
+          16
+        ],
+        "yen": 1020
+      },
+      {
+        "combination": [
+          2,
+          10
+        ],
+        "yen": 1240
+      },
+      {
+        "combination": [
+          10,
+          16
+        ],
+        "yen": 1690
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          2,
+          16
+        ],
+        "yen": 4120
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          2,
+          10,
+          16
+        ],
+        "yen": 8570
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          2,
+          16,
+          10
+        ],
+        "yen": 37190
+      }
+    ]
+  }
+}
