@@ -1,0 +1,48 @@
+# conditions 202608040408  (2026-10-13T14:47:23Z)
+  URL: https://race.netkeiba.com/race/shutuba.html?race_id=202608040408
+  ページ長: 259326
+
+  --- RaceData01 の生HTML ---
+  13:40発走 /<!-- <span class="Turf"> --><span> ダ1800m</span> (右)
+  / 天候:晴<span class="Icon_Weather Weather01"></span>
+  
+  <span class="Item04">/ 馬場:良</span>
+  --- RaceData01 のテキスト ---
+  '13:40発走 / --> ダ1800m (右) / 天候:晴 / 馬場:良'
+
+  --- RaceData02 の生HTML ---
+  <span>4回</span>
+  <span>京都</span>
+  <span>4日目</span>
+  <span>サラ系３歳以上</span>
+  <span>２勝クラス</span>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <span>牝[指]</span>
+  <span>定量</span>
+  <span>16頭</span>
+  <br>
+  <span>本賞金:1190,480,300,180,119万円</span>
+  --- RaceData02 のテキスト ---
+  '4回 京都 4日目 サラ系３歳以上 ２勝クラス 牝[指] 定量 16頭 本賞金:1190,480,300,180,119万円'
+
+  --- 「馬場」「良/稍重/重/不良」の出現箇所 ---
+  'ss="Icon_Weather Weather01"></span>\n\n<span class="Item04">/ 馬場:良</span>\n</div>\n<div class="RaceData02">\n<span>4回</span>\n<s'
+  'ck">\n<label for="checkbox0_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'ck">\n<label for="checkbox1_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'ck">\n<label for="checkbox2_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'ck">\n<label for="checkbox3_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'ck">\n<label for="checkbox4_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'ck">\n<label for="checkbox5_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'ck">\n<label for="checkbox6_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'ck">\n<label for="checkbox7_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'ck">\n<label for="checkbox8_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'ck">\n<label for="checkbox9_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'k">\n<label for="checkbox10_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'k">\n<label for="checkbox11_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'k">\n<label for="checkbox12_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'k">\n<label for="checkbox13_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'k">\n<label for="checkbox14_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+  'k">\n<label for="checkbox15_06" class="bk03 NoteCheck_Label">馬場向かず</label><input type="checkbox" name="Label" value="11" id'
+
+  --- parse() の結果 ---
+  {'going': '良', 'weather': '晴', 'surface': 'ダート', 'distance': 1800}
