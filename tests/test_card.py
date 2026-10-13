@@ -121,6 +121,34 @@ def test_特別戦はアイコンでしかクラスが分からない():
     assert card.race_class({'name': '富良野特別', 'grade': '2勝'}) == '2勝'
 
 
+def test_名前に条件が無い牝馬限定重賞も加点する():
+    """ローズS・紫苑Sは名前に「牝」が無く、加点が一度も働いていなかった。
+    出馬表の競走条件（conditions.parse_terms）を優先する。"""
+    race = make_race(name='ローズS', grade='G2')
+    race['conditions'] = {'female_only': True, 'weight_rule': '馬齢'}
+    assert '牝馬限定重賞（第5章・第9章が働きやすい）' in card.screen(race)['reasons']
+    race['conditions'] = {'female_only': False, 'weight_rule': '馬齢'}
+    assert '牝馬限定重賞（第5章・第9章が働きやすい）' not in card.screen(race)['reasons']
+
+
+def test_名前に条件が無いハンデ戦も加点する():
+    """京成杯AH・新潟記念・オクトーバーSは名前に「ハンデ」が無い。"""
+    race = make_race(name='京成杯AH', grade='G3')
+    race['conditions'] = {'female_only': False, 'weight_rule': 'ハンデ'}
+    assert 'ハンデ戦（第13章の高配当条件）' in card.screen(race)['reasons']
+    race['conditions'] = {'female_only': False, 'weight_rule': '別定'}
+    assert 'ハンデ戦（第13章の高配当条件）' not in card.screen(race)['reasons']
+
+
+def test_競走条件が読めなければ名前で判定する():
+    race = make_race(name='オープン特別ハンデ')
+    race['conditions'] = {'female_only': None, 'weight_rule': None}
+    assert 'ハンデ戦（第13章の高配当条件）' in card.screen(race)['reasons']
+    race = make_race(name='府中牝馬S', grade='G2')
+    race['conditions'] = None
+    assert '牝馬限定重賞（第5章・第9章が働きやすい）' in card.screen(race)['reasons']
+
+
 def test_同じレースを二重に数えない():
     races = card.parse_race_list(RACE_LIST + RACE_LIST)
     assert len(races) == 3

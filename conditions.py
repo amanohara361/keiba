@@ -97,6 +97,32 @@ def parse(page):
     }
 
 
+# 斤量の決め方。RaceData02 に単独の語として出る（2026-10-13、probe で実物確認）。
+WEIGHT_RULES = ('ハンデ', '別定', '定量', '馬齢')
+
+
+def parse_terms(page):
+    """出馬表の RaceData02（競走条件）から、牝馬限定と斤量の決め方を読む。
+
+    2026-10-13、京都8R（202608040408）の実物：
+    「4回 京都 4日目 サラ系３歳以上 ２勝クラス 牝[指] 定量 16頭 本賞金:…」。
+    中央のレース名（レース一覧の表示名）には条件が入らないため、
+    名前の「牝」「ハンデ」で判定していた1次スクリーニングの加点は、
+    612レースで一度も働いていなかった（紫苑S・ローズS・京成杯AHも素通り）。
+
+    RaceData02 が無いページ（db.netkeiba.com など）では全項目 None を返す。
+    """
+    block = re.search(r'<div class="RaceData02"[^>]*>(.*?)</div>', page, re.S)
+    if not block:
+        return {'female_only': None, 'weight_rule': None, 'race_terms': None}
+    text = strip_tags(block.group(1))
+    tokens = text.split()
+    # 「牝」「牝[指]」「牝(特指)」のように牝で始まる語。「牡・牝」は混合戦なので数えない。
+    female_only = any(re.match(r'牝(?:$|[\[(（])', t) for t in tokens)
+    weight_rule = next((t for t in tokens if t in WEIGHT_RULES), None)
+    return {'female_only': female_only, 'weight_rule': weight_rule, 'race_terms': text}
+
+
 def _get(url, timeout=30, opener=None):
     request = urllib.request.Request(url, headers={'User-Agent': UA})
     try:
@@ -114,16 +140,21 @@ def _get(url, timeout=30, opener=None):
     return raw.decode('euc_jp', errors='replace')
 
 
-def fetch(race_id, timeout=30, opener=None):
-    """1レース分の馬場状態を取る。
+def fetch(race_id, timeout=30, opener=None, fallback=True):
+    """1レース分の馬場状態と競走条件を取る。
 
     出馬表ページで馬場が読めなければ db.netkeiba.com にも当たる。
     jra_bias.py が同ページから108レース分を正しく読めている実績があるため、
     出馬表側の書き方の揺れに巻き込まれない予備経路として使う。
     コースなど先に取れた項目は活かし、足りない項目だけ補う。
+
+    fallback=False なら出馬表ページだけを読む（カード作成で全レースの条件を
+    先に読むときに、予備経路のぶんの通信を増やさないため）。
     """
-    conditions = parse(_get(SHUTUBA_URL.format(race_id=race_id), timeout, opener))
-    if conditions.get('going'):
+    page = _get(SHUTUBA_URL.format(race_id=race_id), timeout, opener)
+    conditions = parse(page)
+    conditions.update(parse_terms(page))
+    if conditions.get('going') or not fallback:
         return conditions
 
     try:
