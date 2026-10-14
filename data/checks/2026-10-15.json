@@ -1,0 +1,224 @@
+[
+  {
+    "checked_at": "2026-10-15T08:11:25.290104+09:00",
+    "races": [
+      {
+        "race_id": "202610155011",
+        "name": "第９回 園田オータムトロフィー３歳登録馬",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第９回 園田オータムトロフィー３歳登録馬: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第９回 園田オータムトロフィー３歳登録馬: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1700,
+          "weather": null,
+          "going": null
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          }
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-10-15 08:11:27"
+        }
+      },
+      {
+        "race_id": "202610154811",
+        "name": "第４４回 ゴールド争覇オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第４４回 ゴールド争覇オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第４４回 ゴールド争覇オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1500,
+          "weather": null,
+          "going": null
+        },
+        "weights": {
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 8
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          }
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-10-15 08:11:27"
+        }
+      },
+      {
+        "race_id": "202610154511",
+        "name": "サルビアカップ（ロジータ記念ＴＲ）３歳牝馬オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "サルビアカップ（ロジータ記念ＴＲ）３歳牝馬オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "サルビアカップ（ロジータ記念ＴＲ）３歳牝馬オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 2000,
+          "weather": null,
+          "going": null
+        },
+        "weights": {
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "11": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          }
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-10-15 08:11:27"
+        }
+      }
+    ]
+  }
+]
