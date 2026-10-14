@@ -66,6 +66,17 @@ MARK_RULES_SINCE = date(2026, 9, 28)
 VIRTUAL_WIDE_SINCE = date(2026, 9, 16)
 VIRTUAL_WIDE_REVIEW_AT = 150
 
+# 中穴候補（partners）の成績を人気帯ごとに、同じレースの同じ人気帯の全馬と比べる（2026-10-14〜）。
+# 3連単「◎1着固定・5〜8番人気から2頭を2・3着」を検討した際、8/15〜10/12 の集計で
+# 5〜8番人気の partners の連対率は 9.2%（185頭）と、同じレースの5〜8番人気全体（11.8%）を
+# 上回っていなかった。穴の選別力が育つかを毎週同じ物差しで見る。判定はしない、数字だけ。
+# (キー, 見出し, 下限人気, 上限人気。None は上限なし)
+PARTNER_BANDS = [
+    ('fav', '1〜4番人気', 1, 4),
+    ('mid', '5〜8番人気', 5, 8),
+    ('long', '9番人気以下', 9, None),
+]
+
 # (見出し, summarize() のキー, 到達時にすること)。render() とメールの両方が
 # ここを見る。**片方だけ書き換えて対応が崩れる、という事故を構造的に防ぐ。**
 THRESHOLD_COUNTERS = [
@@ -300,6 +311,46 @@ def virtual_axis_partner_wide(race, result):
             'staked': 100 * len(partners), 'returned': sum(returned)}
 
 
+def _band_of(ninki):
+    for key, _, low, high in PARTNER_BANDS:
+        if ninki >= low and (high is None or ninki <= high):
+            return key
+    return None
+
+
+def _empty_band_counts():
+    return {key: {'n': 0, 'win': 0, 'quin': 0, 'place': 0} for key, *_ in PARTNER_BANDS}
+
+
+def partner_popularity(race, result):
+    """中穴候補（partners）と、同じレースの全馬を、人気帯ごとに着順で数える。
+
+    全馬の側は「何も考えずにその人気帯から選んだら」の物差し。partners が
+    これを上回らなければ、穴を選ぶ力は市場（人気）以上には無いことになる。
+    partners が無いレースは None。人気や着順が欠けた馬（取消・中止など）は数えない。
+    人気は確定時のもので、partners を書いた朝の人気とは違うことがある。
+    """
+    partners = {p.get('umaban') for p in race.partners}
+    if not partners:
+        return None
+    counts = {'partners': _empty_band_counts(), 'field': _empty_band_counts()}
+    for h in result['finishing_order']:
+        ninki, rank = h.get('ninki'), h.get('rank')
+        if not isinstance(ninki, int) or not isinstance(rank, int):
+            continue
+        band = _band_of(ninki)
+        if band is None:
+            continue
+        sides = ['field'] + (['partners'] if h['umaban'] in partners else [])
+        for side in sides:
+            c = counts[side][band]
+            c['n'] += 1
+            c['win'] += rank == 1
+            c['quin'] += rank <= 2
+            c['place'] += rank <= 3
+    return counts
+
+
 def review_race(race, result, check):
     """1レース分の評価をまとめる。結果が未確定なら分類だけ空にする。"""
     entry = {
@@ -344,6 +395,7 @@ def review_race(race, result, check):
         'honmei_wipeout': honmei_only_wipeout(race, settlement, result),
         'mark_vs_popularity': mark_vs_popularity(race, result),
         'virtual_wide': virtual_axis_partner_wide(race, result),
+        'partner_popularity': partner_popularity(race, result),
     })
 
     # 印の成績。◎が1着だったか、3着以内だったか。
@@ -425,6 +477,15 @@ def summarize(entries):
     compared = [e['mark_vs_popularity'] for e in settled if e.get('mark_vs_popularity')]
     favorite_off = [c['nar_favorite_off'] for c in compared if c['nar_favorite_off']]
     virtual = [e['virtual_wide'] for e in settled if e.get('virtual_wide')]
+    partner_bands = {'partners': _empty_band_counts(), 'field': _empty_band_counts()}
+    for e in settled:
+        pp = e.get('partner_popularity')
+        if not pp:
+            continue
+        for side, bands in pp.items():
+            for band, c in bands.items():
+                for k, v in c.items():
+                    partner_bands[side][band][k] += v
 
     return {
         'races': len(entries),
@@ -463,6 +524,9 @@ def summarize(entries):
         'vwide_hits': sum(v['hits'] for v in virtual),
         'vwide_staked': sum(v['staked'] for v in virtual),
         'vwide_returned': sum(v['returned'] for v in virtual),
+        # 中穴候補の人気帯別の成績と、同じレースの同じ人気帯の全馬
+        'partner_races': sum(1 for e in settled if e.get('partner_popularity')),
+        'partner_bands': partner_bands,
     }
 
 
@@ -666,6 +730,44 @@ def render_virtual_wide(week_summary, wide_since_summary, total_summary):
     return lines
 
 
+def _rate(num, den):
+    return f'{num / den * 100:.1f}%' if den else '—'
+
+
+def _band_rates(c):
+    """頭数・連対率・複勝率を1セルにまとめる。"""
+    if not c['n']:
+        return '—'
+    return f"{c['n']}頭 連対{_rate(c['quin'], c['n'])} 複勝{_rate(c['place'], c['n'])}"
+
+
+def render_partner_popularity(week_summary, total_summary):
+    """中穴候補の人気帯別の成績。判定はしない、数字だけ。"""
+    lines = [
+        '## 中穴候補（partners）の人気帯別成績（2026-10-14〜）',
+        '',
+        '「同じレースの全馬」は、partners を出したレースで、その人気帯の馬を全部数えたもの'
+        '（何も考えずにその人気帯から選んだ場合の物差し）。partners がこれを上回らなければ、'
+        '穴を選ぶ力は人気以上には無い。人気は確定時点のもの。'
+        '3連単「◎1着・5〜8番人気から2頭を2・3着」を検討するのは、5〜8番人気の連対率が'
+        '全体をはっきり上回り続けてから（決定ログ 2026-10-14）。',
+        '',
+        f"partners を出したレース：今週 {week_summary['partner_races']} ／ "
+        f"通算 {total_summary['partner_races']}",
+        '',
+        '| 人気帯 | 今週 partners | 今週 同じレースの全馬 | 通算 partners | 通算 同じレースの全馬 |',
+        '|---|---|---|---|---|',
+    ]
+    for key, label, *_ in PARTNER_BANDS:
+        cells = []
+        for s in (week_summary, total_summary):
+            b = s['partner_bands']
+            cells += [_band_rates(b['partners'][key]), _band_rates(b['field'][key])]
+        lines.append(f'| {label} | ' + ' | '.join(cells) + ' |')
+    lines.append('')
+    return lines
+
+
 def weight_going_report(data_dir=None):
     """道悪×相対馬体重の集計（weight_going.py）を週次レビューに載せるための行。
 
@@ -772,6 +874,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
     if week_by_org and total_by_org:
         lines += render_by_org(week_by_org, total_by_org)
     lines += render_virtual_wide(week_summary, wide_since_summary, total_summary)
+    lines += render_partner_popularity(week_summary, total_summary)
     lines += render_weight_going(wg_lines)
 
     # --- しきい値カウンタ ---
@@ -923,6 +1026,15 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None,
         lines.append(
             f"仮想：◎×中穴候補のワイド {week_summary['vwide_bets']}点 的中{week_summary['vwide_hits']}"
             f" 回収率{_vwide_roi(week_summary)}（観察中・買っていない）")
+
+    mid = [(label, s['partner_bands']) for label, s in
+           (('今週', week_summary), ('通算', total_summary)) if s]
+    if any(b['partners']['mid']['n'] for _, b in mid):
+        lines.append('中穴候補の5〜8番人気 連対率：' + ' / '.join(
+            f"{label} {_rate(b['partners']['mid']['quin'], b['partners']['mid']['n'])}"
+            f"（{b['partners']['mid']['n']}頭。同じレースの全馬 "
+            f"{_rate(b['field']['mid']['quin'], b['field']['mid']['n'])}）"
+            for label, b in mid))
 
     if wg_heavy is not None:
         lines.append(f'道悪×馬体重（観察中）：重・不良 {wg_heavy}/{weight_going.READY_RACES}鞍')

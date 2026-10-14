@@ -150,3 +150,48 @@ def test_仮想ワイドを集計してレビューとメールに出す():
     mail = review.render_mail(s, (date(2026, 9, 28), date(2026, 10, 4)), 'x.md',
                               week_by_org=review.summarize_by_org([entry]))
     assert '仮想：◎×中穴候補のワイド 2点 的中1 回収率750%' in mail
+
+
+def test_中穴候補を人気帯ごとに同じレースの全馬と比べる():
+    # ORDER：5番人気＝6番(6着)、6番人気＝7番(3着)。partners は 7・6
+    race = make_race([('◎', 1)], partners=[7, 6])
+    pp = review.partner_popularity(race, make_result(ORDER))
+    assert pp['partners']['mid'] == {'n': 2, 'win': 0, 'quin': 0, 'place': 1}
+    assert pp['partners']['fav'] == {'n': 0, 'win': 0, 'quin': 0, 'place': 0}
+    # 全馬の側：1〜4番人気は1・2・3・5番（1着・2着・4着・5着）
+    assert pp['field']['fav'] == {'n': 4, 'win': 1, 'quin': 2, 'place': 2}
+    assert pp['field']['mid'] == {'n': 2, 'win': 0, 'quin': 0, 'place': 1}
+
+
+def test_中穴候補が無ければ人気帯の集計はしない():
+    assert review.partner_popularity(make_race([('◎', 1)]), make_result(ORDER)) is None
+
+
+def test_人気や着順が欠けた馬は人気帯の集計から外す():
+    result = make_result(ORDER)
+    result['finishing_order'][2]['ninki'] = None   # 7番（partners）の人気が欠けた
+    pp = review.partner_popularity(make_race([('◎', 1)], partners=[7, 6]), result)
+    assert pp['partners']['mid']['n'] == 1
+    assert pp['field']['mid']['n'] == 1
+
+
+def test_中穴候補の人気帯別成績を集計してレビューとメールに出す():
+    race = make_race([('◎', 1)], partners=[7, 6])
+    entry = review.review_race(race, make_result(ORDER), None)
+    s = review.summarize([entry, entry])
+    assert s['partner_races'] == 2
+    assert s['partner_bands']['partners']['mid'] == {'n': 4, 'win': 0, 'quin': 0, 'place': 2}
+    text = review.render([], s, s, (date(2026, 10, 13), date(2026, 10, 19)))
+    assert '## 中穴候補（partners）の人気帯別成績' in text
+    assert '| 5〜8番人気 | 4頭 連対0.0% 複勝50.0% | 4頭 連対0.0% 複勝50.0% |' in text
+    assert '| 1〜4番人気 | — | 8頭 連対50.0% 複勝50.0% |' in text
+    mail = review.render_mail(s, (date(2026, 10, 13), date(2026, 10, 19)), 'x.md',
+                              total_summary=s)
+    assert '中穴候補の5〜8番人気 連対率：今週 0.0%（4頭。同じレースの全馬 0.0%）' in mail
+
+
+def test_中穴候補が無い週でもレビューは崩れない():
+    s = review.summarize([])
+    text = review.render([], s, s, (date(2026, 10, 13), date(2026, 10, 19)))
+    assert '| 5〜8番人気 | — | — | — | — |' in text
+    assert '中穴候補の5〜8番人気' not in review.render_mail(s, (date(2026, 10, 13), date(2026, 10, 19)), 'x.md')
