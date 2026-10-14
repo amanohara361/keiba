@@ -1140,5 +1140,34 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-15T00:26:26.687486+09:00",
+    "races": [
+      {
+        "race_id": "202610144511",
+        "name": "鎌倉記念",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "鎌倉記念: 既に発走しています（発走 20:10 / 現在 00:26）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
