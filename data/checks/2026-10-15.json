@@ -1926,5 +1926,82 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-16T00:18:45.120845+09:00",
+    "races": [
+      {
+        "race_id": "202610155011",
+        "name": "第９回 園田オータムトロフィー３歳登録馬",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第９回 園田オータムトロフィー３歳登録馬: 既に発走しています（発走 16:05 / 現在 00:18）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610154811",
+        "name": "第４４回 ゴールド争覇オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第４４回 ゴールド争覇オープン: 既に発走しています（発走 18:10 / 現在 00:18）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610154511",
+        "name": "サルビアカップ（ロジータ記念ＴＲ）３歳牝馬オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "サルビアカップ（ロジータ記念ＴＲ）３歳牝馬オープン: 既に発走しています（発走 20:15 / 現在 00:18）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
