@@ -1554,5 +1554,223 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-15T19:37:46.562797+09:00",
+    "races": [
+      {
+        "race_id": "202610155011",
+        "name": "第９回 園田オータムトロフィー３歳登録馬",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第９回 園田オータムトロフィー３歳登録馬: 既に発走しています（発走 16:05 / 現在 19:37）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610154811",
+        "name": "第４４回 ゴールド争覇オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第４４回 ゴールド争覇オープン: 既に発走しています（発走 18:10 / 現在 19:37）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610154511",
+        "name": "サルビアカップ（ロジータ記念ＴＲ）３歳牝馬オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 53.7,
+          "2": 1.8,
+          "3": 5.0,
+          "4": 14.7,
+          "5": 7.9,
+          "6": 66.0,
+          "7": 14.6,
+          "8": 19.8,
+          "9": 16.6,
+          "10": 12.0,
+          "11": 44.1
+        },
+        "win_ninki": {
+          "1": 10,
+          "2": 1,
+          "3": 2,
+          "4": 6,
+          "5": 3,
+          "6": 11,
+          "7": 5,
+          "8": 8,
+          "9": 7,
+          "10": 4,
+          "11": 9
+        },
+        "priced_odds": {
+          "単勝": {
+            "5": 7.9
+          },
+          "馬連": {
+            "3-5": 12.7,
+            "5-8": 54.6,
+            "4-5": 35.0,
+            "2-5": 8.2,
+            "5-9": 156.2,
+            "5-11": 136.3
+          },
+          "ワイド": {
+            "3-5": 3.4,
+            "5-8": 12.5,
+            "4-5": 10.0,
+            "2-5": 3.9,
+            "5-9": 35.8,
+            "5-11": 23.2
+          },
+          "3連複": {
+            "3-5-8": 49.5,
+            "3-4-5": 39.9,
+            "2-3-5": 8.5,
+            "3-5-9": 131.6,
+            "3-5-11": 126.2,
+            "4-5-8": 149.5,
+            "2-5-8": 34.0,
+            "5-8-9": 336.8,
+            "5-8-11": 313.4,
+            "2-4-5": 27.4,
+            "4-5-9": 295.6,
+            "4-5-11": 435.9,
+            "2-5-9": 70.8,
+            "2-5-11": 83.8
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "サルビアカップ（ロジータ記念ＴＲ）３歳牝馬オープン: ダート2000m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "weight_growth",
+            "message": "サルビアカップ（ロジータ記念ＴＲ）３歳牝馬オープン: ◎5番 ティーズセラフ の馬体重が508kg（+20）です",
+            "remedy": "3歳のプラス体重は成長分とみて勝率は据え置きます（第2章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "サルビアカップ（ロジータ記念ＴＲ）３歳牝馬オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 2000,
+          "weather": "晴",
+          "going": "良"
+        },
+        "weights": {
+          "2": {
+            "weight": 467,
+            "diff": -7,
+            "age": 3
+          },
+          "3": {
+            "weight": 469,
+            "diff": 3,
+            "age": 3
+          },
+          "4": {
+            "weight": 510,
+            "diff": -4,
+            "age": 3
+          },
+          "5": {
+            "weight": 508,
+            "diff": 20,
+            "age": 3
+          },
+          "8": {
+            "weight": 438,
+            "diff": -4,
+            "age": 3
+          },
+          "9": {
+            "weight": 480,
+            "diff": -2,
+            "age": 3
+          },
+          "11": {
+            "weight": 433,
+            "diff": -5,
+            "age": 3
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 11
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 11
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 55
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 110
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 55
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 165
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-15 19:37:48"
+        }
+      }
+    ]
   }
 ]
