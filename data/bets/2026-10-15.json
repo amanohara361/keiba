@@ -147,7 +147,7 @@
       "race_no": 11,
       "start_time": "20:15",
       "confidence": "B",
-      "subjective_hit_rate": 0.3574,
+      "subjective_hit_rate": 0.2455,
       "win_probabilities": {
         "5": 0.22,
         "3": 0.17,
@@ -212,22 +212,6 @@
           "horses": [
             5,
             3
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            5,
-            8
-          ],
-          "stake": 100
-        },
-        {
-          "type": "馬連",
-          "horses": [
-            5,
-            4
           ],
           "stake": 100
         },
