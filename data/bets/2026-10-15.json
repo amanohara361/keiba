@@ -146,8 +146,8 @@
       "venue": "川崎",
       "race_no": 11,
       "start_time": "20:15",
-      "confidence": "A",
-      "subjective_hit_rate": 0.3571,
+      "confidence": "B",
+      "subjective_hit_rate": 0.3574,
       "win_probabilities": {
         "5": 0.22,
         "3": 0.17,
