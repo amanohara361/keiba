@@ -475,6 +475,8 @@
       "venue": "佐賀",
       "race_no": 4,
       "start_time": "17:00",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "4": 0.33,
         "7": 0.2,
