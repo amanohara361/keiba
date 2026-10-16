@@ -32,6 +32,7 @@ import sys
 from datetime import date, timedelta
 
 import bets
+import edge_check
 import nar as nar_module
 import results as results_module
 import weight_going
@@ -793,9 +794,33 @@ def render_weight_going(wg_lines):
             + wg_lines + ['```', ''])
 
 
+def edge_report(week_days=()):
+    """主観 vs 確定オッズと、◎のオッズのずれ（edge_check.py）を週次レビューに載せるための行。
+
+    2026-10-16 決定ログ「主観が確定オッズに勝てているかを毎週測る」。数字を出すだけで判定はしない。
+    集計の失敗で週次レビュー全体を落とさないよう、例外はここで止めて (None, None) を返す。
+    """
+    try:
+        summary = edge_check.analyze(all_bet_days(), cached_result, week_days=week_days)
+    except Exception:  # noqa: BLE001 - 付録の集計なので本体を止めない
+        logger.exception('主観 vs 確定オッズの集計に失敗しました')
+        return None, None
+    if not summary['total']['races']:
+        return None, None
+    return edge_check.render_lines(summary), edge_check.mail_line(summary)
+
+
+def render_edge(edge_lines):
+    if not edge_lines:
+        return []
+    return (['## 主観は確定オッズに勝てているか（観察中）', '',
+             '`edge_check.py` の出力。根拠は決定ログ 2026-10-16。', '']
+            + edge_lines)
+
+
 def render(collected, week_summary, total_summary, period, since_summary=None,
            week_by_org=None, total_by_org=None, wide_since_summary=None,
-           wg_lines=None):
+           wg_lines=None, edge_lines=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -876,6 +901,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
     lines += render_virtual_wide(week_summary, wide_since_summary, total_summary)
     lines += render_partner_popularity(week_summary, total_summary)
     lines += render_weight_going(wg_lines)
+    lines += render_edge(edge_lines)
 
     # --- しきい値カウンタ ---
     lines.append(f'## カウンタ（通算{COUNTER_THRESHOLD}件でメソッド見直しを検討）')
@@ -926,7 +952,7 @@ def _mail_race_lines(collected):
 
 
 def render_mail(week_summary, period, path, total_summary=None, collected=None,
-                week_by_org=None, wg_heavy=None):
+                week_by_org=None, wg_heavy=None, edge_line=None):
     """メール本文。**しきい値に達したカウンタがあれば、ここで一言で言い切る。**
 
     通算の件数や「10件」という基準そのものは、レビューの .md ファイルには
@@ -1038,6 +1064,8 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None,
 
     if wg_heavy is not None:
         lines.append(f'道悪×馬体重（観察中）：重・不良 {wg_heavy}/{weight_going.READY_RACES}鞍')
+    if edge_line:
+        lines.append(edge_line)
 
     if collected:
         race_lines = _mail_race_lines(collected)
@@ -1096,11 +1124,12 @@ def main(argv=None):
     total_by_org = summarize_by_org(all_entries)
 
     wg_lines, wg_heavy = weight_going_report()
+    edge_lines, edge_line = edge_report(week_days)
     text = render(week, week_summary, total_summary, (start, end),
                   since_summary=since_summary,
                   week_by_org=week_by_org, total_by_org=total_by_org,
                   wide_since_summary=wide_since_summary,
-                  wg_lines=wg_lines)
+                  wg_lines=wg_lines, edge_lines=edge_lines)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)
@@ -1116,7 +1145,8 @@ def main(argv=None):
         body = render_mail(week_summary, (start, end), rel,
                            total_summary=total_summary, collected=week,
                            week_by_org=week_by_org,
-                           wg_heavy=wg_heavy if wg_lines else None)
+                           wg_heavy=wg_heavy if wg_lines else None,
+                           edge_line=edge_line)
         if not mailer.send(subject, body):
             logger.error('メール送信に失敗しました')
             return EXIT_ERROR
