@@ -24,6 +24,7 @@
 """
 
 import argparse
+import glob
 import json
 import logging
 import os
@@ -798,16 +799,69 @@ def edge_report(week_days=()):
     """主観 vs 確定オッズと、◎のオッズのずれ（edge_check.py）を週次レビューに載せるための行。
 
     2026-10-16 決定ログ「主観が確定オッズに勝てているかを毎週測る」。数字を出すだけで判定はしない。
-    集計の失敗で週次レビュー全体を落とさないよう、例外はここで止めて (None, None) を返す。
+    集計に失敗しても週次レビュー全体を落とさないよう、例外はここで止めて (None, None, None) を返す。
+    3つ目の戻り値は集計そのもの（保留中の改善案の進み具合に使う）。
     """
     try:
         summary = edge_check.analyze(all_bet_days(), cached_result, week_days=week_days)
     except Exception:  # noqa: BLE001 - 付録の集計なので本体を止めない
         logger.exception('主観 vs 確定オッズの集計に失敗しました')
-        return None, None
+        return None, None, None
     if not summary['total']['races']:
-        return None, None
-    return edge_check.render_lines(summary), edge_check.mail_line(summary)
+        return None, None, None
+    return edge_check.render_lines(summary), edge_check.mail_line(summary), summary
+
+
+# 記事由来の保留中の改善案（決定ログ 2026-10-16）。データが目安に届いたらメールで知らせる。
+# (キー, 見出し, 単位, 目安, 届いたらすること)
+PENDING_PROPOSALS = (
+    ('blend', '案2 主観と市場の混ぜ合わせ', 'R', edge_check.READY_RACES,
+     '勝率の上限（CAP=1.5倍）を Benter 式の混ぜ合わせに置き換えるか、重みを当てはめて判断する'),
+    ('drift', '案3 ◎のオッズのずれを期待値に織り込む', '頭', edge_check.READY_DRIFT,
+     '検算の時刻別のずれを見て、割り引きを入れるか、買う判断を発走に近い検算に寄せるかを決める'),
+    ('frame', '案5 枠順の減点をコース別にする', '鞍', 1500,
+     '記事の枠順の判定（内有利・外有利がはっきりしたコース）と、手元の data_jra で向きが合うかを確かめてから実装する'),
+)
+
+
+def count_jra_races(data_dir=None):
+    """data_jra/ にたまったレース数。読めなければ None。"""
+    total = 0
+    try:
+        for path in glob.glob(os.path.join(data_dir or os.path.join(ROOT, 'data_jra'), '*.json')):
+            with open(path, encoding='utf-8') as f:
+                total += len(json.load(f))
+    except Exception:  # noqa: BLE001 - 付録の集計なので本体を止めない
+        logger.exception('data_jra の数え上げに失敗しました')
+        return None
+    return total
+
+
+def pending_status(edge_summary, jra_races):
+    """保留中の改善案ごとに、いまの量と目安。量が取れないものは None。"""
+    drift = ((edge_summary or {}).get('drift') or {}).get('最後の検算') or {}
+    now = {
+        'blend': edge_summary['total']['races'] if edge_summary else None,
+        'drift': drift.get('n') if edge_summary else None,
+        'frame': jra_races,
+    }
+    return [{'key': key, 'label': label, 'unit': unit, 'target': target, 'todo': todo,
+             'now': now[key], 'ready': now[key] is not None and now[key] >= target}
+            for key, label, unit, target, todo in PENDING_PROPOSALS]
+
+
+def render_pending(status):
+    if not status:
+        return []
+    lines = ['## 保留中の改善案（データ待ち）', '',
+             '根拠は決定ログ 2026-10-16。目安に届いたらメール冒頭で知らせる。', '',
+             '| 案 | いま | 目安 | 届いたらすること |', '|---|---|---|---|']
+    for p in status:
+        now = '—' if p['now'] is None else f"{p['now']}{p['unit']}"
+        mark = ' **← 到達**' if p['ready'] else ''
+        lines.append(f"| {p['label']} | {now}{mark} | {p['target']}{p['unit']} | {p['todo']} |")
+    lines.append('')
+    return lines
 
 
 def render_edge(edge_lines):
@@ -820,7 +874,7 @@ def render_edge(edge_lines):
 
 def render(collected, week_summary, total_summary, period, since_summary=None,
            week_by_org=None, total_by_org=None, wide_since_summary=None,
-           wg_lines=None, edge_lines=None):
+           wg_lines=None, edge_lines=None, pending=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -902,6 +956,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
     lines += render_partner_popularity(week_summary, total_summary)
     lines += render_weight_going(wg_lines)
     lines += render_edge(edge_lines)
+    lines += render_pending(pending)
 
     # --- しきい値カウンタ ---
     lines.append(f'## カウンタ（通算{COUNTER_THRESHOLD}件でメソッド見直しを検討）')
@@ -952,7 +1007,7 @@ def _mail_race_lines(collected):
 
 
 def render_mail(week_summary, period, path, total_summary=None, collected=None,
-                week_by_org=None, wg_heavy=None, edge_line=None):
+                week_by_org=None, wg_heavy=None, edge_line=None, pending=None):
     """メール本文。**しきい値に達したカウンタがあれば、ここで一言で言い切る。**
 
     通算の件数や「10件」という基準そのものは、レビューの .md ファイルには
@@ -1007,6 +1062,15 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None,
                   '  → 詳細ファイルの「道悪×相対馬体重」を見て、規則にするか判断してください'
                   '（決定ログ 2026-10-12）',
                   '']
+
+    ready = [p for p in (pending or []) if p['ready']]
+    if ready:
+        lines.append('■ 保留中の改善案の検討どきです（データが目安に届きました）')
+        for p in ready:
+            lines.append(f"  - {p['label']}：{p['now']}{p['unit']}（目安{p['target']}{p['unit']}）")
+            lines.append(f"    → {p['todo']}")
+        lines.append('  （決定ログ 2026-10-16 を見て、実装するかを決めてください）')
+        lines.append('')
 
     lines += [
         '── 収支 ' + '─' * 30,
@@ -1066,6 +1130,10 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None,
         lines.append(f'道悪×馬体重（観察中）：重・不良 {wg_heavy}/{weight_going.READY_RACES}鞍')
     if edge_line:
         lines.append(edge_line)
+    if pending:
+        lines.append('保留中の改善案：' + ' ／ '.join(
+            f"{p['label'].split(' ')[0]} {'—' if p['now'] is None else p['now']}/{p['target']}{p['unit']}"
+            for p in pending))
 
     if collected:
         race_lines = _mail_race_lines(collected)
@@ -1124,12 +1192,13 @@ def main(argv=None):
     total_by_org = summarize_by_org(all_entries)
 
     wg_lines, wg_heavy = weight_going_report()
-    edge_lines, edge_line = edge_report(week_days)
+    edge_lines, edge_line, edge_summary = edge_report(week_days)
+    pending = pending_status(edge_summary, count_jra_races())
     text = render(week, week_summary, total_summary, (start, end),
                   since_summary=since_summary,
                   week_by_org=week_by_org, total_by_org=total_by_org,
                   wide_since_summary=wide_since_summary,
-                  wg_lines=wg_lines, edge_lines=edge_lines)
+                  wg_lines=wg_lines, edge_lines=edge_lines, pending=pending)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)
@@ -1146,7 +1215,7 @@ def main(argv=None):
                            total_summary=total_summary, collected=week,
                            week_by_org=week_by_org,
                            wg_heavy=wg_heavy if wg_lines else None,
-                           edge_line=edge_line)
+                           edge_line=edge_line, pending=pending)
         if not mailer.send(subject, body):
             logger.error('メール送信に失敗しました')
             return EXIT_ERROR
