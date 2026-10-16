@@ -129,7 +129,7 @@ def test_集計に失敗しても週次レビューは止めない(monkeypatch):
     def boom(*args, **kwargs):
         raise RuntimeError('壊れた')
     monkeypatch.setattr(edge_check, 'analyze', boom)
-    assert review.edge_report() == (None, None)
+    assert review.edge_report() == (None, None, None)
     assert review.render_edge(None) == []
 
 
@@ -140,3 +140,44 @@ def test_メールに観察中の1行が載る():
     assert '主観 vs 確定オッズ（観察中）：60/200R' in body
     assert '主観 vs 確定オッズ' not in review.render_mail(
         week, (date(2026, 10, 12), date(2026, 10, 18)), 'x.md')
+
+
+def _edge_summary(races, drift_n):
+    return {'total': {'races': races}, 'drift': {'最後の検算': {'n': drift_n}}}
+
+
+def test_保留中の改善案は目安に届いたものだけ到達になる():
+    status = review.pending_status(_edge_summary(edge_check.READY_RACES, 10), 1499)
+    by_key = {p['key']: p for p in status}
+    assert by_key['blend']['ready'] and by_key['blend']['now'] == edge_check.READY_RACES
+    assert not by_key['drift']['ready']
+    assert not by_key['frame']['ready'] and by_key['frame']['now'] == 1499
+
+
+def test_集計が無いときは量を出さず到達にもしない():
+    status = review.pending_status(None, None)
+    assert all(p['now'] is None and not p['ready'] for p in status)
+    assert '| 案2 主観と市場の混ぜ合わせ | — |' in '\n'.join(review.render_pending(status))
+
+
+def test_到達した案だけメール冒頭で知らせ進み具合は毎回1行出す():
+    week = review.summarize([])
+    status = review.pending_status(_edge_summary(60, edge_check.READY_DRIFT), 729)
+    body = review.render_mail(week, (date(2026, 10, 12), date(2026, 10, 18)), 'x.md',
+                              pending=status)
+    assert '■ 保留中の改善案の検討どきです' in body
+    assert '  - 案3 ◎のオッズのずれを期待値に織り込む：' in body
+    assert '  - 案2 主観と市場の混ぜ合わせ：' not in body
+    assert f'保留中の改善案：案2 60/{edge_check.READY_RACES}R' in body
+    quiet = review.render_mail(week, (date(2026, 10, 12), date(2026, 10, 18)), 'x.md',
+                               pending=review.pending_status(_edge_summary(60, 10), 729))
+    assert '検討どき' not in quiet
+
+
+def test_data_jraのレース数を数える(tmp_path):
+    (tmp_path / '20261018_東京.json').write_text('[{"race_id": "1"}, {"race_id": "2"}]',
+                                                 encoding='utf-8')
+    (tmp_path / '20261018_京都.json').write_text('[{"race_id": "3"}]', encoding='utf-8')
+    assert review.count_jra_races(str(tmp_path)) == 3
+    (tmp_path / '20261019_新潟.json').write_text('壊れた', encoding='utf-8')
+    assert review.count_jra_races(str(tmp_path)) is None
