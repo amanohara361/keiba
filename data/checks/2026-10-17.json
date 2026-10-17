@@ -8900,5 +8900,291 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-17T16:42:59.214447+09:00",
+    "races": [
+      {
+        "race_id": "202608040608",
+        "name": "もみじS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "もみじS: 既に発走しています（発走 13:45 / 現在 16:42）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608040611",
+        "name": "トルマリンS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "トルマリンS: 既に発走しています（発走 15:30 / 現在 16:42）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202604040111",
+        "name": "北陸S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "北陸S: 既に発走しています（発走 15:15 / 現在 16:42）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040609",
+        "name": "アイビーS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "アイビーS: 既に発走しています（発走 14:25 / 現在 16:42）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040610",
+        "name": "伊勢佐木S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "伊勢佐木S: 既に発走しています（発走 15:00 / 現在 16:42）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040611",
+        "name": "富士S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "富士S: 既に発走しています（発走 15:45 / 現在 16:42）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610175504",
+        "name": "国見岳（くにみだけ）賞Ａ１・Ａ２",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 43.6,
+          "2": 19.7,
+          "3": 6.9,
+          "4": 1.9,
+          "5": 17.8,
+          "6": 2.6,
+          "7": 14.0,
+          "8": 49.0
+        },
+        "win_ninki": {
+          "1": 7,
+          "2": 6,
+          "3": 3,
+          "4": 1,
+          "5": 5,
+          "6": 2,
+          "7": 4,
+          "8": 8
+        },
+        "priced_odds": {
+          "単勝": {
+            "4": 1.9
+          },
+          "馬連": {
+            "4-7": 10.0,
+            "3-4": 6.6,
+            "2-4": 7.4,
+            "1-4": 57.1
+          },
+          "ワイド": {
+            "4-7": 3.1,
+            "3-4": 2.0,
+            "2-4": 3.2,
+            "1-4": 8.5
+          },
+          "3連複": {
+            "3-4-7": 15.2,
+            "2-4-7": 22.3,
+            "1-4-7": 55.8,
+            "2-3-4": 13.0,
+            "1-3-4": 52.6,
+            "1-2-4": 71.0
+          }
+        },
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "国見岳（くにみだけ）賞Ａ１・Ａ２: ダート1750m / 天候:晴 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "weight_swing",
+            "message": "国見岳（くにみだけ）賞Ａ１・Ａ２: △2番 ニジイロハーピー の馬体重が494kg（+16）です",
+            "remedy": "±15kg以上の変動（第1章 -2点）。朝の主観勝率の上乗せを取り消し、市場勝率で買い目を組み直しました。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "国見岳（くにみだけ）賞Ａ１・Ａ２: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1750,
+          "weather": "晴",
+          "going": "良"
+        },
+        "weights": {
+          "1": {
+            "weight": 471,
+            "diff": 3,
+            "age": 9
+          },
+          "2": {
+            "weight": 494,
+            "diff": 16,
+            "age": 5
+          },
+          "3": {
+            "weight": 463,
+            "diff": 8,
+            "age": 7
+          },
+          "4": {
+            "weight": 504,
+            "diff": -6,
+            "age": 4
+          },
+          "7": {
+            "weight": 487,
+            "diff": 0,
+            "age": 6
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 8
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 8
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 28
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 56
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 28
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 56
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-17 16:43:01"
+        }
+      }
+    ]
   }
 ]
