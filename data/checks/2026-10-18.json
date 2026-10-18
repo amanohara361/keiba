@@ -16754,5 +16754,250 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-18T21:01:24.065351+09:00",
+    "races": [
+      {
+        "race_id": "202608040707",
+        "name": "3歳以上1勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳以上1勝クラス: 既に発走しています（発走 13:15 / 現在 21:01）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608040711",
+        "name": "秋華賞",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "秋華賞: 既に発走しています（発走 15:40 / 現在 21:01）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608040712",
+        "name": "桂川S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "桂川S: 既に発走しています（発走 16:30 / 現在 21:01）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202604040211",
+        "name": "新潟牝馬S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "新潟牝馬S: 既に発走しています（発走 15:10 / 現在 21:01）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040711",
+        "name": "ブラジルC",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "ブラジルC: 既に発走しています（発走 15:20 / 現在 21:01）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040712",
+        "name": "甲斐路S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "甲斐路S: 既に発走しています（発走 16:10 / 現在 21:01）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610185505",
+        "name": "第９回 佐賀オータムスプリントオープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第９回 佐賀オータムスプリントオープン: 既に発走しています（発走 17:25 / 現在 21:01）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610184609",
+        "name": "第２４回 金沢スプリントカップ３歳上（地方全国交流）",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第２４回 金沢スプリントカップ３歳上（地方全国交流）: 既に発走しています（発走 18:05 / 現在 21:01）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610183512",
+        "name": "第４回 ネクストスター盛岡（ジオグリフ賞）２歳",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第４回 ネクストスター盛岡（ジオグリフ賞）２歳: 既に発走しています（発走 18:15 / 現在 21:01）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610185410",
+        "name": "月見台特別３歳以上Ｃ級以下",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "月見台特別３歳以上Ｃ級以下: 既に発走しています（発走 20:20 / 現在 21:01）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
