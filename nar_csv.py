@@ -58,6 +58,19 @@ def use_remote(day, fetcher=None, months_back=1):
         remote['racelist'] += data['racelist']
         remote['horselist'] += data['horselist']
         month = (month - datetime.timedelta(days=1)).replace(day=1)
+
+    # **月次ファイルに当日の結果は入っていない**（毎日午前2時頃の更新。2026-10-20 に実測：
+    # 当日48レースのうち結果つきは0）。当日の結果は日次ファイル（約2分ごとに更新）にだけある。
+    # だから対象日が今日なら、月次の同じ日の行を日次の行で置き換える。過去の日は月次で足りる。
+    if day == nar.today_jst():
+        try:
+            daily = fetch(nar.DAILY, None)
+        except nar.NarError:
+            daily = None
+        if daily:
+            days = {r['競走年月日'] for r in daily['racelist']}
+            for key in ('racelist', 'horselist'):
+                remote[key] = [r for r in remote[key] if r['競走年月日'] not in days] + daily[key]
     _REMOTE = remote
 
 
