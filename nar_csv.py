@@ -29,6 +29,7 @@ EXCLUDED_VENUES = {'帯広ば'}
 
 # `live` が公式サイトから取った行。None のときは従来どおりローカルCSVを読む。
 _REMOTE = None
+_MONTH_CACHE = {}   # 週次レビューが同じ月を何度も取り直さないため（fetcher 指定時は使わない）
 
 
 def use_remote(day, fetcher=None, months_back=1):
@@ -44,7 +45,12 @@ def use_remote(day, fetcher=None, months_back=1):
     month = day.replace(day=1)
     for back in range(months_back + 1):
         try:
-            data = fetch(nar.MONTHLY, month)
+            if fetcher is None and month in _MONTH_CACHE:
+                data = _MONTH_CACHE[month]
+            else:
+                data = fetch(nar.MONTHLY, month)
+                if fetcher is None:
+                    _MONTH_CACHE[month] = data
         except nar.NarError:
             if back == 0:
                 raise
@@ -391,6 +397,51 @@ def summarize_saved(ymd, venue):
                     break
         return {'races': len(rows), 'verdicts': verdicts, 'measured_at': measured}
     return None
+
+
+def summarize_text(text, venue):
+    """analyze_bias の出力テキストから、その場の要点だけを取り出す。
+
+    戻り値: {'races': 判定に使ったレース数, 'verdicts': [判定文...]}。その場の判定が無ければ None。
+    """
+    for block in text.split('■ ')[1:]:
+        head, _, body = block.partition('\n')
+        if venue not in head.split():
+            continue
+        rows = [ln for ln in body.splitlines() if re.match(r'^\s*\d+\s+\d{3,4}\s', ln)]
+        verdicts = []
+        in_verdict = False
+        for ln in body.splitlines():
+            if ln.startswith('→ 判定'):
+                in_verdict = True
+                continue
+            if in_verdict:
+                if ln.strip().startswith('・'):
+                    verdicts.append(ln.strip().lstrip('・').strip())
+                else:
+                    break
+        return {'races': len(rows), 'verdicts': verdicts}
+    return None
+
+
+def day_summaries(ymd, venues, fetcher=None):
+    """指定した日・場のバイアス判定の要点を返す（{場: summarize_text の戻り値}）。
+
+    保存済みファイルは使わず、公式サイトの月次ファイルからその場で測る。
+    過去の日でも同じ手順で測れるので、週次レビューが後から見るのに使う。
+    確定レースが無い／判定できない場は結果に含めない。
+    """
+    import contextlib
+    import io
+    out = {}
+    for v in venues:
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            live(ymd, v, fetcher=fetcher)
+        summary = summarize_text(buf.getvalue(), v)
+        if summary:
+            out[v] = summary
+    return out
 
 
 def live(ymd, venue='all', fetcher=None):

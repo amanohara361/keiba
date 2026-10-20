@@ -174,3 +174,39 @@ def test_clean_summary_carries_bias_for_nar(tmp_path, monkeypatch):
     body = check.format_clean_summary([V], now, day=datetime.date(2026, 10, 14))
     assert '【園田のレース】' in body and '園田 3鞍で測定' in body
     assert check.format_clean_summary([V], now) == '18:37 直前検算 問題なし：園田のレース'
+
+
+# ---- 週次レビューへの接続（review.nar_bias_report）---------------------------
+
+def test_review_bias_report_lists_nar_days_only():
+    import review
+    day = {'date': datetime.date(2026, 10, 14), 'entries': [
+        {'org': 'nar', 'venue': '川崎'}, {'org': 'nar', 'venue': '川崎'}, {'org': 'jra', 'venue': '東京'}]}
+    jra_only = {'date': datetime.date(2026, 10, 17), 'entries': [{'org': 'jra', 'venue': '東京'}]}
+    seen = []
+
+    def measure(ymd, venues):
+        seen.append((ymd, venues))
+        return {'川崎': {'races': 12, 'verdicts': ['★スローなのに差し']}}
+    lines, n = review.nar_bias_report([day, jra_only], measure=measure)
+    assert seen == [('20261014', ['川崎'])] and n == 1
+    assert any('| 2026-10-14 | 川崎 | 12鞍 | ★スローなのに差し |' == ln for ln in lines)
+
+
+def test_review_bias_report_withholds_and_survives_failure():
+    import review
+    day = {'date': datetime.date(2026, 10, 14), 'entries': [
+        {'org': 'nar', 'venue': '川崎'}, {'org': 'nar', 'venue': '園田'}]}
+
+    def measure(ymd, venues):
+        return {'川崎': {'races': 2, 'verdicts': ['x']}}
+    lines, n = review.nar_bias_report([day], measure=measure)
+    text = '\n'.join(lines)
+    assert '判断保留（判定に使えるレースが2鞍）' in text
+    assert '| 2026-10-14 | 園田 | — | 測れなかった' in text
+
+    def boom(ymd, venues):
+        raise RuntimeError('通信失敗')
+    lines, n = review.nar_bias_report([day], measure=boom)   # 落ちない
+    assert n == 2 and all('測れなかった' in ln for ln in lines if '園田' in ln or '川崎' in ln)
+    assert review.nar_bias_report([], measure=boom) == ([], 0)
