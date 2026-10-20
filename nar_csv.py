@@ -10,8 +10,14 @@ NAR公式CSV（地方競馬情報サイト データダウンロード機能）�
 使用例:
   python nar_csv.py bias 20260726 川崎     # 1開催日のトラックバイアス判定
   python nar_csv.py race 20260726 川崎 11  # 1レースの脚質・ペース内訳
+  python nar_csv.py live 20261014 all      # 公式サイトから直接取って全場を判定（ローカルCSV不要）
+  python nar_csv.py live 20261014 川崎
+
+`live` は keiba.go.jp の月次ファイル（nar.race_data）を読む。ローカルにCSVを置く
+必要が無く、GitHub Actions（nar_bias.yml）やセッションからそのまま回せる。
+平常値（基準）は当月＋前月の確定レースで出す。
 """
-import csv, re, sys, os, collections
+import csv, re, sys, os, collections, datetime
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 
@@ -21,8 +27,45 @@ EXCLUDED_VENUES = {'帯広ば'}
 
 # ---------- 基本ユーティリティ ----------
 
+# `live` が公式サイトから取った行。None のときは従来どおりローカルCSVを読む。
+_REMOTE = None
+_MONTH_CACHE = {}   # 週次レビューが同じ月を何度も取り直さないため（fetcher 指定時は使わない）
+
+
+def use_remote(day, fetcher=None, months_back=1):
+    """公式サイトの月次ファイルを読む。当月と、基準用に前月（months_back か月分）。
+
+    前月が取れなくても止めない（当月だけで基準を作る。サンプルが少なければ
+    analyze_bias が「サンプル少・参考値」と出す）。当月が取れなければ例外。
+    """
+    import nar
+    fetch = fetcher or nar.race_data
+    global _REMOTE
+    remote = {'racelist': [], 'horselist': []}
+    month = day.replace(day=1)
+    for back in range(months_back + 1):
+        try:
+            if fetcher is None and month in _MONTH_CACHE:
+                data = _MONTH_CACHE[month]
+            else:
+                data = fetch(nar.MONTHLY, month)
+                if fetcher is None:
+                    _MONTH_CACHE[month] = data
+        except nar.NarError:
+            if back == 0:
+                raise
+            break
+        remote['racelist'] += data['racelist']
+        remote['horselist'] += data['horselist']
+        month = (month - datetime.timedelta(days=1)).replace(day=1)
+    _REMOTE = remote
+
+
 def load(name):
-    """data/ 配下から YYYYMM_<name>.csv を全て読み込む（複数月に対応）"""
+    """data/ 配下から YYYYMM_<name>.csv を全て読み込む（複数月に対応）。
+    use_remote() 済みなら、公式サイトから取った行を返す。"""
+    if _REMOTE is not None:
+        return _REMOTE[name]
     rows = []
     for f in sorted(os.listdir(DATA_DIR)):
         if f.endswith(f'_{name}.csv'):
@@ -292,6 +335,80 @@ def show_race(date, venue, rno):
               f"{(h['馬体重'] + (h['馬体重増減'] or '')):>6} {h['騎手名']:<8}")
 
 
+def summarize_text(text, venue):
+    """analyze_bias の出力テキストから、その場の要点だけを取り出す。
+
+    戻り値: {'races': 判定に使ったレース数, 'verdicts': [判定文...]}。その場の判定が無ければ None。
+    """
+    for block in text.split('■ ')[1:]:
+        head, _, body = block.partition('\n')
+        if venue not in head.split():
+            continue
+        rows = [ln for ln in body.splitlines() if re.match(r'^\s*\d+\s+\d{3,4}\s', ln)]
+        verdicts = []
+        in_verdict = False
+        for ln in body.splitlines():
+            if ln.startswith('→ 判定'):
+                in_verdict = True
+                continue
+            if in_verdict:
+                if ln.strip().startswith('・'):
+                    verdicts.append(ln.strip().lstrip('・').strip())
+                else:
+                    break
+        return {'races': len(rows), 'verdicts': verdicts}
+    return None
+
+
+def day_summaries(ymd, venues, fetcher=None):
+    """指定した日・場のバイアス判定の要点を返す（{場: summarize_text の戻り値}）。
+
+    保存済みファイルは使わず、公式サイトの月次ファイルからその場で測る。
+    過去の日でも同じ手順で測れるので、週次レビューが後から見るのに使う。
+    確定レースが無い／判定できない場は結果に含めない。
+    """
+    import contextlib
+    import io
+    out = {}
+    for v in venues:
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            live(ymd, v, fetcher=fetcher)
+        summary = summarize_text(buf.getvalue(), v)
+        if summary:
+            out[v] = summary
+    return out
+
+
+def live(ymd, venue='all', fetcher=None):
+    """公式サイトから直接取って、その日の確定レースがある全場（または指定場）を判定する。
+
+    地方は毎日どこかで開催しており、ナイターの重賞（16:30〜21:00台）は当日の
+    前半のレースでバイアスを測れる。戻り値は判定した場の一覧。
+    """
+    day = datetime.datetime.strptime(ymd, '%Y%m%d').date()
+    use_remote(day, fetcher=fetcher)
+    if venue == 'all':
+        venues = sorted({r['競馬場'] for r in build_races(ymd)})
+    else:
+        venues = [venue]
+    if not venues:
+        print(f'{ymd} は確定レースがありません（開催なし、または結果の反映前）')
+        return []
+    done = []
+    for v in venues:
+        try:
+            analyze_bias(ymd, v)
+            done.append(v)
+        except SystemExit as e:
+            print(f'{ymd} {v}: {e}')
+        except ZeroDivisionError:
+            # 平常値を出すだけのレースが無い（月初など）。判定は出せない。
+            print(f'{ymd} {v}: 平常値を作れるだけの確定レースがなく、判定できません')
+        print()
+    return done
+
+
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print(__doc__)
@@ -301,5 +418,7 @@ if __name__ == '__main__':
         analyze_bias(sys.argv[2], sys.argv[3])
     elif cmd == 'race':
         show_race(sys.argv[2], sys.argv[3], sys.argv[4])
+    elif cmd == 'live':
+        live(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else 'all')
     else:
         print(__doc__)

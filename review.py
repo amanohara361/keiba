@@ -35,6 +35,7 @@ from datetime import date, timedelta
 import bets
 import edge_check
 import nar as nar_module
+import nar_csv
 import results as results_module
 import weight_going
 
@@ -787,6 +788,47 @@ def weight_going_report(data_dir=None):
     return weight_going.render_lines(summary, paths), weight_going.heavy_races(summary)
 
 
+def nar_bias_report(collected, measure=None):
+    """地方のレースがあった日・場のバイアス判定を、その場で測り直して並べる。
+
+    外れ分析で「当日のバイアスは確認できず」と書くことになっていたため（2026-10-20、鎌倉記念）。
+    保存済みのファイルには頼らず、公式サイトの月次ファイルから測る（過去の日も同じ手順で測れる）。
+    **その日の確定レース全部（対象レースを含む）から測った値**で、発走前に分かっていた値ではない。
+    判定はしない、並べるだけ。測れなくても週次レビュー全体は止めない。
+    戻り値は (行のリスト, 測れた場の数)。
+    """
+    measure = measure or nar_csv.day_summaries
+    rows = []
+    for day in collected:
+        venues = sorted({e['venue'] for e in day['entries']
+                         if e.get('org') == 'nar' and e.get('venue')})
+        if not venues:
+            continue
+        try:
+            found = measure(day['date'].strftime('%Y%m%d'), venues)
+        except Exception:  # noqa: BLE001 - 付録の集計なので本体を止めない
+            logger.exception('%s の地方バイアスを測れませんでした', day['date'])
+            found = {}
+        for venue in venues:
+            summary = found.get(venue)
+            if not summary:
+                rows.append(f"| {day['date'].isoformat()} | {venue} | — | 測れなかった（確定レースなし、または取得失敗） |")
+                continue
+            if summary['races'] < 3:
+                text = f"判断保留（判定に使えるレースが{summary['races']}鞍）"
+            else:
+                text = '<br>'.join(summary['verdicts']) or '判定文なし'
+            rows.append(f"| {day['date'].isoformat()} | {venue} | {summary['races']}鞍 | {text} |")
+    if not rows:
+        return [], 0
+    lines = ['## 当日の地方バイアス（その日の確定レースから測ったもの）', '',
+             '`nar_csv.py` の第11章の判定。**その日の全確定レース（対象レースを含む）から後で測った値**で、'
+             '発走前に分かっていた値ではない。外れ分析で「当日のバイアス」を書くときの材料。'
+             '1場3鞍未満は判断保留。', '',
+             '| 日付 | 場 | 測定 | 判定 |', '|---|---|---|---|'] + rows + ['']
+    return lines, len(rows)
+
+
 def render_weight_going(wg_lines):
     if not wg_lines:
         return []
@@ -874,7 +916,7 @@ def render_edge(edge_lines):
 
 def render(collected, week_summary, total_summary, period, since_summary=None,
            week_by_org=None, total_by_org=None, wide_since_summary=None,
-           wg_lines=None, edge_lines=None, pending=None):
+           wg_lines=None, edge_lines=None, pending=None, nar_bias_lines=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -930,6 +972,9 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
                 f"| {day['date'].isoformat()} | {e['name']} | {e['confidence'] or '未評価'} "
                 f"| {verdict} | {profit} | {top3} |")
     lines.append('')
+
+    if nar_bias_lines:
+        lines.extend(nar_bias_lines)
 
     # --- KPI ---
     lines.append('## KPI')
@@ -1194,11 +1239,13 @@ def main(argv=None):
     wg_lines, wg_heavy = weight_going_report()
     edge_lines, edge_line, edge_summary = edge_report(week_days)
     pending = pending_status(edge_summary, count_jra_races())
+    nar_bias_lines, _ = nar_bias_report(week)
     text = render(week, week_summary, total_summary, (start, end),
                   since_summary=since_summary,
                   week_by_org=week_by_org, total_by_org=total_by_org,
                   wide_since_summary=wide_since_summary,
-                  wg_lines=wg_lines, edge_lines=edge_lines, pending=pending)
+                  wg_lines=wg_lines, edge_lines=edge_lines, pending=pending,
+                  nar_bias_lines=nar_bias_lines)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)
