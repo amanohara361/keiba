@@ -1,0 +1,168 @@
+{
+  "race_id": "202608040707",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 7,
+      "name": "タガノアルトゥーラ",
+      "ninki": 4,
+      "odds": 7.8
+    },
+    {
+      "rank": 2,
+      "umaban": 8,
+      "name": "バリオス",
+      "ninki": 2,
+      "odds": 3.3
+    },
+    {
+      "rank": 3,
+      "umaban": 3,
+      "name": "エイシンマールス",
+      "ninki": 1,
+      "odds": 2.9
+    },
+    {
+      "rank": 4,
+      "umaban": 9,
+      "name": "ゴンタ",
+      "ninki": 3,
+      "odds": 4.1
+    },
+    {
+      "rank": 5,
+      "umaban": 4,
+      "name": "アンクルブラック",
+      "ninki": 6,
+      "odds": 14.2
+    },
+    {
+      "rank": 6,
+      "umaban": 5,
+      "name": "ゴールドコット",
+      "ninki": 7,
+      "odds": 14.3
+    },
+    {
+      "rank": 7,
+      "umaban": 2,
+      "name": "ジャカルタバオ",
+      "ninki": 5,
+      "odds": 11.6
+    },
+    {
+      "rank": 8,
+      "umaban": 1,
+      "name": "ビナハイバン",
+      "ninki": 9,
+      "odds": 125.7
+    },
+    {
+      "rank": 9,
+      "umaban": 6,
+      "name": "シゲルオトヒメ",
+      "ninki": 8,
+      "odds": 99.2
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          7
+        ],
+        "yen": 780
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          7
+        ],
+        "yen": 180
+      },
+      {
+        "combination": [
+          8
+        ],
+        "yen": 150
+      },
+      {
+        "combination": [
+          3
+        ],
+        "yen": 120
+      }
+    ],
+    "枠連": [
+      {
+        "combination": [
+          7,
+          8
+        ],
+        "yen": 950
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          7,
+          8
+        ],
+        "yen": 1900
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          7,
+          8
+        ],
+        "yen": 620
+      },
+      {
+        "combination": [
+          3,
+          7
+        ],
+        "yen": 340
+      },
+      {
+        "combination": [
+          3,
+          8
+        ],
+        "yen": 240
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          7,
+          8
+        ],
+        "yen": 3910
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          3,
+          7,
+          8
+        ],
+        "yen": 1330
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          7,
+          8,
+          3
+        ],
+        "yen": 11230
+      }
+    ]
+  }
+}

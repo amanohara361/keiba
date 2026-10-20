@@ -1,0 +1,139 @@
+{
+  "race_id": "202608040608",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 7,
+      "name": "ロンドンガーズ",
+      "ninki": 1,
+      "odds": 2.0
+    },
+    {
+      "rank": 2,
+      "umaban": 3,
+      "name": "アンムート",
+      "ninki": 2,
+      "odds": 4.3
+    },
+    {
+      "rank": 3,
+      "umaban": 6,
+      "name": "カレンハウ",
+      "ninki": 3,
+      "odds": 4.8
+    },
+    {
+      "rank": 4,
+      "umaban": 1,
+      "name": "ノヴァーリス",
+      "ninki": 4,
+      "odds": 5.0
+    },
+    {
+      "rank": 5,
+      "umaban": 2,
+      "name": "リュウトウコヤク",
+      "ninki": 5,
+      "odds": 12.1
+    },
+    {
+      "rank": 6,
+      "umaban": 5,
+      "name": "メモリーブック",
+      "ninki": 6,
+      "odds": 35.5
+    },
+    {
+      "rank": 7,
+      "umaban": 4,
+      "name": "リエーヴェ",
+      "ninki": 7,
+      "odds": 64.9
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          7
+        ],
+        "yen": 200
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          7
+        ],
+        "yen": 130
+      },
+      {
+        "combination": [
+          3
+        ],
+        "yen": 160
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          3,
+          7
+        ],
+        "yen": 370
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          3,
+          7
+        ],
+        "yen": 170
+      },
+      {
+        "combination": [
+          6,
+          7
+        ],
+        "yen": 210
+      },
+      {
+        "combination": [
+          3,
+          6
+        ],
+        "yen": 210
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          7,
+          3
+        ],
+        "yen": 670
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          3,
+          6,
+          7
+        ],
+        "yen": 470
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          7,
+          3,
+          6
+        ],
+        "yen": 1510
+      }
+    ]
+  }
+}

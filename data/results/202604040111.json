@@ -1,0 +1,231 @@
+{
+  "race_id": "202604040111",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 6,
+      "name": "ベイビーキッス",
+      "ninki": 3,
+      "odds": 7.0
+    },
+    {
+      "rank": 2,
+      "umaban": 12,
+      "name": "シカゴスティング",
+      "ninki": 6,
+      "odds": 11.4
+    },
+    {
+      "rank": 3,
+      "umaban": 15,
+      "name": "サトノワーグナー",
+      "ninki": 1,
+      "odds": 4.2
+    },
+    {
+      "rank": 4,
+      "umaban": 17,
+      "name": "ポッドロワール",
+      "ninki": 5,
+      "odds": 8.7
+    },
+    {
+      "rank": 5,
+      "umaban": 3,
+      "name": "ミルテンベルク",
+      "ninki": 7,
+      "odds": 16.2
+    },
+    {
+      "rank": 6,
+      "umaban": 10,
+      "name": "ヴェサリウス",
+      "ninki": 9,
+      "odds": 24.4
+    },
+    {
+      "rank": 7,
+      "umaban": 2,
+      "name": "ロードマイライフ",
+      "ninki": 8,
+      "odds": 23.1
+    },
+    {
+      "rank": 8,
+      "umaban": 18,
+      "name": "アイルシャイン",
+      "ninki": 14,
+      "odds": 43.9
+    },
+    {
+      "rank": 9,
+      "umaban": 1,
+      "name": "アタリダイキチ",
+      "ninki": 13,
+      "odds": 38.3
+    },
+    {
+      "rank": 10,
+      "umaban": 13,
+      "name": "トーラスシャイン",
+      "ninki": 4,
+      "odds": 8.6
+    },
+    {
+      "rank": 11,
+      "umaban": 11,
+      "name": "ダークエクリプス",
+      "ninki": 18,
+      "odds": 147.8
+    },
+    {
+      "rank": 12,
+      "umaban": 16,
+      "name": "スティールブルー",
+      "ninki": 15,
+      "odds": 49.7
+    },
+    {
+      "rank": 13,
+      "umaban": 14,
+      "name": "メイショウセイロウ",
+      "ninki": 11,
+      "odds": 31.1
+    },
+    {
+      "rank": 14,
+      "umaban": 8,
+      "name": "ハッピーエンジェル",
+      "ninki": 2,
+      "odds": 4.6
+    },
+    {
+      "rank": 15,
+      "umaban": 4,
+      "name": "ブラックケリー",
+      "ninki": 12,
+      "odds": 36.6
+    },
+    {
+      "rank": 16,
+      "umaban": 5,
+      "name": "メイショウピース",
+      "ninki": 10,
+      "odds": 29.4
+    },
+    {
+      "rank": 17,
+      "umaban": 7,
+      "name": "ウナギノボリ",
+      "ninki": 17,
+      "odds": 96.1
+    },
+    {
+      "rank": 18,
+      "umaban": 9,
+      "name": "ハートホイップ",
+      "ninki": 16,
+      "odds": 70.4
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          6
+        ],
+        "yen": 700
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          6
+        ],
+        "yen": 220
+      },
+      {
+        "combination": [
+          12
+        ],
+        "yen": 300
+      },
+      {
+        "combination": [
+          15
+        ],
+        "yen": 190
+      }
+    ],
+    "枠連": [
+      {
+        "combination": [
+          3,
+          6
+        ],
+        "yen": 3240
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          6,
+          12
+        ],
+        "yen": 4460
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          6,
+          12
+        ],
+        "yen": 1420
+      },
+      {
+        "combination": [
+          6,
+          15
+        ],
+        "yen": 670
+      },
+      {
+        "combination": [
+          12,
+          15
+        ],
+        "yen": 1230
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          6,
+          12
+        ],
+        "yen": 8290
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          6,
+          12,
+          15
+        ],
+        "yen": 6270
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          6,
+          12,
+          15
+        ],
+        "yen": 42990
+      }
+    ]
+  }
+}
