@@ -1933,3 +1933,48 @@ def test_本命と中穴候補の組も値付けして記録するが買い目�
     assert record['priced_odds']['ワイド']['2-7'] == 15.0
     assert record['priced_odds']['馬連']['2-7'] == 60.0
     assert (after_bets, after_conf) == (before_bets, before_conf)
+
+
+# ---- noteの見送り表現と買い目の矛盾（2026-10-20）---------------------------
+
+def test_note_says_skip_but_bets_exist_is_warned():
+    """鎌倉記念・ミズナラ盃：noteは「見送り寄り」なのに、勝負度Bで買い目が出ていた。"""
+    race = make_race(
+        marks=marks_of(items=[('◎', 7), ('○', 11)]),
+        bets=[Bet('ワイド', [7, 11])],
+        note='逃げ候補一覧は…。混戦気味(5,9,10の3頭拮抗)なので見送り寄り。',
+    )
+    findings = [f for f in review(race, bet_odds=[5.0]).warnings if f.code == 'note_says_skip']
+    assert len(findings) == 1
+    assert '見送り寄り' in findings[0].message and '勝負度B' in findings[0].message
+
+
+def test_note_skip_about_horses_is_not_a_race_skip():
+    """馬を外す意味の「見送り」（減点方式・見送り候補）はレースの見送りではない。"""
+    race = make_race(
+        marks=marks_of(items=[('◎', 7), ('○', 11)]),
+        bets=[Bet('ワイド', [7, 11])],
+        note='見送り候補: 1,2,3,11は経験浅い。13は近走が案外のため見送り。',
+    )
+    codes = [f.code for f in review(race, bet_odds=[5.0]).warnings]
+    assert 'note_says_skip' not in codes
+
+
+def test_note_says_skip_is_quiet_when_no_bets():
+    """見送り寄りと書いて実際に買い目なしなら矛盾しない。"""
+    race = make_race(
+        marks=marks_of(items=[('◎', 7)]),
+        note='なので見送り寄り。',
+    )
+    codes = [f.code for f in review(race).warnings]
+    assert 'note_says_skip' not in codes
+
+
+def test_verdict_dict_keeps_bet_note():
+    """bet_builder の説明文を data/checks に残す。後から『なぜ見送りか』を再現しなくて済むように。"""
+    race = make_race(marks=marks_of(items=[('◎', 7)]))
+    verdict = review(race)
+    verdict.bet_note = '第13章の基準を満たす案が組めませんでした。見送り（勝負度C）。'
+    assert verdict.to_dict()['bet_note'] == verdict.bet_note
+    verdict.bet_note = None
+    assert verdict.to_dict()['bet_note'] is None
