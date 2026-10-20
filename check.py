@@ -28,6 +28,7 @@ import conditions as conditions_module
 import discipline
 import form as form_module
 import nar as nar_module
+import nar_csv
 import odds as odds_module
 import report_html
 import report_md
@@ -382,7 +383,29 @@ def format_missing_sheet(day, now):
     ])
 
 
-def format_verdict(verdict):
+def bias_lines(race, day):
+    """地方のレースに、その場の当日バイアスの判定を添える（2026-10-20）。
+
+    data/bias/nar/YYYY-MM-DD.txt（nar_csv.py live の出力）から読む。無ければ何も足さない。
+    **印は動かさない。** ここは判断材料を並べるだけで、印を直すかどうかは人が決める。
+    """
+    if race.org != 'nar' or not race.venue:
+        return []
+    saved = nar_csv.summarize_saved(day.isoformat(), race.venue)
+    if not saved:
+        return []
+    when = f'（{saved["measured_at"][11:16]}時点）' if saved['measured_at'] else ''
+    if saved['races'] < 3:
+        return [f'  当日バイアス: 判定に使えるレースが{saved["races"]}鞍だけで、判断保留{when}']
+    lines = [f'  当日バイアス（{race.venue} {saved["races"]}鞍で測定）{when}']
+    for v in saved['verdicts']:
+        lines.append(f'    ・{v}')
+    if any(v.startswith('★') for v in saved['verdicts']):
+        lines.append('    → 印・展開の読みと食い違うなら、見直し候補（印は自動では動かしません）')
+    return lines
+
+
+def format_verdict(verdict, day=None):
     race = verdict.race
     lines = []
 
@@ -401,6 +424,9 @@ def format_verdict(verdict):
     marks = ' '.join(f"{m['mark']}{m['umaban']}" for m in race.marks)
     if marks:
         lines.append(f'  印: {marks}')
+
+    if day is not None:
+        lines.extend(bias_lines(race, day))
 
     going = (verdict.conditions or {}).get('going')
     for entry in race.marks:
@@ -510,7 +536,7 @@ def format_report(sheet, verdicts, now, changed=()):
     lines.append(DIVIDER)
 
     for verdict in verdicts:
-        lines.extend(format_verdict(verdict))
+        lines.extend(format_verdict(verdict, sheet.date))
 
     lines.append('')
     lines.append('※ 本検算は買い目設計の規律のみを見ています。印の判断には関与しません。')
@@ -572,7 +598,7 @@ def _all_races_already_started(verdicts):
     return bool(verdicts) and all(v.meta.get('skipped') for v in verdicts)
 
 
-def format_clean_summary(verdicts, now, changed=()):
+def format_clean_summary(verdicts, now, changed=(), day=None):
     """規律クリア時に送る1行サマリ（フルレポートは docs/index.html を見てもらう）。"""
     parts = []
     for verdict in verdicts:
@@ -585,10 +611,32 @@ def format_clean_summary(verdicts, now, changed=()):
         parts.append(piece)
     races = '／'.join(parts) if parts else '対象レースなし'
     lines = [f'{now:%H:%M} 直前検算 問題なし：{races}']
+    if day is not None:
+        # 地方は1行サマリのときもバイアスの要点を添える（フル版は無駄に重くなるため）。
+        for verdict in verdicts:
+            extra = bias_lines(verdict.race, day)
+            if extra:
+                lines.append('')
+                lines.append(f'【{verdict.race.name}】')
+                lines.extend(extra)
     if changed:
         lines.append('')
         lines.extend(_format_bet_changes(changed))
     return '\n'.join(lines)
+
+
+def _refresh_nar_bias(sheet, now):
+    """地方のレースがある日は、検算の直前に当日バイアスを取り直して保存する。
+
+    失敗しても検算は止めない（バイアスは判断材料であって、買い目の規律ではない）。
+    """
+    if not any(r.org == 'nar' for r in sheet.races):
+        return
+    try:
+        path = nar_csv.save_live(sheet.date.isoformat(), 'all', now=now)
+        logger.info('地方バイアスを保存しました: %s', path)
+    except Exception as exc:  # noqa: BLE001 - 取得の失敗で検算を止めない
+        logger.warning('地方バイアスを取得できませんでした（検算は続けます）: %s', exc)
 
 
 def write_job_summary(body):
@@ -637,6 +685,7 @@ def main(argv=None):
                 if deliver(mailer, '【要確認】朝の買い目が届いていません', body)
                 else EXIT_ERROR)
 
+    _refresh_nar_bias(sheet, now)
     verdicts = review_sheet(sheet, now)
     # 上書きされる前の「前回の検算結果」を読み、買い目が変わったレースを探す。
     previous = bets.load_last_check(day)
@@ -696,7 +745,7 @@ def main(argv=None):
             # 前提は「同じ問題なしの繰り返し」であって、買い目が変わったのは
             # 繰り返しではなく新しい情報。(2)は発走済みレースを組み直さない
             # ためchangedは常に空だが、(1)ではpush起因でも変化を伝える。
-            print(format_clean_summary(verdicts, now))
+            print(format_clean_summary(verdicts, now, day=sheet.date))
         else:
             # 「問題なし」を完全に無音にすると、メールが来ないことが
             # 「規律クリア」なのか「そもそもまだ実行されていない／遅延中」
@@ -709,7 +758,7 @@ def main(argv=None):
                 subject = f'直前検算 買い目変更あり（{now:%H:%M}）'
             else:
                 subject = f'直前検算 問題なし（{now:%H:%M}）'
-            if not deliver(mailer, subject, format_clean_summary(verdicts, now, changed)):
+            if not deliver(mailer, subject, format_clean_summary(verdicts, now, changed, day=sheet.date)):
                 return EXIT_ERROR
 
     if any(v.blocked for v in verdicts) or missing:

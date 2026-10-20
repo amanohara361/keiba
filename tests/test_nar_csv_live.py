@@ -85,3 +85,92 @@ def test_live_no_finished_races(capsys):
                 'horselist': _horses('川崎', '20261014', 1, done=False), 'payback': []}
     assert nar_csv.live('20261014', 'all', fetcher=fetcher) == []
     assert '確定レースがありません' in capsys.readouterr().out
+
+
+# ---- 検算メールへの接続（check.bias_lines）-------------------------------
+
+SAVED = """# 測定時刻 2026-10-14T18:07:00+09:00
+■ 20261014 園田  トラックバイアス判定（予想メソッド 第11章）
+  R    距離 馬場       前半     基準差 ペース      上3F  1〜3着の脚質      4〜8着の脚質
+  1   820 良      14.2   +0.05 平均      36.9  先/先/差            先/逃/追/差/追
+  2  1400 良      55.5   +0.80 スロー     40.1  差/先/差            逃/追/追/追
+  3  1400 良      53.0   +0.17 スロー     40.5  差/差/逃            先/追/差/追/追
+
+→ 判定:
+   ・★スローペースなのに差し追込が上位＝強烈な外差しバイアスの可能性
+
+※本判定は統計的な目安です。
+
+■ 20261014 名古屋  トラックバイアス判定（予想メソッド 第11章）
+  1  1500 稍重     56.4   -0.17 ハイ      39.7  逃/先/先            差/差/追/差/追
+
+→ 判定:
+   ・顕著な矛盾なし。当日は脚質フラットと見るのが妥当
+"""
+
+
+def _write_saved(tmp_path, monkeypatch):
+    monkeypatch.setattr(nar_csv, 'BIAS_DIR', str(tmp_path))
+    (tmp_path / '2026-10-14.txt').write_text(SAVED, encoding='utf-8')
+
+
+def test_summarize_saved_picks_the_requested_venue(tmp_path, monkeypatch):
+    _write_saved(tmp_path, monkeypatch)
+    sono = nar_csv.summarize_saved('2026-10-14', '園田')
+    assert sono['races'] == 3
+    assert sono['measured_at'].startswith('2026-10-14T18:07')
+    assert sono['verdicts'] == ['★スローペースなのに差し追込が上位＝強烈な外差しバイアスの可能性']
+    assert nar_csv.summarize_saved('2026-10-14', '名古屋')['verdicts'][0].startswith('顕著な矛盾なし')
+    assert nar_csv.summarize_saved('2026-10-14', '川崎') is None
+    assert nar_csv.summarize_saved('2026-10-15', '園田') is None
+
+
+def test_bias_lines_only_for_nar_and_never_touch_marks(tmp_path, monkeypatch):
+    import bets
+    import check
+    _write_saved(tmp_path, monkeypatch)
+
+    class R:  # RaceBets の代わり（必要な属性だけ）
+        org = 'nar'
+        venue = '園田'
+    lines = check.bias_lines(R, datetime.date(2026, 10, 14))
+    assert any('園田 3鞍で測定' in ln for ln in lines)
+    assert any('★スローペースなのに' in ln for ln in lines)
+    assert any('印は自動では動かしません' in ln for ln in lines)
+
+    R.org = 'jra'
+    assert check.bias_lines(R, datetime.date(2026, 10, 14)) == []
+    R.org = 'nar'
+    R.venue = '川崎'   # 保存に無い場は何も足さない
+    assert check.bias_lines(R, datetime.date(2026, 10, 14)) == []
+    assert bets  # import 確認のみ
+
+
+def test_bias_lines_withholds_judgement_on_few_races(tmp_path, monkeypatch):
+    import check
+    _write_saved(tmp_path, monkeypatch)
+
+    class R:
+        org = 'nar'
+        venue = '名古屋'
+    lines = check.bias_lines(R, datetime.date(2026, 10, 14))
+    assert lines == ['  当日バイアス: 判定に使えるレースが1鞍だけで、判断保留（18:07時点）']
+
+
+def test_clean_summary_carries_bias_for_nar(tmp_path, monkeypatch):
+    import check
+    _write_saved(tmp_path, monkeypatch)
+
+    class R:
+        org = 'nar'
+        venue = '園田'
+        name = '園田のレース'
+
+    class V:
+        race = R
+        composite = None
+        expected_value = None
+    now = datetime.datetime(2026, 10, 14, 18, 37)
+    body = check.format_clean_summary([V], now, day=datetime.date(2026, 10, 14))
+    assert '【園田のレース】' in body and '園田 3鞍で測定' in body
+    assert check.format_clean_summary([V], now) == '18:37 直前検算 問題なし：園田のレース'

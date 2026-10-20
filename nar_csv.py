@@ -329,6 +329,70 @@ def show_race(date, venue, rno):
               f"{(h['馬体重'] + (h['馬体重増減'] or '')):>6} {h['騎手名']:<8}")
 
 
+BIAS_DIR = os.path.join(DATA_DIR, 'bias', 'nar')
+
+
+def bias_path(ymd):
+    """data/bias/nar/YYYY-MM-DD.txt（ymd は YYYYMMDD または YYYY-MM-DD）"""
+    d = ymd.replace('-', '')
+    return os.path.join(BIAS_DIR, f'{d[:4]}-{d[4:6]}-{d[6:8]}.txt')
+
+
+def save_live(ymd, venue='all', fetcher=None, now=None):
+    """live の出力を data/bias/nar/ に保存する。保存したパスを返す。
+
+    nar_bias.yml と check.py（検算の直前）の両方がこれを使う。検算が自分で
+    取り直すので、別のワークフローの遅れに結果の鮮度が左右されない。
+    """
+    import contextlib
+    import io
+    buf = io.StringIO()
+    stamp = (now or datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))))
+    with contextlib.redirect_stdout(buf):
+        live(ymd.replace('-', ''), venue, fetcher=fetcher)
+    os.makedirs(BIAS_DIR, exist_ok=True)
+    path = bias_path(ymd)
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(f'# 測定時刻 {stamp.strftime("%Y-%m-%dT%H:%M:%S+09:00")}\n')
+        f.write(buf.getvalue())
+    return path
+
+
+def summarize_saved(ymd, venue):
+    """保存済みのテキストから、その場の要点だけを取り出す（検算メール用）。
+
+    戻り値: {'races': 判定に使ったレース数, 'verdicts': [判定文...], 'measured_at': 測定時刻}。
+    その場の判定が保存されていなければ None（メールには何も足さない）。
+    """
+    path = bias_path(ymd)
+    if not os.path.exists(path):
+        return None
+    with open(path, encoding='utf-8') as f:
+        text = f.read()
+    measured = ''
+    first = text.splitlines()[0] if text else ''
+    if first.startswith('# 測定時刻'):
+        measured = first.replace('# 測定時刻', '').strip()
+    for block in text.split('■ ')[1:]:
+        head, _, body = block.partition('\n')
+        if venue not in head.split():
+            continue
+        rows = [ln for ln in body.splitlines() if re.match(r'^\s*\d+\s+\d{3,4}\s', ln)]
+        verdicts = []
+        in_verdict = False
+        for ln in body.splitlines():
+            if ln.startswith('→ 判定'):
+                in_verdict = True
+                continue
+            if in_verdict:
+                if ln.strip().startswith('・'):
+                    verdicts.append(ln.strip().lstrip('・').strip())
+                else:
+                    break
+        return {'races': len(rows), 'verdicts': verdicts, 'measured_at': measured}
+    return None
+
+
 def live(ymd, venue='all', fetcher=None):
     """公式サイトから直接取って、その日の確定レースがある全場（または指定場）を判定する。
 
