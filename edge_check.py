@@ -91,10 +91,18 @@ def race_checks(history, race_id):
 
 
 def final_odds_and_winner(result):
-    """確定結果から ({馬番: 確定オッズ}, 1着の馬番)。取れなければ (None, None)。"""
+    """確定結果から ({馬番: 確定オッズ}, 1着の馬番)。取れなければ (None, None)。
+
+    競走中止の馬も確定オッズに含める。発走の時点では走る馬で、落とすと
+    「その馬がいなかったレース」として勝率を作り直すことになる（結果を知っているカンニング）。
+    `non_finishers` は 2026-10-20 から記録しているので、それより前の結果には無い。
+    """
     order = (result or {}).get('finishing_order') or []
     final = {int(h['umaban']): float(h['odds']) for h in order
              if h.get('umaban') is not None and h.get('odds')}
+    for h in (result or {}).get('non_finishers') or []:
+        if h.get('status') == '中止' and h.get('umaban') and h.get('odds'):
+            final.setdefault(int(h['umaban']), float(h['odds']))
     winners = [int(h['umaban']) for h in order if h.get('rank') == 1]
     if not final or not winners:
         return None, None

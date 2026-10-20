@@ -181,3 +181,15 @@ def test_data_jraのレース数を数える(tmp_path):
     assert review.count_jra_races(str(tmp_path)) == 3
     (tmp_path / '20261019_新潟.json').write_text('壊れた', encoding='utf-8')
     assert review.count_jra_races(str(tmp_path)) is None
+
+
+def test_競走中止の馬は確定オッズに含める():
+    """2026-10-20：落とすと、止まった馬の確率がほかの馬に配り直される（結果を知ったカンニング）。"""
+    result = {'finishing_order': [{'rank': 1, 'umaban': 1, 'odds': 2.0},
+                                  {'rank': 2, 'umaban': 3, 'odds': 4.0}],
+              'non_finishers': [{'umaban': 2, 'status': '中止', 'odds': 4.0},
+                                {'umaban': 9, 'status': '除外'}]}
+    final, winner = edge_check.final_odds_and_winner(result)
+    assert final == {1: 2.0, 3: 4.0, 2: 4.0} and winner == 1
+    rec = _record([(_at(13, 7), {1: 2.0, 2: 4.0, 3: 4.0})], final=final, winner=1, wp={})
+    assert edge_check.race_logliks(rec)[2] == pytest.approx(math.log(0.5))

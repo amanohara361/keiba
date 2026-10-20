@@ -826,3 +826,33 @@ def test_新しい形式の検索結果でも同名馬を父名と生年で絞�
     assert form_module.parse_horse_search(_NEW_FORMAT_SEARCH, 'テンカジョウ') is None
     assert form_module.parse_horse_search(_NEW_FORMAT_SEARCH, 'テンカジョウ',
                                           sire='サンダースノー', birth_year=2021) == '2021102729'
+
+
+def _run_row(day, name, rank, time=''):
+    return (f'<tr><td>{day}</td><td>4東京1</td><td>晴</td><td>11</td><td>{name}</td><td>16</td>'
+            f'<td>1</td><td>1</td><td>5.0</td><td>2</td><td>{rank}</td><td>騎手</td>'
+            f'<td>57.0</td><td>芝1800</td><td>良</td><td></td><td>{time}</td><td></td>'
+            f'<td></td><td></td><td></td><td></td><td>480(0)</td><td>ウマ</td></tr>')
+
+
+def test_取消と除外は近走に数えず中止は残す():
+    """2026-10-20：取消・除外が「前走」の位置に入ると、休み明けや前走の内容を読み違える。"""
+    header = HORSE_PAGE.split('<tr><td>2026/07/19')[0]
+    page = header + ''.join([
+        _run_row('2026/10/04', '除外したレース', '除'),
+        _run_row('2026/09/20', '取り消したレース', '取'),
+        _run_row('2026/08/30', '止まったレース', '中'),
+        _run_row('2026/06/01', '走ったレース', '3', '1:46.0'),
+    ]) + '</table>'
+    runs = form_module.parse_recent_runs(page)
+    assert [r['race'] for r in runs] == ['止まったレース', '走ったレース']
+    assert runs[0]['status'] == '中止' and runs[0]['rank'] == '中'
+    assert 'status' not in runs[1]
+
+
+def test_取消と除外を飛ばしても5走は実際に走ったレースで数える():
+    header = HORSE_PAGE.split('<tr><td>2026/07/19')[0]
+    rows = [_run_row('2026/10/04', '除外', '除')]
+    rows += [_run_row(f'2026/0{m}/01', f'R{m}', str(m), '1:46.0') for m in range(9, 3, -1)]
+    runs = form_module.parse_recent_runs(header + ''.join(rows) + '</table>')
+    assert [r['race'] for r in runs] == ['R9', 'R8', 'R7', 'R6', 'R5']
