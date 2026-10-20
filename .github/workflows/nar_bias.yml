@@ -1,0 +1,71 @@
+name: 地方バイアス
+
+# 地方競馬の当日のトラックバイアスを測り、data/bias/nar/YYYY-MM-DD.txt に置く。
+#
+# 地方は毎日開催で、重賞はナイター（16:30〜21:00台）に多い。発走前に当日の前半のレースで
+# 傾向を測れるので、夜の検算（18:37 / 19:37）より前に回す。
+# 中央の bias.yml は netkeiba、こちらは keiba.go.jp の公式CSV（nar.race_data の月次）を読む。
+# 判定は予想メソッド第11章と同じ nar_csv.py（平常値は同競馬場の当月＋前月）。
+#
+# 定時実行は遅れるのが普通なので、急ぐときは workflow_dispatch で起こす。
+
+on:
+  schedule:
+    - cron: '7 9 * * *'    # 09:07 UTC = 18:07 JST  夜の検算（18:37）の前
+    - cron: '7 10 * * *'   # 10:07 UTC = 19:07 JST  ナイター最終便（19:37）の前
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '対象日 (YYYYMMDD)。空なら実行日。'
+        required: false
+      venue:
+        description: '競馬場。空なら all（その日の確定レースがある全場）。'
+        required: false
+
+concurrency:
+  group: keiba-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  bias:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: バイアスを判定して保存
+        env:
+          INPUT_DATE: ${{ inputs.date }}
+          INPUT_VENUE: ${{ inputs.venue }}
+        run: |
+          date_arg="${INPUT_DATE:-$(TZ=Asia/Tokyo date +%Y%m%d)}"
+          venue_arg="${INPUT_VENUE:-all}"
+          day="${date_arg:0:4}-${date_arg:4:2}-${date_arg:6:2}"
+          mkdir -p data/bias/nar
+          {
+            echo "# 測定時刻 $(TZ=Asia/Tokyo date +%Y-%m-%dT%H:%M:%S+09:00)"
+            python nar_csv.py live "$date_arg" "$venue_arg" || true
+          } > "data/bias/nar/$day.txt"
+          { echo '```'; cat "data/bias/nar/$day.txt"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 結果をコミット
+        if: always()
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/bias/nar/ 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo '新しい結果はありません'
+          else
+            git commit -m "地方バイアスを記録: $(TZ=Asia/Tokyo date +%Y-%m-%d)"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
