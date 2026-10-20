@@ -59,3 +59,47 @@ def test_dbで取れなければraceのページで結果を返す():
 
 def test_どちらのページにも着順が無ければ未確定():
     assert results.fetch('202606040611', fetcher=lambda url: '<html></html>') is None
+
+
+DB_PAGE = '''
+<table class="race_table_01 nk_tb_common">
+<tr><th>着順</th><th>枠番</th><th>馬番</th><th>馬名</th><th>単勝</th><th>人気</th></tr>
+<tr><td>1</td><td>1</td><td>1</td><td>カッタウマ</td><td>61.8</td><td>12</td></tr>
+<tr><td>2</td><td>3</td><td>4</td><td>ニバンウマ</td><td>3.1</td><td>1</td></tr>
+<tr><td>中</td><td>2</td><td>2</td><td>トマッタウマ</td><td>23.8</td><td>8</td></tr>
+<tr><td>除</td><td>5</td><td>9</td><td>デナカッタウマ</td><td></td><td></td></tr>
+</table>
+'''
+
+NK_ROWS = '''
+<tr class="HorseList"><td class="Result_Num"><div class="Rank">1</div></td>
+<td class="Num Txt_C"><div>1</div></td></tr>
+<tr class="HorseList"><td class="Result_Num"><div class="Rank">中止</div></td>
+<td class="Num Waku2"><div>2</div></td><td class="Num Txt_C"><div>2</div></td>
+<td><span class="HorseNameSpan">トマッタウマ</span></td>
+<td class="Odds Txt_R"><span >23.8</span></td></tr>
+<tr class="HorseList"><td class="Result_Num"><div class="Rank">除外</div></td>
+<td class="Num Txt_C"><div>9</div></td><td class="Odds Txt_R"><span>---.-</span></td></tr>
+'''
+
+
+def test_db_の結果表から着順の付かなかった馬を別に読む():
+    """2026-10-20：中止の馬を落とすと「その馬がいなかったレース」として数えてしまう。"""
+    assert [h['umaban'] for h in results.parse_finishing_order(DB_PAGE)] == [1, 4]
+    assert results.parse_non_finishers(DB_PAGE) == [
+        {'umaban': 2, 'status': '中止', 'name': 'トマッタウマ', 'odds': 23.8},
+        {'umaban': 9, 'status': '除外', 'name': 'デナカッタウマ'},
+    ]
+
+
+def test_race_netkeiba_の結果ページからも同じ形で読む():
+    assert results._nk_non_finishers(NK_ROWS) == [
+        {'umaban': 2, 'status': '中止', 'name': 'トマッタウマ', 'odds': 23.8},
+        {'umaban': 9, 'status': '除外', 'name': ''},
+    ]
+    assert results._nk_non_finishers(PAGE) == []
+
+
+def test_fetch_の戻り値に着順の付かなかった馬の欄がある():
+    result = results.fetch('202606040611', fetcher=only_race_page)
+    assert result['non_finishers'] == []

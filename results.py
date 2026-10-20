@@ -77,6 +77,52 @@ def parse_payouts(page):
     return payouts
 
 
+# 着順欄の数字以外の表記（db は1文字、race.netkeiba.com は2文字）
+NON_FINISH_STATUS = {'中': '中止', '中止': '中止', '除': '除外', '除外': '除外',
+                     '取': '取消', '取消': '取消', '失': '失格', '失格': '失格'}
+
+
+def _non_finisher(status_text, umaban, odds_text, name=''):
+    status = NON_FINISH_STATUS.get(status_text.strip())
+    if not status or not umaban:
+        return None
+    entry = {'umaban': umaban, 'status': status, 'name': name}
+    try:
+        entry['odds'] = float(odds_text)
+    except (TypeError, ValueError):
+        pass
+    return entry
+
+
+def parse_non_finishers(page):
+    """db.netkeiba.com の結果表から、着順の付かなかった馬を [{'umaban','status','odds'}] にする。
+
+    finishing_order は着順のある馬だけを並べる（既存の集計がそれを前提にしている）。
+    中止の馬を黙って落とすと「その馬がいなかったレース」として数えることになるので、
+    別の欄に残す（2026-10-20 決定ログ。記事「競馬AIの開発過程④」と同じ考え方）。
+    """
+    table = jra_bias.find_result_table(page)
+    if not table:
+        return []
+    rows = jra_bias.parse_rows(table)
+    if len(rows) < 2:
+        return []
+    index = jra_bias.col_index(rows[0])
+    if '着順' not in index or '馬番' not in index:
+        return []
+    out = []
+    for cells in rows[1:]:
+        if len(cells) <= max(index.values()) or cells[index['着順']].strip().isdigit():
+            continue
+        entry = _non_finisher(cells[index['着順']],
+                              int(re.sub(r'\D', '', cells[index['馬番']]) or 0),
+                              cells[index['単勝']] if '単勝' in index else None,
+                              cells[index['馬名']] if '馬名' in index else '')
+        if entry:
+            out.append(entry)
+    return out
+
+
 def parse_finishing_order(page):
     """着順を [{'rank':1,'umaban':4,'name':'...','ninki':1,'odds':3.1}, ...] にする。"""
     table = jra_bias.find_result_table(page)
@@ -165,6 +211,25 @@ def _nk_finishing_order(page, race_id):
     return order
 
 
+def _nk_non_finishers(page):
+    """race.netkeiba.com の結果ページから、着順の付かなかった馬（parse_non_finishers と同じ形）。"""
+    out = []
+    for row in re.split(r'<tr[^>]*class="HorseList"', page)[1:]:
+        row = row.split('</tr>')[0]
+        rank = re.search(r'<div class="Rank">\s*([^<]*?)\s*</div>', row)
+        num = re.search(r'<td class="Num Txt_C">\s*<div>\s*(\d+)', row)
+        if not rank or rank.group(1).isdigit() or not num:
+            continue
+        odds = re.search(r'<td class="Odds Txt_R">\s*<span[^>]*>(.*?)</span>', row, re.S)
+        name = re.search(r'HorseNameSpan">(.*?)</span>', row, re.S)
+        entry = _non_finisher(rank.group(1), int(num.group(1)),
+                              jra_bias.strip_tags(odds.group(1)).strip() if odds else None,
+                              jra_bias.strip_tags(name.group(1)).strip() if name else '')
+        if entry:
+            out.append(entry)
+    return out
+
+
 def fetch(race_id, fetcher=None):
     """1レースの確定結果。まだ出ていなければ None。
 
@@ -187,6 +252,7 @@ def fetch(race_id, fetcher=None):
         return {
             'race_id': race_id,
             'finishing_order': order,
+            'non_finishers': parse_non_finishers(page),
             'payouts': parse_payouts(page),
         }
 
@@ -202,6 +268,7 @@ def fetch(race_id, fetcher=None):
     return {
         'race_id': race_id,
         'finishing_order': order,
+        'non_finishers': _nk_non_finishers(page),
         'payouts': parse_nk_payouts(page),
     }
 

@@ -316,8 +316,13 @@ def _run_columns(header_cells):
     return index
 
 
+# 競走成績の着順欄に入る、数字以外の表記。
+NOT_RUN_RANKS = {'取': '取消', '取消': '取消', '除': '除外', '除外': '除外',
+                 '中': '中止', '中止': '中止'}
+
+
 def parse_recent_runs(page, limit=5):
-    """競走成績から直近の走りを取り出す。新しい順。
+    """競走成績から直近の走りを取り出す。新しい順。取消・除外は数えない（中止は残す）。
 
     表の列順は netkeiba 側でよく変わるので、位置ではなく見出しで引く
     （jra_bias.py の col_index と同じ考え方）。
@@ -370,6 +375,13 @@ def parse_recent_runs(page, limit=5):
                 run['weight_diff'] = int(matched.group(2).replace('±', ''))
             except ValueError:
                 pass
+        # 取消・除外は走っていないので「1走」に数えない。前走の位置に入ると、
+        # 休み明けや前走の内容を読み違える（2026-10-20 決定ログ）。中止は走ったので残す。
+        status = NOT_RUN_RANKS.get(str(run.get('rank', '')))
+        if status in ('取消', '除外'):
+            continue
+        if status == '中止':
+            run['status'] = '中止'
         if run:
             runs.append(run)
         if len(runs) >= limit:
