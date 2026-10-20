@@ -121,3 +121,38 @@ def test_review_bias_report_withholds_and_survives_failure():
     lines, n = review.nar_bias_report([day], measure=boom)   # 落ちない
     assert n == 2 and all('測れなかった' in ln for ln in lines if '園田' in ln or '川崎' in ln)
     assert review.nar_bias_report([], measure=boom) == ([], 0)
+
+
+def test_live_today_uses_daily_file_for_results(monkeypatch):
+    """月次ファイルに当日の結果は無い。今日なら日次ファイルの行で置き換える（2026-10-20）。"""
+    today = datetime.date(2026, 10, 14)
+    monkeypatch.setattr(nar, 'today_jst', lambda: today)
+    monthly = {'racelist': [_race('川崎', '20261014', 1, done=False)],
+               'horselist': _horses('川崎', '20261014', 1, done=False), 'payback': []}
+    daily = _month('20261014')
+    seen = []
+
+    def fetcher(kind, day):
+        seen.append(kind)
+        return daily if kind == nar.DAILY else monthly
+    nar_csv.use_remote(today, fetcher=fetcher)
+    assert nar.DAILY in seen
+    assert any(r['競馬場'] == '川崎' and r['コーナー通過順1'] for r in nar_csv._REMOTE['racelist'])
+    # 日次ファイルが取れなくても月次だけで続ける
+    def broken(kind, day):
+        if kind == nar.DAILY:
+            raise nar.NarError('日次が取れない')
+        return monthly
+    nar_csv.use_remote(today, fetcher=broken)
+    assert nar_csv._REMOTE['racelist'] and not any(r['コーナー通過順1'] for r in nar_csv._REMOTE['racelist'])
+
+
+def test_live_past_day_does_not_fetch_daily(monkeypatch):
+    monkeypatch.setattr(nar, 'today_jst', lambda: datetime.date(2026, 10, 20))
+    seen = []
+
+    def fetcher(kind, day):
+        seen.append(kind)
+        return _month('20261014')
+    nar_csv.use_remote(datetime.date(2026, 10, 14), fetcher=fetcher)
+    assert nar.DAILY not in seen
