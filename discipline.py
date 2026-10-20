@@ -318,6 +318,33 @@ def check_note_front_list(race):
     )
 
 
+# 朝のnoteが「このレースは見送り」と読める書き方。馬を印から外す意味の「見送り」
+# （「減点方式で見送り」「見送り候補: 1,2,3」）は含めない。買い目の有無と食い違うのは
+# レース単位の見送りだけ。2026-10-10〜20 の地方のnote 6件で「見送り寄り」が出て、
+# うち2件（鎌倉記念・ミズナラ盃）は勝負度Bで買い目が出ていた。
+NOTE_SKIP_RE = re.compile(r'見送り寄り|見送りが妥当|見送り推奨|レースは見送り|購入は見送り')
+
+
+def check_note_says_skip(race):
+    """noteが「見送り」と書いているのに買い目が出ていれば知らせる（2026-10-20 追加）。
+
+    買い目と勝負度は bet_builder が実オッズと第13章の基準で機械的に決める。noteは読まれない。
+    だから朝に「見送り寄り」と書いても、基準を通れば買い目が出る。**どちらを採るかは人が決める**
+    ので、矛盾していることだけを知らせる（買い目は止めない）。
+    """
+    note = race.note or ''
+    match = NOTE_SKIP_RE.search(note)
+    if not match or not race.bets:
+        return None
+    return Finding(
+        WARN, 'note_says_skip',
+        f'{race.name}: noteに「{match.group(0)}」とあるのに買い目が出ています'
+        f'（勝負度{race.confidence or "未評価"}）',
+        '買い目と勝負度は規律（合成オッズ・期待値）だけで決まり、noteの見送り判断は読まれません。'
+        '買うなら見送り寄りとした理由が解消したかを確かめ、買わないなら見送りにしてください。',
+    )
+
+
 def check_win_odds_range(race, win_table):
     """単勝は4.0〜9.9倍を中心ゾーンとする（第8章）。
 
@@ -538,6 +565,10 @@ class RaceVerdict:
             # bet_builder が評価した（Noneでないオッズが取れた）全候補のオッズ。
             # 採用されたか否かに関わらず残す（同上）。
             'priced_odds': self.priced_odds,
+            # bet_builder の説明文（なぜこの買い目か／なぜ見送りか）。2026-10-20 追加。
+            # それまでは保存しておらず、鎌倉記念が日中にCへ落ちた理由などを後から再現するしかなかった。
+            # 検算のたびに1行ずつ残る（race.note には書かない。理由は bet_note の注記のとおり）。
+            'bet_note': self.bet_note,
             'findings': [f.to_dict() for f in self.findings],
             'conditions': self.conditions,
             # 印馬・中穴候補の馬体重（2026-10-08〜）。±15kgルールの効き目を後で検証するため。
@@ -589,7 +620,7 @@ def review_race(race, bet_odds, win_table, meta, now, day, conditions=None,
 
     # noteの書き方（第1章ステップ1・4）。買うレースだけを見る。見送りのレースまで
     # 「要検討」にすると、見送りの表示と本物の警告が埋もれるため。
-    for note_check in (check_note_going_tag, check_note_front_list):
+    for note_check in (check_note_going_tag, check_note_front_list, check_note_says_skip):
         finding = note_check(race)
         if finding:
             findings.append(finding)
