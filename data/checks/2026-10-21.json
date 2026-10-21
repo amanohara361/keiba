@@ -544,5 +544,35 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-21T19:38:07.021948+09:00",
+    "races": [
+      {
+        "race_id": "202610214211",
+        "name": "第３６回 埼玉栄冠３上オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第３６回 埼玉栄冠３上オープン: 既に発走しています（発走 17:45 / 現在 19:38）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
