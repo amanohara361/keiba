@@ -10,6 +10,8 @@
       "venue": "笠松",
       "race_no": 11,
       "start_time": "15:50",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "6": 0.22,
         "7": 0.17,
@@ -87,6 +89,8 @@
       "venue": "門別",
       "race_no": 12,
       "start_time": "20:50",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "11": 0.2,
         "10": 0.18,
