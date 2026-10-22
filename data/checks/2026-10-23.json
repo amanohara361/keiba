@@ -1,0 +1,167 @@
+[
+  {
+    "checked_at": "2026-10-23T08:06:18.945875+09:00",
+    "races": [
+      {
+        "race_id": "202610234711",
+        "name": "第４回 東海クラウン３歳以上・オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": "単勝オッズが揃わず勝率を推定できません（要・時間を置いて再検算）",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第４回 東海クラウン３歳以上・オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第４回 東海クラウン３歳以上・オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": null,
+          "going": null
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 8
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          }
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-10-23 08:06:21"
+        }
+      },
+      {
+        "race_id": "202610235011",
+        "name": "第１０回 兵庫ゴールドカップ３歳以上登録馬",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": "単勝オッズが揃わず勝率を推定できません（要・時間を置いて再検算）",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第１０回 兵庫ゴールドカップ３歳以上登録馬: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第１０回 兵庫ゴールドカップ３歳以上登録馬: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1230,
+          "weather": null,
+          "going": null
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 8
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 8
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          }
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-10-23 08:06:21"
+        }
+      }
+    ]
+  }
+]
