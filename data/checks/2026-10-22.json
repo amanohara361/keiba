@@ -1323,5 +1323,60 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-22T23:36:58.835408+09:00",
+    "races": [
+      {
+        "race_id": "202610224711",
+        "name": "第５０回 岐阜金賞３歳・オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第５０回 岐阜金賞３歳・オープン: 既に発走しています（発走 15:50 / 現在 23:36）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610223012",
+        "name": "第１４回 ブロッサムカップ（ブリックスアンドモルタル賞）２歳牝馬オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第１４回 ブロッサムカップ（ブリックスアンドモルタル賞）２歳牝馬オープン: 既に発走しています（発走 20:50 / 現在 23:36）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
