@@ -1,0 +1,1031 @@
+[
+  {
+    "checked_at": "2026-10-24T07:10:29.392473+09:00",
+    "races": [
+      {
+        "race_id": "202608040808",
+        "name": "3歳以上2勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 10.5,
+          "2": 6.0,
+          "3": 10.9,
+          "4": 2.5,
+          "5": 23.6,
+          "6": 9.8,
+          "7": 7.1,
+          "8": 4.4
+        },
+        "win_ninki": {
+          "1": 6,
+          "2": 3,
+          "3": 7,
+          "4": 1,
+          "5": 8,
+          "6": 5,
+          "7": 4,
+          "8": 2
+        },
+        "priced_odds": {
+          "単勝": {
+            "4": 2.5
+          },
+          "馬連": {
+            "4-8": 3.6,
+            "4-7": 6.8,
+            "3-4": 11.0,
+            "4-5": 60.2
+          },
+          "ワイド": {
+            "4-8": 1.1,
+            "4-7": 3.4,
+            "3-4": 5.5,
+            "4-5": 14.0
+          },
+          "3連複": {
+            "4-7-8": 8.3,
+            "3-4-8": 10.1,
+            "4-5-8": 40.7,
+            "3-4-7": 11.3,
+            "4-5-7": 47.0,
+            "3-4-5": 69.4
+          }
+        },
+        "bet_note": "第13章の基準（合成オッズ3.0倍・期待値1.2）を満たす買い目を組めませんでした。見送り（勝負度C）。",
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "3歳以上2勝クラス: 馬場が「稍重」です（芝1800m / 天候:小雨 / 馬場:稍重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "3歳以上2勝クラス: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "稍重",
+          "weather": "小雨",
+          "surface": "芝",
+          "distance": 1800,
+          "female_only": false,
+          "weight_rule": "定量",
+          "race_terms": "4回 京都 8日目 サラ系３歳以上 ２勝クラス (混)(特指) 定量 8頭 本賞金:1190,480,300,180,119万円",
+          "turn": "右",
+          "loop": "外",
+          "rail": "A",
+          "course_note": "右 外 A"
+        },
+        "weights": {
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:07:58"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:07:58"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:07:58"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:07:58"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-24 07:07:58"
+        }
+      },
+      {
+        "race_id": "202608040810",
+        "name": "長岡京S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 20.9,
+          "2": 7.3,
+          "3": 16.2,
+          "4": 8.0,
+          "5": 29.8,
+          "6": 97.0,
+          "7": 68.4,
+          "8": 4.8,
+          "9": 39.2,
+          "10": 4.3,
+          "11": 43.9,
+          "12": 9.7,
+          "13": 21.5,
+          "14": 6.0,
+          "15": 36.2
+        },
+        "win_ninki": {
+          "1": 8,
+          "2": 4,
+          "3": 7,
+          "4": 5,
+          "5": 10,
+          "6": 15,
+          "7": 14,
+          "8": 2,
+          "9": 12,
+          "10": 1,
+          "11": 13,
+          "12": 6,
+          "13": 9,
+          "14": 3,
+          "15": 11
+        },
+        "priced_odds": {
+          "単勝": {
+            "10": 4.3
+          },
+          "馬連": {
+            "10-14": 10.1,
+            "8-10": 9.0,
+            "2-10": 11.5,
+            "4-10": 11.9,
+            "10-12": 23.5,
+            "3-10": 30.6
+          },
+          "ワイド": {
+            "10-14": 4.6,
+            "8-10": 4.3,
+            "2-10": 4.5,
+            "4-10": 3.7,
+            "10-12": 11.2,
+            "3-10": 11.3
+          },
+          "3連複": {
+            "8-10-14": 13.7,
+            "2-10-14": 20.2,
+            "4-10-14": 18.3,
+            "10-12-14": 30.8,
+            "3-10-14": 39.2,
+            "2-8-10": 21.7,
+            "4-8-10": 18.8,
+            "8-10-12": 34.1,
+            "3-8-10": 49.9,
+            "2-4-10": 19.4,
+            "2-10-12": 42.0,
+            "2-3-10": 70.7,
+            "4-10-12": 44.4,
+            "3-4-10": 48.6
+          }
+        },
+        "bet_note": "第13章の基準（合成オッズ3.0倍・期待値1.2）を満たす買い目を組めませんでした。見送り（勝負度C）。",
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "長岡京S: 馬場が「稍重」です（芝1400m / 天候:小雨 / 馬場:稍重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "長岡京S: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "稍重",
+          "weather": "小雨",
+          "surface": "芝",
+          "distance": 1400,
+          "female_only": false,
+          "weight_rule": "定量",
+          "race_terms": "4回 京都 8日目 サラ系３歳以上 ３勝クラス (混)(特指) 定量 15頭 本賞金:1870,750,470,280,187万円",
+          "turn": "右",
+          "loop": "外",
+          "rail": "A",
+          "course_note": "右 外 A"
+        },
+        "weights": {
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 8
+          },
+          "14": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:08:48"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:08:48"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:08:48"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:08:48"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-24 07:08:48"
+        }
+      },
+      {
+        "race_id": "202608040811",
+        "name": "カシオペアS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 20.3,
+          "2": 35.2,
+          "3": 8.6,
+          "4": 16.9,
+          "5": 37.6,
+          "6": 18.0,
+          "7": 30.9,
+          "8": 160.0,
+          "9": 70.7,
+          "10": 36.0,
+          "11": 3.2,
+          "12": 12.2,
+          "13": 4.0,
+          "14": 13.4,
+          "15": 16.1,
+          "16": 15.0
+        },
+        "win_ninki": {
+          "1": 10,
+          "2": 12,
+          "3": 3,
+          "4": 8,
+          "5": 14,
+          "6": 9,
+          "7": 11,
+          "8": 16,
+          "9": 15,
+          "10": 13,
+          "11": 1,
+          "12": 4,
+          "13": 2,
+          "14": 5,
+          "15": 7,
+          "16": 6
+        },
+        "priced_odds": {
+          "単勝": {
+            "13": 4.0
+          },
+          "馬連": {
+            "11-13": 6.9,
+            "13-14": 24.0,
+            "12-13": 18.7,
+            "1-13": 42.2,
+            "3-13": 28.6,
+            "4-13": 43.1,
+            "13-16": 27.9
+          },
+          "ワイド": {
+            "11-13": 3.3,
+            "13-14": 8.4,
+            "12-13": 9.8,
+            "1-13": 14.5,
+            "3-13": 9.7,
+            "4-13": 11.8,
+            "13-16": 8.8
+          },
+          "3連複": {
+            "11-13-14": 20.9,
+            "11-12-13": 15.9,
+            "1-11-13": 38.3,
+            "3-11-13": 23.8,
+            "4-11-13": 43.8,
+            "11-13-16": 27.4,
+            "12-13-14": 59.8,
+            "1-13-14": 134.9,
+            "3-13-14": 94.7,
+            "4-13-14": 175.8,
+            "13-14-16": 85.1,
+            "1-12-13": 120.9,
+            "3-12-13": 72.0,
+            "4-12-13": 146.5,
+            "12-13-16": 80.5,
+            "1-3-13": 163.7,
+            "1-4-13": 276.5,
+            "1-13-16": 192.5
+          }
+        },
+        "bet_note": "第13章の基準を満たす案はありましたが、どれも上位印（◎○）を外して下位印（▲△）を残す形でした。印の序列を数値基準で上書きしないため見送り（勝負度C）。",
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "カシオペアS: 馬場が「稍重」です（芝1800m / 天候:小雨 / 馬場:稍重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "カシオペアS: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "稍重",
+          "weather": "小雨",
+          "surface": "芝",
+          "distance": 1800,
+          "female_only": false,
+          "weight_rule": "別定",
+          "race_terms": "4回 京都 8日目 サラ系３歳以上 オープン (国際)(特指) 別定 16頭 本賞金:2800,1100,700,420,280万円",
+          "turn": "右",
+          "loop": "外",
+          "rail": "A",
+          "course_note": "右 外 A"
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "11": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "13": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "14": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "16": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:09:33"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:09:33"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:09:33"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:09:33"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-24 07:09:33"
+        }
+      },
+      {
+        "race_id": "202604040311",
+        "name": "魚沼S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 21.3,
+          "2": 19.1,
+          "3": 3.5,
+          "4": 33.5,
+          "5": 12.1,
+          "6": 8.8,
+          "7": 6.0,
+          "8": 45.4,
+          "9": 11.8,
+          "10": 4.2,
+          "11": 13.2,
+          "12": 17.9
+        },
+        "win_ninki": {
+          "1": 10,
+          "2": 9,
+          "3": 1,
+          "4": 11,
+          "5": 6,
+          "6": 4,
+          "7": 3,
+          "8": 12,
+          "9": 5,
+          "10": 2,
+          "11": 7,
+          "12": 8
+        },
+        "priced_odds": {
+          "単勝": {
+            "3": 3.5
+          },
+          "馬連": {
+            "3-7": 9.1,
+            "3-10": 7.0,
+            "3-6": 14.6,
+            "1-3": 48.8,
+            "3-5": 25.4,
+            "3-12": 46.2
+          },
+          "ワイド": {
+            "3-7": 3.9,
+            "3-10": 2.3,
+            "3-6": 7.2,
+            "1-3": 12.1,
+            "3-5": 9.3,
+            "3-12": 9.9
+          },
+          "3連複": {
+            "3-7-10": 11.2,
+            "3-6-7": 27.8,
+            "1-3-7": 78.6,
+            "3-5-7": 41.2,
+            "3-7-12": 88.0,
+            "3-6-10": 14.3,
+            "1-3-10": 62.3,
+            "3-5-10": 26.1,
+            "3-10-12": 80.5,
+            "1-3-6": 137.6,
+            "3-5-6": 54.8,
+            "3-6-12": 195.0,
+            "1-3-5": 179.0,
+            "1-3-12": 191.7
+          }
+        },
+        "bet_note": "規律を満たす買い目のうち最も当たりやすい3連複 3-7-12でも的中率1.5%で、足切り（5%）を下回ります。当たる見込みの薄い高配当1点に期待値を頼る形になるため見送り（勝負度C）。",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "魚沼S: 芝2000m / 天候:小雨 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "魚沼S: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "小雨",
+          "surface": "芝",
+          "distance": 2000,
+          "female_only": false,
+          "weight_rule": "定量",
+          "race_terms": "4回 新潟 3日目 サラ系３歳以上 ３勝クラス (混)(特指) 定量 12頭 本賞金:1870,750,470,280,187万円",
+          "turn": "左",
+          "loop": "外",
+          "rail": "A",
+          "course_note": "左 外 A"
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:09:53"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:09:53"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:09:53"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:09:53"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-24 07:09:53"
+        }
+      },
+      {
+        "race_id": "202605040810",
+        "name": "日本農業新聞杯",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 35.0,
+          "2": 40.6,
+          "3": 20.0,
+          "4": 12.7,
+          "5": 16.7,
+          "6": 18.6,
+          "7": 14.4,
+          "8": 27.1,
+          "9": 9.8,
+          "10": 10.2,
+          "11": 32.5,
+          "12": 3.3,
+          "13": 8.4,
+          "14": 5.7,
+          "15": 83.3,
+          "16": 63.0
+        },
+        "win_ninki": {
+          "1": 13,
+          "2": 14,
+          "3": 10,
+          "4": 6,
+          "5": 8,
+          "6": 9,
+          "7": 7,
+          "8": 11,
+          "9": 4,
+          "10": 5,
+          "11": 12,
+          "12": 1,
+          "13": 3,
+          "14": 2,
+          "15": 16,
+          "16": 15
+        },
+        "priced_odds": {
+          "単勝": {
+            "12": 3.3
+          },
+          "馬連": {
+            "12-13": 11.4,
+            "10-12": 8.4,
+            "12-14": 12.2,
+            "8-12": 71.6,
+            "4-12": 18.9,
+            "3-12": 20.5
+          },
+          "ワイド": {
+            "12-13": 3.5,
+            "10-12": 4.6,
+            "12-14": 5.7,
+            "8-12": 25.9,
+            "4-12": 5.4,
+            "3-12": 7.7
+          },
+          "3連複": {
+            "10-12-13": 20.0,
+            "12-13-14": 31.1,
+            "8-12-13": 191.1,
+            "4-12-13": 45.6,
+            "3-12-13": 47.3,
+            "10-12-14": 22.9,
+            "8-10-12": 132.7,
+            "4-10-12": 35.8,
+            "3-10-12": 33.8,
+            "8-12-14": 263.6,
+            "4-12-14": 69.3,
+            "3-12-14": 58.5,
+            "4-8-12": 284.7,
+            "3-8-12": 365.0
+          }
+        },
+        "bet_note": "規律を満たす買い目のうち最も当たりやすい3連複 8-12-13でも的中率0.9%で、足切り（5%）を下回ります。当たる見込みの薄い高配当1点に期待値を頼る形になるため見送り（勝負度C）。",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "日本農業新聞杯: ダート1600m / 天候:小雨 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "日本農業新聞杯: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "小雨",
+          "surface": "ダート",
+          "distance": 1600,
+          "female_only": false,
+          "weight_rule": "ハンデ",
+          "race_terms": "4回 東京 8日目 サラ系３歳以上 ３勝クラス (混)[指] ハンデ 16頭 本賞金:1870,750,470,280,187万円",
+          "turn": "左",
+          "loop": null,
+          "rail": null,
+          "course_note": "左"
+        },
+        "weights": {
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "13": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "14": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:08:33"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:08:33"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:08:33"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:08:33"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-24 07:08:33"
+        }
+      },
+      {
+        "race_id": "202605040811",
+        "name": "アルテミスS",
+        "blocked": false,
+        "composite_odds": 5.7,
+        "expected_value": 1.43,
+        "bet_odds": [
+          {
+            "bet": "ワイド 5-6",
+            "odds": 5.7
+          }
+        ],
+        "win_odds": {
+          "1": 29.3,
+          "2": 15.8,
+          "3": 18.5,
+          "4": 9.3,
+          "5": 4.8,
+          "6": 3.5,
+          "7": 11.9,
+          "8": 151.7,
+          "9": 4.0,
+          "10": 15.7,
+          "11": 36.4,
+          "12": 33.9,
+          "13": 20.7
+        },
+        "win_ninki": {
+          "1": 10,
+          "2": 7,
+          "3": 8,
+          "4": 4,
+          "5": 3,
+          "6": 1,
+          "7": 5,
+          "8": 13,
+          "9": 2,
+          "10": 6,
+          "11": 12,
+          "12": 11,
+          "13": 9
+        },
+        "priced_odds": {
+          "単勝": {
+            "5": 4.8
+          },
+          "馬連": {
+            "5-6": 11.4,
+            "5-9": 11.9,
+            "4-5": 32.2,
+            "2-5": 29.3,
+            "3-5": 60.7,
+            "5-7": 38.9,
+            "5-10": 37.7
+          },
+          "ワイド": {
+            "5-6": 5.7,
+            "5-9": 4.2,
+            "4-5": 9.8,
+            "2-5": 9.3,
+            "3-5": 18.9,
+            "5-7": 10.5,
+            "5-10": 9.7,
+            "6-9": 3.0
+          },
+          "3連複": {
+            "5-6-9": 12.8,
+            "4-5-6": 35.9,
+            "2-5-6": 40.3,
+            "3-5-6": 78.1,
+            "5-6-7": 36.7,
+            "5-6-10": 43.5,
+            "4-5-9": 33.7,
+            "2-5-9": 43.5,
+            "3-5-9": 68.2,
+            "5-7-9": 42.7,
+            "5-9-10": 48.6,
+            "2-4-5": 102.1,
+            "3-4-5": 161.9,
+            "4-5-7": 114.4,
+            "4-5-10": 135.2,
+            "2-3-5": 173.0,
+            "2-5-7": 136.3,
+            "2-5-10": 124.5
+          }
+        },
+        "bet_note": "ワイド 5-6（合成5.70倍・主観的中率25.07%・期待値1.43） ※主観的中率が市場推定の1.8倍です。この見積りが外れると期待値の根拠も崩れます ◎以外の保険（ワイド6-9、3.0倍）を試みましたが、追加後の合成オッズ1.97倍・期待値0.81が基準未達のため見送りました。",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "アルテミスS: 芝1600m / 天候:小雨 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "アルテミスS: 合成オッズ 5.70倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "アルテミスS: 期待値 1.43（合成 5.70倍 × 主観的中率 25%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "アルテミスS: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "小雨",
+          "surface": "芝",
+          "distance": 1600,
+          "female_only": true,
+          "weight_rule": "馬齢",
+          "race_terms": "4回 東京 8日目 サラ系２歳 オープン (国際) 牝(指) 馬齢 13頭 本賞金:3200,1300,800,480,320万円",
+          "turn": "左",
+          "loop": null,
+          "rail": "A",
+          "course_note": "左 A"
+        },
+        "weights": {
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:09:18"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:09:18"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:09:18"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-24 07:09:18"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-24 07:09:18"
+        }
+      }
+    ]
+  }
+]
