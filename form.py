@@ -78,7 +78,7 @@ def strip_tags(html):
 # ----------------------------------------------------------------------
 
 def parse_entries(page):
-    """出馬表から {馬番: {horse_id, name, age, sex, weight, weight_diff, kinryo}} を作る。"""
+    """出馬表から {馬番: {horse_id, name, age, sex, affiliation, weight, weight_diff, kinryo}} を作る。"""
     entries = {}
     for row in re.findall(r'<tr class="[^"]*HorseList[^"]*"[^>]*>(.*?)</tr>', page, re.S):
         umaban = re.search(r'<td[^>]*class="[^"]*Umaban[^"]*"[^>]*>\s*(\d+)\s*</td>', row)
@@ -129,10 +129,20 @@ def parse_entries(page):
         if sex_cell:
             sex = sex_cell.group(1)
 
+        # 所属：厩舎（Trainer）セルの先頭のラベル（美浦・栗東・地方・海外）。
+        # 東西の遠征の判定に使う（予想メソッド 第2章・第3章、2026-10-24）。
+        # ラベルが無ければ None のまま（推測で埋めない）。
+        affiliation = None
+        label = re.search(r'<td[^>]*class="[^"]*Trainer[^"]*"[^>]*>\s*'
+                          r'<span class="Label\d*">\s*([^<\s]+)\s*</span>', row)
+        if label:
+            affiliation = label.group(1)
+
         entries[int(umaban.group(1))] = {
             'horse_id': horse.group(1),
             'age': age,
             'sex': sex,
+            'affiliation': affiliation,
             'name': (name.group(1).strip() if name else ''),
             'weight': weight,
             'weight_diff': weight_diff,
