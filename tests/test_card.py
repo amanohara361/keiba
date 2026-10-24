@@ -433,6 +433,17 @@ def test_出馬表の斤量以外の項目は従来どおり():
     assert entries[2]['weight_diff'] == 2
 
 
+def test_出馬表から所属を読む():
+    """東西の遠征の判定に使う（予想メソッド 第2章・第3章、2026-10-24）。
+    ラベルの無い厩舎セルは None のまま残す。"""
+    entries = form_module.parse_entries(SHUTUBA_PAGE)
+    assert entries[1]['affiliation'] == '地方'
+    assert entries[2]['affiliation'] is None
+    page = SHUTUBA_PAGE.replace('<td class="Trainer"><a',
+                                '<td class="Trainer">\n<span class="Label2">栗東</span>\n<a')
+    assert form_module.parse_entries(page)[2]['affiliation'] == '栗東'
+
+
 def test_出馬表から性別を読む():
     """牝馬限定戦の判定と斤量の比較に使う（検証ノート 2026-10-12週・京都8R）。"""
     entries = form_module.parse_entries(SHUTUBA_PAGE)
