@@ -9569,5 +9569,185 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-24T18:37:46.446130+09:00",
+    "races": [
+      {
+        "race_id": "202608040808",
+        "name": "3歳以上2勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳以上2勝クラス: 既に発走しています（発走 13:45 / 現在 18:37）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608040810",
+        "name": "長岡京S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "長岡京S: 既に発走しています（発走 14:50 / 現在 18:37）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608040811",
+        "name": "カシオペアS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "カシオペアS: 既に発走しています（発走 15:30 / 現在 18:37）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202604040311",
+        "name": "魚沼S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "魚沼S: 既に発走しています（発走 15:15 / 現在 18:37）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040810",
+        "name": "日本農業新聞杯",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "日本農業新聞杯: 既に発走しています（発走 15:00 / 現在 18:37）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605040811",
+        "name": "アルテミスS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "アルテミスS: 既に発走しています（発走 15:45 / 現在 18:37）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610245505",
+        "name": "もみじ賞Ｂ",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "もみじ賞Ｂ: 既に発走しています（発走 17:00 / 現在 18:37）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
