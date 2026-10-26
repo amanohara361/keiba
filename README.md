@@ -130,6 +130,9 @@ python check.py --date 2026-08-02 --now 2026-08-02T14:30 --no-email
 python review.py --end 2026-08-09                       # 週次レビュー（メールなし）
 pytest                                                  # テスト（ネット接続不要）
 
+python trends.py collect 2016 2025                      # 過去のGⅠを集める（1時間半ほど。途中再開できる）
+python trends.py summary                                # data/trends/summary.md を作り直す
+
 python nar.py calendar                                  # 今月の地方重賞の予定
 python nar_card.py                                      # 今日の地方カードを作る
 python nar_card.py --gate                               # 今日は対象があるか（run/none/missing）
@@ -154,6 +157,7 @@ odds.py          中央の実オッズ取得（netkeiba API・action=update）
 bet_builder.py   印・中穴候補・実オッズから買い目と勝負度を組み立てる（第13章F案）
 results.py       中央の確定した着順と払戻の取得・買い目の精算（精算は共通）
 discipline.py    第13章の規律（安全網）← 基準を変えるのはここ。中央・地方で共通
+trends.py        過去のGⅠを要因別（前走海外など）に、人気をそろえて集計する
 mailer.py        メール送信
 
 data/cards/      その日の出馬表データ（取得側 → 判断側）
@@ -162,6 +166,7 @@ data/bets/       朝タスクが書く買い目（予想側 → 検算側の唯�
 data/checks/     検算の記録（1日に複数回追記される）
 data/results/    確定した着順と払戻（一度取れば取り直さない）
 data/review/     週次レビューの出力（人が読む）
+data/trends/     要因別の過去データ（races/ に1レース1ファイル、summary.md が集計）
 
 jra_bias.py      トラックバイアス判定（既存・手つかず）
 nar_csv.py       地方競馬のCSV解析（既存・手つかず）
