@@ -1,0 +1,231 @@
+{
+ "race_id": "202207060211",
+ "date": "20221204",
+ "race_name": "チャンピオンズC",
+ "runners": [
+  {
+   "horse_id": "2017105396",
+   "name": "ジュンライトボルト",
+   "ninki": 3,
+   "rank": 1,
+   "prev": {
+    "race_id": "202207050811",
+    "date": "2022/10/01",
+    "venue": "5中京8",
+    "race_name": "シリウスS(GIII)",
+    "kind": "jra",
+    "days": 64
+   }
+  },
+  {
+   "horse_id": "2019104678",
+   "name": "クラウンプライド",
+   "ninki": 4,
+   "rank": 2,
+   "prev": {
+    "race_id": "202235110312",
+    "date": "2022/11/03",
+    "venue": "盛岡",
+    "race_name": "JBCクラシック(JpnI)",
+    "kind": "nar",
+    "days": 31
+   }
+  },
+  {
+   "horse_id": "2019100630",
+   "name": "ハピ",
+   "ninki": 6,
+   "rank": 3,
+   "prev": {
+    "race_id": "202209050211",
+    "date": "2022/11/06",
+    "venue": "5阪神2",
+    "race_name": "みやこS(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2017101010",
+   "name": "テーオーケインズ",
+   "ninki": 1,
+   "rank": 4,
+   "prev": {
+    "race_id": "202235110312",
+    "date": "2022/11/03",
+    "venue": "盛岡",
+    "race_name": "JBCクラシック(JpnI)",
+    "kind": "nar",
+    "days": 31
+   }
+  },
+  {
+   "horse_id": "2018103528",
+   "name": "シャマル",
+   "ninki": 7,
+   "rank": 5,
+   "prev": {
+    "race_id": "202235101012",
+    "date": "2022/10/10",
+    "venue": "盛岡",
+    "race_name": "マイルチャンピオンシ(JpnI)",
+    "kind": "nar",
+    "days": 55
+   }
+  },
+  {
+   "horse_id": "2017100988",
+   "name": "サンライズホープ",
+   "ninki": 11,
+   "rank": 6,
+   "prev": {
+    "race_id": "202209050211",
+    "date": "2022/11/06",
+    "venue": "5阪神2",
+    "race_name": "みやこS(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2016100617",
+   "name": "スマッシングハーツ",
+   "ninki": 10,
+   "rank": 7,
+   "prev": {
+    "race_id": "202205050311",
+    "date": "2022/11/12",
+    "venue": "5東京3",
+    "race_name": "東京中日S杯武蔵野S(GIII)",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2019101623",
+   "name": "ノットゥルノ",
+   "ninki": 5,
+   "rank": 8,
+   "prev": {
+    "race_id": "202243092811",
+    "date": "2022/09/28",
+    "venue": "船橋",
+    "race_name": "日本テレビ盃(JpnII)",
+    "kind": "nar",
+    "days": 67
+   }
+  },
+  {
+   "horse_id": "2016101455",
+   "name": "オーヴェルニュ",
+   "ninki": 9,
+   "rank": 9,
+   "prev": {
+    "race_id": "202235110312",
+    "date": "2022/11/03",
+    "venue": "盛岡",
+    "race_name": "JBCクラシック(JpnI)",
+    "kind": "nar",
+    "days": 31
+   }
+  },
+  {
+   "horse_id": "2017101719",
+   "name": "タガノビューティー",
+   "ninki": 12,
+   "rank": 10,
+   "prev": {
+    "race_id": "202205050311",
+    "date": "2022/11/12",
+    "venue": "5東京3",
+    "race_name": "東京中日S杯武蔵野S(GIII)",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2015104417",
+   "name": "レッドガラン",
+   "ninki": 13,
+   "rank": 11,
+   "prev": {
+    "race_id": "202205040911",
+    "date": "2022/10/30",
+    "venue": "4東京9",
+    "race_name": "天皇賞(秋)(GI)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2018105251",
+   "name": "グロリアムンディ",
+   "ninki": 2,
+   "rank": 12,
+   "prev": {
+    "race_id": "202209030411",
+    "date": "2022/06/26",
+    "venue": "3阪神4",
+    "race_name": "宝塚記念(GI)",
+    "kind": "jra",
+    "days": 161
+   }
+  },
+  {
+   "horse_id": "2015105868",
+   "name": "サクラアリュール",
+   "ninki": 16,
+   "rank": 13,
+   "prev": {
+    "race_id": "202209050211",
+    "date": "2022/11/06",
+    "venue": "5阪神2",
+    "race_name": "みやこS(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2018104951",
+   "name": "バーデンヴァイラー",
+   "ninki": 8,
+   "rank": 14,
+   "prev": {
+    "race_id": "202207050811",
+    "date": "2022/10/01",
+    "venue": "5中京8",
+    "race_name": "シリウスS(GIII)",
+    "kind": "jra",
+    "days": 64
+   }
+  },
+  {
+   "horse_id": "2014106474",
+   "name": "サンライズノヴァ",
+   "ninki": 14,
+   "rank": 15,
+   "prev": {
+    "race_id": "202205050311",
+    "date": "2022/11/12",
+    "venue": "5東京3",
+    "race_name": "東京中日S杯武蔵野S(GIII)",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2018105365",
+   "name": "レッドソルダード",
+   "ninki": 15,
+   "rank": 16,
+   "prev": {
+    "race_id": "202205040711",
+    "date": "2022/10/23",
+    "venue": "4東京7",
+    "race_name": "ブラジルC(L)",
+    "kind": "jra",
+    "days": 42
+   }
+  }
+ ]
+}

@@ -1,0 +1,231 @@
+{
+ "race_id": "202505010811",
+ "date": "20250223",
+ "race_name": "フェブラリーS",
+ "runners": [
+  {
+   "horse_id": "2020103307",
+   "name": "コスタノヴァ",
+   "ninki": 2,
+   "rank": 1,
+   "prev": {
+    "race_id": "202505010211",
+    "date": "2025/02/02",
+    "venue": "1東京2",
+    "race_name": "根岸S(GIII)",
+    "kind": "jra",
+    "days": 21
+   }
+  },
+  {
+   "horse_id": "2021104756",
+   "name": "サンライズジパング",
+   "ninki": 5,
+   "rank": 2,
+   "prev": {
+    "race_id": "202507010911",
+    "date": "2025/01/26",
+    "venue": "1中京9",
+    "race_name": "プロキオンS(GII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2021105615",
+   "name": "ミッキーファイト",
+   "ninki": 1,
+   "rank": 3,
+   "prev": {
+    "race_id": "202448121911",
+    "date": "2024/12/19",
+    "venue": "名古屋",
+    "race_name": "名古屋大賞典(JpnIII)",
+    "kind": "nar",
+    "days": 66
+   }
+  },
+  {
+   "horse_id": "2018106084",
+   "name": "ペプチドナイル",
+   "ninki": 4,
+   "rank": 4,
+   "prev": {
+    "race_id": "202407040211",
+    "date": "2024/12/01",
+    "venue": "4中京2",
+    "race_name": "チャンピオンズC(GI)",
+    "kind": "jra",
+    "days": 84
+   }
+  },
+  {
+   "horse_id": "2020101547",
+   "name": "エンペラーワケア",
+   "ninki": 3,
+   "rank": 5,
+   "prev": {
+    "race_id": "202405050311",
+    "date": "2024/11/09",
+    "venue": "5東京3",
+    "race_name": "東京中日S杯武蔵野S(GIII)",
+    "kind": "jra",
+    "days": 106
+   }
+  },
+  {
+   "horse_id": "2017106404",
+   "name": "メイショウハリオ",
+   "ninki": 11,
+   "rank": 6,
+   "prev": {
+    "race_id": "202455110411",
+    "date": "2024/11/04",
+    "venue": "佐賀",
+    "race_name": "JBCクラシック(JpnI)",
+    "kind": "nar",
+    "days": 111
+   }
+  },
+  {
+   "horse_id": "2019104476",
+   "name": "ガイアフォース",
+   "ninki": 6,
+   "rank": 7,
+   "prev": {
+    "race_id": "202407040211",
+    "date": "2024/12/01",
+    "venue": "4中京2",
+    "race_name": "チャンピオンズC(GI)",
+    "kind": "jra",
+    "days": 84
+   }
+  },
+  {
+   "horse_id": "2017101719",
+   "name": "タガノビューティー",
+   "ninki": 10,
+   "rank": 8,
+   "prev": {
+    "race_id": "202505010211",
+    "date": "2025/02/02",
+    "venue": "1東京2",
+    "race_name": "根岸S(GIII)",
+    "kind": "jra",
+    "days": 21
+   }
+  },
+  {
+   "horse_id": "2019104564",
+   "name": "アーテルアストレア",
+   "ninki": 9,
+   "rank": 9,
+   "prev": {
+    "race_id": "202407040211",
+    "date": "2024/12/01",
+    "venue": "4中京2",
+    "race_name": "チャンピオンズC(GI)",
+    "kind": "jra",
+    "days": 84
+   }
+  },
+  {
+   "horse_id": "2020104136",
+   "name": "サンデーファンデー",
+   "ninki": 8,
+   "rank": 10,
+   "prev": {
+    "race_id": "202507010911",
+    "date": "2025/01/26",
+    "venue": "1中京9",
+    "race_name": "プロキオンS(GII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2020103626",
+   "name": "ドゥラエレーデ",
+   "ninki": 7,
+   "rank": 11,
+   "prev": {
+    "race_id": "202507010911",
+    "date": "2025/01/26",
+    "venue": "1中京9",
+    "race_name": "プロキオンS(GII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2016102370",
+   "name": "ヘリオス",
+   "ninki": 16,
+   "rank": 11,
+   "prev": {
+    "race_id": "202450122511",
+    "date": "2024/12/25",
+    "venue": "園田",
+    "race_name": "兵庫ゴールドトロフィ(JpnIII)",
+    "kind": "nar",
+    "days": 60
+   }
+  },
+  {
+   "horse_id": "2018100829",
+   "name": "ウィリアムバローズ",
+   "ninki": 12,
+   "rank": 13,
+   "prev": {
+    "race_id": "202455110411",
+    "date": "2024/11/04",
+    "venue": "佐賀",
+    "race_name": "JBCクラシック(JpnI)",
+    "kind": "nar",
+    "days": 111
+   }
+  },
+  {
+   "horse_id": "2020102745",
+   "name": "デルマソトガケ",
+   "ninki": 13,
+   "rank": 14,
+   "prev": {
+    "race_id": "202555020610",
+    "date": "2025/02/06",
+    "venue": "佐賀",
+    "race_name": "佐賀記念(JpnIII)",
+    "kind": "nar",
+    "days": 17
+   }
+  },
+  {
+   "horse_id": "2020100273",
+   "name": "ミトノオー",
+   "ninki": 15,
+   "rank": 15,
+   "prev": {
+    "race_id": "202408070911",
+    "date": "2024/12/28",
+    "venue": "7京都9",
+    "race_name": "ベテルギウスS(L)",
+    "kind": "jra",
+    "days": 57
+   }
+  },
+  {
+   "horse_id": "2021100682",
+   "name": "アンモシエラ",
+   "ninki": 14,
+   "rank": 16,
+   "prev": {
+    "race_id": "202543021111",
+    "date": "2025/02/11",
+    "venue": "船橋",
+    "race_name": "クイーン賞(JpnIII)",
+    "kind": "nar",
+    "days": 12
+   }
+  }
+ ]
+}

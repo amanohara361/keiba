@@ -1,0 +1,259 @@
+{
+ "race_id": "202508030711",
+ "date": "20251019",
+ "race_name": "秋華賞",
+ "runners": [
+  {
+   "horse_id": "2022105185",
+   "name": "エンブロイダリー",
+   "ninki": 2,
+   "rank": 1,
+   "prev": {
+    "race_id": "202505021011",
+    "date": "2025/05/25",
+    "venue": "2東京10",
+    "race_name": "優駿牝馬(GI)",
+    "kind": "jra",
+    "days": 147
+   }
+  },
+  {
+   "horse_id": "2022103205",
+   "name": "エリカエクスプレス",
+   "ninki": 5,
+   "rank": 2,
+   "prev": {
+    "race_id": "202506040111",
+    "date": "2025/09/06",
+    "venue": "4中山1",
+    "race_name": "京成杯オータムH(GIII)",
+    "kind": "jra",
+    "days": 43
+   }
+  },
+  {
+   "horse_id": "2022103546",
+   "name": "パラディレーヌ",
+   "ninki": 6,
+   "rank": 3,
+   "prev": {
+    "race_id": "202509040411",
+    "date": "2025/09/14",
+    "venue": "4阪神4",
+    "race_name": "関西TVローズS(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022104767",
+   "name": "ジョスラン",
+   "ninki": 4,
+   "rank": 4,
+   "prev": {
+    "race_id": "202506040211",
+    "date": "2025/09/07",
+    "venue": "4中山2",
+    "race_name": "紫苑S(GII)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2022105433",
+   "name": "セナスタイル",
+   "ninki": 3,
+   "rank": 5,
+   "prev": {
+    "race_id": "202509040411",
+    "date": "2025/09/14",
+    "venue": "4阪神4",
+    "race_name": "関西TVローズS(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022105192",
+   "name": "ビップデイジー",
+   "ninki": 9,
+   "rank": 6,
+   "prev": {
+    "race_id": "202509040411",
+    "date": "2025/09/14",
+    "venue": "4阪神4",
+    "race_name": "関西TVローズS(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022101250",
+   "name": "クリノメイ",
+   "ninki": 17,
+   "rank": 7,
+   "prev": {
+    "race_id": "202543100211",
+    "date": "2025/10/02",
+    "venue": "船橋",
+    "race_name": "マリーンC(JpnIII)",
+    "kind": "nar",
+    "days": 17
+   }
+  },
+  {
+   "horse_id": "2022105157",
+   "name": "ルージュソリテール",
+   "ninki": 12,
+   "rank": 8,
+   "prev": {
+    "race_id": "202509040411",
+    "date": "2025/09/14",
+    "venue": "4阪神4",
+    "race_name": "関西TVローズS(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022104145",
+   "name": "インヴォーグ",
+   "ninki": 14,
+   "rank": 9,
+   "prev": {
+    "race_id": "202509040208",
+    "date": "2025/09/07",
+    "venue": "4阪神2",
+    "race_name": "武田尾特別(2勝クラス)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2022105467",
+   "name": "マピュース",
+   "ninki": 10,
+   "rank": 10,
+   "prev": {
+    "race_id": "202507030807",
+    "date": "2025/08/17",
+    "venue": "3中京8",
+    "race_name": "中京記念(GIII)",
+    "kind": "jra",
+    "days": 63
+   }
+  },
+  {
+   "horse_id": "2022102296",
+   "name": "ケリフレッドアスク",
+   "ninki": 11,
+   "rank": 11,
+   "prev": {
+    "race_id": "202506040211",
+    "date": "2025/09/07",
+    "venue": "4中山2",
+    "race_name": "紫苑S(GII)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2022104617",
+   "name": "ヴーレヴー",
+   "ninki": 16,
+   "rank": 12,
+   "prev": {
+    "race_id": "202509040411",
+    "date": "2025/09/14",
+    "venue": "4阪神4",
+    "race_name": "関西TVローズS(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022105291",
+   "name": "ランフォーヴァウ",
+   "ninki": 18,
+   "rank": 13,
+   "prev": {
+    "race_id": "202509040411",
+    "date": "2025/09/14",
+    "venue": "4阪神4",
+    "race_name": "関西TVローズS(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022104885",
+   "name": "テレサ",
+   "ninki": 8,
+   "rank": 14,
+   "prev": {
+    "race_id": "202509040411",
+    "date": "2025/09/14",
+    "venue": "4阪神4",
+    "race_name": "関西TVローズS(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022105087",
+   "name": "ダノンフェアレディ",
+   "ninki": 7,
+   "rank": 15,
+   "prev": {
+    "race_id": "202506040211",
+    "date": "2025/09/07",
+    "venue": "4中山2",
+    "race_name": "紫苑S(GII)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2022105402",
+   "name": "カムニャック",
+   "ninki": 1,
+   "rank": 16,
+   "prev": {
+    "race_id": "202509040411",
+    "date": "2025/09/14",
+    "venue": "4阪神4",
+    "race_name": "関西TVローズS(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022105346",
+   "name": "レーゼドラマ",
+   "ninki": 15,
+   "rank": 17,
+   "prev": {
+    "race_id": "202501010411",
+    "date": "2025/08/03",
+    "venue": "1札幌4",
+    "race_name": "クイーンS(GIII)",
+    "kind": "jra",
+    "days": 77
+   }
+  },
+  {
+   "horse_id": "2022104994",
+   "name": "ブラウンラチェット",
+   "ninki": 13,
+   "rank": 18,
+   "prev": {
+    "race_id": "202505021011",
+    "date": "2025/05/25",
+    "venue": "2東京10",
+    "race_name": "優駿牝馬(GI)",
+    "kind": "jra",
+    "days": 147
+   }
+  }
+ ]
+}

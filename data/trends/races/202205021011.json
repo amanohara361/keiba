@@ -1,0 +1,245 @@
+{
+ "race_id": "202205021011",
+ "date": "20220522",
+ "race_name": "優駿牝馬",
+ "runners": [
+  {
+   "horse_id": "2019104740",
+   "name": "スターズオンアース",
+   "ninki": 3,
+   "rank": 1,
+   "prev": {
+    "race_id": "202209020611",
+    "date": "2022/04/10",
+    "venue": "2阪神6",
+    "race_name": "桜花賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2019105565",
+   "name": "スタニングローズ",
+   "ninki": 10,
+   "rank": 2,
+   "prev": {
+    "race_id": "202206020811",
+    "date": "2022/03/21",
+    "venue": "2中山8",
+    "race_name": "フラワーC(GIII)",
+    "kind": "jra",
+    "days": 62
+   }
+  },
+  {
+   "horse_id": "2019105213",
+   "name": "ナミュール",
+   "ninki": 4,
+   "rank": 3,
+   "prev": {
+    "race_id": "202209020611",
+    "date": "2022/04/10",
+    "venue": "2阪神6",
+    "race_name": "桜花賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2019102772",
+   "name": "ピンハイ",
+   "ninki": 13,
+   "rank": 4,
+   "prev": {
+    "race_id": "202209020611",
+    "date": "2022/04/10",
+    "venue": "2阪神6",
+    "race_name": "桜花賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2019105226",
+   "name": "プレサージュリフト",
+   "ninki": 8,
+   "rank": 5,
+   "prev": {
+    "race_id": "202209020611",
+    "date": "2022/04/10",
+    "venue": "2阪神6",
+    "race_name": "桜花賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2019104831",
+   "name": "ルージュエヴァイユ",
+   "ninki": 5,
+   "rank": 6,
+   "prev": {
+    "race_id": "202205020211",
+    "date": "2022/04/24",
+    "venue": "2東京2",
+    "race_name": "サンスポ賞フローラS(GII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2019104074",
+   "name": "アートハウス",
+   "ninki": 2,
+   "rank": 7,
+   "prev": {
+    "race_id": "202209020609",
+    "date": "2022/04/10",
+    "venue": "2阪神6",
+    "race_name": "忘れな草賞(L)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2019100935",
+   "name": "ニシノラブウインク",
+   "ninki": 14,
+   "rank": 8,
+   "prev": {
+    "race_id": "202206020811",
+    "date": "2022/03/21",
+    "venue": "2中山8",
+    "race_name": "フラワーC(GIII)",
+    "kind": "jra",
+    "days": 62
+   }
+  },
+  {
+   "horse_id": "2019105448",
+   "name": "エリカヴィータ",
+   "ninki": 6,
+   "rank": 9,
+   "prev": {
+    "race_id": "202205020211",
+    "date": "2022/04/24",
+    "venue": "2東京2",
+    "race_name": "サンスポ賞フローラS(GII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2019105415",
+   "name": "ベルクレスタ",
+   "ninki": 9,
+   "rank": 10,
+   "prev": {
+    "race_id": "202209020611",
+    "date": "2022/04/10",
+    "venue": "2阪神6",
+    "race_name": "桜花賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2019103588",
+   "name": "ライラック",
+   "ninki": 12,
+   "rank": 11,
+   "prev": {
+    "race_id": "202209020611",
+    "date": "2022/04/10",
+    "venue": "2阪神6",
+    "race_name": "桜花賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2019106342",
+   "name": "サークルオブライフ",
+   "ninki": 1,
+   "rank": 12,
+   "prev": {
+    "race_id": "202209020611",
+    "date": "2022/04/10",
+    "venue": "2阪神6",
+    "race_name": "桜花賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2019102788",
+   "name": "ウォーターナビレラ",
+   "ninki": 7,
+   "rank": 13,
+   "prev": {
+    "race_id": "202209020611",
+    "date": "2022/04/10",
+    "venue": "2阪神6",
+    "race_name": "桜花賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2019100796",
+   "name": "シーグラス",
+   "ninki": 16,
+   "rank": 14,
+   "prev": {
+    "race_id": "202209020609",
+    "date": "2022/04/10",
+    "venue": "2阪神6",
+    "race_name": "忘れな草賞(L)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2019107033",
+   "name": "ラブパイロー",
+   "ninki": 17,
+   "rank": 15,
+   "prev": {
+    "race_id": "202206030209",
+    "date": "2022/03/27",
+    "venue": "3中山2",
+    "race_name": "ミモザ賞(1勝クラス)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2019104483",
+   "name": "パーソナルハイ",
+   "ninki": 11,
+   "rank": 16,
+   "prev": {
+    "race_id": "202205020211",
+    "date": "2022/04/24",
+    "venue": "2東京2",
+    "race_name": "サンスポ賞フローラS(GII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2019105340",
+   "name": "ホウオウバニラ",
+   "ninki": 15,
+   "rank": 17,
+   "prev": {
+    "race_id": "202205020211",
+    "date": "2022/04/24",
+    "venue": "2東京2",
+    "race_name": "サンスポ賞フローラS(GII)",
+    "kind": "jra",
+    "days": 28
+   }
+  }
+ ]
+}

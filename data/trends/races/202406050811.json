@@ -1,0 +1,217 @@
+{
+ "race_id": "202406050811",
+ "date": "20241222",
+ "race_name": "有馬記念",
+ "runners": [
+  {
+   "horse_id": "2021105898",
+   "name": "レガレイラ",
+   "ninki": 5,
+   "rank": 1,
+   "prev": {
+    "race_id": "202408060411",
+    "date": "2024/11/10",
+    "venue": "6京都4",
+    "race_name": "エリザベス女王杯(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2018105165",
+   "name": "シャフリヤール",
+   "ninki": 10,
+   "rank": 2,
+   "prev": {
+    "race_id": "2024FP110207",
+    "date": "2024/11/03",
+    "venue": "デルマー",
+    "race_name": "BCターフ(GI)",
+    "kind": "overseas",
+    "days": 49
+   }
+  },
+  {
+   "horse_id": "2021105143",
+   "name": "ダノンデサイル",
+   "ninki": 2,
+   "rank": 3,
+   "prev": {
+    "race_id": "202408050611",
+    "date": "2024/10/20",
+    "venue": "5京都6",
+    "race_name": "菊花賞(GI)",
+    "kind": "jra",
+    "days": 63
+   }
+  },
+  {
+   "horse_id": "2020102781",
+   "name": "ベラジオオペラ",
+   "ninki": 3,
+   "rank": 4,
+   "prev": {
+    "race_id": "202405040811",
+    "date": "2024/10/27",
+    "venue": "4東京8",
+    "race_name": "天皇賞(秋)(GI)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2019105346",
+   "name": "ジャスティンパレス",
+   "ninki": 4,
+   "rank": 5,
+   "prev": {
+    "race_id": "202405050812",
+    "date": "2024/11/24",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2021105436",
+   "name": "アーバンシック",
+   "ninki": 1,
+   "rank": 6,
+   "prev": {
+    "race_id": "202408050611",
+    "date": "2024/10/20",
+    "venue": "5京都6",
+    "race_name": "菊花賞(GI)",
+    "kind": "jra",
+    "days": 63
+   }
+  },
+  {
+   "horse_id": "2019105552",
+   "name": "ローシャムパーク",
+   "ninki": 7,
+   "rank": 7,
+   "prev": {
+    "race_id": "2024FP110207",
+    "date": "2024/11/03",
+    "venue": "デルマー",
+    "race_name": "BCターフ(GI)",
+    "kind": "overseas",
+    "days": 49
+   }
+  },
+  {
+   "horse_id": "2019105565",
+   "name": "スタニングローズ",
+   "ninki": 9,
+   "rank": 8,
+   "prev": {
+    "race_id": "202408060411",
+    "date": "2024/11/10",
+    "venue": "6京都4",
+    "race_name": "エリザベス女王杯(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2019105195",
+   "name": "ダノンベルーガ",
+   "ninki": 15,
+   "rank": 9,
+   "prev": {
+    "race_id": "202405050812",
+    "date": "2024/11/24",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2019104447",
+   "name": "シュトルーヴェ",
+   "ninki": 14,
+   "rank": 10,
+   "prev": {
+    "race_id": "202405050812",
+    "date": "2024/11/24",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2018104541",
+   "name": "プログノーシス",
+   "ninki": 6,
+   "rank": 11,
+   "prev": {
+    "race_id": "2024G5102609",
+    "date": "2024/10/26",
+    "venue": "ムーニーバレー",
+    "race_name": "コックスプレート(GI)",
+    "kind": "overseas",
+    "days": 57
+   }
+  },
+  {
+   "horse_id": "2019105748",
+   "name": "ブローザホーン",
+   "ninki": 11,
+   "rank": 12,
+   "prev": {
+    "race_id": "202405050812",
+    "date": "2024/11/24",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2017102170",
+   "name": "ディープボンド",
+   "ninki": 12,
+   "rank": 13,
+   "prev": {
+    "race_id": "202408050211",
+    "date": "2024/10/06",
+    "venue": "5京都2",
+    "race_name": "京都大賞典(GII)",
+    "kind": "jra",
+    "days": 77
+   }
+  },
+  {
+   "horse_id": "2019104740",
+   "name": "スターズオンアース",
+   "ninki": 8,
+   "rank": 14,
+   "prev": {
+    "race_id": "202405050812",
+    "date": "2024/11/24",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2016104624",
+   "name": "ハヤヤッコ",
+   "ninki": 13,
+   "rank": 15,
+   "prev": {
+    "race_id": "202405050211",
+    "date": "2024/11/03",
+    "venue": "5東京2",
+    "race_name": "アルゼンチン共和国杯(GII)",
+    "kind": "jra",
+    "days": 49
+   }
+  }
+ ]
+}

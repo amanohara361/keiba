@@ -1,0 +1,203 @@
+{
+ "race_id": "202509050611",
+ "date": "20251221",
+ "race_name": "朝日フューチュリティ",
+ "runners": [
+  {
+   "horse_id": "2023107153",
+   "name": "カヴァレリッツォ",
+   "ninki": 2,
+   "rank": 1,
+   "prev": {
+    "race_id": "202508040311",
+    "date": "2025/11/15",
+    "venue": "4京都3",
+    "race_name": "デイリー杯2歳S(GII)",
+    "kind": "jra",
+    "days": 36
+   }
+  },
+  {
+   "horse_id": "2023105685",
+   "name": "ダイヤモンドノット",
+   "ninki": 5,
+   "rank": 2,
+   "prev": {
+    "race_id": "202505050111",
+    "date": "2025/11/08",
+    "venue": "5東京1",
+    "race_name": "京王杯2歳S(GII)",
+    "kind": "jra",
+    "days": 43
+   }
+  },
+  {
+   "horse_id": "2023105311",
+   "name": "アドマイヤクワッズ",
+   "ninki": 1,
+   "rank": 3,
+   "prev": {
+    "race_id": "202508040311",
+    "date": "2025/11/15",
+    "venue": "4京都3",
+    "race_name": "デイリー杯2歳S(GII)",
+    "kind": "jra",
+    "days": 36
+   }
+  },
+  {
+   "horse_id": "2023103184",
+   "name": "エコロアルバ",
+   "ninki": 3,
+   "rank": 4,
+   "prev": {
+    "race_id": "202505040311",
+    "date": "2025/10/11",
+    "venue": "4東京3",
+    "race_name": "サウジアラビアRC(GIII)",
+    "kind": "jra",
+    "days": 71
+   }
+  },
+  {
+   "horse_id": "2023103604",
+   "name": "リアライズシリウス",
+   "ninki": 4,
+   "rank": 5,
+   "prev": {
+    "race_id": "202504030211",
+    "date": "2025/08/24",
+    "venue": "3新潟2",
+    "race_name": "新潟2歳S(GIII)",
+    "kind": "jra",
+    "days": 119
+   }
+  },
+  {
+   "horse_id": "2023110055",
+   "name": "グッドピース",
+   "ninki": 10,
+   "rank": 6,
+   "prev": {
+    "race_id": "202508040311",
+    "date": "2025/11/15",
+    "venue": "4京都3",
+    "race_name": "デイリー杯2歳S(GII)",
+    "kind": "jra",
+    "days": 36
+   }
+  },
+  {
+   "horse_id": "2023102615",
+   "name": "ホワイトオーキッド",
+   "ninki": 11,
+   "rank": 7,
+   "prev": {
+    "race_id": "202509040804",
+    "date": "2025/09/27",
+    "venue": "4阪神8",
+    "race_name": "2歳新馬",
+    "kind": "jra",
+    "days": 85
+   }
+  },
+  {
+   "horse_id": "2023104313",
+   "name": "タガノアラリア",
+   "ninki": 8,
+   "rank": 8,
+   "prev": {
+    "race_id": "202508040509",
+    "date": "2025/11/22",
+    "venue": "4京都5",
+    "race_name": "秋明菊賞(1勝クラス)",
+    "kind": "jra",
+    "days": 29
+   }
+  },
+  {
+   "horse_id": "2023100772",
+   "name": "ストームサンダー",
+   "ninki": 14,
+   "rank": 9,
+   "prev": {
+    "race_id": "202505050611",
+    "date": "2025/11/24",
+    "venue": "5東京6",
+    "race_name": "東京スポーツ杯2歳S(GII)",
+    "kind": "jra",
+    "days": 27
+   }
+  },
+  {
+   "horse_id": "2023102475",
+   "name": "コスモレッド",
+   "ninki": 13,
+   "rank": 10,
+   "prev": {
+    "race_id": "202508040106",
+    "date": "2025/11/08",
+    "venue": "4京都1",
+    "race_name": "2歳新馬",
+    "kind": "jra",
+    "days": 43
+   }
+  },
+  {
+   "horse_id": "2023105084",
+   "name": "コルテオソレイユ",
+   "ninki": 6,
+   "rank": 11,
+   "prev": {
+    "race_id": "202505050808",
+    "date": "2025/11/30",
+    "venue": "5東京8",
+    "race_name": "ベゴニア賞(1勝クラス)",
+    "kind": "jra",
+    "days": 21
+   }
+  },
+  {
+   "horse_id": "2023101405",
+   "name": "カクウチ",
+   "ninki": 9,
+   "rank": 12,
+   "prev": {
+    "race_id": "202509040202",
+    "date": "2025/09/07",
+    "venue": "4阪神2",
+    "race_name": "2歳未勝利",
+    "kind": "jra",
+    "days": 105
+   }
+  },
+  {
+   "horse_id": "2023106614",
+   "name": "レッドリガーレ",
+   "ninki": 12,
+   "rank": 13,
+   "prev": {
+    "race_id": "202508040705",
+    "date": "2025/11/29",
+    "venue": "4京都7",
+    "race_name": "2歳新馬",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2023107352",
+   "name": "スペルーチェ",
+   "ninki": 7,
+   "rank": 14,
+   "prev": {
+    "race_id": "202505050302",
+    "date": "2025/11/15",
+    "venue": "5東京3",
+    "race_name": "2歳未勝利",
+    "kind": "jra",
+    "days": 36
+   }
+  }
+ ]
+}

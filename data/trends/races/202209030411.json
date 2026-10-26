@@ -1,0 +1,245 @@
+{
+ "race_id": "202209030411",
+ "date": "20220626",
+ "race_name": "宝塚記念",
+ "runners": [
+  {
+   "horse_id": "2018103559",
+   "name": "タイトルホルダー",
+   "ninki": 2,
+   "rank": 1,
+   "prev": {
+    "race_id": "202209021211",
+    "date": "2022/05/01",
+    "venue": "2阪神12",
+    "race_name": "天皇賞(春)(GI)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2016104877",
+   "name": "ヒシイグアス",
+   "ninki": 5,
+   "rank": 2,
+   "prev": {
+    "race_id": "202209020411",
+    "date": "2022/04/03",
+    "venue": "2阪神4",
+    "race_name": "大阪杯(GI)",
+    "kind": "jra",
+    "days": 84
+   }
+  },
+  {
+   "horse_id": "2017100720",
+   "name": "デアリングタクト",
+   "ninki": 4,
+   "rank": 3,
+   "prev": {
+    "race_id": "202205020811",
+    "date": "2022/05/15",
+    "venue": "2東京8",
+    "race_name": "ヴィクトリアマイル(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2017102170",
+   "name": "ディープボンド",
+   "ninki": 3,
+   "rank": 4,
+   "prev": {
+    "race_id": "202209021211",
+    "date": "2022/05/01",
+    "venue": "2阪神12",
+    "race_name": "天皇賞(春)(GI)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2015100744",
+   "name": "マイネルファンロン",
+   "ninki": 14,
+   "rank": 5,
+   "prev": {
+    "race_id": "202209021211",
+    "date": "2022/05/01",
+    "venue": "2阪神12",
+    "race_name": "天皇賞(春)(GI)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2018105027",
+   "name": "エフフォーリア",
+   "ninki": 1,
+   "rank": 6,
+   "prev": {
+    "race_id": "202209020411",
+    "date": "2022/04/03",
+    "venue": "2阪神4",
+    "race_name": "大阪杯(GI)",
+    "kind": "jra",
+    "days": 84
+   }
+  },
+  {
+   "horse_id": "2017101431",
+   "name": "ウインマリリン",
+   "ninki": 9,
+   "rank": 7,
+   "prev": {
+    "race_id": "202209020411",
+    "date": "2022/04/03",
+    "venue": "2阪神4",
+    "race_name": "大阪杯(GI)",
+    "kind": "jra",
+    "days": 84
+   }
+  },
+  {
+   "horse_id": "2017106711",
+   "name": "パンサラッサ",
+   "ninki": 6,
+   "rank": 8,
+   "prev": {
+    "race_id": "2022J0032607",
+    "date": "2022/03/26",
+    "venue": "メイダン",
+    "race_name": "ドバイターフ(GI)",
+    "kind": "overseas",
+    "days": 92
+   }
+  },
+  {
+   "horse_id": "2015104287",
+   "name": "ステイフーリッシュ",
+   "ninki": 10,
+   "rank": 9,
+   "prev": {
+    "race_id": "2022J0032603",
+    "date": "2022/03/26",
+    "venue": "メイダン",
+    "race_name": "ドバイゴールドC(GII)",
+    "kind": "overseas",
+    "days": 92
+   }
+  },
+  {
+   "horse_id": "2015104317",
+   "name": "ギベオン",
+   "ninki": 17,
+   "rank": 10,
+   "prev": {
+    "race_id": "202207040111",
+    "date": "2022/06/04",
+    "venue": "4中京1",
+    "race_name": "鳴尾記念(GIII)",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2017105376",
+   "name": "ポタジェ",
+   "ninki": 8,
+   "rank": 11,
+   "prev": {
+    "race_id": "202209020411",
+    "date": "2022/04/03",
+    "venue": "2阪神4",
+    "race_name": "大阪杯(GI)",
+    "kind": "jra",
+    "days": 84
+   }
+  },
+  {
+   "horse_id": "2018105251",
+   "name": "グロリアムンディ",
+   "ninki": 13,
+   "rank": 12,
+   "prev": {
+    "race_id": "202209020811",
+    "date": "2022/04/17",
+    "venue": "2阪神8",
+    "race_name": "アンタレスS(GIII)",
+    "kind": "jra",
+    "days": 70
+   }
+  },
+  {
+   "horse_id": "2016105526",
+   "name": "メロディーレーン",
+   "ninki": 16,
+   "rank": 13,
+   "prev": {
+    "race_id": "202209021211",
+    "date": "2022/05/01",
+    "venue": "2阪神12",
+    "race_name": "天皇賞(春)(GI)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2018104960",
+   "name": "アリーヴォ",
+   "ninki": 7,
+   "rank": 14,
+   "prev": {
+    "race_id": "202209020411",
+    "date": "2022/04/03",
+    "venue": "2阪神4",
+    "race_name": "大阪杯(GI)",
+    "kind": "jra",
+    "days": 84
+   }
+  },
+  {
+   "horse_id": "2017105477",
+   "name": "アイアンバローズ",
+   "ninki": 15,
+   "rank": 15,
+   "prev": {
+    "race_id": "202209021211",
+    "date": "2022/05/01",
+    "venue": "2阪神12",
+    "race_name": "天皇賞(春)(GI)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2015101654",
+   "name": "アフリカンゴールド",
+   "ninki": 12,
+   "rank": 16,
+   "prev": {
+    "race_id": "202209020411",
+    "date": "2022/04/03",
+    "venue": "2阪神4",
+    "race_name": "大阪杯(GI)",
+    "kind": "jra",
+    "days": 84
+   }
+  },
+  {
+   "horse_id": "2016104376",
+   "name": "キングオブコージ",
+   "ninki": 11,
+   "rank": 17,
+   "prev": {
+    "race_id": "202209020411",
+    "date": "2022/04/03",
+    "venue": "2阪神4",
+    "race_name": "大阪杯(GI)",
+    "kind": "jra",
+    "days": 84
+   }
+  }
+ ]
+}

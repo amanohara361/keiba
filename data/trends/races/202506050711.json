@@ -1,0 +1,231 @@
+{
+ "race_id": "202506050711",
+ "date": "20251227",
+ "race_name": "ホープフルS",
+ "runners": [
+  {
+   "horse_id": "2023107089",
+   "name": "ロブチェン",
+   "ninki": 7,
+   "rank": 1,
+   "prev": {
+    "race_id": "202508040205",
+    "date": "2025/11/09",
+    "venue": "4京都2",
+    "race_name": "2歳新馬",
+    "kind": "jra",
+    "days": 48
+   }
+  },
+  {
+   "horse_id": "2023107345",
+   "name": "フォルテアンジェロ",
+   "ninki": 4,
+   "rank": 2,
+   "prev": {
+    "race_id": "202505041108",
+    "date": "2025/11/02",
+    "venue": "4東京11",
+    "race_name": "百日草特別(1勝クラス)",
+    "kind": "jra",
+    "days": 55
+   }
+  },
+  {
+   "horse_id": "2023106400",
+   "name": "アスクエジンバラ",
+   "ninki": 9,
+   "rank": 3,
+   "prev": {
+    "race_id": "202508040711",
+    "date": "2025/11/29",
+    "venue": "4京都7",
+    "race_name": "ラジオN杯京都2歳S(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2023105223",
+   "name": "アーレムアレス",
+   "ninki": 6,
+   "rank": 4,
+   "prev": {
+    "race_id": "202508040409",
+    "date": "2025/11/16",
+    "venue": "4京都4",
+    "race_name": "黄菊賞(1勝クラス)",
+    "kind": "jra",
+    "days": 41
+   }
+  },
+  {
+   "horse_id": "2023107278",
+   "name": "バドリナート",
+   "ninki": 5,
+   "rank": 5,
+   "prev": {
+    "race_id": "202508030909",
+    "date": "2025/10/26",
+    "venue": "3京都9",
+    "race_name": "萩S(L)",
+    "kind": "jra",
+    "days": 62
+   }
+  },
+  {
+   "horse_id": "2023105642",
+   "name": "オルフセン",
+   "ninki": 8,
+   "rank": 6,
+   "prev": {
+    "race_id": "202505050304",
+    "date": "2025/11/15",
+    "venue": "5東京3",
+    "race_name": "2歳未勝利",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2023103752",
+   "name": "アンドゥーリル",
+   "ninki": 1,
+   "rank": 7,
+   "prev": {
+    "race_id": "202505040609",
+    "date": "2025/10/18",
+    "venue": "4東京6",
+    "race_name": "アイビーS(L)",
+    "kind": "jra",
+    "days": 70
+   }
+  },
+  {
+   "horse_id": "2023102807",
+   "name": "ジャスティンビスタ",
+   "ninki": 2,
+   "rank": 8,
+   "prev": {
+    "race_id": "202508040711",
+    "date": "2025/11/29",
+    "venue": "4京都7",
+    "race_name": "ラジオN杯京都2歳S(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2023105241",
+   "name": "テーオーアルアイン",
+   "ninki": 13,
+   "rank": 9,
+   "prev": {
+    "race_id": "202509050403",
+    "date": "2025/12/14",
+    "venue": "5阪神4",
+    "race_name": "2歳未勝利",
+    "kind": "jra",
+    "days": 13
+   }
+  },
+  {
+   "horse_id": "2023107143",
+   "name": "ノチェセラーダ",
+   "ninki": 10,
+   "rank": 10,
+   "prev": {
+    "race_id": "202508040409",
+    "date": "2025/11/16",
+    "venue": "4京都4",
+    "race_name": "黄菊賞(1勝クラス)",
+    "kind": "jra",
+    "days": 41
+   }
+  },
+  {
+   "horse_id": "2023104676",
+   "name": "マテンロウゼロ",
+   "ninki": 15,
+   "rank": 11,
+   "prev": {
+    "race_id": "202509050204",
+    "date": "2025/12/07",
+    "venue": "5阪神2",
+    "race_name": "2歳未勝利",
+    "kind": "jra",
+    "days": 20
+   }
+  },
+  {
+   "horse_id": "2023104885",
+   "name": "ジーネキング",
+   "ninki": 11,
+   "rank": 12,
+   "prev": {
+    "race_id": "202501020511",
+    "date": "2025/09/06",
+    "venue": "2札幌5",
+    "race_name": "札幌2歳S(GIII)",
+    "kind": "jra",
+    "days": 112
+   }
+  },
+  {
+   "horse_id": "2023102820",
+   "name": "ウイナーズナイン",
+   "ninki": 12,
+   "rank": 13,
+   "prev": {
+    "race_id": "202508040711",
+    "date": "2025/11/29",
+    "venue": "4京都7",
+    "race_name": "ラジオN杯京都2歳S(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2023105332",
+   "name": "ショウナンガルフ",
+   "ninki": 3,
+   "rank": 14,
+   "prev": {
+    "race_id": "202501020511",
+    "date": "2025/09/06",
+    "venue": "2札幌5",
+    "race_name": "札幌2歳S(GIII)",
+    "kind": "jra",
+    "days": 112
+   }
+  },
+  {
+   "horse_id": "2023106694",
+   "name": "ノーウェアマン",
+   "ninki": 16,
+   "rank": 15,
+   "prev": {
+    "race_id": "202505040803",
+    "date": "2025/10/25",
+    "venue": "4東京8",
+    "race_name": "2歳未勝利",
+    "kind": "jra",
+    "days": 63
+   }
+  },
+  {
+   "horse_id": "2023102039",
+   "name": "メイショウハチコウ",
+   "ninki": 14,
+   "rank": 16,
+   "prev": {
+    "race_id": "202506040306",
+    "date": "2025/09/13",
+    "venue": "4中山3",
+    "race_name": "2歳新馬",
+    "kind": "jra",
+    "days": 105
+   }
+  }
+ ]
+}

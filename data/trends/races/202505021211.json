@@ -1,0 +1,259 @@
+{
+ "race_id": "202505021211",
+ "date": "20250601",
+ "race_name": "東京優駿",
+ "runners": [
+  {
+   "horse_id": "2022105102",
+   "name": "クロワデュノール",
+   "ninki": 1,
+   "rank": 1,
+   "prev": {
+    "race_id": "202506030811",
+    "date": "2025/04/20",
+    "venue": "3中山8",
+    "race_name": "皐月賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2022105519",
+   "name": "マスカレードボール",
+   "ninki": 3,
+   "rank": 2,
+   "prev": {
+    "race_id": "202506030811",
+    "date": "2025/04/20",
+    "venue": "3中山8",
+    "race_name": "皐月賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2022104714",
+   "name": "ショウヘイ",
+   "ninki": 6,
+   "rank": 3,
+   "prev": {
+    "race_id": "202508020511",
+    "date": "2025/05/10",
+    "venue": "2京都5",
+    "race_name": "京都新聞杯(GII)",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2022101420",
+   "name": "サトノシャイニング",
+   "ninki": 5,
+   "rank": 4,
+   "prev": {
+    "race_id": "202506030811",
+    "date": "2025/04/20",
+    "venue": "3中山8",
+    "race_name": "皐月賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2022105099",
+   "name": "エリキング",
+   "ninki": 8,
+   "rank": 5,
+   "prev": {
+    "race_id": "202506030811",
+    "date": "2025/04/20",
+    "venue": "3中山8",
+    "race_name": "皐月賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2022105081",
+   "name": "ミュージアムマイル",
+   "ninki": 2,
+   "rank": 6,
+   "prev": {
+    "race_id": "202506030811",
+    "date": "2025/04/20",
+    "venue": "3中山8",
+    "race_name": "皐月賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2022105105",
+   "name": "エムズ",
+   "ninki": 11,
+   "rank": 7,
+   "prev": {
+    "race_id": "202508020511",
+    "date": "2025/05/10",
+    "venue": "2京都5",
+    "race_name": "京都新聞杯(GII)",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2022103995",
+   "name": "ジョバンニ",
+   "ninki": 7,
+   "rank": 8,
+   "prev": {
+    "race_id": "202506030811",
+    "date": "2025/04/20",
+    "venue": "3中山8",
+    "race_name": "皐月賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2022104720",
+   "name": "ファイアンクランツ",
+   "ninki": 14,
+   "rank": 9,
+   "prev": {
+    "race_id": "202505020111",
+    "date": "2025/04/26",
+    "venue": "2東京1",
+    "race_name": "テレビ東京杯青葉賞(GII)",
+    "kind": "jra",
+    "days": 36
+   }
+  },
+  {
+   "horse_id": "2022104922",
+   "name": "リラエンブレム",
+   "ninki": 10,
+   "rank": 10,
+   "prev": {
+    "race_id": "202509020111",
+    "date": "2025/03/29",
+    "venue": "2阪神1",
+    "race_name": "毎日杯(GIII)",
+    "kind": "jra",
+    "days": 64
+   }
+  },
+  {
+   "horse_id": "2022104845",
+   "name": "ホウオウアートマン",
+   "ninki": 16,
+   "rank": 11,
+   "prev": {
+    "race_id": "202505020706",
+    "date": "2025/05/17",
+    "venue": "2東京7",
+    "race_name": "3歳1勝クラス",
+    "kind": "jra",
+    "days": 15
+   }
+  },
+  {
+   "horse_id": "2022104896",
+   "name": "カラマティアノス",
+   "ninki": 15,
+   "rank": 12,
+   "prev": {
+    "race_id": "202506030811",
+    "date": "2025/04/20",
+    "venue": "3中山8",
+    "race_name": "皐月賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2022104397",
+   "name": "トッピボーン",
+   "ninki": 12,
+   "rank": 13,
+   "prev": {
+    "race_id": "202508020511",
+    "date": "2025/05/10",
+    "venue": "2京都5",
+    "race_name": "京都新聞杯(GII)",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2022105836",
+   "name": "ファンダム",
+   "ninki": 4,
+   "rank": 14,
+   "prev": {
+    "race_id": "202509020111",
+    "date": "2025/03/29",
+    "venue": "2阪神1",
+    "race_name": "毎日杯(GIII)",
+    "kind": "jra",
+    "days": 64
+   }
+  },
+  {
+   "horse_id": "2022105891",
+   "name": "ドラゴンブースト",
+   "ninki": 18,
+   "rank": 15,
+   "prev": {
+    "race_id": "202506030811",
+    "date": "2025/04/20",
+    "venue": "3中山8",
+    "race_name": "皐月賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2022106155",
+   "name": "ニシノエージェント",
+   "ninki": 17,
+   "rank": 16,
+   "prev": {
+    "race_id": "202506030811",
+    "date": "2025/04/20",
+    "venue": "3中山8",
+    "race_name": "皐月賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2022104416",
+   "name": "レディネス",
+   "ninki": 9,
+   "rank": 17,
+   "prev": {
+    "race_id": "202505020411",
+    "date": "2025/05/04",
+    "venue": "2東京4",
+    "race_name": "プリンシパルS(L)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2022104218",
+   "name": "ファウストラーゼン",
+   "ninki": 13,
+   "rank": 18,
+   "prev": {
+    "race_id": "202506030811",
+    "date": "2025/04/20",
+    "venue": "3中山8",
+    "race_name": "皐月賞(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  }
+ ]
+}

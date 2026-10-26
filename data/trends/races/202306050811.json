@@ -1,0 +1,231 @@
+{
+ "race_id": "202306050811",
+ "date": "20231224",
+ "race_name": "有馬記念",
+ "runners": [
+  {
+   "horse_id": "2019105283",
+   "name": "ドウデュース",
+   "ninki": 2,
+   "rank": 1,
+   "prev": {
+    "race_id": "202305050812",
+    "date": "2023/11/26",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2019104740",
+   "name": "スターズオンアース",
+   "ninki": 7,
+   "rank": 2,
+   "prev": {
+    "race_id": "202305050812",
+    "date": "2023/11/26",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2018103559",
+   "name": "タイトルホルダー",
+   "ninki": 6,
+   "rank": 3,
+   "prev": {
+    "race_id": "202305050812",
+    "date": "2023/11/26",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2019105346",
+   "name": "ジャスティンパレス",
+   "ninki": 1,
+   "rank": 4,
+   "prev": {
+    "race_id": "202305040911",
+    "date": "2023/10/29",
+    "venue": "4東京9",
+    "race_name": "天皇賞(秋)(GI)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2018105165",
+   "name": "シャフリヤール",
+   "ninki": 8,
+   "rank": 5,
+   "prev": {
+    "race_id": "2023F3110408",
+    "date": "2023/11/04",
+    "venue": "サンタアニタパー",
+    "race_name": "BCターフ(GI)",
+    "kind": "overseas",
+    "days": 50
+   }
+  },
+  {
+   "horse_id": "2020103532",
+   "name": "タスティエーラ",
+   "ninki": 5,
+   "rank": 6,
+   "prev": {
+    "race_id": "202308020711",
+    "date": "2023/10/22",
+    "venue": "2京都7",
+    "race_name": "菊花賞(GI)",
+    "kind": "jra",
+    "days": 63
+   }
+  },
+  {
+   "horse_id": "2017101431",
+   "name": "ウインマリリン",
+   "ninki": 14,
+   "rank": 7,
+   "prev": {
+    "race_id": "2023F3110404",
+    "date": "2023/11/04",
+    "venue": "サンタアニタパー",
+    "race_name": "BCF&Mターフ(GI)",
+    "kind": "overseas",
+    "days": 50
+   }
+  },
+  {
+   "horse_id": "2020102899",
+   "name": "ソールオリエンス",
+   "ninki": 4,
+   "rank": 8,
+   "prev": {
+    "race_id": "202308020711",
+    "date": "2023/10/22",
+    "venue": "2京都7",
+    "race_name": "菊花賞(GI)",
+    "kind": "jra",
+    "days": 63
+   }
+  },
+  {
+   "horse_id": "2020103458",
+   "name": "ハーパー",
+   "ninki": 11,
+   "rank": 9,
+   "prev": {
+    "race_id": "202308030411",
+    "date": "2023/11/12",
+    "venue": "3京都4",
+    "race_name": "エリザベス女王杯(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2017104691",
+   "name": "ホウオウエミーズ",
+   "ninki": 16,
+   "rank": 10,
+   "prev": {
+    "race_id": "202303030411",
+    "date": "2023/11/12",
+    "venue": "3福島4",
+    "race_name": "福島記念(GIII)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2017105477",
+   "name": "アイアンバローズ",
+   "ninki": 13,
+   "rank": 11,
+   "prev": {
+    "race_id": "202306050111",
+    "date": "2023/12/02",
+    "venue": "5中山1",
+    "race_name": "ステイヤーズS(GII)",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2018105269",
+   "name": "スルーセブンシーズ",
+   "ninki": 3,
+   "rank": 12,
+   "prev": {
+    "race_id": "2023C8100104",
+    "date": "2023/10/01",
+    "venue": "パリロンシャン",
+    "race_name": "凱旋門賞(GI)",
+    "kind": "overseas",
+    "days": 84
+   }
+  },
+  {
+   "horse_id": "2019103588",
+   "name": "ライラック",
+   "ninki": 10,
+   "rank": 13,
+   "prev": {
+    "race_id": "202308030411",
+    "date": "2023/11/12",
+    "venue": "3京都4",
+    "race_name": "エリザベス女王杯(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2019100109",
+   "name": "プラダリア",
+   "ninki": 12,
+   "rank": 14,
+   "prev": {
+    "race_id": "202308020311",
+    "date": "2023/10/09",
+    "venue": "2京都3",
+    "race_name": "京都大賞典(GII)",
+    "kind": "jra",
+    "days": 76
+   }
+  },
+  {
+   "horse_id": "2017102170",
+   "name": "ディープボンド",
+   "ninki": 9,
+   "rank": 15,
+   "prev": {
+    "race_id": "202305050812",
+    "date": "2023/11/26",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2017104936",
+   "name": "ヒートオンビート",
+   "ninki": 15,
+   "rank": 16,
+   "prev": {
+    "race_id": "202305050211",
+    "date": "2023/11/05",
+    "venue": "5東京2",
+    "race_name": "アルゼンチン共和国杯(GII)",
+    "kind": "jra",
+    "days": 49
+   }
+  }
+ ]
+}
