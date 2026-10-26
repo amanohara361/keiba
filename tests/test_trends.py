@@ -33,6 +33,8 @@ def test_中央の平地GIだけ拾う():
     g1 = [(rid, t) for rid, t in races if trends.is_jra_g1(rid, t)]
     assert g1 == [('202505041111', '天皇賞(秋)(GI)')]
     assert not trends.is_jra_g1('202506050911', '中山大障害(J.GI)')
+    # 2018年は京都でJBCが行われた（地方主催の交流GⅠなので数えない）
+    assert not trends.is_jra_g1('201808030811', 'JBCクラシック(GI)')
 
 
 def test_出走馬の人気と着順を読む():

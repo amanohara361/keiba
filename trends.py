@@ -58,8 +58,9 @@ def venue_kind(race_id):
 
 
 def is_jra_g1(race_id, title):
-    """平地の中央GⅠか。障害（J.GI）は除く。"""
-    return venue_kind(race_id) == 'jra' and title.endswith('(GI)') and 'J.G' not in title
+    """平地の中央GⅠか。障害（J.GI）と、中央の場で行われたJBC（地方主催の交流GⅠ）は除く。"""
+    return (venue_kind(race_id) == 'jra' and title.endswith('(GI)')
+            and 'J.G' not in title and not title.startswith('JBC'))
 
 
 def ninki_bucket(ninki):
