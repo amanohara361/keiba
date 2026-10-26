@@ -1,0 +1,217 @@
+{
+ "race_id": "201607040211",
+ "date": "20161204",
+ "race_name": "チャンピオンズC",
+ "runners": [
+  {
+   "horse_id": "2010102446",
+   "name": "サウンドトゥルー",
+   "ninki": 6,
+   "rank": 1,
+   "prev": {
+    "race_id": "201645110311",
+    "date": "2016/11/03",
+    "venue": "川崎",
+    "race_name": "JBCクラシック(JpnI)",
+    "kind": "nar",
+    "days": 31
+   }
+  },
+  {
+   "horse_id": "2010110078",
+   "name": "アウォーディー",
+   "ninki": 1,
+   "rank": 2,
+   "prev": {
+    "race_id": "201645110311",
+    "date": "2016/11/03",
+    "venue": "川崎",
+    "race_name": "JBCクラシック(JpnI)",
+    "kind": "nar",
+    "days": 31
+   }
+  },
+  {
+   "horse_id": "2011104994",
+   "name": "アスカノロマン",
+   "ninki": 10,
+   "rank": 3,
+   "prev": {
+    "race_id": "201608050211",
+    "date": "2016/11/06",
+    "venue": "5京都2",
+    "race_name": "みやこS(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2012106056",
+   "name": "カフジテイク",
+   "ninki": 11,
+   "rank": 4,
+   "prev": {
+    "race_id": "201605050311",
+    "date": "2016/11/12",
+    "venue": "5東京3",
+    "race_name": "東京中日S杯武蔵野S(GIII)",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2012110098",
+   "name": "アポロケンタッキー",
+   "ninki": 7,
+   "rank": 5,
+   "prev": {
+    "race_id": "201608050211",
+    "date": "2016/11/06",
+    "venue": "5京都2",
+    "race_name": "みやこS(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2012104314",
+   "name": "ノンコノユメ",
+   "ninki": 4,
+   "rank": 6,
+   "prev": {
+    "race_id": "201645110311",
+    "date": "2016/11/03",
+    "venue": "川崎",
+    "race_name": "JBCクラシック(JpnI)",
+    "kind": "nar",
+    "days": 31
+   }
+  },
+  {
+   "horse_id": "2012110091",
+   "name": "モーニン",
+   "ninki": 5,
+   "rank": 7,
+   "prev": {
+    "race_id": "201605050311",
+    "date": "2016/11/12",
+    "venue": "5東京3",
+    "race_name": "東京中日S杯武蔵野S(GIII)",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2011104144",
+   "name": "ロワジャルダン",
+   "ninki": 9,
+   "rank": 8,
+   "prev": {
+    "race_id": "201608050211",
+    "date": "2016/11/06",
+    "venue": "5京都2",
+    "race_name": "みやこS(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2013110045",
+   "name": "ラニ",
+   "ninki": 8,
+   "rank": 9,
+   "prev": {
+    "race_id": "201608050211",
+    "date": "2016/11/06",
+    "venue": "5京都2",
+    "race_name": "みやこS(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2011102026",
+   "name": "モンドクラッセ",
+   "ninki": 12,
+   "rank": 10,
+   "prev": {
+    "race_id": "201608050211",
+    "date": "2016/11/06",
+    "venue": "5京都2",
+    "race_name": "みやこS(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2011102556",
+   "name": "メイショウスミトモ",
+   "ninki": 14,
+   "rank": 11,
+   "prev": {
+    "race_id": "201605050311",
+    "date": "2016/11/12",
+    "venue": "5東京3",
+    "race_name": "東京中日S杯武蔵野S(GIII)",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2013106119",
+   "name": "ゴールドドリーム",
+   "ninki": 2,
+   "rank": 12,
+   "prev": {
+    "race_id": "201605050311",
+    "date": "2016/11/12",
+    "venue": "5東京3",
+    "race_name": "東京中日S杯武蔵野S(GIII)",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2010106548",
+   "name": "コパノリッキー",
+   "ninki": 3,
+   "rank": 13,
+   "prev": {
+    "race_id": "201645110311",
+    "date": "2016/11/03",
+    "venue": "川崎",
+    "race_name": "JBCクラシック(JpnI)",
+    "kind": "nar",
+    "days": 31
+   }
+  },
+  {
+   "horse_id": "2010104486",
+   "name": "ブライトアイディア",
+   "ninki": 15,
+   "rank": 14,
+   "prev": {
+    "race_id": "201603030611",
+    "date": "2016/11/20",
+    "venue": "3福島6",
+    "race_name": "福島民友C(OP)",
+    "kind": "jra",
+    "days": 14
+   }
+  },
+  {
+   "horse_id": "2009105023",
+   "name": "ブライトライン",
+   "ninki": 13,
+   "rank": 15,
+   "prev": {
+    "race_id": "201605050311",
+    "date": "2016/11/12",
+    "venue": "5東京3",
+    "race_name": "東京中日S杯武蔵野S(GIII)",
+    "kind": "jra",
+    "days": 22
+   }
+  }
+ ]
+}

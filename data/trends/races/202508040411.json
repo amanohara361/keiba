@@ -1,0 +1,231 @@
+{
+ "race_id": "202508040411",
+ "date": "20251116",
+ "race_name": "エリザベス女王杯",
+ "runners": [
+  {
+   "horse_id": "2021105898",
+   "name": "レガレイラ",
+   "ninki": 1,
+   "rank": 1,
+   "prev": {
+    "race_id": "202506040711",
+    "date": "2025/09/21",
+    "venue": "4中山7",
+    "race_name": "産経賞オールカマー(GII)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2022103546",
+   "name": "パラディレーヌ",
+   "ninki": 4,
+   "rank": 2,
+   "prev": {
+    "race_id": "202508030711",
+    "date": "2025/10/19",
+    "venue": "3京都7",
+    "race_name": "秋華賞(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2019103588",
+   "name": "ライラック",
+   "ninki": 9,
+   "rank": 3,
+   "prev": {
+    "race_id": "202505040411",
+    "date": "2025/10/12",
+    "venue": "4東京4",
+    "race_name": "アイルランドT(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022105815",
+   "name": "リンクスティップ",
+   "ninki": 2,
+   "rank": 4,
+   "prev": {
+    "race_id": "202506040211",
+    "date": "2025/09/07",
+    "venue": "4中山2",
+    "race_name": "紫苑S(GII)",
+    "kind": "jra",
+    "days": 70
+   }
+  },
+  {
+   "horse_id": "2020101607",
+   "name": "ココナッツブラウン",
+   "ninki": 3,
+   "rank": 5,
+   "prev": {
+    "race_id": "202501010811",
+    "date": "2025/08/17",
+    "venue": "1札幌8",
+    "race_name": "札幌記念(GII)",
+    "kind": "jra",
+    "days": 91
+   }
+  },
+  {
+   "horse_id": "2021103975",
+   "name": "セキトバイースト",
+   "ninki": 10,
+   "rank": 6,
+   "prev": {
+    "race_id": "202505040411",
+    "date": "2025/10/12",
+    "venue": "4東京4",
+    "race_name": "アイルランドT(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2021105541",
+   "name": "サフィラ",
+   "ninki": 15,
+   "rank": 7,
+   "prev": {
+    "race_id": "202505040411",
+    "date": "2025/10/12",
+    "venue": "4東京4",
+    "race_name": "アイルランドT(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2020103945",
+   "name": "ヴェルミセル",
+   "ninki": 13,
+   "rank": 8,
+   "prev": {
+    "race_id": "202508030211",
+    "date": "2025/10/05",
+    "venue": "3京都2",
+    "race_name": "京都大賞典(GII)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2020105795",
+   "name": "フェアエールング",
+   "ninki": 14,
+   "rank": 9,
+   "prev": {
+    "race_id": "202506040711",
+    "date": "2025/09/21",
+    "venue": "4中山7",
+    "race_name": "産経賞オールカマー(GII)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2021105743",
+   "name": "ステレンボッシュ",
+   "ninki": 6,
+   "rank": 10,
+   "prev": {
+    "race_id": "202501010811",
+    "date": "2025/08/17",
+    "venue": "1札幌8",
+    "race_name": "札幌記念(GII)",
+    "kind": "jra",
+    "days": 91
+   }
+  },
+  {
+   "horse_id": "2021107179",
+   "name": "ボンドガール",
+   "ninki": 12,
+   "rank": 11,
+   "prev": {
+    "race_id": "202505040411",
+    "date": "2025/10/12",
+    "venue": "4東京4",
+    "race_name": "アイルランドT(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022103205",
+   "name": "エリカエクスプレス",
+   "ninki": 5,
+   "rank": 12,
+   "prev": {
+    "race_id": "202508030711",
+    "date": "2025/10/19",
+    "venue": "3京都7",
+    "race_name": "秋華賞(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2020101608",
+   "name": "シンリョクカ",
+   "ninki": 11,
+   "rank": 13,
+   "prev": {
+    "race_id": "202504030411",
+    "date": "2025/08/31",
+    "venue": "3新潟4",
+    "race_name": "新潟記念(GIII)",
+    "kind": "jra",
+    "days": 77
+   }
+  },
+  {
+   "horse_id": "2022102296",
+   "name": "ケリフレッドアスク",
+   "ninki": 16,
+   "rank": 14,
+   "prev": {
+    "race_id": "202508030711",
+    "date": "2025/10/19",
+    "venue": "3京都7",
+    "race_name": "秋華賞(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2019105293",
+   "name": "カナテープ",
+   "ninki": 7,
+   "rank": 15,
+   "prev": {
+    "race_id": "202505040411",
+    "date": "2025/10/12",
+    "venue": "4東京4",
+    "race_name": "アイルランドT(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2021101387",
+   "name": "オーロラエックス",
+   "ninki": 8,
+   "rank": 16,
+   "prev": {
+    "race_id": "202508030811",
+    "date": "2025/10/25",
+    "venue": "3京都8",
+    "race_name": "カシオペアS(L)",
+    "kind": "jra",
+    "days": 22
+   }
+  }
+ ]
+}

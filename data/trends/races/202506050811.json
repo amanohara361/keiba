@@ -1,0 +1,231 @@
+{
+ "race_id": "202506050811",
+ "date": "20251228",
+ "race_name": "有馬記念",
+ "runners": [
+  {
+   "horse_id": "2022105081",
+   "name": "ミュージアムマイル",
+   "ninki": 3,
+   "rank": 1,
+   "prev": {
+    "race_id": "202505041111",
+    "date": "2025/11/02",
+    "venue": "4東京11",
+    "race_name": "天皇賞(秋)(GI)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2021106787",
+   "name": "コスモキュランダ",
+   "ninki": 12,
+   "rank": 2,
+   "prev": {
+    "race_id": "202505050812",
+    "date": "2025/11/30",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2021105143",
+   "name": "ダノンデサイル",
+   "ninki": 2,
+   "rank": 3,
+   "prev": {
+    "race_id": "202505050812",
+    "date": "2025/11/30",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2021105898",
+   "name": "レガレイラ",
+   "ninki": 1,
+   "rank": 4,
+   "prev": {
+    "race_id": "202508040411",
+    "date": "2025/11/16",
+    "venue": "4京都4",
+    "race_name": "エリザベス女王杯(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2021104756",
+   "name": "サンライズジパング",
+   "ninki": 13,
+   "rank": 5,
+   "prev": {
+    "race_id": "202507050211",
+    "date": "2025/12/07",
+    "venue": "5中京2",
+    "race_name": "チャンピオンズC(GI)",
+    "kind": "jra",
+    "days": 21
+   }
+  },
+  {
+   "horse_id": "2020103532",
+   "name": "タスティエーラ",
+   "ninki": 8,
+   "rank": 6,
+   "prev": {
+    "race_id": "202505050812",
+    "date": "2025/11/30",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2019105346",
+   "name": "ジャスティンパレス",
+   "ninki": 5,
+   "rank": 7,
+   "prev": {
+    "race_id": "202505050812",
+    "date": "2025/11/30",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2022104614",
+   "name": "エキサイトバイオ",
+   "ninki": 7,
+   "rank": 8,
+   "prev": {
+    "race_id": "202508030911",
+    "date": "2025/10/26",
+    "venue": "3京都9",
+    "race_name": "菊花賞(GI)",
+    "kind": "jra",
+    "days": 63
+   }
+  },
+  {
+   "horse_id": "2020105786",
+   "name": "マイネルエンペラー",
+   "ninki": 11,
+   "rank": 9,
+   "prev": {
+    "race_id": "202508020411",
+    "date": "2025/05/04",
+    "venue": "2京都4",
+    "race_name": "天皇賞(春)(GI)",
+    "kind": "jra",
+    "days": 238
+   }
+  },
+  {
+   "horse_id": "2018104942",
+   "name": "シュヴァリエローズ",
+   "ninki": 14,
+   "rank": 10,
+   "prev": {
+    "race_id": "2025G4a00407",
+    "date": "2025/11/04",
+    "venue": "フレミントン",
+    "race_name": "メルボルンC(GI)",
+    "kind": "overseas",
+    "days": 54
+   }
+  },
+  {
+   "horse_id": "2021105369",
+   "name": "アドマイヤテラ",
+   "ninki": 9,
+   "rank": 11,
+   "prev": {
+    "race_id": "202505050812",
+    "date": "2025/11/30",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2020100680",
+   "name": "エルトンバローズ",
+   "ninki": 16,
+   "rank": 12,
+   "prev": {
+    "race_id": "202508040611",
+    "date": "2025/11/23",
+    "venue": "4京都6",
+    "race_name": "マイルチャンピオンS(GI)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2021103272",
+   "name": "メイショウタバル",
+   "ninki": 4,
+   "rank": 13,
+   "prev": {
+    "race_id": "202505041111",
+    "date": "2025/11/02",
+    "venue": "4東京11",
+    "race_name": "天皇賞(秋)(GI)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2021110048",
+   "name": "シンエンペラー",
+   "ninki": 6,
+   "rank": 14,
+   "prev": {
+    "race_id": "202505050812",
+    "date": "2025/11/30",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2017104756",
+   "name": "アラタ",
+   "ninki": 15,
+   "rank": 15,
+   "prev": {
+    "race_id": "202503030511",
+    "date": "2025/11/22",
+    "venue": "3福島5",
+    "race_name": "福島記念(GIII)",
+    "kind": "jra",
+    "days": 36
+   }
+  },
+  {
+   "horse_id": "2018104638",
+   "name": "ミステリーウェイ",
+   "ninki": 10,
+   "rank": 16,
+   "prev": {
+    "race_id": "202505050211",
+    "date": "2025/11/09",
+    "venue": "5東京2",
+    "race_name": "アルゼンチン共和国杯(GII)",
+    "kind": "jra",
+    "days": 49
+   }
+  }
+ ]
+}

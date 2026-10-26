@@ -1,0 +1,231 @@
+{
+ "race_id": "202507050211",
+ "date": "20251207",
+ "race_name": "チャンピオンズC",
+ "runners": [
+  {
+   "horse_id": "2021105700",
+   "name": "ダブルハートボンド",
+   "ninki": 3,
+   "rank": 1,
+   "prev": {
+    "race_id": "202508040211",
+    "date": "2025/11/09",
+    "venue": "4京都2",
+    "race_name": "みやこS(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2019102383",
+   "name": "ウィルソンテソーロ",
+   "ninki": 2,
+   "rank": 2,
+   "prev": {
+    "race_id": "202543110311",
+    "date": "2025/11/03",
+    "venue": "船橋",
+    "race_name": "JBCクラシック(JpnI)",
+    "kind": "nar",
+    "days": 34
+   }
+  },
+  {
+   "horse_id": "2021106640",
+   "name": "ラムジェット",
+   "ninki": 7,
+   "rank": 3,
+   "prev": {
+    "race_id": "202508040211",
+    "date": "2025/11/09",
+    "venue": "4京都2",
+    "race_name": "みやこS(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2017106404",
+   "name": "メイショウハリオ",
+   "ninki": 8,
+   "rank": 4,
+   "prev": {
+    "race_id": "202543110311",
+    "date": "2025/11/03",
+    "venue": "船橋",
+    "race_name": "JBCクラシック(JpnI)",
+    "kind": "nar",
+    "days": 34
+   }
+  },
+  {
+   "horse_id": "2020105621",
+   "name": "アウトレンジ",
+   "ninki": 4,
+   "rank": 5,
+   "prev": {
+    "race_id": "202508040211",
+    "date": "2025/11/09",
+    "venue": "4京都2",
+    "race_name": "みやこS(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2017103290",
+   "name": "ハギノアレグリアス",
+   "ninki": 11,
+   "rank": 6,
+   "prev": {
+    "race_id": "202548050611",
+    "date": "2025/05/06",
+    "venue": "名古屋",
+    "race_name": "名古屋グランプリ(JpnII)",
+    "kind": "nar",
+    "days": 215
+   }
+  },
+  {
+   "horse_id": "2021102729",
+   "name": "テンカジョウ",
+   "ninki": 10,
+   "rank": 7,
+   "prev": {
+    "race_id": "202543110309",
+    "date": "2025/11/03",
+    "venue": "船橋",
+    "race_name": "JBCレディスクラシ(JpnI)",
+    "kind": "nar",
+    "days": 34
+   }
+  },
+  {
+   "horse_id": "2021104756",
+   "name": "サンライズジパング",
+   "ninki": 9,
+   "rank": 8,
+   "prev": {
+    "race_id": "202543110311",
+    "date": "2025/11/03",
+    "venue": "船橋",
+    "race_name": "JBCクラシック(JpnI)",
+    "kind": "nar",
+    "days": 34
+   }
+  },
+  {
+   "horse_id": "2020103400",
+   "name": "セラフィックコール",
+   "ninki": 14,
+   "rank": 9,
+   "prev": {
+    "race_id": "202535072112",
+    "date": "2025/07/21",
+    "venue": "盛岡",
+    "race_name": "マーキュリーC(JpnIII)",
+    "kind": "nar",
+    "days": 139
+   }
+  },
+  {
+   "horse_id": "2020101874",
+   "name": "ペリエール",
+   "ninki": 15,
+   "rank": 10,
+   "prev": {
+    "race_id": "202508040211",
+    "date": "2025/11/09",
+    "venue": "4京都2",
+    "race_name": "みやこS(GIII)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2021105724",
+   "name": "シックスペンス",
+   "ninki": 5,
+   "rank": 11,
+   "prev": {
+    "race_id": "202535101312",
+    "date": "2025/10/13",
+    "venue": "盛岡",
+    "race_name": "マイルチャンピオンシ(JpnI)",
+    "kind": "nar",
+    "days": 55
+   }
+  },
+  {
+   "horse_id": "2018106084",
+   "name": "ペプチドナイル",
+   "ninki": 12,
+   "rank": 12,
+   "prev": {
+    "race_id": "202505050311",
+    "date": "2025/11/15",
+    "venue": "5東京3",
+    "race_name": "武蔵野S(GIII)",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2022101638",
+   "name": "ナルカミ",
+   "ninki": 1,
+   "rank": 13,
+   "prev": {
+    "race_id": "202544100811",
+    "date": "2025/10/08",
+    "venue": "大井",
+    "race_name": "ジャパンダートクラシ(JpnI)",
+    "kind": "nar",
+    "days": 60
+   }
+  },
+  {
+   "horse_id": "2016102370",
+   "name": "ヘリオス",
+   "ninki": 16,
+   "rank": 14,
+   "prev": {
+    "race_id": "202535110211",
+    "date": "2025/11/02",
+    "venue": "盛岡",
+    "race_name": "すずらん賞(重賞)",
+    "kind": "nar",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022110083",
+   "name": "ルクソールカフェ",
+   "ninki": 6,
+   "rank": 15,
+   "prev": {
+    "race_id": "202505050311",
+    "date": "2025/11/15",
+    "venue": "5東京3",
+    "race_name": "武蔵野S(GIII)",
+    "kind": "jra",
+    "days": 22
+   }
+  },
+  {
+   "horse_id": "2018100829",
+   "name": "ウィリアムバローズ",
+   "ninki": 13,
+   "rank": 16,
+   "prev": {
+    "race_id": "202501010511",
+    "date": "2025/08/09",
+    "venue": "1札幌5",
+    "race_name": "エルムS(GIII)",
+    "kind": "jra",
+    "days": 120
+   }
+  }
+ ]
+}

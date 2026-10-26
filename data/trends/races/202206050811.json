@@ -1,0 +1,231 @@
+{
+ "race_id": "202206050811",
+ "date": "20221225",
+ "race_name": "有馬記念",
+ "runners": [
+  {
+   "horse_id": "2019105219",
+   "name": "イクイノックス",
+   "ninki": 1,
+   "rank": 1,
+   "prev": {
+    "race_id": "202205040911",
+    "date": "2022/10/30",
+    "venue": "4東京9",
+    "race_name": "天皇賞(秋)(GI)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2019104909",
+   "name": "ボルドグフーシュ",
+   "ninki": 6,
+   "rank": 2,
+   "prev": {
+    "race_id": "202209040711",
+    "date": "2022/10/23",
+    "venue": "4阪神7",
+    "race_name": "菊花賞(GI)",
+    "kind": "jra",
+    "days": 63
+   }
+  },
+  {
+   "horse_id": "2018105081",
+   "name": "ジェラルディーナ",
+   "ninki": 3,
+   "rank": 3,
+   "prev": {
+    "race_id": "202209050411",
+    "date": "2022/11/13",
+    "venue": "5阪神4",
+    "race_name": "エリザベス女王杯(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2017102294",
+   "name": "イズジョーノキセキ",
+   "ninki": 13,
+   "rank": 4,
+   "prev": {
+    "race_id": "202209050411",
+    "date": "2022/11/13",
+    "venue": "5阪神4",
+    "race_name": "エリザベス女王杯(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2018105027",
+   "name": "エフフォーリア",
+   "ninki": 5,
+   "rank": 5,
+   "prev": {
+    "race_id": "202209030411",
+    "date": "2022/06/26",
+    "venue": "3阪神4",
+    "race_name": "宝塚記念(GI)",
+    "kind": "jra",
+    "days": 182
+   }
+  },
+  {
+   "horse_id": "2017101415",
+   "name": "ウインマイティー",
+   "ninki": 15,
+   "rank": 6,
+   "prev": {
+    "race_id": "202209050411",
+    "date": "2022/11/13",
+    "venue": "5阪神4",
+    "race_name": "エリザベス女王杯(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2019105346",
+   "name": "ジャスティンパレス",
+   "ninki": 7,
+   "rank": 7,
+   "prev": {
+    "race_id": "202209040711",
+    "date": "2022/10/23",
+    "venue": "4阪神7",
+    "race_name": "菊花賞(GI)",
+    "kind": "jra",
+    "days": 63
+   }
+  },
+  {
+   "horse_id": "2017102170",
+   "name": "ディープボンド",
+   "ninki": 8,
+   "rank": 8,
+   "prev": {
+    "race_id": "2022C8100204",
+    "date": "2022/10/02",
+    "venue": "パリロンシャン",
+    "race_name": "凱旋門賞(GI)",
+    "kind": "overseas",
+    "days": 84
+   }
+  },
+  {
+   "horse_id": "2018103559",
+   "name": "タイトルホルダー",
+   "ninki": 2,
+   "rank": 9,
+   "prev": {
+    "race_id": "2022C8100204",
+    "date": "2022/10/02",
+    "venue": "パリロンシャン",
+    "race_name": "凱旋門賞(GI)",
+    "kind": "overseas",
+    "days": 84
+   }
+  },
+  {
+   "horse_id": "2017105082",
+   "name": "ヴェラアズール",
+   "ninki": 4,
+   "rank": 10,
+   "prev": {
+    "race_id": "202205050812",
+    "date": "2022/11/27",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2016104618",
+   "name": "ボッケリーニ",
+   "ninki": 14,
+   "rank": 11,
+   "prev": {
+    "race_id": "202205050812",
+    "date": "2022/11/27",
+    "venue": "5東京8",
+    "race_name": "ジャパンC(GI)",
+    "kind": "jra",
+    "days": 28
+   }
+  },
+  {
+   "horse_id": "2017105376",
+   "name": "ポタジェ",
+   "ninki": 12,
+   "rank": 12,
+   "prev": {
+    "race_id": "202205040911",
+    "date": "2022/10/30",
+    "venue": "4東京9",
+    "race_name": "天皇賞(秋)(GI)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2016105239",
+   "name": "ラストドラフト",
+   "ninki": 16,
+   "rank": 13,
+   "prev": {
+    "race_id": "202205050211",
+    "date": "2022/11/06",
+    "venue": "5東京2",
+    "race_name": "アルゼンチン共和国杯(GII)",
+    "kind": "jra",
+    "days": 49
+   }
+  },
+  {
+   "horse_id": "2017105525",
+   "name": "アリストテレス",
+   "ninki": 10,
+   "rank": 14,
+   "prev": {
+    "race_id": "202209040311",
+    "date": "2022/10/10",
+    "venue": "4阪神3",
+    "race_name": "京都大賞典(GII)",
+    "kind": "jra",
+    "days": 76
+   }
+  },
+  {
+   "horse_id": "2017106203",
+   "name": "アカイイト",
+   "ninki": 9,
+   "rank": 15,
+   "prev": {
+    "race_id": "202209050411",
+    "date": "2022/11/13",
+    "venue": "5阪神4",
+    "race_name": "エリザベス女王杯(GI)",
+    "kind": "jra",
+    "days": 42
+   }
+  },
+  {
+   "horse_id": "2018106273",
+   "name": "ブレークアップ",
+   "ninki": 11,
+   "rank": 16,
+   "prev": {
+    "race_id": "202205050211",
+    "date": "2022/11/06",
+    "venue": "5東京2",
+    "race_name": "アルゼンチン共和国杯(GII)",
+    "kind": "jra",
+    "days": 49
+   }
+  }
+ ]
+}

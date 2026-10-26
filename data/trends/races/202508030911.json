@@ -1,0 +1,259 @@
+{
+ "race_id": "202508030911",
+ "date": "20251026",
+ "race_name": "菊花賞",
+ "runners": [
+  {
+   "horse_id": "2022104685",
+   "name": "エネルジコ",
+   "ninki": 1,
+   "rank": 1,
+   "prev": {
+    "race_id": "202504030411",
+    "date": "2025/08/31",
+    "venue": "3新潟4",
+    "race_name": "新潟記念(GIII)",
+    "kind": "jra",
+    "days": 56
+   }
+  },
+  {
+   "horse_id": "2022105099",
+   "name": "エリキング",
+   "ninki": 2,
+   "rank": 2,
+   "prev": {
+    "race_id": "202509040711",
+    "date": "2025/09/21",
+    "venue": "4阪神7",
+    "race_name": "神戸新聞杯(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022104614",
+   "name": "エキサイトバイオ",
+   "ninki": 13,
+   "rank": 3,
+   "prev": {
+    "race_id": "202503020211",
+    "date": "2025/06/29",
+    "venue": "2福島2",
+    "race_name": "ラジオNIKKEI賞(GIII)",
+    "kind": "jra",
+    "days": 119
+   }
+  },
+  {
+   "horse_id": "2022104736",
+   "name": "ゲルチュタール",
+   "ninki": 5,
+   "rank": 4,
+   "prev": {
+    "race_id": "202504030311",
+    "date": "2025/08/30",
+    "venue": "3新潟3",
+    "race_name": "日本海S(3勝クラス)",
+    "kind": "jra",
+    "days": 57
+   }
+  },
+  {
+   "horse_id": "2022105466",
+   "name": "レッドバンデ",
+   "ninki": 9,
+   "rank": 5,
+   "prev": {
+    "race_id": "202506040511",
+    "date": "2025/09/15",
+    "venue": "4中山5",
+    "race_name": "朝日セントライト記念(GII)",
+    "kind": "jra",
+    "days": 41
+   }
+  },
+  {
+   "horse_id": "2022105109",
+   "name": "ミラージュナイト",
+   "ninki": 8,
+   "rank": 6,
+   "prev": {
+    "race_id": "202501020311",
+    "date": "2025/08/30",
+    "venue": "2札幌3",
+    "race_name": "札幌日刊スポーツ杯(2勝クラス)",
+    "kind": "jra",
+    "days": 57
+   }
+  },
+  {
+   "horse_id": "2022104733",
+   "name": "コーチェラバレー",
+   "ninki": 15,
+   "rank": 7,
+   "prev": {
+    "race_id": "202509040308",
+    "date": "2025/09/13",
+    "venue": "4阪神3",
+    "race_name": "生田特別(1勝クラス)",
+    "kind": "jra",
+    "days": 43
+   }
+  },
+  {
+   "horse_id": "2022103995",
+   "name": "ジョバンニ",
+   "ninki": 6,
+   "rank": 8,
+   "prev": {
+    "race_id": "202509040711",
+    "date": "2025/09/21",
+    "venue": "4阪神7",
+    "race_name": "神戸新聞杯(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022107282",
+   "name": "レクスノヴァス",
+   "ninki": 10,
+   "rank": 9,
+   "prev": {
+    "race_id": "202501010812",
+    "date": "2025/08/17",
+    "venue": "1札幌8",
+    "race_name": "阿寒湖特別(2勝クラス)",
+    "kind": "jra",
+    "days": 70
+   }
+  },
+  {
+   "horse_id": "2022105827",
+   "name": "アロンディ",
+   "ninki": 17,
+   "rank": 10,
+   "prev": {
+    "race_id": "202509040807",
+    "date": "2025/09/27",
+    "venue": "4阪神8",
+    "race_name": "3歳以上1勝クラス",
+    "kind": "jra",
+    "days": 29
+   }
+  },
+  {
+   "horse_id": "2022104615",
+   "name": "アマキヒ",
+   "ninki": 12,
+   "rank": 11,
+   "prev": {
+    "race_id": "202504020808",
+    "date": "2025/08/17",
+    "venue": "2新潟8",
+    "race_name": "阿賀野川特別(2勝クラス)",
+    "kind": "jra",
+    "days": 70
+   }
+  },
+  {
+   "horse_id": "2022105580",
+   "name": "ライトトラック",
+   "ninki": 11,
+   "rank": 12,
+   "prev": {
+    "race_id": "202509040711",
+    "date": "2025/09/21",
+    "venue": "4阪神7",
+    "race_name": "神戸新聞杯(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022104902",
+   "name": "マイユニバース",
+   "ninki": 4,
+   "rank": 13,
+   "prev": {
+    "race_id": "202506040610",
+    "date": "2025/09/20",
+    "venue": "4中山6",
+    "race_name": "九十九里特別(2勝クラス)",
+    "kind": "jra",
+    "days": 36
+   }
+  },
+  {
+   "horse_id": "2022104714",
+   "name": "ショウヘイ",
+   "ninki": 3,
+   "rank": 14,
+   "prev": {
+    "race_id": "202509040711",
+    "date": "2025/09/21",
+    "venue": "4阪神7",
+    "race_name": "神戸新聞杯(GII)",
+    "kind": "jra",
+    "days": 35
+   }
+  },
+  {
+   "horse_id": "2022103310",
+   "name": "レイヤードレッド",
+   "ninki": 18,
+   "rank": 15,
+   "prev": {
+    "race_id": "202506040607",
+    "date": "2025/09/20",
+    "venue": "4中山6",
+    "race_name": "3歳以上1勝クラス",
+    "kind": "jra",
+    "days": 36
+   }
+  },
+  {
+   "horse_id": "2022106611",
+   "name": "ヤマニンブークリエ",
+   "ninki": 7,
+   "rank": 16,
+   "prev": {
+    "race_id": "202506040511",
+    "date": "2025/09/15",
+    "venue": "4中山5",
+    "race_name": "朝日セントライト記念(GII)",
+    "kind": "jra",
+    "days": 41
+   }
+  },
+  {
+   "horse_id": "2022103406",
+   "name": "ラーシャローム",
+   "ninki": 16,
+   "rank": 17,
+   "prev": {
+    "race_id": "202501010707",
+    "date": "2025/08/16",
+    "venue": "1札幌7",
+    "race_name": "3歳以上1勝クラス",
+    "kind": "jra",
+    "days": 71
+   }
+  },
+  {
+   "horse_id": "2022101193",
+   "name": "ジーティーアダマン",
+   "ninki": 14,
+   "rank": 18,
+   "prev": {
+    "race_id": "202506040511",
+    "date": "2025/09/15",
+    "venue": "4中山5",
+    "race_name": "朝日セントライト記念(GII)",
+    "kind": "jra",
+    "days": 41
+   }
+  }
+ ]
+}
