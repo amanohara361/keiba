@@ -10,6 +10,8 @@
       "venue": "大井",
       "race_no": 11,
       "start_time": "20:10",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "3": 0.28,
         "7": 0.17,
