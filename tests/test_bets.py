@@ -166,3 +166,30 @@ def test_見直し履歴に書き換え前の印が無ければ弾く():
     broken = {k: v for k, v in REVISION.items() if k != 'marks_before'}
     with pytest.raises(bets.BetsError):
         race([{'mark': '◎', 'umaban': 15}], revisions=[broken])
+
+
+# ----------------------------------------------------------------------
+# 見送りの理由（2026-10-27 追加）
+# ----------------------------------------------------------------------
+
+def test_見送りの理由を読める():
+    r = race([{'mark': '◎', 'umaban': 7}], skip_reason='2番手以下が拮抗した混戦')
+    assert r.skip_reason == '2番手以下が拮抗した混戦'
+
+
+def test_見送りの理由は無くても読める():
+    assert race([{'mark': '◎', 'umaban': 7}]).skip_reason is None
+
+
+def test_空の見送り理由は見送りにしない():
+    assert race([{'mark': '◎', 'umaban': 7}], skip_reason='  ').skip_reason is None
+
+
+def test_見送りの理由は文字列でないと弾く():
+    with pytest.raises(bets.BetsError):
+        race([{'mark': '◎', 'umaban': 7}], skip_reason=True)
+
+
+def test_書き出しても見送りの理由が残り無ければ欄を出さない():
+    assert race([{'mark': '◎', 'umaban': 7}], skip_reason='混戦').to_dict()['skip_reason'] == '混戦'
+    assert 'skip_reason' not in race([{'mark': '◎', 'umaban': 7}]).to_dict()

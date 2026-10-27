@@ -32,6 +32,7 @@ import statistics
 import sys
 from datetime import date, timedelta
 
+import bet_builder
 import bets
 import edge_check
 import nar as nar_module
@@ -80,6 +81,13 @@ PARTNER_BANDS = [
     ('long', '9番人気以下', 9, None),
 ]
 
+# ◎以外の保険ワイド（bet_builder._axis_hedge）の相手を、印の順で選ぶか勝率の順で選ぶか（2026-10-27〜）。
+# 今は印の順（○▲△の先頭）。菊花賞では▲5（勝率0.075）が選ばれ、△10（0.13）なら当たっていた。
+# 9/16〜10/25 の136レースのうち相手が食い違った47レースでは、3着内は印の順11・勝率の順18、
+# 回収率は84%対72%（最大払戻1回を抜くと37%対57%）で、偶然と区別できなかった。
+# 実際の買い方は変えず、相手が食い違ったレースが HEDGE_REVIEW_AT に達したら比べ直す。
+HEDGE_REVIEW_AT = 100
+
 # (見出し, summarize() のキー, 到達時にすること)。render() とメールの両方が
 # ここを見る。**片方だけ書き換えて対応が崩れる、という事故を構造的に防ぐ。**
 THRESHOLD_COUNTERS = [
@@ -100,6 +108,26 @@ EXIT_NEEDS_ATTENTION = 3   # 結果が1件も取れなかった等、要確認�
 # ----------------------------------------------------------------------
 # 入力をそろえる
 # ----------------------------------------------------------------------
+
+def load_prestart_checks(day):
+    """その日の検算記録から、レースごとに単勝オッズを持つ最後の判定を取り出す。
+
+    発走後の検算は win_odds が空になるので、最後の判定ではなく
+    「発走前の最後」を採る（保険の相手の比較で勝率を出すのに使う）。
+    """
+    path = os.path.join(bets.CHECKS_DIR, f'{day.isoformat()}.json')
+    if not os.path.exists(path):
+        return {}
+    with open(path, encoding='utf-8') as f:
+        history = json.load(f)
+
+    latest = {}
+    for entry in history:
+        for race in entry.get('races', []):
+            if race.get('win_odds'):
+                latest[str(race.get('race_id'))] = race
+    return latest
+
 
 def load_final_checks(day):
     """その日の検算記録から、レースごとの **最後の** 判定を取り出す。
@@ -314,6 +342,52 @@ def virtual_axis_partner_wide(race, result):
             'staked': 100 * len(partners), 'returned': sum(returned)}
 
 
+def hedge_partner_compare(race, result, prestart_check):
+    """保険ワイドの相手を「印の順」と「勝率の順」で選んだら、どちらが当たったか。
+
+    相棒の軸（○、無ければ▲△）は bet_builder._axis_hedge と同じに選び、相手の候補も
+    同じ相手プール（印の序列順 → partners）から取る。勝率は発走前の最後の検算の
+    単勝オッズに朝の主観勝率を当てたもの。**実際に買ったかどうかとは関係なく**、
+    全レースで同じ物差しを当てる。ワイドのオッズが取れたかや、馬体重による
+    上乗せの取り消しは見ない（選び方の比較だけをする）。
+
+    比べられないレース（主観勝率・発走前の単勝オッズ・相棒の軸・相手が無い）は None。
+    2つの選び方が同じ馬になれば {'differ': False}。
+    """
+    if not prestart_check or not race.win_probabilities:
+        return None
+    win_odds = {int(k): v for k, v in (prestart_check.get('win_odds') or {}).items() if v}
+    market = bet_builder.market_win_probabilities(win_odds)
+    honmei = race.horses_for('◎')
+    if not market or not honmei or honmei[0] not in market:
+        return None
+    axis = honmei[0]
+    overrides = {k: v for k, v in race.win_probabilities.items() if k in market}
+    p = bet_builder.apply_subjective(market, overrides)
+    co_axis = next((h for mark in bets.PARTNER_ORDER for h in race.horses_for(mark)
+                    if h != axis and h in p), None)
+    if co_axis is None:
+        return None
+    pool = [h for h in race.partner_pool if h in p and h not in (axis, co_axis)]
+    if not pool:
+        return None
+    by_mark = pool[0]
+    by_prob = max(pool, key=lambda h: p[h])   # 同率なら印の順で先の馬
+    if by_mark == by_prob:
+        return {'differ': False}
+
+    ranks = {h['umaban']: h['rank'] for h in result['finishing_order']}
+    payouts = result.get('payouts') or {}
+
+    def side(h):
+        rank = ranks.get(h)
+        return {'umaban': h, 'top3': isinstance(rank, int) and rank <= 3,
+                'returned': results_module.payout_for(payouts, 'ワイド', [co_axis, h])}
+
+    return {'differ': True, 'co_axis': co_axis,
+            'mark': side(by_mark), 'prob': side(by_prob)}
+
+
 def _band_of(ninki):
     for key, _, low, high in PARTNER_BANDS:
         if ninki >= low and (high is None or ninki <= high):
@@ -354,7 +428,7 @@ def partner_popularity(race, result):
     return counts
 
 
-def review_race(race, result, check):
+def review_race(race, result, check, prestart_check=None):
     """1レース分の評価をまとめる。結果が未確定なら分類だけ空にする。"""
     entry = {
         'race_id': race.race_id,
@@ -399,6 +473,7 @@ def review_race(race, result, check):
         'mark_vs_popularity': mark_vs_popularity(race, result),
         'virtual_wide': virtual_axis_partner_wide(race, result),
         'partner_popularity': partner_popularity(race, result),
+        'hedge_compare': hedge_partner_compare(race, result, prestart_check),
     })
 
     # 印の成績。◎が1着だったか、3着以内だったか。
@@ -480,6 +555,15 @@ def summarize(entries):
     compared = [e['mark_vs_popularity'] for e in settled if e.get('mark_vs_popularity')]
     favorite_off = [c['nar_favorite_off'] for c in compared if c['nar_favorite_off']]
     virtual = [e['virtual_wide'] for e in settled if e.get('virtual_wide')]
+    hedges = [e['hedge_compare'] for e in settled if e.get('hedge_compare')]
+    differ = [h for h in hedges if h['differ']]
+
+    def hedge_side(key):
+        returned = [h[key]['returned'] for h in differ]
+        return {'top3': sum(1 for h in differ if h[key]['top3']),
+                'hits': sum(1 for y in returned if y > 0),
+                'returned': sum(returned),
+                'max': max(returned, default=0)}
     partner_bands = {'partners': _empty_band_counts(), 'field': _empty_band_counts()}
     for e in settled:
         pp = e.get('partner_popularity')
@@ -530,6 +614,11 @@ def summarize(entries):
         # 中穴候補の人気帯別の成績と、同じレースの同じ人気帯の全馬
         'partner_races': sum(1 for e in settled if e.get('partner_popularity')),
         'partner_bands': partner_bands,
+        # 保険ワイドの相手：印の順 vs 勝率の順（観察中、実際の買い方は印の順）
+        'hedge_races': len(hedges),
+        'hedge_differ': len(differ),
+        'hedge_mark': hedge_side('mark'),
+        'hedge_prob': hedge_side('prob'),
     }
 
 
@@ -541,6 +630,7 @@ def collect(days, fetcher=None, use_cache=True):
         if not sheet:
             continue
         checks = load_final_checks(day)
+        prestart = load_prestart_checks(day)
         entries = []
         for race in sheet.races:
             try:
@@ -549,7 +639,8 @@ def collect(days, fetcher=None, use_cache=True):
             except (results_module.ResultsError, nar_module.NarError) as exc:
                 logger.warning('%s: %s', race.race_id, exc)
                 result = None
-            entries.append(review_race(race, result, checks.get(race.race_id)))
+            entries.append(review_race(race, result, checks.get(race.race_id),
+                                       prestart.get(race.race_id)))
         collected.append({'date': day, 'source': sheet.source, 'entries': entries})
     return collected
 
@@ -733,6 +824,47 @@ def render_virtual_wide(week_summary, wide_since_summary, total_summary):
     return lines
 
 
+def _hedge_roi(s, key, drop_max=False):
+    n = s['hedge_differ']
+    if not n:
+        return '—'
+    side = s[key]
+    returned = side['returned'] - (side['max'] if drop_max else 0)
+    return f"{returned / (100 * n) * 100:.0f}%"
+
+
+HEDGE_ROWS = [
+    ('比べられたレース（うち相手が違う）', lambda s: f"{s['hedge_races']}（{s['hedge_differ']}）"),
+    ('相手が3着以内（印の順／勝率の順）',
+     lambda s: f"{s['hedge_mark']['top3']}／{s['hedge_prob']['top3']}"),
+    ('ワイド的中（印の順／勝率の順）',
+     lambda s: f"{s['hedge_mark']['hits']}／{s['hedge_prob']['hits']}"),
+    ('回収率（印の順／勝率の順）',
+     lambda s: f"{_hedge_roi(s, 'hedge_mark')}／{_hedge_roi(s, 'hedge_prob')}"),
+    ('最大払戻1回を除いた回収率',
+     lambda s: f"{_hedge_roi(s, 'hedge_mark', True)}／{_hedge_roi(s, 'hedge_prob', True)}"),
+]
+
+
+def render_hedge_compare(week_summary, total_summary):
+    """保険ワイドの相手の選び方の比較。実際の買い方は変えていない。判定はしない。"""
+    lines = [
+        '## 保険ワイドの相手：印の順 vs 勝率の順（観察中・2026-10-27〜）',
+        '',
+        '◎が飛んだときの保険（○軸のワイド1点）の相手を、今の「印の順（▲が先）」と'
+        '「勝率の高い順」で選んだら、の比較。相手が違うレースだけを各100円で数える。'
+        f'相手が違うレースが通算 {HEDGE_REVIEW_AT} に達したら、どちらにするかを決める'
+        f"（現在 {total_summary['hedge_differ']}）。根拠は決定ログ 2026-10-27。",
+        '',
+        '| 指標 | 今週 | 通算 |',
+        '|---|---|---|',
+    ]
+    for label, fn in HEDGE_ROWS:
+        lines.append(f'| {label} | {fn(week_summary)} | {fn(total_summary)} |')
+    lines.append('')
+    return lines
+
+
 def _rate(num, den):
     return f'{num / den * 100:.1f}%' if den else '—'
 
@@ -863,6 +995,8 @@ PENDING_PROPOSALS = (
      '検算の時刻別のずれを見て、割り引きを入れるか、買う判断を発走に近い検算に寄せるかを決める'),
     ('frame', '案5 枠順の減点をコース別にする', '鞍', 1500,
      '記事の枠順の判定（内有利・外有利がはっきりしたコース）と、手元の data_jra で向きが合うかを確かめてから実装する'),
+    ('hedge', '保険ワイドの相手を勝率の順にする', 'R', HEDGE_REVIEW_AT,
+     '相手が違ったレースで、印の順と勝率の順の3着内・回収率（最大払戻を除いた値も）を比べて、どちらにするかを決める'),
 )
 
 
@@ -879,13 +1013,14 @@ def count_jra_races(data_dir=None):
     return total
 
 
-def pending_status(edge_summary, jra_races):
+def pending_status(edge_summary, jra_races, hedge_races=None):
     """保留中の改善案ごとに、いまの量と目安。量が取れないものは None。"""
     drift = ((edge_summary or {}).get('drift') or {}).get('最後の検算') or {}
     now = {
         'blend': edge_summary['total']['races'] if edge_summary else None,
         'drift': drift.get('n') if edge_summary else None,
         'frame': jra_races,
+        'hedge': hedge_races,
     }
     return [{'key': key, 'label': label, 'unit': unit, 'target': target, 'todo': todo,
              'now': now[key], 'ready': now[key] is not None and now[key] >= target}
@@ -896,7 +1031,7 @@ def render_pending(status):
     if not status:
         return []
     lines = ['## 保留中の改善案（データ待ち）', '',
-             '根拠は決定ログ 2026-10-16。目安に届いたらメール冒頭で知らせる。', '',
+             '根拠は決定ログ 2026-10-16（保険ワイドの相手は 2026-10-27）。目安に届いたらメール冒頭で知らせる。', '',
              '| 案 | いま | 目安 | 届いたらすること |', '|---|---|---|---|']
     for p in status:
         now = '—' if p['now'] is None else f"{p['now']}{p['unit']}"
@@ -999,6 +1134,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
         lines += render_by_org(week_by_org, total_by_org)
     lines += render_virtual_wide(week_summary, wide_since_summary, total_summary)
     lines += render_partner_popularity(week_summary, total_summary)
+    lines += render_hedge_compare(week_summary, total_summary)
     lines += render_weight_going(wg_lines)
     lines += render_edge(edge_lines)
     lines += render_pending(pending)
@@ -1238,7 +1374,7 @@ def main(argv=None):
 
     wg_lines, wg_heavy = weight_going_report()
     edge_lines, edge_line, edge_summary = edge_report(week_days)
-    pending = pending_status(edge_summary, count_jra_races())
+    pending = pending_status(edge_summary, count_jra_races(), total_summary['hedge_differ'])
     nar_bias_lines, _ = nar_bias_report(week)
     text = render(week, week_summary, total_summary, (start, end),
                   since_summary=since_summary,

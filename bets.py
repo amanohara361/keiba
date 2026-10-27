@@ -113,7 +113,7 @@ class RaceBets:
     def __init__(self, race_id, name, start_time, marks, bets,
                  confidence=None, subjective_hit_rate=None, venue=None, race_no=None,
                  note='', org='jra', partners=None, win_probabilities=None,
-                 revisions=None):
+                 revisions=None, skip_reason=None):
         self.race_id = str(race_id)
         self.name = name
         self.start_time = start_time          # "15:25"
@@ -153,6 +153,11 @@ class RaceBets:
         # [{'at': ..., 'trigger': ..., 'reason': ..., 'marks_before': [...],
         #   'win_probabilities_before': {...}}, ...]
         self.revisions = revisions or []
+        # 朝の予想が「このレースは見送り」と判断した理由（2026-10-27 ユーザー承認）。
+        # 入っていれば、直前検算は実オッズが規律を満たしても買い目を出さない
+        # （bet_builder.build_bets）。それまでは note に「見送り寄り」と書いても
+        # 買い目は規律だけで決まり、鎌倉記念・ミズナラ盃で勝負度Bの買い目が出ていた。
+        self.skip_reason = (skip_reason or '').strip() or None
 
         if org not in self.ORGS:
             raise BetsError(f'org は {"／".join(self.ORGS)} のいずれかです: {org}')
@@ -234,6 +239,7 @@ class RaceBets:
             'bets': [b.to_dict() for b in self.bets],
             'note': self.note,
             **({'revisions': self.revisions} if self.revisions else {}),
+            **({'skip_reason': self.skip_reason} if self.skip_reason else {}),
         }
 
 
@@ -276,6 +282,14 @@ def _parse_revisions(raw, context):
     for i, rev in enumerate(raw, 1):
         for key in REVISION_KEYS:
             _require(rev, key, f'{context}の見直し{i}件目')
+    return raw
+
+
+def _parse_skip_reason(raw, context):
+    if raw is None:
+        return None
+    if not isinstance(raw, str):
+        raise BetsError(f'{context}: skip_reason は文字列です（見送りにした理由を一言）')
     return raw
 
 
@@ -337,6 +351,7 @@ def parse_sheet(payload):
             # org の無い過去の買い目ファイルはすべて中央である。**
             org=raw.get('org', 'jra'),
             revisions=_parse_revisions(raw.get('revisions'), context),
+            skip_reason=_parse_skip_reason(raw.get('skip_reason'), context),
         ))
 
     return BetSheet(

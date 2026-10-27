@@ -659,3 +659,38 @@ def test_序列を守る案が無ければ理由を添えて見送る():
     confidence, bets_out, note = build(r, {('3連複', frozenset({7, 2, 14})): 400.0})
     assert (confidence, bets_out) == ('C', [])
     assert '序列' in note
+
+
+# ----------------------------------------------------------------------
+# 朝の見送り判断（2026-10-27 ユーザー承認）
+# ----------------------------------------------------------------------
+
+def _buyable(**kwargs):
+    """規律を満たして勝負度Aになる形（test_期待値1_5以上で勝負度A と同じ）。"""
+    r = race(marks=[{'mark': '◎', 'umaban': 7}, {'mark': '○', 'umaban': 11}],
+             win_probabilities={7: 0.45, 11: 0.30})
+    for key, value in kwargs.items():
+        setattr(r, key, value)
+    return r
+
+
+TABLE_BUYABLE = {('馬連', frozenset({7, 11})): 8.0}
+
+
+def test_見送りの理由があれば規律を満たしても買い目を出さない():
+    confidence, built, note = build(_buyable(skip_reason='2番手以下が拮抗'), TABLE_BUYABLE)
+    assert (confidence, built) == ('C', [])
+    assert '2番手以下が拮抗' in note
+
+
+def test_noteが見送り寄りなら欄が無くても買い目を出さない():
+    """鎌倉記念・ミズナラ盃：noteは「見送り寄り」なのに勝負度Bで買い目が出ていた。"""
+    confidence, built, note = build(_buyable(note='混戦気味なので見送り寄り。'), TABLE_BUYABLE)
+    assert (confidence, built) == ('C', [])
+    assert '見送り寄り' in note
+
+
+def test_馬を外す意味の見送りでは止めない():
+    confidence, built, _ = build(_buyable(note='9番は減点方式で見送り。'), TABLE_BUYABLE)
+    assert built
+    assert confidence == 'A'
