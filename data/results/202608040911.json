@@ -1,0 +1,232 @@
+{
+  "race_id": "202608040911",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 9,
+      "name": "ゴーイントゥスカイ",
+      "ninki": 3,
+      "odds": 12.0
+    },
+    {
+      "rank": 2,
+      "umaban": 6,
+      "name": "バステール",
+      "ninki": 8,
+      "odds": 33.8
+    },
+    {
+      "rank": 3,
+      "umaban": 10,
+      "name": "ダノンヒストリー",
+      "ninki": 2,
+      "odds": 3.0
+    },
+    {
+      "rank": 4,
+      "umaban": 12,
+      "name": "サノノグレーター",
+      "ninki": 14,
+      "odds": 129.7
+    },
+    {
+      "rank": 5,
+      "umaban": 15,
+      "name": "シートゥサミット",
+      "ninki": 12,
+      "odds": 87.5
+    },
+    {
+      "rank": 6,
+      "umaban": 16,
+      "name": "ショウナンハヤナミ",
+      "ninki": 10,
+      "odds": 57.6
+    },
+    {
+      "rank": 7,
+      "umaban": 14,
+      "name": "マジョレルブルー",
+      "ninki": 11,
+      "odds": 71.5
+    },
+    {
+      "rank": 8,
+      "umaban": 2,
+      "name": "コンジェスタス",
+      "ninki": 6,
+      "odds": 23.7
+    },
+    {
+      "rank": 9,
+      "umaban": 3,
+      "name": "アウダーシア",
+      "ninki": 5,
+      "odds": 22.9
+    },
+    {
+      "rank": 10,
+      "umaban": 5,
+      "name": "ジャスティンシカゴ",
+      "ninki": 4,
+      "odds": 20.2
+    },
+    {
+      "rank": 11,
+      "umaban": 17,
+      "name": "チャリングクロス",
+      "ninki": 15,
+      "odds": 203.1
+    },
+    {
+      "rank": 12,
+      "umaban": 7,
+      "name": "ラージアンサンブル",
+      "ninki": 16,
+      "odds": 210.3
+    },
+    {
+      "rank": 13,
+      "umaban": 1,
+      "name": "エムズビギン",
+      "ninki": 9,
+      "odds": 53.0
+    },
+    {
+      "rank": 14,
+      "umaban": 8,
+      "name": "ロブチェン",
+      "ninki": 1,
+      "odds": 1.8
+    },
+    {
+      "rank": 15,
+      "umaban": 13,
+      "name": "キンググローリー",
+      "ninki": 13,
+      "odds": 123.3
+    },
+    {
+      "rank": 16,
+      "umaban": 18,
+      "name": "ナリタエスペランサ",
+      "ninki": 17,
+      "odds": 237.4
+    },
+    {
+      "rank": 17,
+      "umaban": 11,
+      "name": "アスクエジンバラ",
+      "ninki": 7,
+      "odds": 32.8
+    },
+    {
+      "rank": 18,
+      "umaban": 4,
+      "name": "ショウナンガルフ",
+      "ninki": 18,
+      "odds": 380.5
+    }
+  ],
+  "non_finishers": [],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          9
+        ],
+        "yen": 1200
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          9
+        ],
+        "yen": 370
+      },
+      {
+        "combination": [
+          6
+        ],
+        "yen": 730
+      },
+      {
+        "combination": [
+          10
+        ],
+        "yen": 210
+      }
+    ],
+    "枠連": [
+      {
+        "combination": [
+          3,
+          5
+        ],
+        "yen": 1270
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          6,
+          9
+        ],
+        "yen": 11530
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          6,
+          9
+        ],
+        "yen": 2670
+      },
+      {
+        "combination": [
+          9,
+          10
+        ],
+        "yen": 700
+      },
+      {
+        "combination": [
+          6,
+          10
+        ],
+        "yen": 1270
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          9,
+          6
+        ],
+        "yen": 25160
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          6,
+          9,
+          10
+        ],
+        "yen": 8580
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          9,
+          6,
+          10
+        ],
+        "yen": 113300
+      }
+    ]
+  }
+}
