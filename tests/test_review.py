@@ -550,3 +550,80 @@ def test_collectedを渡さなければ従来どおり明細なしで動く():
     body = review.render_mail(week, (date(2026, 8, 18), date(2026, 8, 24)), 'x.md')
     assert 'レース別' not in body
     assert '仮想成績' in body
+
+
+# ----------------------------------------------------------------------
+# 保険ワイドの相手：印の順 vs 勝率の順（2026-10-27 追加）
+# ----------------------------------------------------------------------
+
+HEDGE_WIN_ODDS = {'8': 1.6, '10': 4.1, '9': 11.5, '5': 15.8, '6': 40.0, '1': 44.0,
+                  '2': 22.0, '3': 22.0, '4': 240.0}
+
+
+def hedge_race(**kwargs):
+    """菊花賞の形：○9が相棒の軸、▲5より△10の方が勝率が高い。"""
+    return make_race(marks=[('◎', 8), ('○', 9), ('▲', 5), ('△', 10)],
+                     win_probabilities={8: 0.44, 10: 0.13, 9: 0.09, 5: 0.075}, **kwargs)
+
+
+def test_保険の相手が印の順と勝率の順で違えば両方を精算する():
+    result = make_result([(1, 9), (2, 6), (3, 10), (4, 5)],
+                         payouts={'ワイド': [{'combination': [6, 9], 'yen': 2670},
+                                            {'combination': [9, 10], 'yen': 700},
+                                            {'combination': [6, 10], 'yen': 1270}]})
+    h = review.hedge_partner_compare(hedge_race(), result, {'win_odds': HEDGE_WIN_ODDS})
+    assert h['differ'] and h['co_axis'] == 9
+    assert h['mark'] == {'umaban': 5, 'top3': False, 'returned': 0}
+    assert h['prob'] == {'umaban': 10, 'top3': True, 'returned': 700}
+
+
+def test_保険の相手が同じなら違わないとだけ返す():
+    r = make_race(marks=[('◎', 8), ('○', 9), ('▲', 10), ('△', 5)],
+                  win_probabilities={8: 0.44, 10: 0.13, 9: 0.09, 5: 0.075})
+    h = review.hedge_partner_compare(r, make_result([(1, 9), (2, 10), (3, 8)]),
+                                     {'win_odds': HEDGE_WIN_ODDS})
+    assert h == {'differ': False}
+
+
+def test_発走前の単勝オッズか主観勝率が無ければ比べない():
+    result = make_result([(1, 9), (2, 10), (3, 8)])
+    assert review.hedge_partner_compare(hedge_race(), result, None) is None
+    assert review.hedge_partner_compare(hedge_race(), result, {'win_odds': {}}) is None
+    no_prob = make_race(marks=[('◎', 8), ('○', 9), ('▲', 5), ('△', 10)])
+    assert review.hedge_partner_compare(no_prob, result, {'win_odds': HEDGE_WIN_ODDS}) is None
+
+
+def test_保険の相手の比較を通算で数え最大払戻を除いた回収率も出す():
+    def entry(mark_ret, prob_ret):
+        return {'category': review.SKIPPED, 'staked': 0, 'returned': 0, 'blocked': False,
+                'hedge_compare': {'differ': True, 'co_axis': 9,
+                                  'mark': {'umaban': 5, 'top3': mark_ret > 0, 'returned': mark_ret},
+                                  'prob': {'umaban': 10, 'top3': prob_ret > 0, 'returned': prob_ret}}}
+    entries = [entry(2200, 0), entry(0, 700), entry(0, 400),
+               {'category': review.SKIPPED, 'staked': 0, 'returned': 0, 'blocked': False,
+                'hedge_compare': {'differ': False}}]
+    s = review.summarize(entries)
+    assert (s['hedge_races'], s['hedge_differ']) == (4, 3)
+    assert s['hedge_mark'] == {'top3': 1, 'hits': 1, 'returned': 2200, 'max': 2200}
+    assert s['hedge_prob'] == {'top3': 2, 'hits': 2, 'returned': 1100, 'max': 700}
+    text = '\n'.join(review.render_hedge_compare(s, s))
+    assert '733%／367%' in text      # 回収率
+    assert '0%／133%' in text        # 最大払戻1回を除いた回収率
+
+
+def test_発走前の検算は単勝オッズを持つ最後を採る(tmp_path, monkeypatch):
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path))
+    history = [
+        {'races': [{'race_id': '202601020811', 'win_odds': {'1': 3.0}}]},
+        {'races': [{'race_id': '202601020811', 'win_odds': {'1': 2.5}}]},
+        {'races': [{'race_id': '202601020811', 'win_odds': {}}]},
+    ]
+    (tmp_path / '2026-01-02.json').write_text(json.dumps(history), encoding='utf-8')
+    got = review.load_prestart_checks(date(2026, 1, 2))
+    assert got['202601020811']['win_odds'] == {'1': 2.5}
+
+
+def test_保険の相手の比較は保留中の改善案に載る():
+    status = review.pending_status(None, None, review.HEDGE_REVIEW_AT)
+    hedge = next(p for p in status if p['key'] == 'hedge')
+    assert hedge['ready'] and hedge['now'] == review.HEDGE_REVIEW_AT

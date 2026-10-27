@@ -485,6 +485,25 @@ def _build_candidates(axis, pool, marked, p, market, lookup, cap=SET_HIT_RATE_CA
     return out
 
 
+def skip_reason(race):
+    """朝の予想がレースを見送りと判断していれば、その理由。無ければ None。
+
+    **見送りの判断は買い目より優先する（2026-10-27 ユーザー承認）。** それまでは
+    買い目と勝負度が規律（合成オッズ・期待値）だけで決まり、noteの見送り判断は
+    読まれなかった。2026-10-10〜20 の地方で note に「見送り寄り」と書いた6件のうち
+    2件（鎌倉記念・ミズナラ盃）が勝負度Bで買われ、どちらも◎が着外で全滅した。
+
+    正式な入口は `skip_reason` 欄。書き忘れても止まるよう、note がレース単位の
+    見送りと読める書き方（discipline.NOTE_SKIP_RE）も同じに扱う。
+    """
+    if race.skip_reason:
+        return race.skip_reason
+    match = discipline.NOTE_SKIP_RE.search(race.note or '')
+    if match:
+        return f'noteに「{match.group(0)}」'
+    return None
+
+
 def build_bets(race, lookup, win_odds=None, stake=100, withdrawn=None):
     """1レース分の買い目を組み立てる。
 
@@ -495,6 +514,11 @@ def build_bets(race, lookup, win_odds=None, stake=100, withdrawn=None):
     withdrawn: 主観勝率の上乗せを取り消す馬番（馬体重の大幅増減。discipline.weight_withdrawals）。
     戻り値:   (勝負度, [Bet, ...], 説明文)
     """
+    skip = skip_reason(race)
+    if skip:
+        return 'C', [], (f'朝の予想が見送りと判断（{skip}）。'
+                         f'実オッズが規律を満たしても買い目を出しません（勝負度C）。')
+
     axis_horses = race.horses_for('◎')
     if not axis_horses:
         return 'C', [], '◎が無いため買い目を組めません'
