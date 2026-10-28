@@ -994,5 +994,35 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-29T01:48:03.427347+09:00",
+    "races": [
+      {
+        "race_id": "202610284411",
+        "name": "第33回 マイルグランプリ",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第33回 マイルグランプリ: 既に発走しています（発走 20:10 / 現在 01:48）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
