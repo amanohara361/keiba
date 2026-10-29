@@ -1508,5 +1508,219 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-29T19:38:08.547475+09:00",
+    "races": [
+      {
+        "race_id": "202610295011",
+        "name": "第４回 ネクストスター園田２歳登録馬",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第４回 ネクストスター園田２歳登録馬: 既に発走しています（発走 15:55 / 現在 19:38）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610294811",
+        "name": "第４回 ネクストスター名古屋２歳オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第４回 ネクストスター名古屋２歳オープン: 既に発走しています（発走 18:00 / 現在 19:38）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610293011",
+        "name": "第２９回 エーデルワイス賞JpnIII２歳牝馬オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 6.4,
+          "2": 55.0,
+          "3": 4.3,
+          "4": 202.0,
+          "5": 127.6,
+          "6": 11.4,
+          "7": 65.4,
+          "8": 6.6,
+          "9": 5.8,
+          "10": 5.0,
+          "11": 8.3,
+          "12": 12.2,
+          "13": 178.9,
+          "14": 341.6
+        },
+        "win_ninki": {
+          "1": 4,
+          "2": 9,
+          "3": 1,
+          "4": 13,
+          "5": 11,
+          "6": 7,
+          "7": 10,
+          "8": 5,
+          "9": 3,
+          "10": 2,
+          "11": 6,
+          "12": 8,
+          "13": 12,
+          "14": 14
+        },
+        "priced_odds": {
+          "ワイド": {
+            "3-9": 7.8,
+            "9-12": 21.7,
+            "2-9": 23.5,
+            "1-9": 11.9
+          },
+          "馬連": {
+            "3-9": 20.3,
+            "9-12": 57.6,
+            "2-9": 82.5,
+            "1-9": 30.7
+          }
+        },
+        "bet_note": "朝の予想が見送りと判断（中央4頭の砂適性が未知、逃げ候補が多く展開も読みにくい混戦で確信は低い）。実オッズが規律を満たしても買い目を出しません（勝負度C）。",
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "第２９回 エーデルワイス賞JpnIII２歳牝馬オープン: 馬場が「重」です（ダート1200m / 天候:雨 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "weight_growth",
+            "message": "第２９回 エーデルワイス賞JpnIII２歳牝馬オープン: 候補12番 カエリールークス の馬体重が446kg（+16）です",
+            "remedy": "2歳のプラス体重は成長分とみて勝率は据え置きます（第2章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第２９回 エーデルワイス賞JpnIII２歳牝馬オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1200,
+          "weather": "雨",
+          "going": "重"
+        },
+        "weights": {
+          "1": {
+            "weight": 472,
+            "diff": 14,
+            "age": 2
+          },
+          "2": {
+            "weight": 434,
+            "diff": 0,
+            "age": 2
+          },
+          "3": {
+            "weight": 444,
+            "diff": 2,
+            "age": 2
+          },
+          "6": {
+            "weight": 490,
+            "diff": 0,
+            "age": 2
+          },
+          "8": {
+            "weight": 456,
+            "diff": 8,
+            "age": 2
+          },
+          "9": {
+            "weight": 476,
+            "diff": -6,
+            "age": 2
+          },
+          "10": {
+            "weight": 458,
+            "diff": 0,
+            "age": 2
+          },
+          "11": {
+            "weight": 472,
+            "diff": -6,
+            "age": 2
+          },
+          "12": {
+            "weight": 446,
+            "diff": 16,
+            "age": 2
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 14
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 14
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 91
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 182
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 91
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 364
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-29 19:38:10"
+        }
+      }
+    ]
   }
 ]
