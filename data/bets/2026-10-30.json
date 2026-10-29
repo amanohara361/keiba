@@ -10,6 +10,8 @@
       "venue": "園田",
       "race_no": 11,
       "start_time": "20:00",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "1": 0.24,
         "12": 0.22,
