@@ -5,10 +5,13 @@
   "races": [
     {
       "race_id": "202605041008",
+      "org": "jra",
       "name": "3歳以上2勝クラス",
       "venue": "東京",
       "race_no": 8,
       "start_time": "13:45",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "7": 0.25,
         "13": 0.12,
@@ -75,10 +78,13 @@
     },
     {
       "race_id": "202608041008",
+      "org": "jra",
       "name": "3歳以上2勝クラス",
       "venue": "京都",
       "race_no": 8,
       "start_time": "14:00",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "13": 0.2,
         "3": 0.15,
@@ -151,10 +157,13 @@
     },
     {
       "race_id": "202608041009",
+      "org": "jra",
       "name": "北野特別",
       "venue": "京都",
       "race_no": 9,
       "start_time": "14:35",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "7": 0.22,
         "6": 0.17,
@@ -223,10 +232,13 @@
     },
     {
       "race_id": "202608041010",
+      "org": "jra",
       "name": "ハロウィンS",
       "venue": "京都",
       "race_no": 10,
       "start_time": "15:10",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "14": 0.13,
         "9": 0.17,
@@ -298,10 +310,13 @@
     },
     {
       "race_id": "202605041011",
+      "org": "jra",
       "name": "ペルセウスS",
       "venue": "東京",
       "race_no": 11,
       "start_time": "15:30",
+      "confidence": "B",
+      "subjective_hit_rate": 0.1956,
       "win_probabilities": {
         "13": 0.12,
         "16": 0.17,
@@ -366,15 +381,35 @@
           "reason": "2番人気だが約1年ぶり(休み明け-3)。力は上位"
         }
       ],
-      "bets": [],
+      "bets": [
+        {
+          "type": "ワイド",
+          "horses": [
+            13,
+            16
+          ],
+          "stake": 100
+        },
+        {
+          "type": "ワイド",
+          "horses": [
+            13,
+            9
+          ],
+          "stake": 100
+        }
+      ],
       "note": "天候・馬場・バイアス・当日馬体重は直前で要確認。ハンデ戦。逃げ候補一覧: 毎回ハナ=3(前走までに1-1-1-1あり)、行ければ行く=4・8・10・5・12。先行勢は多めでペースは締まる想定。◎13は東京ダ1600の赤富士S勝ち(同コース)・548kgと大型・55kg。○16は1番人気、前走-0.7差の完勝で外枠。▲9は3歳54kgの軽量だが1600m初(距離延長-5、ハンデ恩恵で▲まで)。2番人気12は約1年ぶりで評価を下げ、partnersに残す。無印の1・2・4・11・15は戦績上力不足(近走の着差が大)、3は名古屋GP・アンタレスS大敗。"
     },
     {
       "race_id": "202608041011",
+      "org": "jra",
       "name": "ファンタジー",
       "venue": "京都",
       "race_no": 11,
       "start_time": "15:45",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "3": 0.15,
         "4": 0.13,
