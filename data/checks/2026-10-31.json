@@ -5719,5 +5719,891 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-31T14:07:49.814679+09:00",
+    "races": [
+      {
+        "race_id": "202605041008",
+        "name": "3歳以上2勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳以上2勝クラス: 既に発走しています（発走 13:45 / 現在 14:07）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608041008",
+        "name": "3歳以上2勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳以上2勝クラス: 既に発走しています（発走 14:00 / 現在 14:07）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608041009",
+        "name": "北野特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 20.8,
+          "2": 12.9,
+          "3": 12.4,
+          "4": 6.5,
+          "5": 14.1,
+          "6": 4.2,
+          "7": 3.8,
+          "8": 3.7,
+          "9": 20.0,
+          "10": 129.0
+        },
+        "win_ninki": {
+          "1": 9,
+          "2": 6,
+          "3": 5,
+          "4": 4,
+          "5": 7,
+          "6": 3,
+          "7": 2,
+          "8": 1,
+          "9": 8,
+          "10": 10
+        },
+        "priced_odds": {
+          "単勝": {
+            "7": 3.8
+          },
+          "馬連": {
+            "6-7": 6.5,
+            "7-8": 7.1,
+            "4-7": 10.5,
+            "3-7": 21.1,
+            "5-7": 24.9,
+            "7-9": 40.3
+          },
+          "ワイド": {
+            "6-7": 2.5,
+            "7-8": 2.8,
+            "4-7": 4.0,
+            "3-7": 7.2,
+            "5-7": 8.5,
+            "7-9": 12.7
+          },
+          "3連複": {
+            "6-7-8": 6.5,
+            "4-6-7": 11.5,
+            "3-6-7": 18.9,
+            "5-6-7": 24.2,
+            "6-7-9": 47.4,
+            "4-7-8": 12.6,
+            "3-7-8": 24.8,
+            "5-7-8": 24.9,
+            "7-8-9": 42.9,
+            "3-4-7": 29.7,
+            "4-5-7": 48.5,
+            "4-7-9": 77.3,
+            "3-5-7": 74.5,
+            "3-7-9": 128.7,
+            "5-7-9": 149.5
+          }
+        },
+        "bet_note": "第13章の基準（合成オッズ3.0倍・期待値1.2）を満たす買い目を組めませんでした。見送り（勝負度C）。",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "北野特別: 芝2000m / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "北野特別: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": null,
+          "surface": "芝",
+          "distance": 2000,
+          "female_only": false,
+          "weight_rule": "定量",
+          "race_terms": "4回 京都 10日目 サラ系３歳以上 ２勝クラス (混)[指] 定量 10頭 本賞金:1580,630,400,240,158万円",
+          "turn": null,
+          "loop": null,
+          "rail": null,
+          "course_note": null
+        },
+        "weights": {
+          "3": {
+            "weight": 456,
+            "diff": 2,
+            "age": 5
+          },
+          "4": {
+            "weight": 498,
+            "diff": -2,
+            "age": 4
+          },
+          "5": {
+            "weight": 474,
+            "diff": 0,
+            "age": 5
+          },
+          "6": {
+            "weight": 526,
+            "diff": 8,
+            "age": 6
+          },
+          "7": {
+            "weight": 482,
+            "diff": 6,
+            "age": 3
+          },
+          "8": {
+            "weight": 482,
+            "diff": -8,
+            "age": 3
+          },
+          "9": {
+            "weight": 488,
+            "diff": 0,
+            "age": 5
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:14"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:14"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:14"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:14"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-31 14:07:14"
+        }
+      },
+      {
+        "race_id": "202608041010",
+        "name": "ハロウィンS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 22.3,
+          "2": 23.8,
+          "3": 7.0,
+          "4": 10.8,
+          "5": 91.1,
+          "6": 26.0,
+          "7": 45.4,
+          "8": 19.2,
+          "9": 4.0,
+          "10": 16.4,
+          "11": 6.4,
+          "12": 26.0,
+          "13": 25.1,
+          "14": 5.9,
+          "15": 133.6,
+          "16": 10.9
+        },
+        "win_ninki": {
+          "1": 9,
+          "2": 10,
+          "3": 4,
+          "4": 5,
+          "5": 15,
+          "6": 12,
+          "7": 14,
+          "8": 8,
+          "9": 1,
+          "10": 7,
+          "11": 3,
+          "12": 13,
+          "13": 11,
+          "14": 2,
+          "15": 16,
+          "16": 6
+        },
+        "priced_odds": {
+          "単勝": {
+            "14": 5.9
+          },
+          "馬連": {
+            "9-14": 9.8,
+            "11-14": 16.5,
+            "3-14": 22.9,
+            "2-14": 63.6,
+            "10-14": 46.8,
+            "8-14": 112.0,
+            "6-14": 109.3
+          },
+          "ワイド": {
+            "9-14": 4.5,
+            "11-14": 6.6,
+            "3-14": 9.3,
+            "2-14": 18.0,
+            "10-14": 12.7,
+            "8-14": 27.3,
+            "6-14": 18.9
+          },
+          "3連複": {
+            "9-11-14": 13.1,
+            "3-9-14": 16.9,
+            "2-9-14": 47.8,
+            "9-10-14": 41.7,
+            "8-9-14": 75.0,
+            "6-9-14": 104.6,
+            "3-11-14": 30.5,
+            "2-11-14": 83.5,
+            "10-11-14": 75.4,
+            "8-11-14": 127.3,
+            "6-11-14": 173.8,
+            "2-3-14": 131.5,
+            "3-10-14": 121.3,
+            "3-8-14": 164.6,
+            "3-6-14": 294.8,
+            "2-10-14": 274.9,
+            "2-8-14": 490.8,
+            "2-6-14": 589.0,
+            "8-10-14": 472.0,
+            "6-10-14": 520.3
+          }
+        },
+        "bet_note": "第13章の基準（合成オッズ3.0倍・期待値1.2）を満たす買い目を組めませんでした。見送り（勝負度C）。",
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "ハロウィンS: 馬場が「重」です（ダート1900m / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "no_going_experience",
+            "message": "ハロウィンS: ○9番 システマソラー は「重」での出走がありません（重は出走なし / 良[2-4-0-1] / 稍重[0-0-1-0] / 不良[1-0-0-0]）",
+            "remedy": "当該馬場の適性が未知数です。軸に据えてよいかを第6章・第12章に照らして確認してください。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "ハロウィンS: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "重",
+          "weather": null,
+          "surface": "ダート",
+          "distance": 1900,
+          "female_only": false,
+          "weight_rule": "定量",
+          "race_terms": "4回 京都 10日目 サラ系３歳以上 ３勝クラス (混)(特指) 定量 16頭 本賞金:1870,750,470,280,187万円",
+          "turn": null,
+          "loop": null,
+          "rail": null,
+          "course_note": null
+        },
+        "weights": {
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "11": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "14": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:54"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:54"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:54"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:54"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-31 14:07:54"
+        }
+      },
+      {
+        "race_id": "202605041011",
+        "name": "ペルセウスS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 40.7,
+          "2": 42.1,
+          "3": 29.6,
+          "4": 50.0,
+          "5": 12.8,
+          "6": 7.5,
+          "7": 10.9,
+          "8": 23.9,
+          "9": 12.5,
+          "10": 19.4,
+          "11": 54.4,
+          "12": 4.7,
+          "13": 10.7,
+          "14": 10.2,
+          "15": 52.3,
+          "16": 4.2
+        },
+        "win_ninki": {
+          "1": 12,
+          "2": 13,
+          "3": 11,
+          "4": 14,
+          "5": 8,
+          "6": 3,
+          "7": 6,
+          "8": 10,
+          "9": 7,
+          "10": 9,
+          "11": 16,
+          "12": 2,
+          "13": 5,
+          "14": 4,
+          "15": 15,
+          "16": 1
+        },
+        "priced_odds": {
+          "ワイド": {
+            "7-13": 18.0,
+            "8-13": 49.3,
+            "12-13": 9.9
+          },
+          "馬連": {
+            "7-13": 68.0,
+            "8-13": 212.3,
+            "12-13": 32.3
+          }
+        },
+        "bet_note": "◎13の単勝が10.7倍で第8章の推奨レンジ上限（9.9倍）を超えています。勝ち切る確率が一段落ちる帯なので軸に据えません。見送り（勝負度C）。",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "ペルセウスS: ダート1600m / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "ペルセウスS: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": null,
+          "surface": "ダート",
+          "distance": 1600,
+          "female_only": false,
+          "weight_rule": "ハンデ",
+          "race_terms": "4回 東京 10日目 サラ系３歳以上 オープン (国際)(特指) ハンデ 16頭 本賞金:2200,880,550,330,220万円",
+          "turn": null,
+          "loop": null,
+          "rail": null,
+          "course_note": null
+        },
+        "weights": {
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "13": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "14": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "16": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:34"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:34"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:34"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:34"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-31 14:07:34"
+        }
+      },
+      {
+        "race_id": "202608041011",
+        "name": "ファンタジー",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 16.2,
+          "2": 26.2,
+          "3": 7.3,
+          "4": 6.7,
+          "5": 82.9,
+          "6": 4.8,
+          "7": 19.2,
+          "8": 2.5,
+          "9": 22.6,
+          "10": 9.7,
+          "11": 19.7
+        },
+        "win_ninki": {
+          "1": 6,
+          "2": 10,
+          "3": 4,
+          "4": 3,
+          "5": 11,
+          "6": 2,
+          "7": 7,
+          "8": 1,
+          "9": 9,
+          "10": 5,
+          "11": 8
+        },
+        "priced_odds": {
+          "単勝": {
+            "3": 7.3
+          },
+          "馬連": {
+            "3-4": 26.0,
+            "3-8": 8.8,
+            "3-6": 13.7,
+            "3-10": 27.8,
+            "1-3": 46.5,
+            "3-9": 51.1
+          },
+          "ワイド": {
+            "3-4": 8.0,
+            "3-8": 3.8,
+            "3-6": 4.5,
+            "3-10": 8.7,
+            "1-3": 14.4,
+            "3-9": 12.0
+          },
+          "3連複": {
+            "3-4-8": 21.1,
+            "3-4-6": 33.5,
+            "3-4-10": 70.4,
+            "1-3-4": 108.0,
+            "3-4-9": 116.2,
+            "3-6-8": 12.6,
+            "3-8-10": 22.4,
+            "1-3-8": 38.2,
+            "3-8-9": 40.8,
+            "3-6-10": 28.5,
+            "1-3-6": 59.5,
+            "3-6-9": 77.7,
+            "1-3-10": 113.9,
+            "3-9-10": 142.2,
+            "1-3-9": 232.9
+          }
+        },
+        "bet_note": "第13章の基準（合成オッズ3.0倍・期待値1.2）を満たす買い目を組めませんでした。見送り（勝負度C）。",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "ファンタジー: 芝1400m / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "ファンタジー: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": null,
+          "surface": "芝",
+          "distance": 1400,
+          "female_only": true,
+          "weight_rule": "馬齢",
+          "race_terms": "4回 京都 10日目 サラ系２歳 オープン (国際) 牝(指) 馬齢 11頭 本賞金:3200,1300,800,480,320万円",
+          "turn": null,
+          "loop": null,
+          "rail": null,
+          "course_note": null
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:19"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:19"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:19"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-10-31 14:07:19"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-31 14:07:19"
+        }
+      },
+      {
+        "race_id": "202610315505",
+        "name": "大村湾（おおむらわん）賞Ａ１",
+        "blocked": false,
+        "composite_odds": 14.0,
+        "expected_value": 1.34,
+        "bet_odds": [
+          {
+            "bet": "3連複 2-3-6",
+            "odds": 14.0
+          }
+        ],
+        "win_odds": {
+          "1": 17.8,
+          "2": 31.6,
+          "3": 5.0,
+          "4": 14.6,
+          "5": 19.5,
+          "6": 1.2,
+          "7": 15.8
+        },
+        "win_ninki": {
+          "1": 5,
+          "2": 7,
+          "3": 2,
+          "4": 3,
+          "5": 6,
+          "6": 1,
+          "7": 4
+        },
+        "priced_odds": {
+          "単勝": {
+            "6": 1.2
+          },
+          "馬連": {
+            "3-6": 3.1,
+            "6-7": 5.3,
+            "2-6": 12.5,
+            "5-6": 25.6
+          },
+          "ワイド": {
+            "3-6": 1.5,
+            "6-7": 2.3,
+            "2-6": 4.9,
+            "5-6": 6.5,
+            "3-7": 3.8
+          },
+          "3連複": {
+            "3-6-7": 4.5,
+            "2-3-6": 14.0,
+            "3-5-6": 14.7,
+            "2-6-7": 22.8,
+            "5-6-7": 37.2,
+            "2-5-6": 63.6
+          }
+        },
+        "bet_note": "3連複 2-3-6（合成14.00倍・主観的中率9.57%・期待値1.34） ◎以外の保険（ワイド3-7、3.8倍）を試みましたが、追加後の合成オッズ2.99倍・期待値0.89が基準未達のため見送りました。",
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "大村湾（おおむらわん）賞Ａ１: 馬場が「稍重」です（ダート1400m / 天候:晴 / 馬場:稍重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "WARN",
+            "code": "note_front_list",
+            "message": "大村湾（おおむらわん）賞Ａ１: noteに「逃げ候補一覧」がありません",
+            "remedy": "無印馬を含む全頭から「毎回ハナを主張する馬」「行ければ行く馬」を分けて書き、展開の前提にしてください（第1章ステップ4）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "composite_ok",
+            "message": "大村湾（おおむらわん）賞Ａ１: 合成オッズ 14.00倍（基準 3.0倍をクリア）",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "expected_value_ok",
+            "message": "大村湾（おおむらわん）賞Ａ１: 期待値 1.34（合成 14.00倍 × 主観的中率 10%）",
+            "remedy": ""
+          },
+          {
+            "severity": "WARN",
+            "code": "marked_only_trifecta",
+            "message": "大村湾（おおむらわん）賞Ａ１: 3連複 2-3-6 が印馬だけで組まれています",
+            "remedy": "印馬が3着以内を独占する前提に依存します。◎（＋1頭）を軸に、相手へ印を打たなかった中穴を最低1頭含めてください。"
+          },
+          {
+            "severity": "WARN",
+            "code": "axis_dependency",
+            "message": "大村湾（おおむらわん）賞Ａ１: 買い目が全て◎絡みで、◎が着外だと全滅する構成です",
+            "remedy": "◎以外の印馬同士（○▲△）の組み合わせを保険に1点残せないか検討してください。"
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "晴",
+          "going": "稍重"
+        },
+        "weights": {
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 7
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 7
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 21
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 42
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 21
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 35
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-31 14:08:11"
+        }
+      }
+    ]
   }
 ]
