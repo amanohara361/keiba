@@ -7639,5 +7639,290 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-10-31T16:08:35.086049+09:00",
+    "races": [
+      {
+        "race_id": "202605041008",
+        "name": "3歳以上2勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳以上2勝クラス: 既に発走しています（発走 13:45 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608041008",
+        "name": "3歳以上2勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳以上2勝クラス: 既に発走しています（発走 14:00 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608041009",
+        "name": "北野特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "北野特別: 既に発走しています（発走 14:35 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608041010",
+        "name": "ハロウィンS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "ハロウィンS: 既に発走しています（発走 15:10 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605041011",
+        "name": "ペルセウスS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "ペルセウスS: 既に発走しています（発走 15:30 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608041011",
+        "name": "ファンタジー",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "ファンタジー: 既に発走しています（発走 15:45 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202610315505",
+        "name": "大村湾（おおむらわん）賞Ａ１",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 11.5,
+          "2": 21.6,
+          "3": 8.0,
+          "4": 7.1,
+          "5": 34.5,
+          "6": 1.3,
+          "7": 9.6
+        },
+        "win_ninki": {
+          "1": 5,
+          "2": 6,
+          "3": 3,
+          "4": 2,
+          "5": 7,
+          "6": 1,
+          "7": 4
+        },
+        "priced_odds": {
+          "単勝": {
+            "6": 1.3
+          },
+          "馬連": {
+            "3-6": 3.7,
+            "6-7": 4.8,
+            "2-6": 8.5,
+            "5-6": 29.8
+          },
+          "ワイド": {
+            "3-6": 1.7,
+            "6-7": 1.2,
+            "2-6": 4.3,
+            "5-6": 8.5
+          },
+          "3連複": {
+            "3-6-7": 4.6,
+            "2-3-6": 16.3,
+            "3-5-6": 20.5,
+            "2-6-7": 18.2,
+            "5-6-7": 28.3,
+            "2-5-6": 69.1
+          }
+        },
+        "bet_note": "第13章の基準（合成オッズ3.0倍・期待値1.2）を満たす買い目を組めませんでした。見送り（勝負度C）。",
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "大村湾（おおむらわん）賞Ａ１: 馬場が「稍重」です（ダート1400m / 天候:晴 / 馬場:稍重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "大村湾（おおむらわん）賞Ａ１: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "晴",
+          "going": "稍重"
+        },
+        "weights": {
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 7
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 7
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 21
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 42
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 21
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 35
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-10-31 16:08:36"
+        }
+      }
+    ]
   }
 ]
