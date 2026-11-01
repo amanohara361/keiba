@@ -65,7 +65,14 @@ jobs:
     timeout-minutes: 15
 
     steps:
+      # 順番待ち（concurrency）を抜けた時点の最新の main を取り込む。
+      # 指定しないと、起動した時点のコミットのまま始まるので、待っている間に先行の実行が
+      # data/checks などを push すると、こちらの記録コミットが古い版の上に乗って
+      # rebase で衝突する（2026-10-25・10-31・11-01 の土日 14:07 に、check.yml と
+      # nar_check.yml が同時起動して nar_check.yml が3回失敗した）。
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
 
       - uses: actions/setup-python@v5
         with:
