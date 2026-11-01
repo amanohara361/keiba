@@ -13356,5 +13356,235 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-11-01T20:46:52.329426+09:00",
+    "races": [
+      {
+        "race_id": "202608041110",
+        "name": "古都S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "古都S: 既に発走しています（発走 14:45 / 現在 20:46）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608041111",
+        "name": "まほろばS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "まほろばS: 既に発走しています（発走 15:20 / 現在 20:46）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605041109",
+        "name": "紅葉S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "紅葉S: 既に発走しています（発走 14:25 / 現在 20:46）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605041110",
+        "name": "秋嶺S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "秋嶺S: 既に発走しています（発走 15:00 / 現在 20:46）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605041111",
+        "name": "天皇賞(秋)",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "天皇賞(秋): 既に発走しています（発走 15:40 / 現在 20:46）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605041112",
+        "name": "清里特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "清里特別: 既に発走しています（発走 16:25 / 現在 20:46）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611015406",
+        "name": "第15回 土佐秋月賞",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第15回 土佐秋月賞: 既に発走しています（発走 17:40 / 現在 20:46）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611015507",
+        "name": "第28回 九州大賞典",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第28回 九州大賞典: 既に発走しています（発走 18:05 / 現在 20:46）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611013512",
+        "name": "第42回 プリンセスカップ",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第42回 プリンセスカップ: 既に発走しています（発走 18:15 / 現在 20:46）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
