@@ -1,0 +1,59 @@
+name: 払戻の取り直し（data_jra）
+
+# 2026-11-03 以前に data_jra/ へ貯めたレースには払戻が無い。
+# 券種×人気帯の「何も考えずに買った場合の回収率」（bet_type_map.py）を過去分からも出すため、
+# 結果ページを取り直して払戻だけを足す（着順・通過・ラップは触らない）。
+# 2026-11-03 以降の分は bias.yml（jra_bias.py live）が払戻ごと保存する。
+# 決定ログ 2026-11-03「券種の使い分け」。手動でだけ起こす。払戻の無いレースが残っていれば、もう一度起こす。
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: '1回で足すレース数の上限（1件あたり約2秒）'
+        required: false
+        default: '700'
+
+concurrency:
+  group: keiba-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 払戻を取り直す
+        env:
+          INPUT_LIMIT: ${{ inputs.limit }}
+        run: python jra_bias.py payouts "${INPUT_LIMIT:-700}"
+
+      - name: 券種×人気帯の回収率を実行ログに残す
+        run: |
+          { echo '```'; python bet_type_map.py; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: コミット
+        if: always()
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data_jra/
+          if git diff --staged --quiet; then
+            echo '足した払戻はありません'
+          else
+            git commit -m "data_jra に払戻を足す（取り直し）: $(TZ=Asia/Tokyo date +%Y-%m-%d)"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

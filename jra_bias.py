@@ -22,6 +22,7 @@ nar_csv.py の bias 機能をJRA向けに移植したもの。
   python jra_bias.py fetch 20260726 札幌      # 当日12R分を取得してdata_jra\ に保存
   python jra_bias.py fetch 20260726 all       # 当日の開催全場を取得（db.netkeiba。当日中は空振りする）
   python jra_bias.py live  20260927 all       # 当日の確定済みレースを race.netkeiba から取得（昼のバイアス用）
+  python jra_bias.py payouts 300              # data_jra\ の払戻が無いレースを最大300件取り直して足す
   python jra_bias.py selftest                 # スポーツナビのページ構造が変わっていないか確認
   python jra_bias.py urls   20260801 202601010311 1 8   # 取得すべきスポーツナビURLを一覧表示
   python jra_bias.py ingest 20260801 札幌      # data_snav\ に保存した結果ページを取り込む
@@ -46,7 +47,7 @@ nar_csv.py の bias 機能をJRA向けに移植したもの。
     出力に「蓄積不足のため1.00を仮基準」と出ている間は、ダートの総合判定文は割り引いて読むこと。
 """
 
-import sys, os, re, json, time, html, collections
+import sys, os, re, json, time, html, collections, glob
 import urllib.request
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -997,11 +998,13 @@ def do_live(date, venue='all', now=None):
         got = []
         for rid in sorted(ids):
             try:
-                rc = parse_nk_result(fetch_html_utf8(NK_RESULT_URL.format(race_id=rid)), rid)
+                page = fetch_html_utf8(NK_RESULT_URL.format(race_id=rid))
+                rc = parse_nk_result(page, rid)
             except Exception as e:
                 print(f'   {rid} 取得失敗: {e}')
                 rc = None
             if rc:
+                rc['払戻'] = _payouts_of(page)
                 rc['競馬場'] = v
                 rc['日付'] = date
                 got.append(rc)
@@ -1013,6 +1016,55 @@ def do_live(date, venue='all', now=None):
             with open(path, 'w', encoding='utf-8') as f:
                 json.dump(got, f, ensure_ascii=False, indent=1)
             print(f'=> {path} に {len(got)}レースを保存（{now:%H:%M} 時点）\n')
+
+
+def _payouts_of(page):
+    """結果ページの払戻表を results.parse_nk_payouts の形で返す（全券種）。
+
+    2026-11-03 から data_jra/ に貯める。券種×人気帯の「何も考えずに買った場合の回収率」
+    （bet_type_map.py）を出すため（決定ログ 2026-11-03「券種の使い分け」）。
+    results は jra_bias を読み込むので、循環を避けてここで読み込む。
+    """
+    import results
+    return results.parse_nk_payouts(page)
+
+
+def do_payouts(limit=300, data_dir=None, fetcher=None, wait=1.5):
+    """data_jra/ のうち「払戻」が無いレースに、結果ページの払戻を足す（2026-11-03 以前の分の取り直し）。
+
+    他の項目（着順・通過・ラップ）は触らない。1回の実行で limit 件まで。
+    取れなかったレースは飛ばし、次の実行でまた試す。足した件数を返す。
+    """
+    fetcher = fetcher or (lambda rid: fetch_html_utf8(NK_RESULT_URL.format(race_id=rid)))
+    done = 0
+    for path in sorted(glob.glob(os.path.join(data_dir or DATA, '*.json'))):
+        if done >= limit:
+            break
+        with open(path, encoding='utf-8') as f:
+            races = json.load(f)
+        changed = False
+        for rc in races:
+            if done >= limit:
+                break
+            if rc.get('払戻'):
+                continue
+            try:
+                pay = _payouts_of(fetcher(rc['race_id']))
+            except Exception as e:  # noqa: BLE001 - 1レースの失敗で全体を止めない
+                print(f'   {rc["race_id"]} 取得失敗: {e}')
+                pay = None
+            if pay:
+                rc['払戻'] = pay
+                changed = True
+                done += 1
+            if wait:
+                time.sleep(wait)       # サーバへの配慮
+        if changed:
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(races, f, ensure_ascii=False, indent=1)
+            print(f'=> {path} に払戻を足した')
+    print(f'払戻を足したレース：{done}件')
+    return done
 
 
 TESTS = os.path.join(ROOT, 'tests')
@@ -1382,6 +1434,8 @@ def main():
         do_fetch(sys.argv[2], sys.argv[3])
     elif cmd == 'live' and len(sys.argv) >= 3:
         do_live(sys.argv[2], sys.argv[3] if len(sys.argv) >= 4 else 'all')
+    elif cmd == 'payouts':
+        do_payouts(int(sys.argv[2]) if len(sys.argv) >= 3 else 300)
     elif cmd == 'selftest':
         sys.exit(selftest())
     elif cmd == 'ingest' and len(sys.argv) >= 4:

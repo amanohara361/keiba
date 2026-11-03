@@ -34,6 +34,7 @@ from datetime import date, timedelta
 
 import bet_builder
 import bet_gates
+import bet_type_map
 import bets
 import edge_check
 import jockey_edge
@@ -1291,6 +1292,18 @@ def gate_report(history, week_start):
         return [], None
 
 
+def bet_type_map_report(data_dir=None):
+    """券種×人気帯の「何も考えずに買った場合の回収率」（bet_type_map.py）。.md にだけ載せる。
+
+    決定ログ 2026-11-03「券種の使い分け」。集計に失敗しても週次レビュー全体は止めない。
+    """
+    try:
+        return bet_type_map.report(data_dir)
+    except Exception:  # noqa: BLE001 - 付録の集計なので本体を止めない
+        logger.exception('券種×人気帯の集計に失敗しました')
+        return []
+
+
 def render_jockey_edge(jk_lines):
     if not jk_lines:
         return []
@@ -1311,7 +1324,7 @@ def render_edge(edge_lines):
 def render(collected, week_summary, total_summary, period, since_summary=None,
            week_by_org=None, total_by_org=None, wide_since_summary=None,
            wg_lines=None, edge_lines=None, pending=None, nar_bias_lines=None,
-           since_counts=None, jk_lines=None, gate_lines=None):
+           since_counts=None, jk_lines=None, gate_lines=None, map_lines=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -1396,6 +1409,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
     lines += render_virtual_wide(week_summary, wide_since_summary, total_summary)
     lines += render_partner_popularity(week_summary, total_summary)
     lines += gate_lines or []
+    lines += map_lines or []
     lines += render_hedge_compare(week_summary, total_summary)
     lines += render_weight_going(wg_lines)
     lines += render_jockey_edge(jk_lines)
@@ -1663,13 +1677,14 @@ def main(argv=None):
     nar_bias_lines, _ = nar_bias_report(week)
     since_counts = since_counts_for(history)
     gate_lines, gate_line = gate_report(history, start)
+    map_lines = bet_type_map_report()
     text = render(week, week_summary, total_summary, (start, end),
                   since_summary=since_summary,
                   week_by_org=week_by_org, total_by_org=total_by_org,
                   wide_since_summary=wide_since_summary,
                   wg_lines=wg_lines, edge_lines=edge_lines, pending=pending,
                   nar_bias_lines=nar_bias_lines, since_counts=since_counts,
-                  jk_lines=jk_lines, gate_lines=gate_lines)
+                  jk_lines=jk_lines, gate_lines=gate_lines, map_lines=map_lines)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)
