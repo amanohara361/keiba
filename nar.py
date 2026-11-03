@@ -534,11 +534,78 @@ def parse_finishing_order(rows, rid):
     return order
 
 
-def results_for(rid, day=None, fetcher=None):
+def parse_win_odds(data):
+    """オッズZIP（bytes）から単勝だけを {(競馬場, 年月日, レース番号, 馬番): オッズ} で返す。
+
+    月次のオッズは約180万行（大半が3連単）あるので、全行を辞書にせず単勝の行だけ残す。
+    """
+    out = {}
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as zf:
+            for name in sorted(zf.namelist()):
+                if not name.lower().endswith('odds.csv'):
+                    continue
+                with zf.open(name) as raw:
+                    reader = csv.DictReader(io.TextIOWrapper(raw, encoding='utf-8-sig', errors='replace'))
+                    for row in reader:
+                        if (row.get('賭式') or '').strip() != '単勝':
+                            continue
+                        no, umaban = _int(row.get('レース番号')), _int(row.get('番号1'))
+                        try:
+                            odds = float((row.get('オッズ') or '').strip().replace(',', ''))
+                        except ValueError:
+                            continue
+                        if no is None or umaban is None:
+                            continue
+                        out[((row.get('競馬場') or '').strip(), (row.get('競走年月日') or '').strip(),
+                             no, umaban)] = odds
+    except zipfile.BadZipFile as exc:
+        raise NarError(f'ZIPとして開けませんでした（{len(data)}バイト）: {exc}')
+    return out
+
+
+_WIN_ODDS_CACHE = {}
+
+
+def monthly_win_odds(month, opener=None):
+    """その月の全レースの確定単勝オッズ。1回の実行で月ごとに1回だけ取る（約100MBのZIP）。
+
+    **月次のオッズファイルには確定オッズが残る**（2026-11-03 確認：10月分で単勝払戻÷100と
+    1426件一致、不一致4件は同着で払戻が分かれたレース）。週次レビューの地方の確定結果に
+    単勝オッズが無かったのを、ここで埋める（決定ログ 2026-11-03「地方の確定単勝オッズ」）。
+    """
+    key = (month.year, month.month)
+    if key not in _WIN_ODDS_CACHE:
+        _WIN_ODDS_CACHE[key] = parse_win_odds(fetch_zip('Odds', MONTHLY, month, opener))
+    return _WIN_ODDS_CACHE[key]
+
+
+def add_win_odds(result, odds_fetcher=None):
+    """確定結果の各馬に確定単勝オッズ（odds）を足す。足せた頭数を返す。
+
+    オッズが取れなくても結果そのものは使えるので、例外は呼ぶ側に投げず 0 を返す。
+    """
+    ymd, venue, no = split_race_id(result['race_id'])
+    month = datetime.strptime(ymd, '%Y%m%d').date()
+    try:
+        table = (odds_fetcher or monthly_win_odds)(month)
+    except NarError as exc:
+        logger.warning('%s の単勝オッズを取れませんでした: %s', result['race_id'], exc)
+        return 0
+    added = 0
+    for h in result['finishing_order']:
+        odds = table.get((venue, ymd, no, h['umaban']))
+        if odds:
+            h['odds'] = odds
+            added += 1
+    return added
+
+
+def results_for(rid, day=None, fetcher=None, odds_fetcher=None):
     """1レースの確定結果。まだ出ていなければ None。results.fetch と同じ形。
 
     月次ファイルを見る（当日ファイルは日付が変わると入れ替わるため、
-    翌週の週次レビューからは引けない）。
+    翌週の週次レビューからは引けない）。各馬の確定単勝オッズも月次のオッズファイルから足す。
     """
     ymd, _, _ = split_race_id(rid)
     month = day or datetime.strptime(ymd, '%Y%m%d').date()
@@ -546,11 +613,13 @@ def results_for(rid, day=None, fetcher=None):
     order = parse_finishing_order(data['horselist'], rid)
     if not order:
         return None
-    return {
+    result = {
         'race_id': rid,
         'finishing_order': order,
         'payouts': parse_payouts(data['payback'], rid),
     }
+    add_win_odds(result, odds_fetcher)
+    return result
 
 
 # ----------------------------------------------------------------------

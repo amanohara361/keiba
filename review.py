@@ -33,6 +33,8 @@ import sys
 from datetime import date, timedelta
 
 import bet_builder
+import bet_gates
+import bet_type_map
 import bets
 import edge_check
 import jockey_edge
@@ -229,6 +231,11 @@ def get_result(race_id, fetcher=None, use_cache=True, org='jra'):
     if use_cache:
         hit = cached_result(race_id)
         if hit:
+            # 2026-11-03 より前に保存した地方の結果には単勝オッズが無い。一度だけ足して保存し直す
+            # （月次のオッズファイルに確定オッズが残る。決定ログ 2026-11-03「地方の確定単勝オッズ」）。
+            if org == 'nar' and not any(h.get('odds') for h in hit.get('finishing_order', [])):
+                if nar_module.add_win_odds(hit):
+                    save_result(hit)
             return hit
     if org == 'nar':
         result = nar_module.results_for(race_id)
@@ -572,6 +579,8 @@ def review_race(race, result, check, prestart_check=None):
         'simple_bets': simple_axis_bets(race, result),
         'partner_popularity': partner_popularity(race, result),
         'hedge_compare': hedge_partner_compare(race, result, prestart_check),
+        # 券種の解禁条件（bet_gates）の材料。印・人気・着順・単勝オッズを全馬分
+        'horse_rows': bet_gates.horse_rows(race, result),
     })
 
     # 印の成績。◎が1着だったか、3着以内だったか。
@@ -1273,6 +1282,33 @@ def render_pending(status):
     return lines
 
 
+def gate_report(history, week_start):
+    """券種の解禁条件（bet_gates.py）の .md の節とメールの1行。
+
+    決定ログ 2026-11-03「券種の使い分け」。集計に失敗しても週次レビュー全体は止めない。
+    """
+    try:
+        dated = [(day['date'], e['org'], e['horse_rows'])
+                 for day in history for e in day['entries'] if e.get('horse_rows')]
+        analysis = bet_gates.analyze(dated, week_start=week_start)
+        return bet_gates.render_lines(analysis), bet_gates.mail_line(analysis)
+    except Exception:  # noqa: BLE001 - 付録の集計なので本体を止めない
+        logger.exception('券種の解禁条件の集計に失敗しました')
+        return [], None
+
+
+def bet_type_map_report(data_dir=None):
+    """券種×人気帯の「何も考えずに買った場合の回収率」（bet_type_map.py）。.md にだけ載せる。
+
+    決定ログ 2026-11-03「券種の使い分け」。集計に失敗しても週次レビュー全体は止めない。
+    """
+    try:
+        return bet_type_map.report(data_dir)
+    except Exception:  # noqa: BLE001 - 付録の集計なので本体を止めない
+        logger.exception('券種×人気帯の集計に失敗しました')
+        return []
+
+
 def render_jockey_edge(jk_lines):
     if not jk_lines:
         return []
@@ -1293,7 +1329,7 @@ def render_edge(edge_lines):
 def render(collected, week_summary, total_summary, period, since_summary=None,
            week_by_org=None, total_by_org=None, wide_since_summary=None,
            wg_lines=None, edge_lines=None, pending=None, nar_bias_lines=None,
-           since_counts=None, jk_lines=None):
+           since_counts=None, jk_lines=None, gate_lines=None, map_lines=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -1377,6 +1413,8 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
         lines += render_simple_bets(week_by_org, total_by_org)
     lines += render_virtual_wide(week_summary, wide_since_summary, total_summary)
     lines += render_partner_popularity(week_summary, total_summary)
+    lines += gate_lines or []
+    lines += map_lines or []
     lines += render_hedge_compare(week_summary, total_summary)
     lines += render_weight_going(wg_lines)
     lines += render_jockey_edge(jk_lines)
@@ -1442,7 +1480,7 @@ def _mail_race_lines(collected):
 
 def render_mail(week_summary, period, path, total_summary=None, collected=None,
                 week_by_org=None, wg_heavy=None, edge_line=None, pending=None,
-                since_counts=None, total_by_org=None):
+                since_counts=None, total_by_org=None, gate_line=None):
     """メール本文。**しきい値に達したカウンタがあれば、ここで一言で言い切る。**
 
     通算の件数や「10件」という基準そのものは、レビューの .md ファイルには
@@ -1574,6 +1612,8 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None,
         lines.append(f'道悪×馬体重（観察中）：重・不良 {wg_heavy}/{weight_going.READY_RACES}鞍')
     if edge_line:
         lines.append(edge_line)
+    if gate_line:
+        lines.append(gate_line)
     if pending:
         lines.append('保留中の改善案：' + ' ／ '.join(
             f"{p['label'].split(' ')[0]} {'—' if p['now'] is None else p['now']}/{p['target']}{p['unit']}"
@@ -1641,13 +1681,15 @@ def main(argv=None):
     pending = pending_status(edge_summary, count_jra_races(), total_summary['hedge_differ'])
     nar_bias_lines, _ = nar_bias_report(week)
     since_counts = since_counts_for(history)
+    gate_lines, gate_line = gate_report(history, start)
+    map_lines = bet_type_map_report()
     text = render(week, week_summary, total_summary, (start, end),
                   since_summary=since_summary,
                   week_by_org=week_by_org, total_by_org=total_by_org,
                   wide_since_summary=wide_since_summary,
                   wg_lines=wg_lines, edge_lines=edge_lines, pending=pending,
                   nar_bias_lines=nar_bias_lines, since_counts=since_counts,
-                  jk_lines=jk_lines)
+                  jk_lines=jk_lines, gate_lines=gate_lines, map_lines=map_lines)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)
@@ -1665,7 +1707,7 @@ def main(argv=None):
                            week_by_org=week_by_org, total_by_org=total_by_org,
                            wg_heavy=wg_heavy if wg_lines else None,
                            edge_line=edge_line, pending=pending,
-                           since_counts=since_counts)
+                           since_counts=since_counts, gate_line=gate_line)
         if not mailer.send(subject, body):
             logger.error('メール送信に失敗しました')
             return EXIT_ERROR
