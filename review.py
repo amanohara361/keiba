@@ -390,6 +390,36 @@ def mark_vs_popularity(race, result):
     }
 
 
+# **仮想：◎を軸にした単純な買い方（2026-11-03〜・観察中・実際には買っていない）。**
+# 2026-08-08〜11-01 の261レースで、今の実運用（中央42%・地方5%）より、◎の単勝を全レースで
+# 買うだけの方が良かった（中央112%・最大払戻を除いて104%、地方55%）。買い目の規律が主観勝率で
+# 期待値を出すため、主観が市場とずれた（＝見立てが外れやすい）レースほど買っていた（決定ログ 2026-11-03）。
+# 「損しなかった」ではなく、同じレースで単純に買っていたらいくら当たったかを毎週並べる。
+# (名前, [(券種, 印の並び)])。印の並びは ◎・○ の順に馬番を取る。全点100円。
+SIMPLE_BETS = [
+    ('◎単勝', [('単勝', ('◎',))]),
+    ('◎複勝', [('複勝', ('◎',))]),
+    ('◎単勝＋◎複勝', [('単勝', ('◎',)), ('複勝', ('◎',))]),
+    ('ワイド◎-○', [('ワイド', ('◎', '○'))]),
+    ('馬連◎-○', [('馬連', ('◎', '○'))]),
+]
+
+
+def simple_axis_bets(race, result):
+    """SIMPLE_BETS を確定払戻で精算する。印が足りない買い方は入れない。"""
+    payouts = result.get('payouts') or {}
+    out = {}
+    for name, legs in SIMPLE_BETS:
+        horses_by_mark = {m: race.horses_for(m) for _, marks in legs for m in marks}
+        if any(not h for h in horses_by_mark.values()):
+            continue
+        returned = sum(results_module.payout_for(payouts, bet_type,
+                                                 [horses_by_mark[m][0] for m in marks])
+                       for bet_type, marks in legs)
+        out[name] = {'staked': 100 * len(legs), 'returned': returned}
+    return out
+
+
 def virtual_axis_partner_wide(race, result):
     """◎×partners 全頭のワイドを各100円買っていたらどうだったか。
 
@@ -538,6 +568,7 @@ def review_race(race, result, check, prestart_check=None):
         'hedged': has_hedge(race),
         'mark_vs_popularity': mark_vs_popularity(race, result),
         'virtual_wide': virtual_axis_partner_wide(race, result),
+        'simple_bets': simple_axis_bets(race, result),
         'partner_popularity': partner_popularity(race, result),
         'hedge_compare': hedge_partner_compare(race, result, prestart_check),
     })
@@ -640,9 +671,21 @@ def summarize(entries):
                 for k, v in c.items():
                     partner_bands[side][band][k] += v
 
+    simple = {}
+    for e in settled:
+        for name, v in (e.get('simple_bets') or {}).items():
+            s = simple.setdefault(name, {'races': 0, 'hits': 0, 'staked': 0, 'returned': 0, 'max': 0})
+            s['races'] += 1
+            s['hits'] += v['returned'] > 0
+            s['staked'] += v['staked']
+            s['returned'] += v['returned']
+            s['max'] = max(s['max'], v['returned'])
+
     return {
         'races': len(entries),
         'settled': len(settled),
+        # 仮想：◎を軸にした単純な買い方（SIMPLE_BETS）
+        'simple': simple,
         'unsettled': sum(1 for e in entries if e['category'] == UNSETTLED),
         'skipped': sum(1 for e in settled if e['category'] == SKIPPED),
         'virtual': totals(purchased),
@@ -852,6 +895,46 @@ def render_by_org(week_by_org, total_by_org):
         cells = ' | '.join(f'{fn(week_by_org[org])} | {fn(total_by_org[org])}'
                            for org, _ in ORGS)
         lines.append(f'| {label} | {cells} |')
+    lines.append('')
+    return lines
+
+
+def _simple_cell(s, name, drop_max=False):
+    v = (s or {}).get('simple', {}).get(name)
+    if not v or not v['staked']:
+        return '—'
+    if drop_max:
+        return f"{(v['returned'] - v['max']) / v['staked'] * 100:.0f}%"
+    return f"{v['returned'] / v['staked'] * 100:.0f}%（{v['hits']}/{v['races']}R）"
+
+
+def render_simple_bets(week_by_org, total_by_org):
+    """仮想：◎を軸にした単純な買い方を、中央・地方別に並べる。判定はしない。"""
+    header = ' | '.join(f'{label} 今週 | {label} 通算 | {label} 通算・最大払戻除く'
+                        for _, label in ORGS)
+    lines = [
+        '## 仮想：◎を軸にした単純な買い方（観察中・実際には買っていない）',
+        '',
+        '見送りも含めた全レースで、◎（と○）を毎回同じ形で買っていたら、の成績。各点100円、確定払戻で精算。'
+        'セルは「回収率（何か当たったレース/レース数）」。比べる相手は下の「実運用」と、控除後の水準'
+        '（単勝・複勝 約80%、馬連・ワイド 約77.5%）。根拠は決定ログ 2026-11-03。',
+        '',
+        f'| 買い方 | {header} |',
+        '|---|' + '---|' * (3 * len(ORGS)),
+    ]
+    for name, _ in SIMPLE_BETS:
+        cells = ' | '.join(
+            f'{_simple_cell(week_by_org[org], name)} | {_simple_cell(total_by_org[org], name)}'
+            f' | {_simple_cell(total_by_org[org], name, drop_max=True)}'
+            for org, _ in ORGS)
+        lines.append(f'| {name} | {cells} |')
+    cells = ' | '.join(
+        f"{_roi(week_by_org[org]['disciplined'])}（{week_by_org[org]['disciplined']['hits']}/"
+        f"{week_by_org[org]['disciplined']['races']}R） | "
+        f"{_roi(total_by_org[org]['disciplined'])}（{total_by_org[org]['disciplined']['hits']}/"
+        f"{total_by_org[org]['disciplined']['races']}R） | "
+        for org, _ in ORGS)
+    lines.append(f'| （実運用・規律適用後） | {cells} |')
     lines.append('')
     return lines
 
@@ -1228,6 +1311,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
     lines += render_mark_popularity(week_summary, total_summary, since_summary)
     if week_by_org and total_by_org:
         lines += render_by_org(week_by_org, total_by_org)
+        lines += render_simple_bets(week_by_org, total_by_org)
     lines += render_virtual_wide(week_summary, wide_since_summary, total_summary)
     lines += render_partner_popularity(week_summary, total_summary)
     lines += render_hedge_compare(week_summary, total_summary)
@@ -1295,7 +1379,7 @@ def _mail_race_lines(collected):
 
 def render_mail(week_summary, period, path, total_summary=None, collected=None,
                 week_by_org=None, wg_heavy=None, edge_line=None, pending=None,
-                since_counts=None):
+                since_counts=None, total_by_org=None):
     """メール本文。**しきい値に達したカウンタがあれば、ここで一言で言い切る。**
 
     通算の件数や「10件」という基準そのものは、レビューの .md ファイルには
@@ -1399,6 +1483,16 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None,
                 f"（1番人気 {_pct(s['favorite_win'], s['compared_races'])}）"
                 f" / 印で拾えた {_pct(s['top3_marked'], s['top3_total'])}"
                 f"（人気上位 {_pct(s['top3_popular'], s['top3_total'])}）")
+    for org, label in ORGS:
+        w = (week_by_org or {}).get(org)
+        tot = (total_by_org or {}).get(org)
+        if w and w.get('simple', {}).get('◎単勝'):
+            line = (f"仮想：{label}の◎単勝を全部買っていたら 今週{_simple_cell(w, '◎単勝')}"
+                    f"（実運用 {_roi(w['disciplined'])}）")
+            if tot:
+                line += (f" / 通算{_simple_cell(tot, '◎単勝')}"
+                         f"（実運用 {_roi(tot['disciplined'])}）")
+            lines.append(line)
     if week_summary.get('vwide_bets'):
         lines.append(
             f"仮想：◎×中穴候補のワイド {week_summary['vwide_bets']}点 的中{week_summary['vwide_hits']}"
@@ -1505,7 +1599,7 @@ def main(argv=None):
         rel = os.path.relpath(path, ROOT)
         body = render_mail(week_summary, (start, end), rel,
                            total_summary=total_summary, collected=week,
-                           week_by_org=week_by_org,
+                           week_by_org=week_by_org, total_by_org=total_by_org,
                            wg_heavy=wg_heavy if wg_lines else None,
                            edge_line=edge_line, pending=pending,
                            since_counts=since_counts)

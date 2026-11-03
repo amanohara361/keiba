@@ -665,3 +665,43 @@ def test_保険の相手の比較は保留中の改善案に載る():
     status = review.pending_status(None, None, review.HEDGE_REVIEW_AT)
     hedge = next(p for p in status if p['key'] == 'hedge')
     assert hedge['ready'] and hedge['now'] == review.HEDGE_REVIEW_AT
+
+
+# ----------------------------------------------------------------------
+# 仮想：◎を軸にした単純な買い方（2026-11-03）
+# ----------------------------------------------------------------------
+
+def test_単純な買い方を確定払戻で精算する():
+    race = make_race(marks=[('◎', 4), ('○', 11)], bet_list=[])
+    result = make_result([(1, 4), (2, 11), (3, 9)])
+    result['payouts'] = {
+        '単勝': [{'combination': [4], 'yen': 350}],
+        '複勝': [{'combination': [4], 'yen': 150}, {'combination': [11], 'yen': 200},
+                 {'combination': [9], 'yen': 300}],
+        '馬連': [{'combination': [4, 11], 'yen': 1200}],
+        'ワイド': [{'combination': [4, 11], 'yen': 500}],
+    }
+    out = review.simple_axis_bets(race, result)
+    assert out['◎単勝'] == {'staked': 100, 'returned': 350}
+    assert out['◎単勝＋◎複勝'] == {'staked': 200, 'returned': 500}
+    assert out['馬連◎-○']['returned'] == 1200
+
+
+def test_対抗が無ければ本命と対抗の買い方は入れない():
+    race = make_race(marks=[('◎', 4)], bet_list=[])
+    result = make_result([(1, 11), (2, 4), (3, 9)])
+    out = review.simple_axis_bets(race, result)
+    assert '◎単勝' in out and 'ワイド◎-○' not in out
+
+
+def test_単純な買い方を集計して表に出す():
+    e = entry(category=review.SKIPPED, staked=0)
+    e['simple_bets'] = {'◎単勝': {'staked': 100, 'returned': 350}}
+    e2 = entry(category=review.SKIPPED, staked=0)
+    e2['simple_bets'] = {'◎単勝': {'staked': 100, 'returned': 0}}
+    s = review.summarize([e, e2])
+    assert s['simple']['◎単勝'] == {'races': 2, 'hits': 1, 'staked': 200, 'returned': 350, 'max': 350}
+    by_org = {'jra': s, 'nar': review.summarize([])}
+    text = '\n'.join(review.render_simple_bets(by_org, by_org))
+    assert '175%（1/2R）' in text
+    assert '| 0% |' in text  # 最大払戻を除く
