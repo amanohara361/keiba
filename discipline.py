@@ -582,6 +582,15 @@ class RaceVerdict:
         }
 
 
+def is_fixed_form(race):
+    """中央の固定形（◎の単勝＋◎の複勝の2点）か。買い目の中身だけで判定する。"""
+    honmei = race.horses_for('◎')
+    if (race.org or 'jra') != 'jra' or not honmei or len(race.bets) != 2:
+        return False
+    return (sorted(b.type for b in race.bets) == sorted(['単勝', '複勝'])
+            and all(b.horses == [honmei[0]] for b in race.bets))
+
+
 def review_race(race, bet_odds, win_table, meta, now, day, conditions=None,
                 forms=None, entries=None):
     """1レースに第13章の規律を全部あてる。
@@ -615,6 +624,18 @@ def review_race(race, bet_odds, win_table, meta, now, day, conditions=None,
     if not race.bets:
         findings.append(Finding(
             INFO, 'no_bets', f'{race.name}: 買い目なし（勝負度{race.confidence or "未評価"}）'))
+        return RaceVerdict(race, findings, None, bet_odds, win_table, meta,
+                           conditions, forms, entries)
+
+    # **中央の固定形（◎単勝＋◎複勝、2026-11-03 ユーザー承認）には、合成オッズ・期待値・
+    # 相手の規律を掛けない。** 単勝と複勝の合成オッズは必ず3.0倍を割るので、掛けると
+    # 毎回BLOCKになる。固定形は「主観勝率で期待値を出すと見立てが外れやすい組を選ぶ」
+    # ことへの対策で、期待値の判定そのものを使わない（予想メソッド第13章冒頭の節）。
+    if is_fixed_form(race):
+        findings.append(Finding(
+            INFO, 'fixed_form',
+            f'{race.name}: 中央の固定形（◎{race.bets[0].horses[0]}の単勝＋複勝）。'
+            '合成オッズ・期待値の基準は掛けません（第13章 2026-11-03）'))
         return RaceVerdict(race, findings, None, bet_odds, win_table, meta,
                            conditions, forms, entries)
 

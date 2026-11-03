@@ -669,3 +669,62 @@ def _choose_bets(race, axis, pool, p, market, lookup, overrides, stake):
     # 足した場合はチケット全体の合算的中率を書き戻す（2026-09-08）。
     race.subjective_hit_rate = round(final_hit_rate, 4)
     return confidence, bets_out, note
+
+
+# ----------------------------------------------------------------------
+# 運用の買い方（2026-11-03 ユーザー承認・予想メソッド第13章冒頭の節）
+# ----------------------------------------------------------------------
+#
+# 2026-08-08〜11-01 の261レースで、build_bets（主観勝率で期待値を出して組む方式）は
+# 中央で買った67レースの回収率42%にとどまり、同じレースで◎単勝を買えば109%、
+# ◎単勝＋◎複勝なら99%だった。地方はどの買い方も82%以下。主観勝率は確定オッズより
+# 当たっておらず、期待値1.2を超えるのは「主観が市場より大きく見積もった組」＝
+# 見立てが外れやすい組だった。主観は印の順番には効いている（中央の◎単勝112%）が、
+# 確率の大きさには効いていない。そこで実際に買う形は印だけで決め、build_bets は
+# 比べるための参考として説明文に残す（docs/決定ログ.md 2026-11-03）。
+
+FIXED_FORM = ('単勝', '複勝')
+NAR_STOPPED = ('地方は当面買い目を出しません（2026-11-03 ユーザー承認。どの買い方でも'
+               '回収率82%以下のため。印・検算・仮想成績は続けます）。')
+
+
+def _reference_note(race, lookup, win_odds, stake, withdrawn):
+    """従来の build_bets の結果を、参考として1文にまとめる。"""
+    confidence, built, note = build_bets(race, lookup, win_odds, stake, withdrawn)
+    # build_bets は race.subjective_hit_rate を書き戻すが、運用の買い目は
+    # 主観的中率を使わないので、検算記録に残らないよう消しておく。
+    race.subjective_hit_rate = None
+    shown = '・'.join(str(b) for b in built) if built else '買い目なし'
+    return f'【参考：従来の組み立て】{shown}（勝負度{confidence}）。{note}'
+
+
+def build_policy_bets(race, lookup, win_odds=None, stake=100, withdrawn=None):
+    """実際に買う買い目を決める（check.py が呼ぶ入口）。戻り値は build_bets と同じ形。
+
+    中央は◎の単勝＋複勝の固定形、地方は買わない。どちらも従来の build_bets の結果を
+    説明文の後ろに参考として付ける。
+    """
+    reference = _reference_note(race, lookup, win_odds, stake, withdrawn)
+    if race.org == 'nar':
+        return 'C', [], f'{NAR_STOPPED} {reference}'
+
+    skip = skip_reason(race)
+    if skip:
+        return 'C', [], f'朝の予想が見送りと判断（{skip}）。見送り（勝負度C）。 {reference}'
+
+    axis_horses = race.horses_for('◎')
+    if not axis_horses:
+        return 'C', [], f'◎が無いため買い目を組めません。 {reference}'
+    axis = axis_horses[0]
+
+    if not win_odds or axis not in win_odds:
+        return 'C', [], (f'◎{axis}の単勝オッズが取れません（取消・除外の可能性。要・再検算）。'
+                         f'見送り（勝負度C）。 {reference}')
+
+    if axis in (withdrawn or ()):
+        return 'C', [], (f'◎{axis}の馬体重が前走比±15kg以上のため見送り（勝負度C）。 {reference}')
+
+    bets_out = [Bet(bet_type, [axis], stake) for bet_type in FIXED_FORM]
+    note = (f'中央の固定形：◎{axis}の単勝＋複勝（単勝{win_odds[axis]:.1f}倍）。'
+            f'合成オッズ・期待値の基準は掛けません（第13章 2026-11-03）。 {reference}')
+    return 'B', bets_out, note

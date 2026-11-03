@@ -41,7 +41,7 @@ from mailer import Mailer
 # いるのに、実装の候補に入っていなかった。馬連は1着2着を当てなければ0円で、
 # 3着に来ても0円のため、検証ノートが記録する「印から2頭以上が3着内なのに
 # 0円」（6鞍連続・買い目構成ミス率48%）を構造的に生んでいた。
-BUILD_BET_TYPES = ('馬連', 'ワイド', '3連複')
+BUILD_BET_TYPES = ('複勝', '馬連', 'ワイド', '3連複')
 
 # 終了コードは「このジョブが役目を果たせたか」で決める。
 #
@@ -123,8 +123,10 @@ def _build_race_bets(race, tables, odds_for, win_table=None, withdrawn=None):
     # win_table は {馬番: (単勝オッズ, 人気)}。bet_builder が Harville モデルで
     # 券種ごとの的中率を出すのに、出走全頭の勝率分布が要る（2026-08-26）。
     win_odds = {n: v[0] for n, v in (win_table or {}).items() if v and v[0]}
-    confidence, built_bets, note = bet_builder.build_bets(race, lookup, win_odds,
-                                                          withdrawn=withdrawn)
+    # 実際に買う形は build_policy_bets（中央は◎単複の固定形、地方は買わない。2026-11-03）。
+    # 従来の build_bets の結果は説明文に参考として入る。
+    confidence, built_bets, note = bet_builder.build_policy_bets(race, lookup, win_odds,
+                                                                 withdrawn=withdrawn)
     race.confidence = confidence
     race.bets = built_bets
     _price_axis_partner_pairs(race, lookup)

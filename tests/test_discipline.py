@@ -15,6 +15,7 @@ import pytest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import bet_builder  # noqa: E402
 import bets  # noqa: E402
 import check  # noqa: E402
 import discipline  # noqa: E402
@@ -32,6 +33,17 @@ def _isolate_html_report(tmp_path, monkeypatch):
     # Markdown版も同じ。以前はここが漏れていて、テストを回すたびに
     # data/checks_md/2026-08-02.md などが実リポジトリに残っていた。
     monkeypatch.setattr(report_md, 'CHECKS_MD_DIR', str(tmp_path / '_checks_md'))
+
+
+@pytest.fixture(autouse=True)
+def _legacy_bet_builder(monkeypatch):
+    """このファイルは従来の組み立て（bet_builder.build_bets）と規律の組み合わせを検算する。
+
+    2026-11-03 から check.py は build_policy_bets（中央は◎単複の固定形、地方は買わない）を
+    呼ぶが、build_bets は参考として残り、固定形でない買い目には今も第13章の規律が掛かる。
+    その経路が壊れていないことをここで確かめる。運用の買い方は tests/test_policy_bets.py。
+    """
+    monkeypatch.setattr(bet_builder, 'build_policy_bets', bet_builder.build_bets)
 
 
 def make_race(**kwargs):

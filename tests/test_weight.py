@@ -149,4 +149,6 @@ def test_地方も出馬表CSVの馬体重で警告する(monkeypatch):
     weights = verdict.to_dict()['weights']
     assert weights['1'] == {'weight': 470, 'diff': -16, 'age': 5}
     assert weights['3'] == {'weight': None, 'diff': None, 'age': 5}   # 未発表は空のまま
-    assert verdict.bet_note.startswith('【馬体重】1番')
+    # 地方は買わない（2026-11-03）が、従来の組み立ての説明は参考として残る
+    assert verdict.bet_note.startswith(bet_builder.NAR_STOPPED)
+    assert '【馬体重】1番' in verdict.bet_note
