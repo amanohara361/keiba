@@ -231,6 +231,11 @@ def get_result(race_id, fetcher=None, use_cache=True, org='jra'):
     if use_cache:
         hit = cached_result(race_id)
         if hit:
+            # 2026-11-03 より前に保存した地方の結果には単勝オッズが無い。一度だけ足して保存し直す
+            # （月次のオッズファイルに確定オッズが残る。決定ログ 2026-11-03「地方の確定単勝オッズ」）。
+            if org == 'nar' and not any(h.get('odds') for h in hit.get('finishing_order', [])):
+                if nar_module.add_win_odds(hit):
+                    save_result(hit)
             return hit
     if org == 'nar':
         result = nar_module.results_for(race_id)
