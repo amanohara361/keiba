@@ -1,0 +1,307 @@
+[
+  {
+    "checked_at": "2026-11-04T08:04:45.135894+09:00",
+    "races": [
+      {
+        "race_id": "202611045011",
+        "name": "第60回 楠賞",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": "地方は当面買い目を出しません（2026-11-03 ユーザー承認。どの買い方でも回収率82%以下のため。印・検算・仮想成績は続けます）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。単勝オッズが揃わず勝率を推定できません（要・時間を置いて再検算）",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第60回 楠賞: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第60回 楠賞: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": null,
+          "going": null
+        },
+        "weights": {
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          }
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-11-04 08:04:46"
+        }
+      },
+      {
+        "race_id": "202611044311",
+        "name": "第72回 平和賞",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 9.9,
+          "2": 3.9,
+          "3": 4.1,
+          "4": 30.2,
+          "5": 72.4,
+          "6": 28.9,
+          "7": 11.0,
+          "8": 26.0,
+          "9": 8.2,
+          "10": 18.9,
+          "11": 3.6
+        },
+        "win_ninki": {
+          "1": 5,
+          "2": 2,
+          "3": 3,
+          "4": 10,
+          "5": 11,
+          "6": 9,
+          "7": 6,
+          "8": 8,
+          "9": 4,
+          "10": 7,
+          "11": 1
+        },
+        "priced_odds": {
+          "単勝": {
+            "3": 4.1
+          },
+          "馬連": {
+            "3-11": 8.4,
+            "2-3": 13.7,
+            "3-9": 12.0,
+            "1-3": 20.9,
+            "3-4": 137.7
+          },
+          "ワイド": {
+            "3-11": 4.8,
+            "2-3": 5.2,
+            "3-9": 5.5,
+            "1-3": 5.2,
+            "3-4": 19.5,
+            "2-11": 2.4
+          },
+          "3連複": {
+            "2-3-11": 11.8,
+            "3-9-11": 11.6,
+            "1-3-11": 23.1,
+            "3-4-11": 126.7,
+            "2-3-9": 24.6,
+            "1-2-3": 35.6,
+            "2-3-4": 208.1,
+            "1-3-9": 32.7,
+            "3-4-9": 164.9,
+            "1-3-4": 136.6
+          }
+        },
+        "bet_note": "地方は当面買い目を出しません（2026-11-03 ユーザー承認。どの買い方でも回収率82%以下のため。印・検算・仮想成績は続けます）。 【参考：従来の組み立て】ワイド 3-11（勝負度B／足切りなしなら勝負度B）。ワイド 3-11（合成4.80倍・主観的中率26.29%・期待値1.26） ◎以外の保険（ワイド11-2、2.4倍）を試みましたが、追加後の合成オッズ1.60倍・期待値0.65が基準未達のため見送りました。",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第72回 平和賞: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第72回 平和賞: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1600,
+          "weather": null,
+          "going": null
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "11": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 11
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 11
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 55
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 110
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 55
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 165
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-11-04 08:04:46"
+        }
+      },
+      {
+        "race_id": "202611043012",
+        "name": "第21回 道営スプリント",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": "地方は当面買い目を出しません（2026-11-03 ユーザー承認。どの買い方でも回収率82%以下のため。印・検算・仮想成績は続けます）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。単勝オッズが揃わず勝率を推定できません（要・時間を置いて再検算）",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第21回 道営スプリント: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第21回 道営スプリント: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1200,
+          "weather": null,
+          "going": null
+        },
+        "weights": {
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 9
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 9
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 5
+          },
+          "11": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          }
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-11-04 08:04:46"
+        }
+      }
+    ]
+  }
+]
