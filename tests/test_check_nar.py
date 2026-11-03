@@ -12,12 +12,26 @@ import os
 import sys
 from datetime import date, datetime
 
+import pytest
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import bet_builder  # noqa: E402
 import bets  # noqa: E402
 import check  # noqa: E402
 import nar  # noqa: E402
 from bets import JST, BetSheet, RaceBets  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+def _legacy_bet_builder(monkeypatch):
+    """このファイルは従来の組み立て（bet_builder.build_bets）と規律の組み合わせを検算する。
+
+    2026-11-03 から check.py は build_policy_bets（中央は◎単複の固定形、地方は買わない）を
+    呼ぶが、build_bets は参考として残り、固定形でない買い目には今も第13章の規律が掛かる。
+    その経路が壊れていないことをここで確かめる。運用の買い方は tests/test_policy_bets.py。
+    """
+    monkeypatch.setattr(bet_builder, 'build_policy_bets', bet_builder.build_bets)
 
 RACELIST_HEADER = (
     '競馬場,競走年月日,レース番号,発走時刻,競走種類名称,レース名,芝ダート区分,回り,'
