@@ -11,7 +11,7 @@
 import json
 import os
 import sys
-from datetime import date
+from datetime import date, timedelta
 
 import pytest
 
@@ -386,16 +386,54 @@ def test_しきい値到達はメール本文にも出す():
     total = review.summarize(
         [entry(wipeout=True) for _ in range(review.COUNTER_THRESHOLD)])
     body = review.render_mail(week, (date(2026, 8, 3), date(2026, 8, 9)), 'x.md',
-                              total_summary=total)
+                              total_summary=total,
+                              since_counts={'honmei_wipeout': review.COUNTER_THRESHOLD})
     assert 'メソッド見直しの検討どきです' in body
     assert '◎一極集中で全滅' in body
 
 
-def test_しきい値未満ならメール本文に検討どき欄を出さない():
-    week = total = review.summarize([entry(wipeout=True)])
+def test_判断した日より前の件数ではしきい値を知らせない():
+    # 2026-11-03：通算で判定していたので、判断した後も毎週通知が出続けていた。
+    week = review.summarize([])
+    total = review.summarize([entry(wipeout=True) for _ in range(32)])
+    body = review.render_mail(week, (date(2026, 8, 3), date(2026, 8, 9)), 'x.md',
+                              total_summary=total, since_counts={'honmei_wipeout': 1})
+    assert 'メソッド見直しの検討どきです' not in body
+    # since 以降の件数が分からなければ知らせない（誤報より静かな方がよい）
     body = review.render_mail(week, (date(2026, 8, 3), date(2026, 8, 9)), 'x.md',
                               total_summary=total)
     assert 'メソッド見直しの検討どきです' not in body
+
+
+def test_無印馬の好走は参考の件数でしきい値では知らせない():
+    week = review.summarize([])
+    total = review.summarize([entry(unmarked=(8, 9, 10)) for _ in range(100)])
+    body = review.render_mail(week, (date(2026, 8, 3), date(2026, 8, 9)), 'x.md',
+                              total_summary=total)
+    assert 'メソッド見直しの検討どきです' not in body
+    rows = {r['key']: r for r in review.counter_status(total)}
+    assert rows['unmarked_good_runs']['total'] == 300
+    assert rows['unmarked_good_runs']['reached'] is False
+
+
+def test_since_counts_forは判断した日以降だけ数える():
+    since = next(c['since'] for c in review.THRESHOLD_COUNTERS if c['key'] == 'honmei_wipeout')
+    history = [
+        {'date': since - timedelta(days=1), 'entries': [entry(wipeout=True)] * 5},
+        {'date': since, 'entries': [entry(wipeout=True)] * 2},
+    ]
+    assert review.since_counts_for(history) == {'honmei_wipeout': 2}
+
+
+def test_保険ワイドが付いたかと全滅の分母を数える():
+    hedged = make_race(marks=[('◎', 2), ('○', 11), ('▲', 9)],
+                       bet_list=[('馬連', [2, 11], 100), ('ワイド', [11, 9], 100)])
+    plain = make_race(marks=[('◎', 2), ('○', 11)], bet_list=[('馬連', [2, 11], 100)])
+    tansho = make_race(marks=[('◎', 2)], bet_list=[('単勝', [2], 100)])
+    none = make_race(marks=[('◎', 2)], bet_list=[])
+    assert review.has_hedge(hedged) is True
+    assert review.has_hedge(plain) is False
+    assert [review.wipeout_eligible(r) for r in (hedged, plain, tansho, none)] == [True, True, False, False]
 
 
 def test_total_summaryを渡さなければ従来どおり静か():
