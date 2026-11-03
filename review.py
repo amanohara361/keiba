@@ -39,6 +39,7 @@ import jockey_edge
 import nar as nar_module
 import nar_csv
 import results as results_module
+import re
 import weight_going
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s %(message)s')
@@ -671,21 +672,32 @@ def summarize(entries):
                 for k, v in c.items():
                     partner_bands[side][band][k] += v
 
-    simple = {}
-    for e in settled:
-        for name, v in (e.get('simple_bets') or {}).items():
-            s = simple.setdefault(name, {'races': 0, 'hits': 0, 'staked': 0, 'returned': 0, 'max': 0})
-            s['races'] += 1
-            s['hits'] += v['returned'] > 0
-            s['staked'] += v['staked']
-            s['returned'] += v['returned']
-            s['max'] = max(s['max'], v['returned'])
+    def simple_totals(rows):
+        out = {}
+        for e in rows:
+            for name, v in (e.get('simple_bets') or {}).items():
+                s = out.setdefault(name, {'races': 0, 'hits': 0, 'staked': 0, 'returned': 0, 'max': 0})
+                s['races'] += 1
+                s['hits'] += v['returned'] > 0
+                s['staked'] += v['staked']
+                s['returned'] += v['returned']
+                s['max'] = max(s['max'], v['returned'])
+        return out
+    simple = simple_totals(settled)
+    # 案E：従来の組み立てが買うと判定したか（legacy_decision）で分ける
+    simple_by_legacy = {
+        f'{side}{suffix}': {'simple': simple_totals(
+            [e for e in settled if e.get(key) is flag])}
+        for key, suffix in (('legacy_buy', ''), ('legacy_buy_no_floor', '_no_floor'))
+        for side, flag in (('buy', True), ('skip', False))
+    }
 
     return {
         'races': len(entries),
         'settled': len(settled),
         # 仮想：◎を軸にした単純な買い方（SIMPLE_BETS）
         'simple': simple,
+        'simple_by_legacy': simple_by_legacy,
         'unsettled': sum(1 for e in entries if e['category'] == UNSETTLED),
         'skipped': sum(1 for e in settled if e['category'] == SKIPPED),
         'virtual': totals(purchased),
@@ -734,6 +746,30 @@ def summarize(entries):
     }
 
 
+# **案E の記録（2026-11-03・ユーザー承認）。** 中央の買い目を◎単複の固定形にした後も、
+# 従来の組み立て（bet_builder.build_bets）が「買う」と判定したかを検算の買い目メモに残している。
+# 「従来なら買うレース」と「従来なら見送るレース」で◎単複の成績が違うなら、build_bets は
+# 買うレースを選ぶ役に使える（docs/調査/bet_builder改善案_2026-11-03.md 案E）。
+# 11-03 より前は、実際に買ったかどうかがそのまま従来の判定。
+FIXED_FORM_SINCE = date(2026, 11, 3)
+LEGACY_DECISION_RE = re.compile(
+    r'【参考：従来の組み立て】.*?（勝負度([ABC])(?:／足切りなしなら勝負度([ABC]))?）')
+
+
+def legacy_decision(day, entry, prestart_check, no_floor=False):
+    """従来の組み立てならそのレースを買ったか。分からなければ None。
+
+    no_floor=True は足切り（的中率5%）を外した版の判定。検算メモに残るのは 2026-11-03 から。
+    """
+    if day < FIXED_FORM_SINCE:
+        return None if no_floor else entry['staked'] > 0
+    match = LEGACY_DECISION_RE.search((prestart_check or {}).get('bet_note') or '')
+    if not match:
+        return None
+    grade = match.group(2) if no_floor else match.group(1)
+    return grade in ('A', 'B') if grade else None
+
+
 def collect(days, fetcher=None, use_cache=True):
     """指定した日付のレースを評価して、日ごとにまとめる。"""
     collected = []
@@ -751,8 +787,12 @@ def collect(days, fetcher=None, use_cache=True):
             except (results_module.ResultsError, nar_module.NarError) as exc:
                 logger.warning('%s: %s', race.race_id, exc)
                 result = None
-            entries.append(review_race(race, result, checks.get(race.race_id),
-                                       prestart.get(race.race_id)))
+            entry = review_race(race, result, checks.get(race.race_id),
+                                prestart.get(race.race_id))
+            entry['legacy_buy'] = legacy_decision(day, entry, prestart.get(race.race_id))
+            entry['legacy_buy_no_floor'] = legacy_decision(day, entry, prestart.get(race.race_id),
+                                                           no_floor=True)
+            entries.append(entry)
         collected.append({'date': day, 'source': sheet.source, 'entries': entries})
     return collected
 
@@ -936,6 +976,29 @@ def render_simple_bets(week_by_org, total_by_org):
         for org, _ in ORGS)
     lines.append(f'| （実運用・規律適用後） | {cells} |')
     lines.append('')
+
+    # 案E：従来の組み立てが買うと判定したレースと、見送ると判定したレース（中央のみ）
+    week, total = week_by_org.get('jra'), total_by_org.get('jra')
+    if week and total:
+        lines += [
+            '### 中央：従来の組み立て（bet_builder）の判定別（案E・観察中）',
+            '',
+            '従来の組み立てが「買う」と判定したレースと「見送る」と判定したレースで、◎の成績が違うかを見る。'
+            '「買う」側がはっきり上回り続けるなら、従来の組み立てをレースの選別に使う（docs/調査/bet_builder改善案_2026-11-03.md 案E）。'
+            '2026-11-03 より前は、実際に買ったかどうか。「足切りなし」は的中率5%の足切りを外した版の判定で、2026-11-03 から記録している。',
+            '',
+            '| 従来の判定 | ◎単勝 今週 | ◎単勝 通算 | ◎単勝 通算・最大払戻除く | ◎単複 今週 | ◎単複 通算 | ◎単複 通算・最大払戻除く |',
+            '|---|---|---|---|---|---|---|',
+        ]
+        for key, label in (('buy', '買う'), ('skip', '見送る'),
+                           ('buy_no_floor', '足切りなしなら買う'),
+                           ('skip_no_floor', '足切りなしなら見送る')):
+            w, tot = week['simple_by_legacy'][key], total['simple_by_legacy'][key]
+            cells = ' | '.join(
+                f'{_simple_cell(w, n)} | {_simple_cell(tot, n)} | {_simple_cell(tot, n, drop_max=True)}'
+                for n in ('◎単勝', '◎単勝＋◎複勝'))
+            lines.append(f'| {label} | {cells} |')
+        lines.append('')
     return lines
 
 

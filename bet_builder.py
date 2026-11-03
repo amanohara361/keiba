@@ -504,7 +504,8 @@ def skip_reason(race):
     return None
 
 
-def build_bets(race, lookup, win_odds=None, stake=100, withdrawn=None):
+def build_bets(race, lookup, win_odds=None, stake=100, withdrawn=None,
+               min_hit_rate=None):
     """1レース分の買い目を組み立てる。
 
     race:     marks・partners・win_probabilities を持つ RaceBets。
@@ -577,11 +578,12 @@ def build_bets(race, lookup, win_odds=None, stake=100, withdrawn=None):
         weight_note = ('【馬体重】' + '・'.join(f'{u}番' for u in pulled) +
                        'は±15kg以上の増減のため主観勝率の上乗せを取り消し、市場勝率で評価。')
     confidence, bets_out, note = _choose_bets(race, axis, pool, p, market, lookup,
-                                               overrides, stake)
+                                               overrides, stake, min_hit_rate)
     return confidence, bets_out, weight_note + note
 
 
-def _choose_bets(race, axis, pool, p, market, lookup, overrides, stake):
+def _choose_bets(race, axis, pool, p, market, lookup, overrides, stake,
+                 min_hit_rate=None):
     """build_bets の後半：候補を作り、規律を満たす最も堅い案を選ぶ。
 
     overrides は朝タスクが書いた主観勝率の有無の判定にだけ使う（馬体重で
@@ -627,9 +629,12 @@ def _choose_bets(race, axis, pool, p, market, lookup, overrides, stake):
     # 期待値1.2以上という規律を満たすことを最低条件とし、そのうえで最も堅い
     # （的中率が高い）案を採る。合成オッズ3.0倍の下限が点数の増やしすぎを抑える。
     best = max(ok, key=lambda c: (c.hit_rate, c.ev))
-    if best.hit_rate < MIN_HIT_RATE:
+    # None は既定の足切り。実行時に読むのは、テストやバックテストが MIN_HIT_RATE を差し替えるため。
+    if min_hit_rate is None:
+        min_hit_rate = MIN_HIT_RATE
+    if best.hit_rate < min_hit_rate:
         note = (f'規律を満たす買い目のうち最も当たりやすい{best.label()}でも'
-                f'的中率{best.hit_rate * 100:.1f}%で、足切り（{MIN_HIT_RATE * 100:.0f}%）'
+                f'的中率{best.hit_rate * 100:.1f}%で、足切り（{min_hit_rate * 100:.0f}%）'
                 f'を下回ります。当たる見込みの薄い高配当1点に期待値を頼る形に'
                 f'なるため見送り（勝負度C）。')
         if not overrides:
@@ -691,11 +696,16 @@ NAR_STOPPED = ('地方は当面買い目を出しません（2026-11-03 ユー�
 def _reference_note(race, lookup, win_odds, stake, withdrawn):
     """従来の build_bets の結果を、参考として1文にまとめる。"""
     confidence, built, note = build_bets(race, lookup, win_odds, stake, withdrawn)
+    # 案E の記録（2026-11-03）：足切り（的中率5%）を外した版の判定も残す。
+    # 検算記録の再現では、この版が「買う」と判定したレースの◎単勝が153%、見送った側が83%だった
+    # （09-19〜11-01 の中央95レース、見つけた期間の数字。docs/調査/bet_builder改善案_2026-11-03.md）。
+    no_floor, _, _ = build_bets(race, lookup, win_odds, stake, withdrawn, min_hit_rate=0.0)
     # build_bets は race.subjective_hit_rate を書き戻すが、運用の買い目は
     # 主観的中率を使わないので、検算記録に残らないよう消しておく。
     race.subjective_hit_rate = None
     shown = '・'.join(str(b) for b in built) if built else '買い目なし'
-    return f'【参考：従来の組み立て】{shown}（勝負度{confidence}）。{note}'
+    return (f'【参考：従来の組み立て】{shown}（勝負度{confidence}／足切りなしなら勝負度{no_floor}）。'
+            f'{note}')
 
 
 def build_policy_bets(race, lookup, win_odds=None, stake=100, withdrawn=None):
