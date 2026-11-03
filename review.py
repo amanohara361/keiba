@@ -88,16 +88,59 @@ PARTNER_BANDS = [
 # 実際の買い方は変えず、相手が食い違ったレースが HEDGE_REVIEW_AT に達したら比べ直す。
 HEDGE_REVIEW_AT = 100
 
-# (見出し, summarize() のキー, 到達時にすること)。render() とメールの両方が
-# ここを見る。**片方だけ書き換えて対応が崩れる、という事故を構造的に防ぐ。**
+# render() とメールの両方がここを見る。**片方だけ書き換えて対応が崩れる、という
+# 事故を構造的に防ぐ。**
+#
+# **しきい値で知らせるのは「最後に判断した日（since）以降の件数」だけ（2026-11-03・ユーザー承認）。**
+# 以前は通算件数で判定していたので、一度10件を超えると毎週「検討どき」が出続け、
+# 判断した後も通知が止まらなかった（減点・原則で切った馬の好走は通算286件、◎一極集中は32件）。
+# 判断したら since をその日に進め、数え直す。since=None は「まだ一度も判断していない」で、通算で数える。
+#
+# alert=False は参考の件数で、しきい値では知らせない。
+# 「減点・原則で切った馬の好走」は「3着以内に来た無印馬の数」＝印で拾えなかった3着内の数で、
+# 1レースに印が5頭前後なら毎週十数件は必ず増える。原則が厳しすぎるかは、
+# 同じ頭数を人気上位から選んだ場合との比較（render_mark_popularity の表）で判断する。
 THRESHOLD_COUNTERS = [
-    ('減点・原則で切った馬の好走（3着以内の無印馬）', 'unmarked_good_runs',
-     '原則が厳しすぎないかを検討する'),
-    ('規律遵守により逃した上振れ（止めたが的中していた）', 'missed_upside',
-     '基準値（合成3.0倍・期待値1.2）が厳しすぎないかを検討する'),
-    ('◎一極集中で全滅（◎着外・他の印は3着以内）', 'honmei_wipeout',
-     '**規律未実装の候補**。軸の分散を規律に足すかを検討する'),
+    {'label': '減点・原則で切った馬の好走（3着以内の無印馬）', 'key': 'unmarked_good_runs',
+     'note': '参考の件数（しきい値では知らせない）。原則が厳しすぎるかは「印と人気上位の比較」の表で判断する',
+     'alert': False, 'since': None},
+    {'label': '規律遵守により逃した上振れ（止めたが的中していた）', 'key': 'missed_upside',
+     'note': '基準値（合成3.0倍・期待値1.2）が厳しすぎないかを検討する',
+     'alert': True, 'since': None},
+    # 2026-09-08 に保険ワイド（bet_builder._axis_hedge）を入れた。2026-11-03 に、
+    # 全滅の割合と保険が付いた数で効き目を見ることにして、ここから数え直す。
+    {'label': '◎一極集中で全滅（◎着外・他の印は3着以内）', 'key': 'honmei_wipeout',
+     'note': '保険ワイド（2026-09-08〜）が効いているかを、全滅の割合と保険の付いた数で見直す',
+     'alert': True, 'since': date(2026, 11, 3)},
 ]
+
+
+def counter_status(total_summary, since_counts=None):
+    """しきい値カウンタの状態を1件ずつ返す。
+
+    since_counts は {key: since 以降の件数}。since のあるカウンタで渡されなければ
+    0件として扱う（数え直した後の件数が分からないのに、通算で知らせて誤報するより静かな方がよい）。
+    """
+    rows = []
+    for c in THRESHOLD_COUNTERS:
+        total = total_summary[c['key']]
+        if c['since']:
+            count = (since_counts or {}).get(c['key'], 0)
+        else:
+            count = total
+        rows.append({**c, 'total': total, 'count': count,
+                     'reached': c['alert'] and count >= COUNTER_THRESHOLD})
+    return rows
+
+
+def since_counts_for(history):
+    """main() 用：since のあるカウンタについて、since 以降の件数を数える。"""
+    out = {}
+    for c in THRESHOLD_COUNTERS:
+        if c['since']:
+            entries = [e for day in history if day['date'] >= c['since'] for e in day['entries']]
+            out[c['key']] = summarize(entries)[c['key']]
+    return out
 
 # 終了コードの意味は check.py と揃える。
 EXIT_OK = 0
@@ -280,6 +323,26 @@ def honmei_only_wipeout(race, settlement, result):
     # ◎以外の印が3着以内に来ていた＝軸を変えれば拾えた
     others = race.marked_horses - honmei
     return bool(others & top3)
+
+
+def wipeout_eligible(race):
+    """◎一極集中を問えるレースか（honmei_only_wipeout と同じ前提）。
+
+    買い目があり、単勝1点買いではなく、◎がいるレース。全滅の割合の分母にする。
+    """
+    if not race.bets or not race.horses_for('◎'):
+        return False
+    return not (len(race.bets) == 1 and race.bets[0].type == '単勝')
+
+
+def has_hedge(race):
+    """◎を含まない買い目（保険ワイド）が付いていたか。
+
+    bet_builder._axis_hedge が成立すると、◎以外の2頭のワイドが1点足される。
+    保険が付いたレースは、◎が飛んでも全滅に数えられない（honmei_only_wipeout）。
+    """
+    honmei = set(race.horses_for('◎'))
+    return wipeout_eligible(race) and any(not (honmei & set(b.horses)) for b in race.bets)
 
 
 def mark_vs_popularity(race, result):
@@ -470,6 +533,8 @@ def review_race(race, result, check, prestart_check=None):
         ],
         'unmarked_good_runs': [h['umaban'] for h in unmarked_good_runs(race, result)],
         'honmei_wipeout': honmei_only_wipeout(race, settlement, result),
+        'wipeout_eligible': wipeout_eligible(race),
+        'hedged': has_hedge(race),
         'mark_vs_popularity': mark_vs_popularity(race, result),
         'virtual_wide': virtual_axis_partner_wide(race, result),
         'partner_popularity': partner_popularity(race, result),
@@ -594,6 +659,9 @@ def summarize(entries):
         'unmarked_good_runs': sum(len(e.get('unmarked_good_runs', [])) for e in settled),
         'missed_upside': sum(1 for e in blocked if e['returned'] > e['staked']),
         'honmei_wipeout': sum(1 for e in settled if e.get('honmei_wipeout')),
+        # ◎一極集中の割合を見るための分母と、保険ワイドが付いた数（2026-11-03〜）
+        'wipeout_eligible': sum(1 for e in settled if e.get('wipeout_eligible')),
+        'hedged': sum(1 for e in settled if e.get('hedged')),
         # 印と人気順の比較（案A・案D）
         'compared_races': len(compared),
         'favorite_win': sum(1 for c in compared if c['favorite_won']),
@@ -1051,7 +1119,8 @@ def render_edge(edge_lines):
 
 def render(collected, week_summary, total_summary, period, since_summary=None,
            week_by_org=None, total_by_org=None, wide_since_summary=None,
-           wg_lines=None, edge_lines=None, pending=None, nar_bias_lines=None):
+           wg_lines=None, edge_lines=None, pending=None, nar_bias_lines=None,
+           since_counts=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -1140,13 +1209,22 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
     lines += render_pending(pending)
 
     # --- しきい値カウンタ ---
-    lines.append(f'## カウンタ（通算{COUNTER_THRESHOLD}件でメソッド見直しを検討）')
+    lines.append(f'## カウンタ（最後に判断した日以降で{COUNTER_THRESHOLD}件になったら見直しを検討）')
     lines.append('')
-    for label, key, note in THRESHOLD_COUNTERS:
-        count = total_summary[key]
-        flag = ' ← **しきい値到達**' if count >= COUNTER_THRESHOLD else ''
-        lines.append(f'- {label}：今週{week_summary[key]}件／通算{count}件{flag}')
-        lines.append(f'  - 到達時にすること：{note}')
+    for row in counter_status(total_summary, since_counts):
+        key = row['key']
+        flag = ' ← **しきい値到達**' if row['reached'] else ''
+        since = (f"／{row['since'].isoformat()}以降{row['count']}件"
+                 if row['since'] else '')
+        lines.append(f"- {row['label']}：今週{week_summary[key]}件／通算{row['total']}件{since}{flag}")
+        if key == 'honmei_wipeout':
+            for name, s in (('今週', week_summary), ('通算', total_summary)):
+                n = s.get('wipeout_eligible', 0)
+                rate = f"{s[key] / n * 100:.0f}%" if n else '—'
+                lines.append(f"  - {name}：買い目を出したレース（単勝1点を除く）{n}件のうち"
+                             f"全滅{s[key]}件（{rate}）、保険ワイドが付いたレース{s.get('hedged', 0)}件")
+        label = 'すること' if not row['alert'] else '到達時にすること'
+        lines.append(f"  - {label}：{row['note']}")
     lines.append('')
 
     # --- 人が書く欄 ---
@@ -1188,7 +1266,8 @@ def _mail_race_lines(collected):
 
 
 def render_mail(week_summary, period, path, total_summary=None, collected=None,
-                week_by_org=None, wg_heavy=None, edge_line=None, pending=None):
+                week_by_org=None, wg_heavy=None, edge_line=None, pending=None,
+                since_counts=None):
     """メール本文。**しきい値に達したカウンタがあれば、ここで一言で言い切る。**
 
     通算の件数や「10件」という基準そのものは、レビューの .md ファイルには
@@ -1225,17 +1304,16 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None,
     lines.append('')
 
     if total_summary:
-        reached = [(label, note) for label, key, note in THRESHOLD_COUNTERS
-                   if total_summary[key] >= COUNTER_THRESHOLD]
+        reached = [r for r in counter_status(total_summary, since_counts) if r['reached']]
         if reached:
-            lines.append(f'■ メソッド見直しの検討どきです（通算{COUNTER_THRESHOLD}件が目安）')
-            for label, note in reached:
+            lines.append(f'■ メソッド見直しの検討どきです（最後に判断した日以降で{COUNTER_THRESHOLD}件が目安）')
+            for r in reached:
                 # 何件たまっていて、到達したら何をするのかまで書く。
                 # 見出しだけでは「で、どうすれば」が分からない。
-                key = next(k for lbl, k, _ in THRESHOLD_COUNTERS if lbl == label)
-                lines.append(f'  - {label}：通算{total_summary[key]}件')
-                lines.append(f'    → {note.replace("**", "")}')
-            lines.append('  （検証ノート.md へ転記して判断してください）')
+                since = f"{r['since'].isoformat()}以降" if r['since'] else '通算'
+                lines.append(f"  - {r['label']}：{since}{r['count']}件")
+                lines.append(f"    → {r['note'].replace('**', '')}")
+            lines.append('  （判断したら THRESHOLD_COUNTERS の since をその日に進めてください）')
             lines.append('')
 
     if wg_heavy is not None and wg_heavy >= weight_going.READY_RACES:
@@ -1376,12 +1454,13 @@ def main(argv=None):
     edge_lines, edge_line, edge_summary = edge_report(week_days)
     pending = pending_status(edge_summary, count_jra_races(), total_summary['hedge_differ'])
     nar_bias_lines, _ = nar_bias_report(week)
+    since_counts = since_counts_for(history)
     text = render(week, week_summary, total_summary, (start, end),
                   since_summary=since_summary,
                   week_by_org=week_by_org, total_by_org=total_by_org,
                   wide_since_summary=wide_since_summary,
                   wg_lines=wg_lines, edge_lines=edge_lines, pending=pending,
-                  nar_bias_lines=nar_bias_lines)
+                  nar_bias_lines=nar_bias_lines, since_counts=since_counts)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)
@@ -1398,7 +1477,8 @@ def main(argv=None):
                            total_summary=total_summary, collected=week,
                            week_by_org=week_by_org,
                            wg_heavy=wg_heavy if wg_lines else None,
-                           edge_line=edge_line, pending=pending)
+                           edge_line=edge_line, pending=pending,
+                           since_counts=since_counts)
         if not mailer.send(subject, body):
             logger.error('メール送信に失敗しました')
             return EXIT_ERROR
