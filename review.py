@@ -35,6 +35,7 @@ from datetime import date, timedelta
 import bet_builder
 import bets
 import edge_check
+import jockey_edge
 import nar as nar_module
 import nar_csv
 import results as results_module
@@ -988,6 +989,23 @@ def weight_going_report(data_dir=None):
     return weight_going.render_lines(summary, paths), weight_going.heavy_races(summary)
 
 
+def jockey_edge_report(data_dir=None):
+    """騎手別「実勝−オッズからの見込み勝利数」（jockey_edge.py）を週次レビューに載せるための行。
+
+    2026-11-03 決定ログ「騎手の成績変化は見込み勝利数との差で追う」：数字を出すだけで判定はしない。
+    メールには載せない（毎週 |z|≥2 の騎手は誰かしら出るので、通知にすると「延々通知だけ来る」に戻る）。
+    集計の失敗で週次レビュー全体を落とさないよう、例外はここで止めて None を返す。
+    """
+    try:
+        summary, paths = jockey_edge.analyze(data_dir or os.path.join(ROOT, 'data_jra'))
+    except Exception:  # noqa: BLE001 - 付録の集計なので本体を止めない
+        logger.exception('騎手別の見込み勝利数の集計に失敗しました')
+        return None
+    if not paths:
+        return None
+    return jockey_edge.render_lines(summary, paths)
+
+
 def nar_bias_report(collected, measure=None):
     """地方のレースがあった日・場のバイアス判定を、その場で測り直して並べる。
 
@@ -1109,6 +1127,15 @@ def render_pending(status):
     return lines
 
 
+def render_jockey_edge(jk_lines):
+    if not jk_lines:
+        return []
+    return (['## 騎手別 実勝−見込み勝利数（観察のみ・規則にしない）', '',
+             '`jockey_edge.py` の出力。中央・通算。回収率ではなくオッズに織り込まれていない分を見る。'
+             '根拠は決定ログ 2026-11-03。', '', '```']
+            + jk_lines + ['```', ''])
+
+
 def render_edge(edge_lines):
     if not edge_lines:
         return []
@@ -1120,7 +1147,7 @@ def render_edge(edge_lines):
 def render(collected, week_summary, total_summary, period, since_summary=None,
            week_by_org=None, total_by_org=None, wide_since_summary=None,
            wg_lines=None, edge_lines=None, pending=None, nar_bias_lines=None,
-           since_counts=None):
+           since_counts=None, jk_lines=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -1205,6 +1232,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
     lines += render_partner_popularity(week_summary, total_summary)
     lines += render_hedge_compare(week_summary, total_summary)
     lines += render_weight_going(wg_lines)
+    lines += render_jockey_edge(jk_lines)
     lines += render_edge(edge_lines)
     lines += render_pending(pending)
 
@@ -1451,6 +1479,7 @@ def main(argv=None):
     total_by_org = summarize_by_org(all_entries)
 
     wg_lines, wg_heavy = weight_going_report()
+    jk_lines = jockey_edge_report()
     edge_lines, edge_line, edge_summary = edge_report(week_days)
     pending = pending_status(edge_summary, count_jra_races(), total_summary['hedge_differ'])
     nar_bias_lines, _ = nar_bias_report(week)
@@ -1460,7 +1489,8 @@ def main(argv=None):
                   week_by_org=week_by_org, total_by_org=total_by_org,
                   wide_since_summary=wide_since_summary,
                   wg_lines=wg_lines, edge_lines=edge_lines, pending=pending,
-                  nar_bias_lines=nar_bias_lines, since_counts=since_counts)
+                  nar_bias_lines=nar_bias_lines, since_counts=since_counts,
+                  jk_lines=jk_lines)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)
