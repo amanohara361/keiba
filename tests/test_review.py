@@ -705,3 +705,33 @@ def test_単純な買い方を集計して表に出す():
     text = '\n'.join(review.render_simple_bets(by_org, by_org))
     assert '175%（1/2R）' in text
     assert '| 0% |' in text  # 最大払戻を除く
+
+
+def test_従来の組み立ての判定を読み取る():
+    before = date(2026, 11, 2)
+    after = date(2026, 11, 3)
+    assert review.legacy_decision(before, {'staked': 300}, None) is True
+    assert review.legacy_decision(before, {'staked': 0}, None) is False
+    note = '中央の固定形：◎7の単勝＋複勝。 【参考：従来の組み立て】ワイド 7-11（勝負度B）。…'
+    assert review.legacy_decision(after, {'staked': 200}, {'bet_note': note}) is True
+    note = '中央の固定形：◎7の単勝＋複勝。 【参考：従来の組み立て】買い目なし（勝負度C）。…'
+    assert review.legacy_decision(after, {'staked': 200}, {'bet_note': note}) is False
+    assert review.legacy_decision(after, {'staked': 200}, None) is None
+    note = '【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度B）。…'
+    assert review.legacy_decision(after, {'staked': 200}, {'bet_note': note}) is False
+    assert review.legacy_decision(after, {'staked': 200}, {'bet_note': note}, no_floor=True) is True
+    assert review.legacy_decision(before, {'staked': 300}, None, no_floor=True) is None
+
+
+def test_従来の判定別に単純な買い方を分けて出す():
+    buy = entry(category=review.SKIPPED, staked=0)
+    buy.update(org='jra', legacy_buy=True, simple_bets={'◎単勝': {'staked': 100, 'returned': 400}})
+    skip = entry(category=review.SKIPPED, staked=0)
+    skip.update(org='jra', legacy_buy=False, simple_bets={'◎単勝': {'staked': 100, 'returned': 0}})
+    s = review.summarize([buy, skip])
+    assert s['simple_by_legacy']['buy']['simple']['◎単勝']['returned'] == 400
+    assert s['simple_by_legacy']['skip']['simple']['◎単勝']['returned'] == 0
+    by_org = {'jra': s, 'nar': review.summarize([])}
+    text = '\n'.join(review.render_simple_bets(by_org, by_org))
+    assert '従来の組み立て（bet_builder）の判定別' in text
+    assert '| 買う | 400%（1/1R）' in text

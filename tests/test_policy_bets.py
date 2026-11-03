@@ -56,6 +56,7 @@ def test_中央は本命の単勝と複勝の固定形():
     assert [str(b) for b in built] == ['単勝 7', '複勝 7']
     assert note.startswith('中央の固定形：◎7の単勝＋複勝（単勝2.9倍）')
     assert '【参考：従来の組み立て】' in note
+    assert '足切りなしなら勝負度' in note
     # 主観的中率は運用の買い目に使わないので、検算記録に残さない
     assert race.subjective_hit_rate is None
 
