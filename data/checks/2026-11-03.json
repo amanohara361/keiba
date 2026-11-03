@@ -4032,5 +4032,324 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-11-03T19:38:10.565798+09:00",
+    "races": [
+      {
+        "race_id": "202611034606",
+        "name": "第１回 かがやきスプリント【ＭＲＯ金賞ＴＲ】３歳",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第１回 かがやきスプリント【ＭＲＯ金賞ＴＲ】３歳: 既に発走しています（発走 13:45 / 現在 19:38）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611034607",
+        "name": "第１６回 ＪＢＣレディスクラシックJpnＩ（中央・地方全国交流）",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第１６回 ＪＢＣレディスクラシックJpnＩ（中央・地方全国交流）: 既に発走しています（発走 14:25 / 現在 19:38）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611034608",
+        "name": "第２６回 ＪＢＣスプリントJpnＩ（中央・地方全国交流）",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第２６回 ＪＢＣスプリントJpnＩ（中央・地方全国交流）: 既に発走しています（発走 15:10 / 現在 19:38）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611033009",
+        "name": "第７回 ＪＢＣ２歳優駿（ピクシーナイト賞）JpnIIIオープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第７回 ＪＢＣ２歳優駿（ピクシーナイト賞）JpnIIIオープン: 既に発走しています（発走 15:40 / 現在 19:38）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611034609",
+        "name": "第２６回 ＪＢＣクラシックJpnＩ（中央・地方全国交流）",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第２６回 ＪＢＣクラシックJpnＩ（中央・地方全国交流）: 既に発走しています（発走 16:25 / 現在 19:38）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611033010",
+        "name": "第１回 北海道２歳スプリント（サンダースノー賞）オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第１回 北海道２歳スプリント（サンダースノー賞）オープン: 既に発走しています（発走 16:40 / 現在 19:38）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611034610",
+        "name": "能登のために復興応援ありがとう賞３歳上",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "能登のために復興応援ありがとう賞３歳上: 既に発走しています（発走 17:20 / 現在 19:38）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611034311",
+        "name": "ハートビートカップ（準重賞）３歳オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 6.9,
+          "2": 71.9,
+          "3": 13.5,
+          "4": 67.7,
+          "5": 18.1,
+          "6": 5.5,
+          "7": 57.1,
+          "8": 15.0,
+          "9": 4.1,
+          "10": 18.4,
+          "11": 34.2,
+          "12": 14.3,
+          "13": 3.7,
+          "14": 51.2
+        },
+        "win_ninki": {
+          "1": 4,
+          "2": 14,
+          "3": 5,
+          "4": 13,
+          "5": 8,
+          "6": 3,
+          "7": 12,
+          "8": 7,
+          "9": 2,
+          "10": 9,
+          "11": 10,
+          "12": 6,
+          "13": 1,
+          "14": 11
+        },
+        "priced_odds": {
+          "ワイド": {
+            "10-12": 29.9,
+            "5-12": 19.6
+          },
+          "馬連": {
+            "10-12": 118.9,
+            "5-12": 83.5
+          }
+        },
+        "bet_note": "◎12の単勝が14.3倍で第8章の推奨レンジ上限（9.9倍）を超えています。勝ち切る確率が一段落ちる帯なので軸に据えません。見送り（勝負度C）。",
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "ハートビートカップ（準重賞）３歳オープン: 馬場が「稍重」です（ダート1800m / 天候:曇 / 馬場:稍重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "ハートビートカップ（準重賞）３歳オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1800,
+          "weather": "曇",
+          "going": "稍重"
+        },
+        "weights": {
+          "1": {
+            "weight": 474,
+            "diff": -2,
+            "age": 3
+          },
+          "3": {
+            "weight": 481,
+            "diff": 0,
+            "age": 3
+          },
+          "5": {
+            "weight": 505,
+            "diff": 8,
+            "age": 3
+          },
+          "8": {
+            "weight": 499,
+            "diff": -1,
+            "age": 3
+          },
+          "10": {
+            "weight": 491,
+            "diff": -1,
+            "age": 3
+          },
+          "12": {
+            "weight": 462,
+            "diff": 11,
+            "age": 3
+          },
+          "13": {
+            "weight": 466,
+            "diff": -3,
+            "age": 3
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 14
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 14
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 91
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 182
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 91
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 364
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-11-03 19:38:12"
+        }
+      }
+    ]
   }
 ]
