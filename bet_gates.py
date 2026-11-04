@@ -148,6 +148,25 @@ def analyze(dated_races, week_start=None):
     return out
 
 
+def honmei_since(dated_races, org, since):
+    """◎の勝ち・3着内を、since 以降だけで市場（人気なり）と比べる。
+
+    人気なりの率はその組織の全期間から出す（since 以降だけでは頭数が足りない）。
+    中央の固定形（2026-11-03〜）の採用後に、印の力が保たれているかを追うために使う
+    （決定ログ 2026-11-04「固定形の追跡」）。対象が無ければ None。
+    """
+    mine = [(d, rows) for d, o, rows in dated_races if o == org]
+    if not mine:
+        return None
+    rates = _popularity_rates([(org, rows) for _, rows in mine])
+    after = [(org, rows) for d, rows in mine if d >= since]
+    if not after:
+        return None
+    tally = _tally(after, rates)
+    return {'races': len(after),
+            'win': _stat(tally['◎']['win']), 'place': _stat(tally['◎']['place'])}
+
+
 def gate_status(res, name, conds):
     """券種1つの目安。全条件で z≥Z_READY かつ前半・後半とも見込み超えなら ready。"""
     missing = []
