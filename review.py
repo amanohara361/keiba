@@ -779,6 +779,121 @@ def legacy_decision(day, entry, prestart_check, no_floor=False):
     return grade in ('A', 'B') if grade else None
 
 
+# **中央の固定形（◎単勝＋◎複勝）の追跡（2026-11-04・ユーザー依頼）。** 採用日以降だけで3つを毎週出す。
+# 1. 固定形の実運用の回収率。採用後 FIXED_FORM_REVIEW_DAYS 日を過ぎて FIXED_FORM_FLOOR を下回ったら、
+#    メール冒頭で見直しどきと知らせる（決定ログ 2026-11-03「採用後4週の通算で80%を下回ったら見直す」）。
+# 2. ◎の勝ち・3着内の市場比（bet_gates.honmei_since）。印の力そのものが保たれているか。
+# 3. 従来の組み立てが「買う」と判定したレースと「見送る」と判定したレースの◎単複（案E）。
+FIXED_FORM_REVIEW_DAYS = 28
+FIXED_FORM_FLOOR = 0.80
+
+
+def fixed_form_tracking(history, end):
+    """中央の固定形を採用日（FIXED_FORM_SINCE）以降だけで追う。
+
+    採用後の中央の確定レースがまだ無ければ {'races': 0, 'days': 経過日数} を返す
+    （「まだ対象なし」と出す。節ごと消えると、追っていることが分からなくなる）。
+    """
+    elapsed = (end - FIXED_FORM_SINCE).days + 1
+    after = [(day['date'], e) for day in history if day['date'] >= FIXED_FORM_SINCE
+             for e in day['entries'] if e['org'] == 'jra' and e['category'] != UNSETTLED]
+    if not after:
+        return {'races': 0, 'days': elapsed}
+    kept = [e for _, e in after if e['staked'] > 0 and not e['blocked']]
+    staked = sum(e['staked'] for e in kept)
+    returned = sum(e['returned'] for e in kept)
+    biggest = max((e['returned'] for e in kept), default=0)
+    roi = returned / staked if staked else None
+
+    def legacy(key, flag):
+        rows = [e for _, e in after if e.get(key) is flag]
+        out = {'races': len(rows)}
+        for name in ('◎単勝', '◎単勝＋◎複勝'):
+            bets_ = [(e.get('simple_bets') or {}).get(name) for e in rows]
+            bets_ = [b for b in bets_ if b]
+            st = sum(b['staked'] for b in bets_)
+            out[name] = (sum(b['returned'] for b in bets_) / st) if st else None
+        return out
+
+    dated = [(day['date'], e['org'], e['horse_rows'])
+             for day in history for e in day['entries'] if e.get('horse_rows')]
+    return {
+        'races': len(after), 'bought': len(kept), 'hits': sum(1 for e in kept if e['returned'] > 0),
+        'staked': staked, 'returned': returned, 'roi': roi,
+        'roi_drop_max': ((returned - biggest) / staked) if staked else None,
+        'days': elapsed,
+        'review_due': elapsed >= FIXED_FORM_REVIEW_DAYS,
+        'below_floor': elapsed >= FIXED_FORM_REVIEW_DAYS and roi is not None and roi < FIXED_FORM_FLOOR,
+        'honmei_after': bet_gates.honmei_since(dated, 'jra', FIXED_FORM_SINCE),
+        'honmei_before': bet_gates.honmei_since(
+            [(d, o, r) for d, o, r in dated if d < FIXED_FORM_SINCE], 'jra', date.min),
+        'legacy': {label: legacy(key, flag) for label, key, flag in (
+            ('買う', 'legacy_buy', True), ('見送る', 'legacy_buy', False),
+            ('足切りなしなら買う', 'legacy_buy_no_floor', True),
+            ('足切りなしなら見送る', 'legacy_buy_no_floor', False))},
+    }
+
+
+def _ratio_text(st):
+    if not st or not st['n']:
+        return '—'
+    z = f"、z{st['z']:+.1f}" if st['z'] is not None else ''
+    return f"{st['actual']}/{st['expected']:.1f}（{st['ratio']:.2f}倍{z}）"
+
+
+def _pct_or_dash(x):
+    return f'{x * 100:.0f}%' if x is not None else '—'
+
+
+def render_fixed_form(t):
+    """週次レビュー .md の節。判定は「4週経過後に80%未満か」だけ。"""
+    if not t:
+        return []
+    if not t['races']:
+        return ['## 追跡：中央の固定形（◎単勝＋◎複勝、2026-11-03〜）', '',
+                f"採用から{t['days']}日。採用後の中央の確定レースはまだ無い。"
+                '固定形の回収率・◎の市場比・従来の判定別の◎単複を、レースが入りしだい出す（決定ログ 2026-11-04）。', '']
+    due = (f"採用から{t['days']}日。" + ('**4週を過ぎた。**' if t['review_due']
+                                        else f"4週（{FIXED_FORM_REVIEW_DAYS}日）を過ぎたら80%で判定する。"))
+    lines = [
+        '## 追跡：中央の固定形（◎単勝＋◎複勝、2026-11-03〜）',
+        '',
+        f'{due} 根拠は決定ログ 2026-11-03（固定形の採用）と 2026-11-04（この追跡）。',
+        '',
+        '| 指標 | 値 |', '|---|---|',
+        f"| 1. 固定形の実運用 | {t['bought']}R 何か当たった{t['hits']}R、{t['staked']:,}円→{t['returned']:,}円、"
+        f"回収率{_pct_or_dash(t['roi'])}（最大払戻1回を除いて{_pct_or_dash(t['roi_drop_max'])}）"
+        + (' **← 80%を下回った。見直しどき**' if t['below_floor'] else '') + ' |',
+    ]
+    for label, key in (('勝ち', 'win'), ('3着内', 'place')):
+        after = (t['honmei_after'] or {}).get(key)
+        before = (t['honmei_before'] or {}).get(key)
+        lines.append(f'| 2. ◎の{label}（実数/市場の見込み） | 採用後 {_ratio_text(after)} ／ 採用前 {_ratio_text(before)} |')
+    for label, v in t['legacy'].items():
+        lines.append(f"| 3. 従来の判定「{label}」 | {v['races']}R、◎単勝{_pct_or_dash(v['◎単勝'])}・"
+                     f"◎単複{_pct_or_dash(v['◎単勝＋◎複勝'])} |")
+    lines += ['', '2の見込みは、勝ちが確定単勝オッズを割り戻した市場の勝率、3着内が同じ人気の馬の実績率（bet_gates と同じ）。'
+              '3は「買う」側が「見送る」側を後の期間で上回り続けたら、従来の組み立てをレースの選別に使う案（案E）を承認にかける。', '']
+    return lines
+
+
+def mail_fixed_form_lines(t):
+    """メールの「印の精度」欄に入れる3行。"""
+    if not t:
+        return []
+    if not t['races']:
+        return [f"固定形（中央◎単複・11-03〜{t['days']}日）：採用後の中央の確定レースはまだ無い"]
+    after = t['honmei_after'] or {}
+    buy, skip = t['legacy']['足切りなしなら買う'], t['legacy']['足切りなしなら見送る']
+    return [
+        f"固定形（中央◎単複・11-03〜{t['days']}日）：{t['bought']}R 回収率{_pct_or_dash(t['roi'])}"
+        f"（最大払戻除く{_pct_or_dash(t['roi_drop_max'])}）／4週後に80%で判定",
+        f"◎の市場比（採用後）：勝ち {_ratio_text(after.get('win'))}・3着内 {_ratio_text(after.get('place'))}",
+        f"従来の判定別の◎単複（足切りなし）：買う{buy['races']}R {_pct_or_dash(buy['◎単勝＋◎複勝'])}"
+        f" ／ 見送る{skip['races']}R {_pct_or_dash(skip['◎単勝＋◎複勝'])}",
+    ]
+
+
 def collect(days, fetcher=None, use_cache=True):
     """指定した日付のレースを評価して、日ごとにまとめる。"""
     collected = []
@@ -1329,7 +1444,8 @@ def render_edge(edge_lines):
 def render(collected, week_summary, total_summary, period, since_summary=None,
            week_by_org=None, total_by_org=None, wide_since_summary=None,
            wg_lines=None, edge_lines=None, pending=None, nar_bias_lines=None,
-           since_counts=None, jk_lines=None, gate_lines=None, map_lines=None):
+           since_counts=None, jk_lines=None, gate_lines=None, map_lines=None,
+           fixed_form=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -1410,6 +1526,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
     lines += render_mark_popularity(week_summary, total_summary, since_summary)
     if week_by_org and total_by_org:
         lines += render_by_org(week_by_org, total_by_org)
+        lines += render_fixed_form(fixed_form)
         lines += render_simple_bets(week_by_org, total_by_org)
     lines += render_virtual_wide(week_summary, wide_since_summary, total_summary)
     lines += render_partner_popularity(week_summary, total_summary)
@@ -1480,7 +1597,7 @@ def _mail_race_lines(collected):
 
 def render_mail(week_summary, period, path, total_summary=None, collected=None,
                 week_by_org=None, wg_heavy=None, edge_line=None, pending=None,
-                since_counts=None, total_by_org=None, gate_line=None):
+                since_counts=None, total_by_org=None, gate_line=None, fixed_form=None):
     """メール本文。**しきい値に達したカウンタがあれば、ここで一言で言い切る。**
 
     通算の件数や「10件」という基準そのものは、レビューの .md ファイルには
@@ -1533,6 +1650,12 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None,
         lines += [f'■ 道悪×馬体重の検討どきです（重・不良 {wg_heavy}鞍、目安{weight_going.READY_RACES}鞍）',
                   '  → 詳細ファイルの「道悪×相対馬体重」を見て、規則にするか判断してください'
                   '（決定ログ 2026-10-12）',
+                  '']
+
+    if fixed_form and fixed_form.get('below_floor'):
+        lines += [f"■ 中央の固定形の見直しどきです（採用から{fixed_form['days']}日、"
+                  f"回収率{_pct_or_dash(fixed_form['roi'])}が80%を下回りました）",
+                  '  → 元に戻すか形を見直すかを決めてください（決定ログ 2026-11-03）',
                   '']
 
     ready = [p for p in (pending or []) if p['ready']]
@@ -1612,6 +1735,7 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None,
         lines.append(f'道悪×馬体重（観察中）：重・不良 {wg_heavy}/{weight_going.READY_RACES}鞍')
     if edge_line:
         lines.append(edge_line)
+    lines += mail_fixed_form_lines(fixed_form)
     if gate_line:
         lines.append(gate_line)
     if pending:
@@ -1682,6 +1806,7 @@ def main(argv=None):
     nar_bias_lines, _ = nar_bias_report(week)
     since_counts = since_counts_for(history)
     gate_lines, gate_line = gate_report(history, start)
+    fixed_form = fixed_form_tracking(history, end)
     map_lines = bet_type_map_report()
     text = render(week, week_summary, total_summary, (start, end),
                   since_summary=since_summary,
@@ -1689,7 +1814,8 @@ def main(argv=None):
                   wide_since_summary=wide_since_summary,
                   wg_lines=wg_lines, edge_lines=edge_lines, pending=pending,
                   nar_bias_lines=nar_bias_lines, since_counts=since_counts,
-                  jk_lines=jk_lines, gate_lines=gate_lines, map_lines=map_lines)
+                  jk_lines=jk_lines, gate_lines=gate_lines, map_lines=map_lines,
+                  fixed_form=fixed_form)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)
@@ -1707,7 +1833,8 @@ def main(argv=None):
                            week_by_org=week_by_org, total_by_org=total_by_org,
                            wg_heavy=wg_heavy if wg_lines else None,
                            edge_line=edge_line, pending=pending,
-                           since_counts=since_counts, gate_line=gate_line)
+                           since_counts=since_counts, gate_line=gate_line,
+                           fixed_form=fixed_form)
         if not mailer.send(subject, body):
             logger.error('メール送信に失敗しました')
             return EXIT_ERROR
