@@ -59,7 +59,7 @@ description: >
 3. **`data/cards/{date}.json`を読み、`予想メソッド.md`の7ステップで
    候補レースに印を打つ。** CLAUDE.mdの指示どおり、印付け本体は
    Agentツールで`model: "opus"`のサブエージェントに行わせる
-   （`model: "opus"`・`effort: "max"` を渡す。2026-11-06〜4週間の試行。CLAUDE.md）。渡す情報はカードの
+   （`model: "opus"`・`effort: "xhigh"` を渡す。2026-11-09〜1か月の経過観察。CLAUDE.md）。渡す情報はカードの
    出走馬データ一式と、可能なら`予想メソッド.md`の該当章（京都開催なら
    `docs/コース特性_京都.md` も）。
    `marks`・`partners`・`win_probabilities`まで埋める。**`bets`・
