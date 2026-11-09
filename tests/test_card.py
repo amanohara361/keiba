@@ -867,3 +867,82 @@ def test_取消と除外を飛ばしても5走は実際に走ったレースで�
     rows += [_run_row(f'2026/0{m}/01', f'R{m}', str(m), '1:46.0') for m in range(9, 3, -1)]
     runs = form_module.parse_recent_runs(header + ''.join(rows) + '</table>')
     assert [r['race'] for r in runs] == ['R9', 'R8', 'R7', 'R6', 'R5']
+
+
+# ----------------------------------------------------------------------
+# 取得の再試行と main の捕捉（2026-11-08 添削 H2）
+# ----------------------------------------------------------------------
+
+class _FakeResponse:
+    def __init__(self, body):
+        self.body = body
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def read(self):
+        return self.body
+
+
+def _opener_failing(errors, body=b'<html>ok</html>'):
+    """errors を順に投げ、尽きたら body を返す opener。"""
+    calls = []
+
+    def opener(request, timeout=None):
+        calls.append(request.full_url)
+        if len(calls) <= len(errors):
+            raise errors[len(calls) - 1]
+        return _FakeResponse(body)
+    return opener, calls
+
+
+def _http_error(code):
+    import urllib.error
+    return urllib.error.HTTPError('https://example.invalid/', code, 'x', {}, None)
+
+
+def test_一時的な5xxや接続断は待って取り直す():
+    import urllib.error
+    opener, calls = _opener_failing([_http_error(503), urllib.error.URLError('reset')])
+    slept = []
+    page = form_module._fetch('https://example.invalid/', opener=opener,
+                              waits=(3, 10, 20), sleep=slept.append)
+    assert page == '<html>ok</html>'
+    assert len(calls) == 3
+    assert slept == [3, 10]
+
+
+def test_4xxは待っても直らないので再試行しない():
+    opener, calls = _opener_failing([_http_error(403)])
+    slept = []
+    with pytest.raises(form_module.FormError):
+        form_module._fetch('https://example.invalid/', opener=opener,
+                           waits=(3, 10, 20), sleep=slept.append)
+    assert len(calls) == 1 and slept == []
+
+
+def test_再試行を使い切ったらFormErrorにする():
+    opener, calls = _opener_failing([_http_error(500)] * 4)
+    slept = []
+    with pytest.raises(form_module.FormError):
+        form_module._fetch('https://example.invalid/', opener=opener,
+                           waits=(3, 10, 20), sleep=slept.append)
+    assert len(calls) == 4 and slept == [3, 10, 20]
+
+
+def test_opener差し替え時の既定は再試行しない():
+    opener, calls = _opener_failing([_http_error(503)])
+    with pytest.raises(form_module.FormError):
+        form_module._fetch('https://example.invalid/', opener=opener)
+    assert len(calls) == 1
+
+
+def test_レース一覧が取れなくてもmainはトレースバックで落ちずEXIT_ERROR(monkeypatch):
+    def boom(day, **kw):
+        raise form_module.FormError('レース一覧を取得できませんでした: 503')
+
+    monkeypatch.setattr(card, 'build_card', boom)
+    assert card.main(['build', '--date', '2026-11-14']) == card.EXIT_ERROR

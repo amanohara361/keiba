@@ -15,6 +15,7 @@
 外部ライブラリは使わない（jra_bias.py と同じ方針）。
 """
 
+import logging
 import re
 import time
 import urllib.error
@@ -44,20 +45,46 @@ GOING_ABBR = {'良': '良', '稍': '稍重', '稍重': '稍重', '重': '重', '
 # サーバへの配慮。jra_bias.py と同じ間隔にそろえる。
 REQUEST_INTERVAL = 1.5
 
+# 一時的な失敗（5xx・タイムアウト・接続断）のときだけ、数秒空けて再試行する。
+# 地方の公式データで実際に踏んだ（nar.py、2026-10-07）教訓を中央にも入れる
+# （2026-11-08 の添削 H2）。4xx（403=遮断、404=ページ無し）は待っても直らないので
+# 再試行しない。馬ごとのページで404が出るたびに30秒待つと、カード作成が間に合わない。
+RETRY_WAITS = (3, 10, 20)
+
+logger = logging.getLogger(__name__)
+
 
 class FormError(RuntimeError):
     pass
 
 
-def _fetch(url, timeout=30, opener=None):
-    """db.netkeiba.com は EUC-JP、race.netkeiba.com は UTF-8。両対応で読む。"""
+def _is_transient(exc):
+    if isinstance(exc, urllib.error.HTTPError):
+        return exc.code >= 500 or exc.code == 429
+    return True  # URLError（接続できない）・タイムアウト・接続断
+
+
+def _fetch(url, timeout=30, opener=None, waits=None, sleep=time.sleep):
+    """db.netkeiba.com は EUC-JP、race.netkeiba.com は UTF-8。両対応で読む。
+
+    waits は再試行の間隔（秒）。既定は実アクセスなら RETRY_WAITS、opener を
+    差し替えたテストでは再試行しない（nar.fetch_zip と同じ扱い）。
+    """
     request = urllib.request.Request(url, headers={'User-Agent': UA})
-    try:
-        open_url = opener or urllib.request.urlopen
-        with open_url(request, timeout=timeout) as response:
-            raw = response.read()
-    except (urllib.error.URLError, OSError) as exc:
-        raise FormError(f'{url} を取得できませんでした: {exc}')
+    open_url = opener or urllib.request.urlopen
+    if waits is None:
+        waits = RETRY_WAITS if opener is None else ()
+    for attempt in range(len(waits) + 1):
+        try:
+            with open_url(request, timeout=timeout) as response:
+                raw = response.read()
+            break
+        except (urllib.error.URLError, OSError) as exc:
+            if attempt < len(waits) and _is_transient(exc):
+                logger.warning('%s の取得に失敗（%s）。%s秒後に再試行', url, exc, waits[attempt])
+                sleep(waits[attempt])
+                continue
+            raise FormError(f'{url} を取得できませんでした: {exc}')
 
     for encoding in ('utf-8', 'euc_jp'):
         try:

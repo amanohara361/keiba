@@ -717,3 +717,51 @@ def test_JRA所属馬の近走は一時的な失敗なら1回取り直す():
     card = _card_with(flaky)
     entry = next(e for e in card['races'][0]['entries'] if e['belongs_jra'])
     assert entry['jra_lookup'] == 'ok' and len(calls) == 2
+
+
+# ----------------------------------------------------------------------
+# 近走用の月次ファイル：当月必須・過去月は欠けたら打ち切り（2026-11-08 添削 H3）
+# ----------------------------------------------------------------------
+
+def _month_fetcher(missing):
+    """missing に含む月の月次ファイルだけ取れない fetcher。"""
+    asked = []
+
+    def fake(type_, month=None):
+        if type_ == nar.MONTHLY:
+            asked.append(month)
+            if month in missing:
+                raise nar.NarError(f'{month} 404')
+        return {'racelist': rows(RACELIST), 'horselist': rows(HORSELIST),
+                'payback': []}
+    return fake, asked
+
+
+def _build(fake):
+    return nar_card.build_card(date(2026, 8, 12), fetcher=fake,
+                               today=date(2026, 8, 12),
+                               jra_fetcher=lambda name, opener=None, **kw: None,
+                               jra_sleep=lambda seconds: None)
+
+
+def test_過去月が1つ欠けてもカードは作れて近走はそこで打ち切る():
+    fake, asked = _month_fetcher({date(2026, 5, 1)})
+    card = _build(fake)
+    assert [r['name'] for r in card['races']] == ['テスト記念', 'テストスプリント']
+    assert card['history_months'] == 3          # 8・7・6月
+    assert '要確認' in card['history_note'] and '2026年5月' in card['history_note']
+    # 欠けた月より古い月は取りに行かない（近走に穴を空けない）。
+    assert asked == [date(2026, 8, 1), date(2026, 7, 1), date(2026, 6, 1), date(2026, 5, 1)]
+
+
+def test_全月取れれば注記は空():
+    fake, _ = _month_fetcher(set())
+    card = _build(fake)
+    assert card['history_months'] == nar_card.LOOKBACK_MONTHS
+    assert card['history_note'] is None
+
+
+def test_当月が取れなければ従来どおり失敗する():
+    fake, _ = _month_fetcher({date(2026, 8, 1)})
+    with pytest.raises(nar.NarError):
+        _build(fake)

@@ -311,6 +311,33 @@ def _annotate_jra_horse(entry, fetcher, sleep, day):
 # カード作成
 # ----------------------------------------------------------------------
 
+def _fetch_months(fetch, day):
+    """近走用の月次ファイルを新しい順に取る。戻り値は (月次データの並び, 注記)。
+
+    **当月だけは必須**で、取れなければ NarError をそのまま上げる（その日のレースが
+    入っているので、無ければカードが組めない）。過去月は取れなかった時点で打ち切る。
+    以前は6か月のうち1ファイルが欠けただけでカード全体を作れなかった（2026-11-08 の
+    添削）。nar_csv.py の前月の扱いと同じ考え方。
+
+    欠けた月を飛ばしてさらに古い月を取りに行かないのは、近走に穴が空くと
+    「前走」が黙って1走前にずれるため（推測で埋めない・第12章）。打ち切れば、
+    残る近走は途切れなく正しく、足りない分は注記で判断側に知らせられる。
+    """
+    months = []
+    for i, month in enumerate(months_back(day, LOOKBACK_MONTHS)):
+        try:
+            months.append(fetch(nar.MONTHLY, month))
+        except nar.NarError as exc:
+            if i == 0:
+                raise
+            logger.warning('%d年%d月の月次ファイルを取れませんでした（近走は直近%dか月で打ち切り）: %s',
+                           month.year, month.month, i, exc)
+            note = (f'{month.year}年{month.month}月以前の公式データを取得できず、'
+                    f'近走は直近{i}か月分のみ。それより前の戦績は要確認')
+            return months, note
+    return months, None
+
+
 def build_card(day, levels=('重賞', '準重賞'), with_entries=True, fetcher=None, today=None,
                jra_fetcher=None, jra_sleep=None):
     """その日のカードを組む。
@@ -337,7 +364,7 @@ def build_card(day, levels=('重賞', '準重賞'), with_entries=True, fetcher=N
         except nar.NarError as exc:
             logger.warning('当日ファイルを取れませんでした（月次で代替します）: %s', exc)
 
-    months = [fetch(nar.MONTHLY, m) for m in months_back(day, LOOKBACK_MONTHS)]
+    months, history_note = _fetch_months(fetch, day)
 
     racelist = (daily or {}).get('racelist') or []
     horselist = (daily or {}).get('horselist') or []
@@ -380,6 +407,9 @@ def build_card(day, levels=('重賞', '準重賞'), with_entries=True, fetcher=N
         'source': 'keiba.go.jp 公式データダウンロード',
         'levels': list(levels),
         'race_count': len(races),
+        # 近走の材料に使えた月数。欠けたときは判断側が「要確認」と分かるように残す。
+        'history_months': len(months),
+        'history_note': history_note,
         # 該当なしでも races: [] のカードを書く。**ファイルが無い状態は
         # 「取得できなかった」を意味させたい**（決定ログ「取得できなかったことを
         # 静かに0件と出さない」）。両方を同じ形にすると区別が付かなくなる。
