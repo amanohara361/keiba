@@ -530,6 +530,37 @@ def partner_popularity(race, result):
     return counts
 
 
+# **買わないレースの条件の記録（2026-11-09・ユーザー承認。記録だけで、買い方は変えない）。**
+# 2026-11-09 に確定オッズで区分して見つけた条件を、その日以降の後の期間で確かめる（決定ログ 2026-10-16 のルール）。
+#   A（中央）：直前の検算で1番人気の単勝が2.0倍未満（堅いレース）。見つけた期間は27R・◎単複65%。
+#   B（地方）：直前の検算で1番人気の単勝が2.0〜3.0倍、かつ◎が1番人気でない。見つけた期間は23R・◎単複40%。
+# 判定には確定オッズではなく、発走前の最後の検算の単勝オッズを使う（買う判断のときに見えている値）。
+# 該当レースが FILTER_REVIEW_AT に達したら、該当側の◎単複が非該当側を下回り、かつ80%未満かを見て承認にかける。
+FILTER_SINCE = date(2026, 11, 9)
+FILTER_REVIEW_AT = 30
+FILTER_FLOOR = 0.80
+FILTERS = [
+    ('A', 'jra', '中央：1番人気の単勝が2.0倍未満'),
+    ('B', 'nar', '地方：1番人気が2.0〜3.0倍で、◎が1番人気でない'),
+]
+
+
+def prestart_filter(race, prestart_check):
+    """直前の検算の単勝オッズで、買わないレースの条件（A/B）に当たるか。
+
+    戻り値は {'cond': 'A' か 'B', 'applies': bool}。オッズか◎が無ければ None。
+    1番人気はオッズが最も低い馬（同じなら馬番の小さい方）。
+    """
+    win_odds = {int(k): v for k, v in ((prestart_check or {}).get('win_odds') or {}).items() if v}
+    honmei = race.horses_for('◎')
+    if not win_odds or not honmei:
+        return None
+    fav, fav_odds = min(win_odds.items(), key=lambda kv: (kv[1], kv[0]))
+    if (race.org or 'jra') == 'jra':
+        return {'cond': 'A', 'applies': fav_odds < 2.0}
+    return {'cond': 'B', 'applies': 2.0 <= fav_odds < 3.0 and honmei[0] != fav}
+
+
 def review_race(race, result, check, prestart_check=None):
     """1レース分の評価をまとめる。結果が未確定なら分類だけ空にする。"""
     entry = {
@@ -579,6 +610,7 @@ def review_race(race, result, check, prestart_check=None):
         'simple_bets': simple_axis_bets(race, result),
         'partner_popularity': partner_popularity(race, result),
         'hedge_compare': hedge_partner_compare(race, result, prestart_check),
+        'prestart_filter': prestart_filter(race, prestart_check),
         # 券種の解禁条件（bet_gates）の材料。印・人気・着順・単勝オッズを全馬分
         'horse_rows': bet_gates.horse_rows(race, result),
     })
@@ -875,6 +907,84 @@ def render_fixed_form(t):
     lines += ['', '2の見込みは、勝ちが確定単勝オッズを割り戻した市場の勝率、3着内が同じ人気の馬の実績率（bet_gates と同じ）。'
               '3は「買う」側が「見送る」側を後の期間で上回り続けたら、従来の組み立てをレースの選別に使う案（案E）を承認にかける。', '']
     return lines
+
+
+def filter_tracking(history):
+    """買わないレースの条件 A/B を、該当・非該当に分けて◎単複で比べる。
+
+    「後の期間」（FILTER_SINCE 以降）と、見つけた期間を含む通算の両方を出す。
+    """
+    def side(rows):
+        out = {'races': len(rows)}
+        for name in ('◎単勝', '◎単勝＋◎複勝'):
+            bets_ = [b for b in ((e.get('simple_bets') or {}).get(name) for e in rows) if b]
+            st = sum(b['staked'] for b in bets_)
+            rt = sum(b['returned'] for b in bets_)
+            mx = max((b['returned'] for b in bets_), default=0)
+            out[name] = (rt / st) if st else None
+            out[name + '_drop_max'] = ((rt - mx) / st) if st else None
+        return out
+
+    out = {}
+    for cond, org, label in FILTERS:
+        def pick(since, applies):
+            return [e for day in history if since is None or day['date'] >= since
+                    for e in day['entries']
+                    if e['org'] == org and e['category'] != UNSETTLED
+                    and (e.get('prestart_filter') or {}).get('cond') == cond
+                    and e['prestart_filter']['applies'] is applies]
+        after_hit, after_miss = side(pick(FILTER_SINCE, True)), side(pick(FILTER_SINCE, False))
+        ready = after_hit['races'] >= FILTER_REVIEW_AT
+        hit_roi, miss_roi = after_hit['◎単勝＋◎複勝'], after_miss['◎単勝＋◎複勝']
+        out[cond] = {
+            'label': label, 'org': org,
+            'after_hit': after_hit, 'after_miss': after_miss,
+            'all_hit': side(pick(None, True)), 'all_miss': side(pick(None, False)),
+            'ready': ready,
+            'propose': (ready and hit_roi is not None and miss_roi is not None
+                        and hit_roi < miss_roi and hit_roi < FILTER_FLOOR),
+        }
+    return out
+
+
+def render_filters(t):
+    """週次レビュー .md の節。"""
+    if not t:
+        return []
+    lines = [
+        f'## 記録：買わないレースの条件（{FILTER_SINCE.isoformat()}〜・観察中、買い方は変えていない）', '',
+        '直前の検算の単勝オッズで条件に当たったレース（該当）と、当たらなかったレース（非該当）の◎単複を比べる。'
+        f'後の期間（{FILTER_SINCE.isoformat()} 以降）で該当が{FILTER_REVIEW_AT}Rに達したら判定する：該当の◎単複が非該当を下回り、'
+        f'かつ{FILTER_FLOOR * 100:.0f}%未満なら承認にかける。「通算」は見つけた期間を含むので参考。根拠は決定ログ 2026-11-09。', '',
+        '| 条件 | 期間 | 該当 | 非該当 |', '|---|---|---|---|',
+    ]
+
+    def cell(s_):
+        if not s_['races']:
+            return '0R'
+        return (f"{s_['races']}R ◎単複{_pct_or_dash(s_['◎単勝＋◎複勝'])}"
+                f"（最大除く{_pct_or_dash(s_['◎単勝＋◎複勝_drop_max'])}）・◎単勝{_pct_or_dash(s_['◎単勝'])}")
+    for cond, v in t.items():
+        flag = ' **← 判定どき**' if v['ready'] else ''
+        lines.append(f"| {cond} {v['label']} | {FILTER_SINCE.isoformat()}〜{flag} | {cell(v['after_hit'])} | {cell(v['after_miss'])} |")
+        lines.append(f"| | 通算（参考） | {cell(v['all_hit'])} | {cell(v['all_miss'])} |")
+    lines.append('')
+    return lines
+
+
+def mail_filter_lines(t):
+    """メールの1行ずつ。判定どきになったら、それも書く。"""
+    out = []
+    for cond, v in (t or {}).items():
+        h, m = v['after_hit'], v['after_miss']
+        line = (f"条件{cond}（{v['label']}）：該当 {h['races']}/{FILTER_REVIEW_AT}R ◎単複{_pct_or_dash(h['◎単勝＋◎複勝'])}"
+                f" ／ 非該当 {m['races']}R {_pct_or_dash(m['◎単勝＋◎複勝'])}")
+        if v['propose']:
+            line += ' ← 判定どき：承認にかける'
+        elif v['ready']:
+            line += ' ← 判定どき：差が無いので採用しない'
+        out.append(line)
+    return out
 
 
 def mail_fixed_form_lines(t):
@@ -1445,7 +1555,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
            week_by_org=None, total_by_org=None, wide_since_summary=None,
            wg_lines=None, edge_lines=None, pending=None, nar_bias_lines=None,
            since_counts=None, jk_lines=None, gate_lines=None, map_lines=None,
-           fixed_form=None):
+           fixed_form=None, filters=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -1527,6 +1637,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
     if week_by_org and total_by_org:
         lines += render_by_org(week_by_org, total_by_org)
         lines += render_fixed_form(fixed_form)
+        lines += render_filters(filters)
         lines += render_simple_bets(week_by_org, total_by_org)
     lines += render_virtual_wide(week_summary, wide_since_summary, total_summary)
     lines += render_partner_popularity(week_summary, total_summary)
@@ -1597,7 +1708,8 @@ def _mail_race_lines(collected):
 
 def render_mail(week_summary, period, path, total_summary=None, collected=None,
                 week_by_org=None, wg_heavy=None, edge_line=None, pending=None,
-                since_counts=None, total_by_org=None, gate_line=None, fixed_form=None):
+                since_counts=None, total_by_org=None, gate_line=None, fixed_form=None,
+                filters=None):
     """メール本文。**しきい値に達したカウンタがあれば、ここで一言で言い切る。**
 
     通算の件数や「10件」という基準そのものは、レビューの .md ファイルには
@@ -1736,6 +1848,7 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None,
     if edge_line:
         lines.append(edge_line)
     lines += mail_fixed_form_lines(fixed_form)
+    lines += mail_filter_lines(filters)
     if gate_line:
         lines.append(gate_line)
     if pending:
@@ -1807,6 +1920,7 @@ def main(argv=None):
     since_counts = since_counts_for(history)
     gate_lines, gate_line = gate_report(history, start)
     fixed_form = fixed_form_tracking(history, end)
+    filters = filter_tracking(history)
     map_lines = bet_type_map_report()
     text = render(week, week_summary, total_summary, (start, end),
                   since_summary=since_summary,
@@ -1815,7 +1929,7 @@ def main(argv=None):
                   wg_lines=wg_lines, edge_lines=edge_lines, pending=pending,
                   nar_bias_lines=nar_bias_lines, since_counts=since_counts,
                   jk_lines=jk_lines, gate_lines=gate_lines, map_lines=map_lines,
-                  fixed_form=fixed_form)
+                  fixed_form=fixed_form, filters=filters)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)
@@ -1834,7 +1948,7 @@ def main(argv=None):
                            wg_heavy=wg_heavy if wg_lines else None,
                            edge_line=edge_line, pending=pending,
                            since_counts=since_counts, gate_line=gate_line,
-                           fixed_form=fixed_form)
+                           fixed_form=fixed_form, filters=filters)
         if not mailer.send(subject, body):
             logger.error('メール送信に失敗しました')
             return EXIT_ERROR
