@@ -1990,3 +1990,34 @@ def test_verdict_dict_keeps_bet_note():
     assert verdict.to_dict()['bet_note'] == verdict.bet_note
     verdict.bet_note = None
     assert verdict.to_dict()['bet_note'] is None
+
+
+# ----------------------------------------------------------------------
+# 一部の点だけ実オッズが取れない（2026-11-08 添削 H1・11-09 ユーザー判断で WARN のまま区別）
+# ----------------------------------------------------------------------
+
+def test_一部の点だけオッズが取れなければ全く取れない場合と分けて警告する():
+    race = make_race(bets=[Bet('馬連', [7, 11]), Bet('馬連', [7, 14]), Bet('ワイド', [7, 2])],
+                     subjective_hit_rate=0.30)
+    verdict = review(race, bet_odds=[11.2, None, 6.0])
+
+    codes = [f.code for f in verdict.findings]
+    assert 'partial_odds' in codes and 'no_odds' not in codes
+    finding = next(f for f in verdict.findings if f.code == 'partial_odds')
+    assert finding.severity == discipline.WARN
+    assert '3点中1点' in finding.message and '馬連 7-14' in finding.message
+    assert '暫定' in finding.remedy
+    # 判定の重さは変えない（BLOCK にはしない）。
+    assert 'partial_odds' not in [f.code for f in verdict.blocks]
+
+
+def test_全く取れないときはpartialを出さずno_oddsだけ():
+    race = make_race(bets=[Bet('馬連', [7, 11]), Bet('馬連', [7, 14])])
+    codes = [f.code for f in review(race, bet_odds=[None, None]).findings]
+    assert 'no_odds' in codes and 'partial_odds' not in codes
+
+
+def test_全部取れていればpartialは出ない():
+    race = make_race(bets=[Bet('馬連', [7, 11]), Bet('馬連', [7, 14])])
+    codes = [f.code for f in review(race, bet_odds=[11.2, 13.1]).findings]
+    assert 'partial_odds' not in codes
