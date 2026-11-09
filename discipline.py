@@ -141,6 +141,30 @@ def check_composite_odds(race, value):
     )
 
 
+def check_partial_odds(race, bet_odds):
+    """一部の点だけ実オッズが取れなかったら、全く取れない場合と分けて警告する。
+
+    composite_odds は取れなかった点を除いて計算するので、Σ(1/o) が小さくなり、
+    合成オッズと期待値は実際より良く出る（2026-11-08 の添削 H1）。全く取れない
+    場合（no_odds）と同じ文面だと、メールで「計算できた＝問題なし」と読めてしまう。
+    判定の重さは no_odds と同じ WARN のまま（第13章 実オッズ優先の原則。
+    BLOCK に上げるのはメソッドの改訂になるので、2026-11-09 ユーザー判断で見送り）。
+    """
+    missing = [i for i, o in enumerate(bet_odds) if not (o and o > 0)]
+    if not missing or len(missing) == len(bet_odds):
+        return None
+    labels = '、'.join(
+        f'{race.bets[i].type} {"-".join(str(h) for h in race.bets[i].horses)}'
+        for i in missing if i < len(race.bets))
+    return Finding(
+        WARN, 'partial_odds',
+        f'{race.name}: {len(bet_odds)}点中{len(missing)}点の実オッズが取れていません'
+        f'（{labels}）。合成オッズ・期待値は取れた点だけの概算で、実際より良く出ます',
+        '取れなかった点のオッズを確かめるまで「暫定」として扱い、'
+        '点数を1段階絞ってください（第13章 実オッズ優先の原則）。',
+    )
+
+
 def check_expected_value(race, value):
     """合成オッズ × 主観的中率 > 1.2 を満たさなければ組み直す（第13章）。"""
     rate = race.subjective_hit_rate
@@ -647,6 +671,9 @@ def review_race(race, bet_odds, win_table, meta, now, day, conditions=None,
             findings.append(finding)
 
     composite = composite_odds(bet_odds)
+    partial = check_partial_odds(race, bet_odds)
+    if partial:
+        findings.append(partial)
     findings.append(check_composite_odds(race, composite))
     findings.append(check_expected_value(race, composite))
 
