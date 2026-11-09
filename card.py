@@ -771,7 +771,9 @@ def main(argv=None):
 
     try:
         card = build_card(day, limit=args.limit, with_entries=not args.no_entries)
-    except CardError as exc:
+    except (CardError, form_module.FormError) as exc:
+        # FormError はレース一覧の取得失敗（再試行しても取れなかった）。
+        # 以前は CardError しか捕まえず、トレースバックで落ちていた（2026-11-08 添削 H2）。
         logger.error('%s', exc)
         return EXIT_ERROR
 
