@@ -946,3 +946,118 @@ def test_レース一覧が取れなくてもmainはトレースバックで落�
 
     monkeypatch.setattr(card, 'build_card', boom)
     assert card.main(['build', '--date', '2026-11-14']) == card.EXIT_ERROR
+
+
+# ----------------------------------------------------------------------
+# 前走の相手のその後（2026-11-09）
+# ----------------------------------------------------------------------
+
+def test_結果ページから着順順にhorse_idとタイムを読む():
+    result = form_module.parse_result_horses(_fixture('nk_result_202606040611.html'))
+    top = result['horses'][:3]
+    assert [h['rank'] for h in top] == [1, 2, 3]
+    assert top[0] == {'rank': 1, 'umaban': top[0]['umaban'], 'name': 'メイショウゲキリン',
+                      'horse_id': '2019104092', 'time': '2:16.9', 'margin': ''}
+    assert top[1]['margin'] == 'ハナ' and top[2]['time'] == '2:17.2'
+    # 各馬ラップ表など、同じ HorseList の行を使う別の表は読まない（重複しない）。
+    ids = [h['horse_id'] for h in result['horses']]
+    assert len(ids) == len(set(ids))
+
+
+def test_結果ページの見出しから日付を取る():
+    page = '<title>結果 | 2026年10月11日 京都8R</title>'
+    assert form_module.parse_result_horses(page)['date'] == '2026/10/11'
+
+
+def _prev_result():
+    return {'date': '2026/10/11', 'horses': [
+        {'rank': 1, 'umaban': 7, 'name': 'A', 'horse_id': 'HA', 'time': '1:52.6', 'margin': ''},
+        {'rank': 2, 'umaban': 3, 'name': 'ME', 'horse_id': 'HME', 'time': '1:52.7',
+         'margin': 'クビ'},
+        {'rank': 3, 'umaban': 5, 'name': 'B', 'horse_id': 'HB', 'time': '1:52.7', 'margin': 'ハナ'},
+        {'rank': 4, 'umaban': 9, 'name': 'C', 'horse_id': 'HC', 'time': '1:53.0', 'margin': '2'},
+        {'rank': 5, 'umaban': 1, 'name': 'D', 'horse_id': 'HD', 'time': '1:53.5', 'margin': '3'},
+    ]}
+
+
+def _runs(*rows):
+    # 競走成績は新しい順に並ぶ。
+    return [{'date': d, 'race': r, 'field_size': 14, 'ninki': 2, 'rank': k} for d, r, k in rows]
+
+
+def test_前走の上位の相手がその後どう走ったかを付ける(monkeypatch):
+    fetched_results = []
+
+    def fake_result(race_id, opener=None):
+        fetched_results.append(race_id)
+        return _prev_result()
+
+    later = {
+        'HA': _runs(('2026/11/14', '今回のレース', 1),          # 対象日当日は入れない
+                    ('2026/11/01', '3勝クラス', 1),
+                    ('2026/10/11', '2勝クラス', 1)),
+        'HB': _runs(('2026/10/11', '2勝クラス', 3)),              # その後まだ走っていない
+        'HC': _runs(('2026/10/25', '2勝クラス', 2), ('2026/10/11', '2勝クラス', 4)),
+    }
+    monkeypatch.setattr(form_module, 'fetch_result_horses', fake_result)
+    monkeypatch.setattr(form_module, '_fetch', lambda url, opener=None: url)
+    monkeypatch.setattr(form_module, 'parse_recent_runs',
+                        lambda page, limit=5: later[page.rstrip('/').rsplit('/', 1)[-1]])
+
+    entries = [{'umaban': 3, 'horse_id': 'HME'}, {'umaban': 8, 'horse_id': 'HX'}]
+    past = {3: {'horse_id': 'HME', 'prev_race_id': '202608040408'},
+            8: {'horse_id': 'HX', 'prev_race_id': '202644070111'}}   # 地方の前走
+    card.attach_prev_opponents(entries, past, sleep=lambda s: None, day=date(2026, 11, 14))
+
+    got = entries[0]['prev_opponents']
+    assert got['self_rank'] == 2 and got['date'] == '2026/10/11'
+    # 自分を除く上位3頭。4着以下に自分より上の相手が足りなければ下から補う。
+    assert [o['name'] for o in got['opponents']] == ['A', 'B', 'C']
+    assert [o['gap_to_self'] for o in got['opponents']] == [-0.1, 0.0, 0.3]
+    a, b, c = got['opponents']
+    assert a['later_runs'] == [{'date': '2026/11/01', 'race': '3勝クラス', 'field_size': 14,
+                                'ninki': 2, 'rank': 1}]
+    assert b['later_runs'] == []
+    assert [r['rank'] for r in c['later_runs']] == [2]
+    assert (got['later_starts'], got['later_wins'], got['later_top3']) == (2, 1, 2)
+    # 地方の前走は追わない。
+    assert entries[1]['prev_opponents'] is None
+    assert fetched_results == ['202608040408']
+
+
+def test_前走の結果が取れなければエラーを残して止まらない(monkeypatch):
+    def boom(race_id, opener=None):
+        raise form_module.FormError('503')
+
+    monkeypatch.setattr(form_module, 'fetch_result_horses', boom)
+    entries = [{'umaban': 3, 'horse_id': 'HME'}, {'umaban': 4, 'horse_id': 'HY'}]
+    past = {3: {'horse_id': 'HME', 'prev_race_id': '202608040408'},
+            4: {'horse_id': 'HY', 'prev_race_id': '202608040408'}}
+    calls = []
+    card.attach_prev_opponents(entries, past, sleep=calls.append)
+    assert entries[0]['prev_opponents'] == {'race_id': '202608040408', 'error': '503'}
+    assert entries[1]['prev_opponents']['error'] == '503'
+    assert len(calls) == 1          # 同じ前走は1回だけ取りに行く
+
+
+def test_相手の戦績が取れなければlater_runsはNoneで集計に入れない(monkeypatch):
+    monkeypatch.setattr(form_module, 'fetch_result_horses', lambda rid, opener=None: _prev_result())
+
+    def boom(url, opener=None):
+        raise form_module.FormError('403')
+
+    monkeypatch.setattr(form_module, '_fetch', boom)
+    entries = [{'umaban': 3, 'horse_id': 'HME'}]
+    past = {3: {'horse_id': 'HME', 'prev_race_id': '202608040408'}}
+    card.attach_prev_opponents(entries, past, sleep=lambda s: None)
+    got = entries[0]['prev_opponents']
+    assert all(o['later_runs'] is None for o in got['opponents'])
+    assert got['later_starts'] == 0
+
+
+def test_前走で中止なら着順に居ないので推測しない(monkeypatch):
+    monkeypatch.setattr(form_module, 'fetch_result_horses', lambda rid, opener=None: _prev_result())
+    entries = [{'umaban': 6, 'horse_id': 'HZ'}]
+    past = {6: {'horse_id': 'HZ', 'prev_race_id': '202608040408'}}
+    card.attach_prev_opponents(entries, past, sleep=lambda s: None)
+    assert '見当たりません' in entries[0]['prev_opponents']['error']

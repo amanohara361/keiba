@@ -237,6 +237,50 @@ def fetch_past_table(race_id, opener=None):
     return parse_past_table(_fetch(PAST_URL.format(race_id=race_id), opener=opener))
 
 
+# ----------------------------------------------------------------------
+# 過去レースの結果から 着順 → horse_id・タイム を引く（前走の相手のその後を追うため）
+# ----------------------------------------------------------------------
+
+RACE_RESULT_URL = 'https://race.netkeiba.com/race/result.html?race_id={race_id}'
+
+
+def parse_result_horses(page):
+    """結果ページから {date, horses:[{rank, umaban, name, horse_id, time, margin}]} を作る。
+
+    ページには同じ HorseList の行を使う別の表（各馬ラップ表など）もあるので、
+    着順の <div class="Rank"> がある行だけを読む。中止・除外・取消（着順が数字で
+    ない行）は入れない。date は見出しの「2026年10月11日」から取る（無ければ None）。
+    """
+    date = None
+    matched = re.search(r'(\d{4})年(\d{1,2})月(\d{1,2})日', page)
+    if matched:
+        date = '{}/{:02d}/{:02d}'.format(*(int(g) for g in matched.groups()))
+    horses = []
+    for row in re.split(r'<tr[^>]*class="HorseList"', page)[1:]:
+        row = row.split('</tr>')[0]
+        rank = re.search(r'<div class="Rank">\s*([^<]*?)\s*</div>', row)
+        if not rank or not rank.group(1).isdigit():
+            continue
+        horse = re.search(r'/horse/(\w+)', row)
+        num = re.search(r'<td class="Num Txt_C">\s*<div>\s*(\d+)', row)
+        name = re.search(r'HorseNameSpan">(.*?)</span>', row, re.S)
+        times = re.findall(r'<span class="RaceTime">([^<]*)</span>', row)
+        horses.append({
+            'rank': int(rank.group(1)),
+            'umaban': int(num.group(1)) if num else None,
+            'name': strip_tags(name.group(1)).strip() if name else '',
+            'horse_id': horse.group(1) if horse else None,
+            'time': times[0].strip() if times else '',
+            'margin': times[1].strip() if len(times) > 1 else '',
+        })
+    horses.sort(key=lambda h: h['rank'])
+    return {'date': date, 'horses': horses}
+
+
+def fetch_result_horses(race_id, opener=None):
+    return parse_result_horses(_fetch(RACE_RESULT_URL.format(race_id=race_id), opener=opener))
+
+
 def parse_oikiri(page):
     """追い切りページから {馬番: {critic, rank}} を作る。
 

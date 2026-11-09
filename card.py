@@ -277,7 +277,7 @@ def select_candidates(races, limit=DEFAULT_CANDIDATES):
 # 候補レースの詳細
 # ----------------------------------------------------------------------
 
-def build_entries(race_id, opener=None, interval=HORSE_INTERVAL, sleep=time.sleep):
+def build_entries(race_id, opener=None, interval=HORSE_INTERVAL, sleep=time.sleep, day=None):
     """出走各馬の事実を集める。評価はしない。"""
     entries = form_module.fetch_entries(race_id, opener=opener)
     out = []
@@ -300,8 +300,127 @@ def build_entries(race_id, opener=None, interval=HORSE_INTERVAL, sleep=time.slee
                           'error': str(exc)})
             logger.warning('%s の戦績を取得できませんでした: %s', entry.get('name'), exc)
         out.append(entry)
-    attach_equipment_and_training(race_id, out, opener=opener, interval=interval, sleep=sleep)
+    past = attach_equipment_and_training(race_id, out, opener=opener, interval=interval,
+                                         sleep=sleep)
+    attach_prev_opponents(out, past, opener=opener, interval=interval, sleep=sleep, day=day)
     return out
+
+
+# ----------------------------------------------------------------------
+# 前走の相手のその後（2026-11-09 ユーザー承認）
+# ----------------------------------------------------------------------
+# 前走の着順だけでは、そのレースの相手が強かったのか弱かったのかが分からない
+# （第2章「着差・メンバーレベルとセットで評価する」）。カードにその材料が無く、
+# 判断側はメンバーレベルを測れていなかった。前走で上位に来た相手が、その後
+# どう走ったかを事実として付ける。点数化はしない（判断は印付けの側）。
+# 外部のAI検証記事（2019〜2023年・約21万頭）で最も効いた項目とされたもの。
+# 回収率で効くかは確かめられていないので、入れた後の週次レビューで見る。
+# 取得量を抑えるため、前走だけ・相手は自分を除く上位3頭まで（ユーザー了承）。
+PREV_OPPONENTS = 3
+# 相手の「その後」は競走成績の直近何走から拾うか。前走から今回までの間なので、
+# 多くは1〜3走。
+OPPONENT_RUNS = 5
+
+
+def _later_runs(runs, after_date, before_date=None):
+    """相手の競走成績から、前走の日付より後・対象日より前の走りだけを古い順に返す。
+
+    before_date を切るのは、カードを後から作り直したときに対象レースそのもの
+    （同じ前走の馬どうしが今回も同じレースに出ることは多い）や当日の別レースの
+    結果が混ざらないようにするため。定時の作成は前夜なので本来は入らない。
+    """
+    later = [r for r in runs if after_date < (r.get('date') or '')
+             and (before_date is None or (r.get('date') or '') < before_date)]
+    later.reverse()
+    return [{k: r.get(k) for k in ('date', 'race', 'field_size', 'ninki', 'rank')}
+            for r in later]
+
+
+def _gap(time_a, time_b):
+    a, b = _seconds(time_a), _seconds(time_b)
+    if a is None or b is None:
+        return None
+    return round(a - b, 1)
+
+
+def attach_prev_opponents(entries, past, opener=None, interval=HORSE_INTERVAL,
+                          sleep=time.sleep, day=None):
+    """各馬に prev_opponents を付ける。前走がJRAでなければ None。取れなければ error を残す。
+
+    prev_opponents = {
+        race_id, date, self_rank, self_time,
+        opponents: [{rank, name, horse_id, gap_to_self, later_runs:[...]}],
+        later_starts, later_wins, later_top3,   # 相手全員の「その後」の合計
+    }
+    gap_to_self は 相手のタイム − 自分のタイム（秒）。マイナスなら相手が先着。
+    """
+    before = day.strftime('%Y/%m/%d') if day else None
+    results = {}     # 同じ前走の馬が複数いても結果ページは1回だけ取る
+    horse_runs = {}  # 同じ相手も1回だけ
+
+    def result_of(race_id):
+        if race_id not in results:
+            try:
+                sleep(interval)
+                results[race_id] = form_module.fetch_result_horses(race_id, opener=opener)
+            except Exception as exc:
+                logger.warning('前走 %s の結果を取得できませんでした: %s', race_id, exc)
+                results[race_id] = exc
+        return results[race_id]
+
+    def runs_of(horse_id):
+        if horse_id not in horse_runs:
+            try:
+                sleep(interval)
+                page = form_module._fetch(
+                    form_module.RESULT_URL.format(horse_id=horse_id), opener=opener)
+                horse_runs[horse_id] = form_module.parse_recent_runs(page, limit=OPPONENT_RUNS)
+            except Exception as exc:
+                logger.warning('相手 %s の戦績を取得できませんでした: %s', horse_id, exc)
+                horse_runs[horse_id] = None
+        return horse_runs[horse_id]
+
+    for entry in entries:
+        entry['prev_opponents'] = None
+        info = (past or {}).get(entry['umaban'])
+        if not info or info.get('horse_id') != entry.get('horse_id'):
+            continue
+        race_id = info.get('prev_race_id')
+        if not form_module.is_jra_race_id(race_id):
+            continue      # 新馬・地方・海外の前走は netkeiba の結果ページが無い
+        result = result_of(race_id)
+        if isinstance(result, Exception):
+            entry['prev_opponents'] = {'race_id': race_id, 'error': str(result)}
+            continue
+        horses = result['horses']
+        me = next((h for h in horses if h['horse_id'] == entry.get('horse_id')), None)
+        if me is None:
+            # 前走で中止・除外だと結果の着順に居ない。推測で埋めない。
+            entry['prev_opponents'] = {'race_id': race_id,
+                                       'error': '前走の着順に見当たりません（中止・除外など）'}
+            continue
+        rivals = [h for h in horses if h['horse_id'] != me['horse_id']][:PREV_OPPONENTS]
+        opponents = []
+        for rival in rivals:
+            runs = runs_of(rival['horse_id']) if rival['horse_id'] else None
+            later = (_later_runs(runs, result['date'], before)
+                     if runs is not None and result['date'] else None)
+            opponents.append({
+                'rank': rival['rank'], 'name': rival['name'], 'horse_id': rival['horse_id'],
+                'gap_to_self': _gap(rival['time'], me['time']),
+                # None は「取れなかった」、[] は「その後まだ走っていない」。
+                'later_runs': later,
+            })
+        known = [r for o in opponents for r in (o['later_runs'] or [])]
+        entry['prev_opponents'] = {
+            'race_id': race_id, 'date': result['date'],
+            'self_rank': me['rank'], 'self_time': me['time'],
+            'opponents': opponents,
+            'later_starts': len(known),
+            'later_wins': sum(1 for r in known if r.get('rank') == 1),
+            'later_top3': sum(1 for r in known if isinstance(r.get('rank'), int)
+                              and r['rank'] <= 3),
+        }
 
 
 def all_female(entries):
@@ -394,6 +513,9 @@ def attach_equipment_and_training(race_id, entries, opener=None,
         oikiri = {}
     for entry in entries:
         entry['oikiri'] = oikiri.get(entry['umaban'])
+    # 馬柱は前走の race_id を持っている。前走の相手を追う処理が同じページを
+    # 取り直さなくて済むように返す。
+    return past
 
 
 # 「僅差ライバル」の条件（2026-09-27 ユーザー承認）。直近の同条件レースで、
@@ -505,7 +627,8 @@ def build_card(day, limit=DEFAULT_CANDIDATES, opener=None, sleep=time.sleep,
                 logger.warning('%s の馬場を取得できませんでした: %s', race['race_id'], exc)
                 race.setdefault('conditions', None)
         if with_entries:
-            race['entries'] = build_entries(race['race_id'], opener=opener, sleep=sleep)
+            race['entries'] = build_entries(race['race_id'], opener=opener, sleep=sleep,
+                                            day=day)
             race['all_female'] = all_female(race['entries'])
             race['close_rivals'] = close_rivals(race, day)
 
