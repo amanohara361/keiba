@@ -5,67 +5,78 @@
       "rank": 1,
       "umaban": 10,
       "name": "エコロガイア",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 4.7
     },
     {
       "rank": 2,
       "umaban": 4,
       "name": "ペースセッティング",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 10.6
     },
     {
       "rank": 3,
       "umaban": 6,
       "name": "ミスズグランドオー",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 3.4
     },
     {
       "rank": 4,
       "umaban": 7,
       "name": "ヴィーリヤ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 4.6
     },
     {
       "rank": 5,
       "umaban": 5,
       "name": "フラフ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 16.4
     },
     {
       "rank": 6,
       "umaban": 9,
       "name": "ナムラタタ",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 89.3
     },
     {
       "rank": 7,
       "umaban": 11,
       "name": "マンノライトニング",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 5.5
     },
     {
       "rank": 7,
       "umaban": 12,
       "name": "イザグリーンライト",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 330.1
     },
     {
       "rank": 9,
       "umaban": 8,
       "name": "シトラルテミニ",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 569.0
     },
     {
       "rank": 10,
       "umaban": 3,
       "name": "ホクザンバーリイ",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 532.3
     },
     {
       "rank": 11,
       "umaban": 2,
       "name": "サトノルフィアン",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 5.3
     }
   ],
   "payouts": {

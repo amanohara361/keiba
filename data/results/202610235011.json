@@ -5,73 +5,85 @@
       "rank": 1,
       "umaban": 3,
       "name": "ミスズグランドオー",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 17.7
     },
     {
       "rank": 2,
       "umaban": 4,
       "name": "アウストロ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.1
     },
     {
       "rank": 3,
       "umaban": 6,
       "name": "ブルーヒサシン",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 2.0
     },
     {
       "rank": 4,
       "umaban": 2,
       "name": "ハーフブルー",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 12.8
     },
     {
       "rank": 5,
       "umaban": 9,
       "name": "ニクソンテソーロ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 23.6
     },
     {
       "rank": 6,
       "umaban": 8,
       "name": "キングスピカ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 7.9
     },
     {
       "rank": 7,
       "umaban": 12,
       "name": "サイレンスタイム",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 39.4
     },
     {
       "rank": 8,
       "umaban": 7,
       "name": "ホクザンバーリイ",
-      "ninki": 12
+      "ninki": 12,
+      "odds": 497.3
     },
     {
       "rank": 9,
       "umaban": 5,
       "name": "エンテレケイア",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 9.1
     },
     {
       "rank": 10,
       "umaban": 11,
       "name": "クラウドノイズ",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 250.1
     },
     {
       "rank": 11,
       "umaban": 10,
       "name": "ハナブサ",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 138.4
     },
     {
       "rank": 12,
       "umaban": 1,
       "name": "ナリタシン",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 378.9
     }
   ],
   "payouts": {

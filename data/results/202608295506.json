@@ -5,55 +5,64 @@
       "rank": 1,
       "umaban": 3,
       "name": "ビービーベジェサ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 10.0
     },
     {
       "rank": 2,
       "umaban": 2,
       "name": "セプトラム",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.8
     },
     {
       "rank": 3,
       "umaban": 4,
       "name": "イージスバローズ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 107.0
     },
     {
       "rank": 4,
       "umaban": 5,
       "name": "ビッキーファースト",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 7.1
     },
     {
       "rank": 5,
       "umaban": 6,
       "name": "ミトノドリーム",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 36.4
     },
     {
       "rank": 6,
       "umaban": 8,
       "name": "グレンノアラシ",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 243.5
     },
     {
       "rank": 7,
       "umaban": 9,
       "name": "セーデルマンランド",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 8.0
     },
     {
       "rank": 8,
       "umaban": 7,
       "name": "メトゥス",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 351.3
     },
     {
       "rank": 9,
       "umaban": 1,
       "name": "カシノアミュレット",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.7
     }
   ],
   "payouts": {

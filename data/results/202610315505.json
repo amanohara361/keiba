@@ -5,43 +5,50 @@
       "rank": 1,
       "umaban": 4,
       "name": "スターオブフェイス",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 10.1
     },
     {
       "rank": 2,
       "umaban": 6,
       "name": "サキドリトッケン",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.5
     },
     {
       "rank": 3,
       "umaban": 3,
       "name": "マイネルサハラ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.3
     },
     {
       "rank": 4,
       "umaban": 7,
       "name": "トルーマンテソーロ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 7.1
     },
     {
       "rank": 5,
       "umaban": 1,
       "name": "コスモファルネーゼ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 15.7
     },
     {
       "rank": 6,
       "umaban": 2,
       "name": "アクラシア",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 64.3
     },
     {
       "rank": 7,
       "umaban": 5,
       "name": "テイエムフォンテ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 213.6
     }
   ],
   "payouts": {

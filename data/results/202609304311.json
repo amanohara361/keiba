@@ -5,55 +5,64 @@
       "rank": 1,
       "umaban": 7,
       "name": "ミッキーファイト",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.2
     },
     {
       "rank": 2,
       "umaban": 2,
       "name": "テーオーマルコーニ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 12.6
     },
     {
       "rank": 3,
       "umaban": 8,
       "name": "ロードクロンヌ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 4.9
     },
     {
       "rank": 4,
       "umaban": 4,
       "name": "カゼノランナー",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 7.8
     },
     {
       "rank": 5,
       "umaban": 6,
       "name": "ベアバッキューン",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 45.0
     },
     {
       "rank": 6,
       "umaban": 3,
       "name": "ガバナビリティー",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 347.2
     },
     {
       "rank": 7,
       "umaban": 5,
       "name": "アルラ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 246.7
     },
     {
       "rank": 8,
       "umaban": 9,
       "name": "リュードマン",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 664.3
     },
     {
       "rank": 9,
       "umaban": 1,
       "name": "グランデマーレ",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 599.8
     }
   ],
   "payouts": {

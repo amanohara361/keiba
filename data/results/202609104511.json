@@ -5,67 +5,78 @@
       "rank": 1,
       "umaban": 11,
       "name": "ルースアグレッシブ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 5.1
     },
     {
       "rank": 2,
       "umaban": 5,
       "name": "ウノキボンバイエ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 2.1
     },
     {
       "rank": 3,
       "umaban": 1,
       "name": "ブラフキャッチ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 12.0
     },
     {
       "rank": 4,
       "umaban": 2,
       "name": "ナイトムーブ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.5
     },
     {
       "rank": 5,
       "umaban": 8,
       "name": "ゴールドカレラ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 13.4
     },
     {
       "rank": 6,
       "umaban": 7,
       "name": "サンバルカン",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 18.4
     },
     {
       "rank": 7,
       "umaban": 3,
       "name": "ラモンパンサー",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 172.4
     },
     {
       "rank": 8,
       "umaban": 9,
       "name": "ブエンディア",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 98.0
     },
     {
       "rank": 9,
       "umaban": 6,
       "name": "ドゥオーモアモーレ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 17.8
     },
     {
       "rank": 10,
       "umaban": 10,
       "name": "コーズブルー",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 47.5
     },
     {
       "rank": 11,
       "umaban": 4,
       "name": "ゴールドサンデー",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 151.0
     }
   ],
   "payouts": {

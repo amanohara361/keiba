@@ -5,55 +5,64 @@
       "rank": 1,
       "umaban": 2,
       "name": "マテンロウコマンド",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.6
     },
     {
       "rank": 2,
       "umaban": 6,
       "name": "インユアパレス",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 4.1
     },
     {
       "rank": 3,
       "umaban": 4,
       "name": "ハッピーマン",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 11.1
     },
     {
       "rank": 4,
       "umaban": 9,
       "name": "ストレングス",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 6.2
     },
     {
       "rank": 5,
       "umaban": 3,
       "name": "ヤマニンチェルキ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 8.6
     },
     {
       "rank": 6,
       "umaban": 5,
       "name": "ミスズグランドオー",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 27.8
     },
     {
       "rank": 7,
       "umaban": 1,
       "name": "サヨノグローリー",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 285.0
     },
     {
       "rank": 8,
       "umaban": 7,
       "name": "ミュステーリオン",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 696.6
     },
     {
       "rank": 9,
       "umaban": 8,
       "name": "テイエムフォンテ",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 527.3
     }
   ],
   "payouts": {

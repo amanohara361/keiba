@@ -5,73 +5,85 @@
       "rank": 1,
       "umaban": 12,
       "name": "ライラボンド",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.5
     },
     {
       "rank": 2,
       "umaban": 10,
       "name": "シンリンゲンカイ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 12.5
     },
     {
       "rank": 3,
       "umaban": 6,
       "name": "ニクソンテソーロ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.5
     },
     {
       "rank": 4,
       "umaban": 3,
       "name": "グラティアスグー",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 51.1
     },
     {
       "rank": 5,
       "umaban": 1,
       "name": "エクセレントタイム",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 75.0
     },
     {
       "rank": 6,
       "umaban": 7,
       "name": "ロードインファイト",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 13.9
     },
     {
       "rank": 7,
       "umaban": 8,
       "name": "ブルグミューラー",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 112.9
     },
     {
       "rank": 8,
       "umaban": 2,
       "name": "サンライズグリット",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 50.9
     },
     {
       "rank": 9,
       "umaban": 11,
       "name": "ジャスパーバローズ",
-      "ninki": 12
+      "ninki": 12,
+      "odds": 137.0
     },
     {
       "rank": 10,
       "umaban": 9,
       "name": "ロレンツォ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 18.6
     },
     {
       "rank": 11,
       "umaban": 5,
       "name": "ワイドカント",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 104.1
     },
     {
       "rank": 12,
       "umaban": 4,
       "name": "ミズワリヲクダサイ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 36.8
     }
   ],
   "payouts": {

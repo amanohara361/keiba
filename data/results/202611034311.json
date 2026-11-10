@@ -1,0 +1,194 @@
+{
+  "race_id": "202611034311",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 9,
+      "name": "ロードルーチェ",
+      "ninki": 2,
+      "odds": 4.4
+    },
+    {
+      "rank": 2,
+      "umaban": 6,
+      "name": "アヤサンジョウタロ",
+      "ninki": 3,
+      "odds": 5.0
+    },
+    {
+      "rank": 3,
+      "umaban": 10,
+      "name": "ベラジオエンペラー",
+      "ninki": 6,
+      "odds": 13.8
+    },
+    {
+      "rank": 4,
+      "umaban": 13,
+      "name": "マロンソレイユ",
+      "ninki": 1,
+      "odds": 3.1
+    },
+    {
+      "rank": 5,
+      "umaban": 5,
+      "name": "クラウニングカップ",
+      "ninki": 8,
+      "odds": 18.5
+    },
+    {
+      "rank": 6,
+      "umaban": 1,
+      "name": "リッキーズラック",
+      "ninki": 4,
+      "odds": 7.7
+    },
+    {
+      "rank": 7,
+      "umaban": 3,
+      "name": "アイリーズ",
+      "ninki": 5,
+      "odds": 11.1
+    },
+    {
+      "rank": 8,
+      "umaban": 14,
+      "name": "レジェンドマスター",
+      "ninki": 11,
+      "odds": 62.3
+    },
+    {
+      "rank": 9,
+      "umaban": 8,
+      "name": "トップランカー",
+      "ninki": 7,
+      "odds": 17.5
+    },
+    {
+      "rank": 10,
+      "umaban": 11,
+      "name": "コンヨバンコク",
+      "ninki": 10,
+      "odds": 32.8
+    },
+    {
+      "rank": 11,
+      "umaban": 7,
+      "name": "モコパンチ",
+      "ninki": 12,
+      "odds": 103.6
+    },
+    {
+      "rank": 12,
+      "umaban": 2,
+      "name": "タツノスカイ",
+      "ninki": 14,
+      "odds": 163.9
+    },
+    {
+      "rank": 13,
+      "umaban": 12,
+      "name": "クラムスコイ",
+      "ninki": 9,
+      "odds": 24.5
+    },
+    {
+      "rank": 14,
+      "umaban": 4,
+      "name": "ストゥディア",
+      "ninki": 13,
+      "odds": 135.4
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          9
+        ],
+        "yen": 440
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          9
+        ],
+        "yen": 170
+      },
+      {
+        "combination": [
+          6
+        ],
+        "yen": 170
+      },
+      {
+        "combination": [
+          10
+        ],
+        "yen": 300
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          6,
+          9
+        ],
+        "yen": 1250
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          9,
+          6
+        ],
+        "yen": 2340
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          6,
+          9
+        ],
+        "yen": 420
+      },
+      {
+        "combination": [
+          9,
+          10
+        ],
+        "yen": 1120
+      },
+      {
+        "combination": [
+          6,
+          10
+        ],
+        "yen": 800
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          6,
+          9,
+          10
+        ],
+        "yen": 5830
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          9,
+          6,
+          10
+        ],
+        "yen": 26600
+      }
+    ]
+  }
+}

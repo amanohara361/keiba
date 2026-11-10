@@ -5,55 +5,64 @@
       "rank": 1,
       "umaban": 4,
       "name": "ツーシャドー",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.2
     },
     {
       "rank": 2,
       "umaban": 1,
       "name": "イナダヒメ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 2.9
     },
     {
       "rank": 3,
       "umaban": 9,
       "name": "リヴェルベロ",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 46.5
     },
     {
       "rank": 4,
       "umaban": 7,
       "name": "マーブルマカロン",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 8.3
     },
     {
       "rank": 5,
       "umaban": 8,
       "name": "プリンセスアリー",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 42.2
     },
     {
       "rank": 6,
       "umaban": 3,
       "name": "ダヴァンティ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 21.2
     },
     {
       "rank": 7,
       "umaban": 5,
       "name": "オメガシンフォニー",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 4.8
     },
     {
       "rank": 8,
       "umaban": 6,
       "name": "ミルニュイ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 29.8
     },
     {
       "rank": 9,
       "umaban": 2,
       "name": "エスカティア",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 6.5
     }
   ],
   "payouts": {

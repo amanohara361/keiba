@@ -5,79 +5,92 @@
       "rank": 1,
       "umaban": 14,
       "name": "シンボ",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 77.9
     },
     {
       "rank": 2,
       "umaban": 10,
       "name": "ヴィクティファルス",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.0
     },
     {
       "rank": 3,
       "umaban": 12,
       "name": "モズマーヴェリック",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 2.5
     },
     {
       "rank": 4,
       "umaban": 9,
       "name": "ジュンゴールド",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 44.4
     },
     {
       "rank": 5,
       "umaban": 3,
       "name": "マンダリンヒーロー",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 10.3
     },
     {
       "rank": 6,
       "umaban": 6,
       "name": "ハウゼ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 34.4
     },
     {
       "rank": 7,
       "umaban": 8,
       "name": "ゴールドギア",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 52.3
     },
     {
       "rank": 8,
       "umaban": 7,
       "name": "メイテソーロ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 11.9
     },
     {
       "rank": 9,
       "umaban": 4,
       "name": "ギャレット",
-      "ninki": 12
+      "ninki": 12,
+      "odds": 140.1
     },
     {
       "rank": 10,
       "umaban": 11,
       "name": "コスモフロイデ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 16.3
     },
     {
       "rank": 11,
       "umaban": 2,
       "name": "スタンリーテソーロ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 5.5
     },
     {
       "rank": 12,
       "umaban": 13,
       "name": "ヴァトレニ",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 49.0
     },
     {
       "rank": 13,
       "umaban": 1,
       "name": "ゴールデンシロップ",
-      "ninki": 13
+      "ninki": 13,
+      "odds": 381.4
     }
   ],
   "payouts": {

@@ -5,79 +5,92 @@
       "rank": 1,
       "umaban": 7,
       "name": "メモリアカフェ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.9
     },
     {
       "rank": 2,
       "umaban": 3,
       "name": "レイナデアルシーラ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 14.5
     },
     {
       "rank": 3,
       "umaban": 12,
       "name": "テンカジョウ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 6.7
     },
     {
       "rank": 4,
       "umaban": 2,
       "name": "ダブルハートボンド",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.4
     },
     {
       "rank": 5,
       "umaban": 1,
       "name": "アピーリングルック",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 20.9
     },
     {
       "rank": 6,
       "umaban": 5,
       "name": "ケテンドリーム",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 178.0
     },
     {
       "rank": 7,
       "umaban": 10,
       "name": "ヘニータイフーン",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 425.0
     },
     {
       "rank": 8,
       "umaban": 8,
       "name": "アンジュフィールド",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 388.1
     },
     {
       "rank": 9,
       "umaban": 4,
       "name": "ベルグラシアス",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 574.2
     },
     {
       "rank": 10,
       "umaban": 6,
       "name": "ラブラブパイロ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 292.0
     },
     {
       "rank": 11,
       "umaban": 9,
       "name": "フェルディナンド",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 586.4
     },
     {
       "rank": 12,
       "umaban": 11,
       "name": "ローリエフレイバー",
-      "ninki": 12
+      "ninki": 12,
+      "odds": 629.2
     },
     {
       "rank": 13,
       "umaban": 13,
       "name": "チャチャハツゴウ",
-      "ninki": 13
+      "ninki": 13,
+      "odds": 669.6
     }
   ],
   "payouts": {

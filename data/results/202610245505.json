@@ -5,73 +5,85 @@
       "rank": 1,
       "umaban": 12,
       "name": "ダバイシュクレ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 2.7
     },
     {
       "rank": 2,
       "umaban": 1,
       "name": "タガノテツ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 8.8
     },
     {
       "rank": 3,
       "umaban": 2,
       "name": "ラインアンジェラ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 14.6
     },
     {
       "rank": 4,
       "umaban": 4,
       "name": "テーオースミス",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 14.6
     },
     {
       "rank": 5,
       "umaban": 8,
       "name": "ニフェーデービル",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.2
     },
     {
       "rank": 6,
       "umaban": 10,
       "name": "マツリダマスラオ",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 156.6
     },
     {
       "rank": 7,
       "umaban": 11,
       "name": "エムティピース",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 87.1
     },
     {
       "rank": 8,
       "umaban": 3,
       "name": "ポピュラーソング",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 96.5
     },
     {
       "rank": 9,
       "umaban": 7,
       "name": "ゴイゴイスー",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 9.1
     },
     {
       "rank": 10,
       "umaban": 9,
       "name": "ツモ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 5.3
     },
     {
       "rank": 11,
       "umaban": 5,
       "name": "チャールストン",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 156.3
     },
     {
       "rank": 12,
       "umaban": 6,
       "name": "ナニーピオニー",
-      "ninki": 12
+      "ninki": 12,
+      "odds": 251.8
     }
   ],
   "payouts": {

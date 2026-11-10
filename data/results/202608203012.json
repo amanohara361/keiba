@@ -5,61 +5,71 @@
       "rank": 1,
       "umaban": 3,
       "name": "アンサラー",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 17.1
     },
     {
       "rank": 2,
       "umaban": 5,
       "name": "タルマエドン",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.1
     },
     {
       "rank": 3,
       "umaban": 1,
       "name": "ニュースタンダード",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 11.5
     },
     {
       "rank": 4,
       "umaban": 4,
       "name": "シフトチェンジ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 6.5
     },
     {
       "rank": 5,
       "umaban": 10,
       "name": "プライベートセクタ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 6.6
     },
     {
       "rank": 6,
       "umaban": 9,
       "name": "リュウノジェット",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 172.3
     },
     {
       "rank": 7,
       "umaban": 6,
       "name": "リガンド",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 24.1
     },
     {
       "rank": 8,
       "umaban": 2,
       "name": "ゴーゴーミツヒコ",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 36.9
     },
     {
       "rank": 9,
       "umaban": 7,
       "name": "シャディアラ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 12.9
     },
     {
       "rank": 10,
       "umaban": 8,
       "name": "ソルデイスター",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 3.0
     }
   ],
   "payouts": {

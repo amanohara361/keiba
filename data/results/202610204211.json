@@ -5,67 +5,78 @@
       "rank": 1,
       "umaban": 1,
       "name": "ビーコング",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 7.8
     },
     {
       "rank": 2,
       "umaban": 2,
       "name": "モカラマーズ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 4.7
     },
     {
       "rank": 3,
       "umaban": 3,
       "name": "ゴーバディ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 11.6
     },
     {
       "rank": 4,
       "umaban": 6,
       "name": "トーセンサンダー",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 17.7
     },
     {
       "rank": 5,
       "umaban": 7,
       "name": "ヒラボクカレラ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 16.7
     },
     {
       "rank": 6,
       "umaban": 11,
       "name": "ラヴァグロウ",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 50.9
     },
     {
       "rank": 7,
       "umaban": 4,
       "name": "ユーヴェリア",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 7.2
     },
     {
       "rank": 8,
       "umaban": 8,
       "name": "エリンアキレウス",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 38.1
     },
     {
       "rank": 9,
       "umaban": 10,
       "name": "スタンリーテソーロ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 2.2
     },
     {
       "rank": 10,
       "umaban": 9,
       "name": "トリップス",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 12.4
     },
     {
       "rank": 11,
       "umaban": 5,
       "name": "ティーズアライト",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 142.3
     }
   ],
   "payouts": {

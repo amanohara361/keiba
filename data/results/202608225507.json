@@ -5,61 +5,71 @@
       "rank": 1,
       "umaban": 6,
       "name": "ラディアントホース",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.4
     },
     {
       "rank": 2,
       "umaban": 1,
       "name": "フクノブルジュ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 5.0
     },
     {
       "rank": 3,
       "umaban": 4,
       "name": "ミフネ",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 102.9
     },
     {
       "rank": 4,
       "umaban": 7,
       "name": "ビレッジシングル",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 34.1
     },
     {
       "rank": 5,
       "umaban": 9,
       "name": "ファルコンビーク",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 231.7
     },
     {
       "rank": 6,
       "umaban": 10,
       "name": "コスモルージュ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 6.0
     },
     {
       "rank": 7,
       "umaban": 3,
       "name": "ミュステーリオン",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 41.0
     },
     {
       "rank": 8,
       "umaban": 8,
       "name": "トリオンファーレ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 18.4
     },
     {
       "rank": 9,
       "umaban": 2,
       "name": "ガルヴァナイズ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 20.9
     },
     {
       "rank": 10,
       "umaban": 5,
       "name": "ヴィクラント",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 58.1
     }
   ],
   "payouts": {

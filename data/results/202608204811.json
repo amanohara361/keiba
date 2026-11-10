@@ -5,67 +5,78 @@
       "rank": 1,
       "umaban": 12,
       "name": "ゴールデンリング",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.2
     },
     {
       "rank": 2,
       "umaban": 5,
       "name": "ハクサンパイオニア",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 6.4
     },
     {
       "rank": 3,
       "umaban": 8,
       "name": "ブライトファントム",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 7.5
     },
     {
       "rank": 4,
       "umaban": 3,
       "name": "スティールアクター",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 27.4
     },
     {
       "rank": 5,
       "umaban": 4,
       "name": "ラブミーテキーラ",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 111.8
     },
     {
       "rank": 6,
       "umaban": 11,
       "name": "パピタ",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 134.6
     },
     {
       "rank": 7,
       "umaban": 10,
       "name": "ハクサンバード",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 19.3
     },
     {
       "rank": 8,
       "umaban": 1,
       "name": "コパカツ",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 132.2
     },
     {
       "rank": 9,
       "umaban": 9,
       "name": "ショウガマッタナシ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 76.4
     },
     {
       "rank": 10,
       "umaban": 6,
       "name": "タントゥーム",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 196.4
     },
     {
       "rank": 11,
       "umaban": 2,
       "name": "ジュンフィレンツェ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 27.7
     }
   ],
   "payouts": {

@@ -5,55 +5,64 @@
       "rank": 1,
       "umaban": 9,
       "name": "バドラ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.0
     },
     {
       "rank": 2,
       "umaban": 4,
       "name": "ゴッズフェイヴリト",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 7.1
     },
     {
       "rank": 3,
       "umaban": 8,
       "name": "エンジェルリング",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 20.0
     },
     {
       "rank": 4,
       "umaban": 5,
       "name": "ベルディエス",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 41.0
     },
     {
       "rank": 5,
       "umaban": 1,
       "name": "ヤクモフローラ",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 76.4
     },
     {
       "rank": 6,
       "umaban": 6,
       "name": "ペリドット",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 20.5
     },
     {
       "rank": 7,
       "umaban": 2,
       "name": "アカネノソラ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 65.6
     },
     {
       "rank": 8,
       "umaban": 3,
       "name": "クイーンピロコ",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 163.3
     },
     {
       "rank": 9,
       "umaban": 7,
       "name": "ニネンツキグミ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 27.3
     }
   ],
   "payouts": {

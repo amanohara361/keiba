@@ -5,67 +5,78 @@
       "rank": 1,
       "umaban": 8,
       "name": "ホワイトヘッド",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.4
     },
     {
       "rank": 2,
       "umaban": 1,
       "name": "ボナセーラ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 6.9
     },
     {
       "rank": 3,
       "umaban": 5,
       "name": "アギト",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 9.0
     },
     {
       "rank": 4,
       "umaban": 9,
       "name": "プロスペロ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 43.8
     },
     {
       "rank": 5,
       "umaban": 3,
       "name": "フルゴリラ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 33.7
     },
     {
       "rank": 6,
       "umaban": 11,
       "name": "アポロリリー",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 70.6
     },
     {
       "rank": 7,
       "umaban": 4,
       "name": "プライムライン",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 11.0
     },
     {
       "rank": 8,
       "umaban": 6,
       "name": "クリノヒビキ",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 183.1
     },
     {
       "rank": 9,
       "umaban": 7,
       "name": "ソウルユニバンス",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 8.1
     },
     {
       "rank": 10,
       "umaban": 2,
       "name": "ビックハート",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 120.6
     },
     {
       "rank": 11,
       "umaban": 10,
       "name": "マイネルトワイス",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 68.4
     }
   ],
   "payouts": {

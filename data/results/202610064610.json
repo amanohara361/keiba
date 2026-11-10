@@ -5,55 +5,64 @@
       "rank": 1,
       "umaban": 6,
       "name": "スターキャンディ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 6.0
     },
     {
       "rank": 2,
       "umaban": 7,
       "name": "グリーゼ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 12.3
     },
     {
       "rank": 3,
       "umaban": 5,
       "name": "パッションビート",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 40.6
     },
     {
       "rank": 4,
       "umaban": 2,
       "name": "アキュートガール",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 18.3
     },
     {
       "rank": 5,
       "umaban": 8,
       "name": "ルージュミラージュ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.2
     },
     {
       "rank": 6,
       "umaban": 9,
       "name": "ケーズコマクサ",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 51.4
     },
     {
       "rank": 7,
       "umaban": 3,
       "name": "マリアディオーサ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 19.9
     },
     {
       "rank": 8,
       "umaban": 10,
       "name": "ファイントパーズ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 17.1
     },
     {
       "rank": 9,
       "umaban": 1,
       "name": "ショウガマッタナシ",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 242.6
     }
   ],
   "payouts": {

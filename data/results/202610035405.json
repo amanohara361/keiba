@@ -5,61 +5,71 @@
       "rank": 1,
       "umaban": 6,
       "name": "リケアボレロ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.1
     },
     {
       "rank": 2,
       "umaban": 4,
       "name": "ナインスマイル",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 88.0
     },
     {
       "rank": 3,
       "umaban": 7,
       "name": "ダディダ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 96.7
     },
     {
       "rank": 4,
       "umaban": 10,
       "name": "ロイヤルクォーク",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 22.4
     },
     {
       "rank": 5,
       "umaban": 9,
       "name": "ダイナヴェール",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 185.0
     },
     {
       "rank": 6,
       "umaban": 3,
       "name": "アルタモジアナ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 13.6
     },
     {
       "rank": 7,
       "umaban": 8,
       "name": "シシマル",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 108.5
     },
     {
       "rank": 8,
       "umaban": 1,
       "name": "ベアマグナム",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 7.4
     },
     {
       "rank": 9,
       "umaban": 5,
       "name": "クライングコール",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 12.8
     },
     {
       "rank": 10,
       "umaban": 2,
       "name": "リケアマンボ",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 107.3
     }
   ],
   "payouts": {

@@ -5,67 +5,78 @@
       "rank": 1,
       "umaban": 4,
       "name": "セラフィックコール",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.7
     },
     {
       "rank": 2,
       "umaban": 8,
       "name": "リベイクフルシティ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 5.6
     },
     {
       "rank": 3,
       "umaban": 9,
       "name": "ディープリボーン",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 6.8
     },
     {
       "rank": 4,
       "umaban": 1,
       "name": "マルカンラニ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 16.1
     },
     {
       "rank": 5,
       "umaban": 10,
       "name": "ヴィアメント",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 68.8
     },
     {
       "rank": 6,
       "umaban": 6,
       "name": "オーシンハーフ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 44.9
     },
     {
       "rank": 7,
       "umaban": 5,
       "name": "グリューヴルム",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 4.7
     },
     {
       "rank": 8,
       "umaban": 7,
       "name": "ミヤギザオウ",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 133.3
     },
     {
       "rank": 9,
       "umaban": 11,
       "name": "ヒーローコール",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 46.1
     },
     {
       "rank": 10,
       "umaban": 3,
       "name": "カイル",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 61.9
     },
     {
       "rank": 11,
       "umaban": 2,
       "name": "コスモジンバック",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 80.9
     }
   ],
   "payouts": {

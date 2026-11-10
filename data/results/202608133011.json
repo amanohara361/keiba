@@ -5,61 +5,71 @@
       "rank": 1,
       "umaban": 9,
       "name": "ベストグリーン",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.8
     },
     {
       "rank": 2,
       "umaban": 4,
       "name": "エコロレーヴ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 4.0
     },
     {
       "rank": 3,
       "umaban": 10,
       "name": "トウカイマシェリ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.7
     },
     {
       "rank": 4,
       "umaban": 1,
       "name": "ラッキーキッド",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 11.4
     },
     {
       "rank": 5,
       "umaban": 3,
       "name": "トリップス",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 63.8
     },
     {
       "rank": 6,
       "umaban": 5,
       "name": "スマートジュリアス",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 16.6
     },
     {
       "rank": 7,
       "umaban": 8,
       "name": "ロスカキック",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 276.4
     },
     {
       "rank": 8,
       "umaban": 7,
       "name": "フークシャイニー",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 483.0
     },
     {
       "rank": 9,
       "umaban": 2,
       "name": "トニーオーシャンズ",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 626.3
     },
     {
       "rank": 10,
       "umaban": 6,
       "name": "スペシャルチャンス",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 113.7
     }
   ],
   "payouts": {

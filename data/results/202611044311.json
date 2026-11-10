@@ -1,0 +1,173 @@
+{
+  "race_id": "202611044311",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 9,
+      "name": "ルースアグレッシブ",
+      "ninki": 3,
+      "odds": 4.6
+    },
+    {
+      "rank": 2,
+      "umaban": 2,
+      "name": "ニュースタンダード",
+      "ninki": 4,
+      "odds": 6.4
+    },
+    {
+      "rank": 3,
+      "umaban": 3,
+      "name": "トゥルーターゲット",
+      "ninki": 2,
+      "odds": 4.1
+    },
+    {
+      "rank": 4,
+      "umaban": 11,
+      "name": "シフトチェンジ",
+      "ninki": 1,
+      "odds": 2.6
+    },
+    {
+      "rank": 5,
+      "umaban": 6,
+      "name": "ブレイブプラウド",
+      "ninki": 9,
+      "odds": 59.1
+    },
+    {
+      "rank": 6,
+      "umaban": 10,
+      "name": "ツイテユキタイ",
+      "ninki": 10,
+      "odds": 85.0
+    },
+    {
+      "rank": 7,
+      "umaban": 8,
+      "name": "ナニワノベンケイ",
+      "ninki": 8,
+      "odds": 58.7
+    },
+    {
+      "rank": 8,
+      "umaban": 4,
+      "name": "アンタレステソーロ",
+      "ninki": 7,
+      "odds": 32.9
+    },
+    {
+      "rank": 9,
+      "umaban": 1,
+      "name": "ゴールドカレラ",
+      "ninki": 6,
+      "odds": 16.1
+    },
+    {
+      "rank": 10,
+      "umaban": 7,
+      "name": "プレミアムチーム",
+      "ninki": 5,
+      "odds": 9.3
+    },
+    {
+      "rank": 11,
+      "umaban": 5,
+      "name": "フライザフラッグ",
+      "ninki": 11,
+      "odds": 105.5
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          9
+        ],
+        "yen": 460
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          9
+        ],
+        "yen": 180
+      },
+      {
+        "combination": [
+          2
+        ],
+        "yen": 170
+      },
+      {
+        "combination": [
+          3
+        ],
+        "yen": 140
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          2,
+          9
+        ],
+        "yen": 1930
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          9,
+          2
+        ],
+        "yen": 3070
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          2,
+          9
+        ],
+        "yen": 660
+      },
+      {
+        "combination": [
+          3,
+          9
+        ],
+        "yen": 360
+      },
+      {
+        "combination": [
+          2,
+          3
+        ],
+        "yen": 520
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          2,
+          3,
+          9
+        ],
+        "yen": 2290
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          9,
+          2,
+          3
+        ],
+        "yen": 12500
+      }
+    ]
+  }
+}

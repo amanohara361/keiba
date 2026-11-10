@@ -5,67 +5,78 @@
       "rank": 1,
       "umaban": 3,
       "name": "サキドリトッケン",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.6
     },
     {
       "rank": 2,
       "umaban": 9,
       "name": "ワイズポーシャ",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 413.9
     },
     {
       "rank": 3,
       "umaban": 5,
       "name": "ダバイシュクレ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 15.4
     },
     {
       "rank": 4,
       "umaban": 6,
       "name": "パーティーメロディ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 23.1
     },
     {
       "rank": 5,
       "umaban": 4,
       "name": "シトリンテソーロ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 17.8
     },
     {
       "rank": 6,
       "umaban": 10,
       "name": "フラクタル",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 7.0
     },
     {
       "rank": 7,
       "umaban": 2,
       "name": "ラウダーティオ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 10.3
     },
     {
       "rank": 8,
       "umaban": 11,
       "name": "ニシノガウェイン",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 112.1
     },
     {
       "rank": 9,
       "umaban": 1,
       "name": "ペイシャプレイ",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 37.1
     },
     {
       "rank": 10,
       "umaban": 7,
       "name": "カシノアミュレット",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 5.4
     },
     {
       "rank": 11,
       "umaban": 8,
       "name": "リリーベネット",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 238.0
     }
   ],
   "payouts": {

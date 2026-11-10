@@ -5,73 +5,85 @@
       "rank": 1,
       "umaban": 1,
       "name": "フォードテソーロ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 8.4
     },
     {
       "rank": 2,
       "umaban": 12,
       "name": "ケイアイアンタレス",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 6.8
     },
     {
       "rank": 3,
       "umaban": 8,
       "name": "ウルトラノホシ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 2.8
     },
     {
       "rank": 4,
       "umaban": 5,
       "name": "エイシンアンヴァル",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 15.9
     },
     {
       "rank": 5,
       "umaban": 6,
       "name": "サヨノグローリー",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 16.3
     },
     {
       "rank": 6,
       "umaban": 4,
       "name": "スターオブフェイス",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.7
     },
     {
       "rank": 7,
       "umaban": 11,
       "name": "ビキニボーイ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 4.3
     },
     {
       "rank": 8,
       "umaban": 2,
       "name": "アクラシア",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 188.7
     },
     {
       "rank": 9,
       "umaban": 7,
       "name": "ハディア",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 381.2
     },
     {
       "rank": 10,
       "umaban": 9,
       "name": "ブリッグオドーン",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 355.9
     },
     {
       "rank": 11,
       "umaban": 10,
       "name": "フレイムソード",
-      "ninki": 12
+      "ninki": 12,
+      "odds": 479.9
     },
     {
       "rank": 12,
       "umaban": 3,
       "name": "ダノンターキッシュ",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 332.3
     }
   ],
   "payouts": {

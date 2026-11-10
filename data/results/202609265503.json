@@ -5,55 +5,64 @@
       "rank": 1,
       "umaban": 2,
       "name": "ロードミッドナイト",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 2.0
     },
     {
       "rank": 2,
       "umaban": 5,
       "name": "ミュステーリオン",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 45.3
     },
     {
       "rank": 3,
       "umaban": 3,
       "name": "テイエムタリスマ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.9
     },
     {
       "rank": 4,
       "umaban": 7,
       "name": "サンスイレン",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 40.7
     },
     {
       "rank": 5,
       "umaban": 1,
       "name": "エスシーアルベル",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 15.0
     },
     {
       "rank": 6,
       "umaban": 8,
       "name": "タイキマクスウェル",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 10.9
     },
     {
       "rank": 7,
       "umaban": 6,
       "name": "トリオンファーレ",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 69.6
     },
     {
       "rank": 8,
       "umaban": 9,
       "name": "ビレッジシングル",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 46.2
     },
     {
       "rank": 9,
       "umaban": 4,
       "name": "ガルヴァナイズ",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 154.6
     }
   ],
   "payouts": {

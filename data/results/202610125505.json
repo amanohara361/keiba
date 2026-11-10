@@ -5,73 +5,85 @@
       "rank": 1,
       "umaban": 5,
       "name": "リケアルンバ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.2
     },
     {
       "rank": 2,
       "umaban": 10,
       "name": "ブリージンウェイ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 21.3
     },
     {
       "rank": 3,
       "umaban": 2,
       "name": "プロテウステソーロ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 30.4
     },
     {
       "rank": 4,
       "umaban": 12,
       "name": "タカヨシ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.8
     },
     {
       "rank": 5,
       "umaban": 1,
       "name": "エスワンモコチャン",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 43.3
     },
     {
       "rank": 6,
       "umaban": 4,
       "name": "ブリーズホープ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 26.1
     },
     {
       "rank": 7,
       "umaban": 6,
       "name": "リュウノスパーク",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 138.1
     },
     {
       "rank": 8,
       "umaban": 8,
       "name": "ミヤノグッドリー",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 127.9
     },
     {
       "rank": 9,
       "umaban": 3,
       "name": "ワンダフルリング",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 238.6
     },
     {
       "rank": 10,
       "umaban": 11,
       "name": "ブルーミストラル",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 302.4
     },
     {
       "rank": 11,
       "umaban": 9,
       "name": "リネンカルミア",
-      "ninki": 12
+      "ninki": 12,
+      "odds": 368.6
     },
     {
       "rank": 12,
       "umaban": 7,
       "name": "アオイイト",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 259.5
     }
   ],
   "payouts": {

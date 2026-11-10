@@ -5,43 +5,50 @@
       "rank": 1,
       "umaban": 1,
       "name": "ブライオン",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 12.4
     },
     {
       "rank": 2,
       "umaban": 6,
       "name": "コンバットキャモ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 86.5
     },
     {
       "rank": 3,
       "umaban": 5,
       "name": "ソラーロ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.6
     },
     {
       "rank": 4,
       "umaban": 7,
       "name": "ムルーデ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 6.7
     },
     {
       "rank": 5,
       "umaban": 4,
       "name": "リケアマカロニ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 17.4
     },
     {
       "rank": 6,
       "umaban": 2,
       "name": "アウトザロー",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.9
     },
     {
       "rank": 7,
       "umaban": 8,
       "name": "トサノデイジー",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 5.7
     }
   ],
   "payouts": {

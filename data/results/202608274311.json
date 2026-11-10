@@ -5,61 +5,71 @@
       "rank": 1,
       "umaban": 2,
       "name": "アンジュルナ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.2
     },
     {
       "rank": 2,
       "umaban": 6,
       "name": "トウキョーアンナ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 33.7
     },
     {
       "rank": 3,
       "umaban": 4,
       "name": "アップタウン",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 21.3
     },
     {
       "rank": 4,
       "umaban": 3,
       "name": "ナリスナ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 4.0
     },
     {
       "rank": 5,
       "umaban": 8,
       "name": "ラップトップ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 12.5
     },
     {
       "rank": 6,
       "umaban": 7,
       "name": "キュレーション",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 103.6
     },
     {
       "rank": 7,
       "umaban": 10,
       "name": "コンシェルディー",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 173.1
     },
     {
       "rank": 8,
       "umaban": 5,
       "name": "ミラコロピリナ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 52.6
     },
     {
       "rank": 9,
       "umaban": 1,
       "name": "オーデンサフィー",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 305.6
     },
     {
       "rank": 10,
       "umaban": 9,
       "name": "バブリーヒーロー",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 259.4
     }
   ],
   "payouts": {

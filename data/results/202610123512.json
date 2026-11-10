@@ -5,67 +5,78 @@
       "rank": 1,
       "umaban": 1,
       "name": "メイショウハチロー",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 7.1
     },
     {
       "rank": 2,
       "umaban": 6,
       "name": "ストレングス",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 53.5
     },
     {
       "rank": 3,
       "umaban": 2,
       "name": "ウィルソンテソーロ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.7
     },
     {
       "rank": 4,
       "umaban": 3,
       "name": "キタノズエッジ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 64.2
     },
     {
       "rank": 5,
       "umaban": 8,
       "name": "ペリエール",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 17.9
     },
     {
       "rank": 6,
       "umaban": 5,
       "name": "ルクソールカフェ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.0
     },
     {
       "rank": 7,
       "umaban": 4,
       "name": "サクラトップキッド",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 683.9
     },
     {
       "rank": 8,
       "umaban": 11,
       "name": "レーベンスティール",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 10.3
     },
     {
       "rank": 9,
       "umaban": 7,
       "name": "バトルバーリライ",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 907.6
     },
     {
       "rank": 10,
       "umaban": 9,
       "name": "リトルサムシング",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 904.8
     },
     {
       "rank": 11,
       "umaban": 10,
       "name": "ヒロシクン",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 165.0
     }
   ],
   "payouts": {

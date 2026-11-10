@@ -5,61 +5,71 @@
       "rank": 1,
       "umaban": 2,
       "name": "ミラクルサリチャン",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 4.2
     },
     {
       "rank": 2,
       "umaban": 7,
       "name": "ハジマリノアイズ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 9.9
     },
     {
       "rank": 3,
       "umaban": 6,
       "name": "リュウノアメリカン",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 4.2
     },
     {
       "rank": 4,
       "umaban": 9,
       "name": "スターズオブサワー",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 5.8
     },
     {
       "rank": 5,
       "umaban": 5,
       "name": "キーントゥウィン",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 63.4
     },
     {
       "rank": 6,
       "umaban": 1,
       "name": "ケーズグロリア",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 27.2
     },
     {
       "rank": 7,
       "umaban": 4,
       "name": "ジーティーエナジー",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 88.8
     },
     {
       "rank": 8,
       "umaban": 3,
       "name": "ワタシセナヨ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 23.4
     },
     {
       "rank": 9,
       "umaban": 8,
       "name": "ハートサイン",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 196.3
     },
     {
       "rank": 10,
       "umaban": 10,
       "name": "カネトシエルド",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 2.5
     }
   ],
   "payouts": {

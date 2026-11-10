@@ -5,73 +5,85 @@
       "rank": 1,
       "umaban": 8,
       "name": "ゴコクホウジョウ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 16.7
     },
     {
       "rank": 2,
       "umaban": 4,
       "name": "カツテナイオイシサ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.1
     },
     {
       "rank": 3,
       "umaban": 5,
       "name": "ヨサリ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 15.0
     },
     {
       "rank": 4,
       "umaban": 2,
       "name": "カトレアノクターン",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 15.1
     },
     {
       "rank": 5,
       "umaban": 3,
       "name": "トシクン",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 6.1
     },
     {
       "rank": 6,
       "umaban": 12,
       "name": "カワテンバッカス",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 42.1
     },
     {
       "rank": 7,
       "umaban": 10,
       "name": "エイシンリファイン",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 88.2
     },
     {
       "rank": 8,
       "umaban": 11,
       "name": "ホワイトラビット",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 309.0
     },
     {
       "rank": 9,
       "umaban": 1,
       "name": "ツマミグイ",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 146.5
     },
     {
       "rank": 10,
       "umaban": 7,
       "name": "アメリカンビッキー",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 339.6
     },
     {
       "rank": 11,
       "umaban": 9,
       "name": "ミカエル",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 123.9
     },
     {
       "rank": 12,
       "umaban": 6,
       "name": "コンバットキャップ",
-      "ninki": 12
+      "ninki": 12,
+      "odds": 469.1
     }
   ],
   "payouts": {

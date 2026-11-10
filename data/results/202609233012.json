@@ -5,67 +5,78 @@
       "rank": 1,
       "umaban": 7,
       "name": "ベルピット",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.0
     },
     {
       "rank": 2,
       "umaban": 2,
       "name": "ソルジャーフィルド",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 7.1
     },
     {
       "rank": 3,
       "umaban": 3,
       "name": "ケイアイパープル",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 9.6
     },
     {
       "rank": 4,
       "umaban": 6,
       "name": "ヤマニンステラータ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 30.4
     },
     {
       "rank": 5,
       "umaban": 8,
       "name": "クルードラゴン",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 75.5
     },
     {
       "rank": 6,
       "umaban": 11,
       "name": "サンヨウスフィーダ",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 261.0
     },
     {
       "rank": 7,
       "umaban": 1,
       "name": "サトノアンナ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 45.5
     },
     {
       "rank": 8,
       "umaban": 4,
       "name": "シロカーク",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 257.1
     },
     {
       "rank": 9,
       "umaban": 9,
       "name": "ハルシャダ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 196.7
     },
     {
       "rank": 10,
       "umaban": 10,
       "name": "フクノハリファ",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 209.1
     },
     {
       "rank": 11,
       "umaban": 5,
       "name": "エイシンキャノピー",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 209.1
     }
   ],
   "payouts": {

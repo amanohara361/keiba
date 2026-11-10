@@ -5,73 +5,85 @@
       "rank": 1,
       "umaban": 10,
       "name": "スターキャンディ",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 15.0
     },
     {
       "rank": 2,
       "umaban": 4,
       "name": "シャンパンスター",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 6.1
     },
     {
       "rank": 3,
       "umaban": 7,
       "name": "アメジストロード",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 2.1
     },
     {
       "rank": 4,
       "umaban": 6,
       "name": "ニャンタロウ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 4.4
     },
     {
       "rank": 5,
       "umaban": 11,
       "name": "グリーゼ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 5.0
     },
     {
       "rank": 6,
       "umaban": 1,
       "name": "パッションビート",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 24.4
     },
     {
       "rank": 7,
       "umaban": 5,
       "name": "キングボールダー",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 146.1
     },
     {
       "rank": 8,
       "umaban": 8,
       "name": "ベラジオスパーク",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 26.8
     },
     {
       "rank": 9,
       "umaban": 2,
       "name": "ムムターズショコラ",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 172.5
     },
     {
       "rank": 10,
       "umaban": 3,
       "name": "キャンパスレディ",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 57.8
     },
     {
       "rank": 11,
       "umaban": 9,
       "name": "シルヴァバローズ",
-      "ninki": 12
+      "ninki": 12,
+      "odds": 616.7
     },
     {
       "rank": 12,
       "umaban": 12,
       "name": "ケーズコマクサ",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 52.2
     }
   ],
   "payouts": {

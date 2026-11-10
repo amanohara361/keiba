@@ -5,79 +5,92 @@
       "rank": 1,
       "umaban": 11,
       "name": "クレームドール",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 27.8
     },
     {
       "rank": 2,
       "umaban": 5,
       "name": "マロンソレイユ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 4.9
     },
     {
       "rank": 3,
       "umaban": 10,
       "name": "エンドレスソロウ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 3.4
     },
     {
       "rank": 4,
       "umaban": 14,
       "name": "クラウニングカップ",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 43.4
     },
     {
       "rank": 5,
       "umaban": 7,
       "name": "モエレサワンミヤギ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 13.5
     },
     {
       "rank": 6,
       "umaban": 1,
       "name": "コンヨバンコク",
-      "ninki": 13
+      "ninki": 13,
+      "odds": 92.8
     },
     {
       "rank": 7,
       "umaban": 9,
       "name": "ララメテオ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 5.4
     },
     {
       "rank": 8,
       "umaban": 8,
       "name": "ロックシュガー",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 29.6
     },
     {
       "rank": 9,
       "umaban": 3,
       "name": "アイリーズ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 22.7
     },
     {
       "rank": 10,
       "umaban": 4,
       "name": "オリコウエルドラド",
-      "ninki": 12
+      "ninki": 12,
+      "odds": 66.3
     },
     {
       "rank": 11,
       "umaban": 12,
       "name": "ティーズアライト",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 63.5
     },
     {
       "rank": 12,
       "umaban": 6,
       "name": "ロウリュ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 4.9
     },
     {
       "rank": 13,
       "umaban": 2,
       "name": "モコパンチ",
-      "ninki": 14
+      "ninki": 14,
+      "odds": 144.9
     }
   ],
   "payouts": {

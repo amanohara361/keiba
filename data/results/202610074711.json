@@ -5,61 +5,71 @@
       "rank": 1,
       "umaban": 8,
       "name": "ダグフォース",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 45.7
     },
     {
       "rank": 2,
       "umaban": 6,
       "name": "エイシンレオ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.6
     },
     {
       "rank": 3,
       "umaban": 3,
       "name": "クーアフュルスト",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 8.1
     },
     {
       "rank": 4,
       "umaban": 9,
       "name": "シンリミテス",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 4.1
     },
     {
       "rank": 5,
       "umaban": 7,
       "name": "ジグラート",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 13.1
     },
     {
       "rank": 6,
       "umaban": 2,
       "name": "アルバーシャ",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 48.6
     },
     {
       "rank": 7,
       "umaban": 5,
       "name": "フレスコバルディ",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 27.5
     },
     {
       "rank": 8,
       "umaban": 4,
       "name": "スターサンドビーチ",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 30.1
     },
     {
       "rank": 9,
       "umaban": 1,
       "name": "ピコブルー",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 10.9
     },
     {
       "rank": 10,
       "umaban": 10,
       "name": "ヒフミバンダム",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 103.7
     }
   ],
   "payouts": {

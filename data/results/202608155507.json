@@ -5,61 +5,71 @@
       "rank": 1,
       "umaban": 7,
       "name": "カルドウェル",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.6
     },
     {
       "rank": 2,
       "umaban": 1,
       "name": "オレノアイバ",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 14.5
     },
     {
       "rank": 3,
       "umaban": 10,
       "name": "ビッキーファースト",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 2.1
     },
     {
       "rank": 4,
       "umaban": 8,
       "name": "ニフェーデービル",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 36.7
     },
     {
       "rank": 5,
       "umaban": 2,
       "name": "カガカプチーノ",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 107.5
     },
     {
       "rank": 6,
       "umaban": 3,
       "name": "ポピュラーソング",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 42.5
     },
     {
       "rank": 7,
       "umaban": 9,
       "name": "コスモコラッジョ",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 328.9
     },
     {
       "rank": 8,
       "umaban": 4,
       "name": "チャールストン",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 36.8
     },
     {
       "rank": 9,
       "umaban": 5,
       "name": "コワン",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 58.8
     },
     {
       "rank": 10,
       "umaban": 6,
       "name": "ボブズヤアンクル",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 174.3
     }
   ],
   "payouts": {

@@ -5,79 +5,92 @@
       "rank": 1,
       "umaban": 5,
       "name": "リベイクフルシティ",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 6.5
     },
     {
       "rank": 2,
       "umaban": 9,
       "name": "ダテノショウグン",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 16.3
     },
     {
       "rank": 3,
       "umaban": 4,
       "name": "フォーチュンテラー",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 39.0
     },
     {
       "rank": 4,
       "umaban": 1,
       "name": "ドゥラエレーデ",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.3
     },
     {
       "rank": 5,
       "umaban": 2,
       "name": "グーデンドラーク",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 4.2
     },
     {
       "rank": 6,
       "umaban": 7,
       "name": "ジョーエスポワール",
-      "ninki": 11
+      "ninki": 11,
+      "odds": 116.6
     },
     {
       "rank": 7,
       "umaban": 8,
       "name": "シシュフォス",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 32.4
     },
     {
       "rank": 8,
       "umaban": 11,
       "name": "フジユージーン",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 26.8
     },
     {
       "rank": 9,
       "umaban": 13,
       "name": "プラセボ",
-      "ninki": 12
+      "ninki": 12,
+      "odds": 273.5
     },
     {
       "rank": 10,
       "umaban": 12,
       "name": "ヒーローコール",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 17.1
     },
     {
       "rank": 11,
       "umaban": 10,
       "name": "ウィリアムバローズ",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 3.0
     },
     {
       "rank": 12,
       "umaban": 6,
       "name": "ガバナビリティー",
-      "ninki": 10
+      "ninki": 10,
+      "odds": 63.3
     },
     {
       "rank": 13,
       "umaban": 3,
       "name": "グランデマーレ",
-      "ninki": 13
+      "ninki": 13,
+      "odds": 574.0
     }
   ],
   "payouts": {

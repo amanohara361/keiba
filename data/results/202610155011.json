@@ -5,55 +5,64 @@
       "rank": 1,
       "umaban": 2,
       "name": "ハイラブレジェンド",
-      "ninki": 3
+      "ninki": 3,
+      "odds": 8.8
     },
     {
       "rank": 2,
       "umaban": 4,
       "name": "ゴッドフェンサー",
-      "ninki": 1
+      "ninki": 1,
+      "odds": 1.2
     },
     {
       "rank": 3,
       "umaban": 6,
       "name": "ミルトイブニング",
-      "ninki": 2
+      "ninki": 2,
+      "odds": 3.9
     },
     {
       "rank": 4,
       "umaban": 1,
       "name": "アースインハマー",
-      "ninki": 4
+      "ninki": 4,
+      "odds": 22.5
     },
     {
       "rank": 5,
       "umaban": 9,
       "name": "スターアイセーラ",
-      "ninki": 8
+      "ninki": 8,
+      "odds": 377.2
     },
     {
       "rank": 6,
       "umaban": 8,
       "name": "ダンジョンヒーロー",
-      "ninki": 5
+      "ninki": 5,
+      "odds": 58.1
     },
     {
       "rank": 7,
       "umaban": 3,
       "name": "ジョコーソ",
-      "ninki": 9
+      "ninki": 9,
+      "odds": 412.2
     },
     {
       "rank": 8,
       "umaban": 7,
       "name": "ナムラオットー",
-      "ninki": 7
+      "ninki": 7,
+      "odds": 257.1
     },
     {
       "rank": 9,
       "umaban": 5,
       "name": "サマーパーク",
-      "ninki": 6
+      "ninki": 6,
+      "odds": 226.6
     }
   ],
   "payouts": {
