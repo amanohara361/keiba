@@ -403,6 +403,12 @@ def format_verdict(verdict):
     marks = ' '.join(f"{m['mark']}{m['umaban']}" for m in race.marks)
     if marks:
         lines.append(f'  印: {marks}')
+    # 朝の主観勝率（win_probabilities）。メールから見えず、◎と勝率の最上位が
+    # 違うレース（2026-11-07 ノベンバーS）に気づけなかった（2026-11-11 ユーザー依頼）。
+    if race.win_probabilities:
+        probs = sorted(race.win_probabilities.items(), key=lambda kv: -kv[1])
+        lines.append('  朝の勝率: ' + ' '.join(
+            f"{race.mark_of(u) or ''}{u}:{p:.0%}" for u, p in probs))
 
     going = (verdict.conditions or {}).get('going')
     for entry in race.marks:
