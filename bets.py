@@ -113,7 +113,7 @@ class RaceBets:
     def __init__(self, race_id, name, start_time, marks, bets,
                  confidence=None, subjective_hit_rate=None, venue=None, race_no=None,
                  note='', org='jra', partners=None, win_probabilities=None,
-                 revisions=None, skip_reason=None):
+                 revisions=None, skip_reason=None, unmarked=None):
         self.race_id = str(race_id)
         self.name = name
         self.start_time = start_time          # "15:25"
@@ -158,6 +158,14 @@ class RaceBets:
         # （bet_builder.build_bets）。それまでは note に「見送り寄り」と書いても
         # 買い目は規律だけで決まり、鎌倉記念・ミズナラ盃で勝負度Bの買い目が出ていた。
         self.skip_reason = (skip_reason or '').strip() or None
+        # 無印にした理由（2026-11-11 ユーザー承認）。印も partners も付けずに下げた馬の
+        # [{'umaban': 13, 'reason': '...', 'loss_date': '2026/07/30'}, ...]。
+        # 前走などの負けを理由にするときは loss_date にその走りの日付を書く。
+        # make_bets.py --show がカードの近走から着差・馬場・距離を引いて並べ、
+        # 着差1.5秒未満や条件違いなら知らせる（unmarked_check.py）。
+        # 理由を note の地の文に埋めると、着差の数字や条件を書かないまま切る形が
+        # 注意点に2度昇格させても止まらなかった（検証ノート 2026-11-09週：深掘り10件中8件）。
+        self.unmarked = unmarked or []
 
         if org not in self.ORGS:
             raise BetsError(f'org は {"／".join(self.ORGS)} のいずれかです: {org}')
@@ -240,6 +248,7 @@ class RaceBets:
             'note': self.note,
             **({'revisions': self.revisions} if self.revisions else {}),
             **({'skip_reason': self.skip_reason} if self.skip_reason else {}),
+            **({'unmarked': self.unmarked} if self.unmarked else {}),
         }
 
 
@@ -291,6 +300,31 @@ def _parse_skip_reason(raw, context):
     if not isinstance(raw, str):
         raise BetsError(f'{context}: skip_reason は文字列です（見送りにした理由を一言）')
     return raw
+
+
+LOSS_DATE_RE = re.compile(r'\d{4}[/-]?\d{2}[/-]?\d{2}')
+
+
+def _parse_unmarked(raw, context):
+    """unmarked（無印にした理由）を読む。loss_date は YYYY/MM/DD・YYYY-MM-DD・YYYYMMDD。"""
+    if raw is None:
+        return []
+    if not isinstance(raw, list):
+        raise BetsError(f'{context}: unmarked はリストです（[{{"umaban": 13, "reason": "..."}}]）')
+    out = []
+    for u in raw:
+        if not isinstance(u, dict):
+            raise BetsError(f'{context}: unmarked の各要素は {{"umaban", "reason"}} の形です')
+        entry = {'umaban': int(_require(u, 'umaban', f'{context}の無印')),
+                 'reason': str(u.get('reason', ''))}
+        loss_date = u.get('loss_date')
+        if loss_date:
+            if not LOSS_DATE_RE.fullmatch(str(loss_date)):
+                raise BetsError(f'{context}の無印{entry["umaban"]}: loss_date は日付です'
+                                f'（YYYY/MM/DD）: {loss_date}')
+            entry['loss_date'] = str(loss_date)
+        out.append(entry)
+    return out
 
 
 def parse_sheet(payload):
@@ -352,6 +386,7 @@ def parse_sheet(payload):
             org=raw.get('org', 'jra'),
             revisions=_parse_revisions(raw.get('revisions'), context),
             skip_reason=_parse_skip_reason(raw.get('skip_reason'), context),
+            unmarked=_parse_unmarked(raw.get('unmarked'), context),
         ))
 
     return BetSheet(

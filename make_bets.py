@@ -51,6 +51,7 @@ from datetime import date
 
 import bets
 import nar
+import unmarked_check
 from bets import Bet, BetSheet, BetsError, RaceBets
 
 VENUES = {
@@ -417,6 +418,12 @@ def show(day):
             print('      **このレースは直前検算で必ず見送り（勝負度C）になります。**')
             print('      市場勝率だけでは期待値が控除率を超えないためです。')
             print('      書き方: docs/朝タスク手順.md「主観勝率の書き方」')
+
+        # 無印にした理由とカードの近走の突き合わせ（2026-11-11）。知らせるだけで
+        # problems には数えない（push は止めない）。
+        for num, text in unmarked_check.check_race(
+                race, unmarked_check.load_card_race(day, race.race_id, race.org)):
+            print(f'    ⚠ 無印{num}: {text}' if num else f'    ⚠ {text}')
 
         if race.subjective_hit_rate:
             print(f'    （非推奨）subjective_hit_rate {race.subjective_hit_rate:.0%}'

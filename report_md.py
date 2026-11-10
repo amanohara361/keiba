@@ -64,6 +64,11 @@ def _race_section(verdict, card_names):
     if marks:
         lines.append('印: ' + ' '.join(marks))
         lines.append('')
+    if race.win_probabilities:
+        probs = sorted(race.win_probabilities.items(), key=lambda kv: -kv[1])
+        lines.append('朝の勝率: ' + ' '.join(
+            f"{race.mark_of(u) or ''}{u}:{p:.0%}" for u, p in probs))
+        lines.append('')
 
     if race.bets:
         lines.append('| 券種 | 組み合わせ | 実オッズ | 金額 |')
