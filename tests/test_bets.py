@@ -193,3 +193,50 @@ def test_見送りの理由は文字列でないと弾く():
 def test_書き出しても見送りの理由が残り無ければ欄を出さない():
     assert race([{'mark': '◎', 'umaban': 7}], skip_reason='混戦').to_dict()['skip_reason'] == '混戦'
     assert 'skip_reason' not in race([{'mark': '◎', 'umaban': 7}]).to_dict()
+
+
+# ----------------------------------------------------------------------
+# 勝率を動かした理由の区分（win_reasons、2026-11-11 追加）
+# ----------------------------------------------------------------------
+
+M = [{'mark': '◎', 'umaban': 7}]
+
+
+def test_勝率の理由を読める():
+    r = race(M, win_reasons=[{'umaban': 13, 'category': '馬場', 'reason': '内前有利'},
+                             {'umaban': 13, 'category': '展開', 'reason': '単騎'}])
+    assert [w['category'] for w in r.win_reasons] == ['馬場', '展開']
+    assert r.win_reasons[0]['umaban'] == 13
+
+
+def test_勝率の理由は無くても読める():
+    assert race(M).win_reasons == []
+    assert 'win_reasons' not in race(M).to_dict()
+
+
+def test_知らない区分は弾く():
+    with pytest.raises(bets.BetsError):
+        race(M, win_reasons=[{'umaban': 1, 'category': '気合', 'reason': 'x'}])
+
+
+def test_区分が無い行は弾く():
+    with pytest.raises(bets.BetsError):
+        race(M, win_reasons=[{'umaban': 1, 'reason': 'x'}])
+
+
+def test_勝率の理由はリストでないと弾く():
+    with pytest.raises(bets.BetsError):
+        race(M, win_reasons={'13': '馬場'})
+
+
+def test_勝率の理由の区分は全部通る():
+    for c in bets.WIN_REASON_CATEGORIES:
+        race(M, win_reasons=[{'umaban': 1, 'category': c, 'reason': ''}])
+
+
+def test_書き出して読み戻しても勝率の理由が残る():
+    wr = [{'umaban': 13, 'category': '相手', 'reason': 'prev_opponents'}]
+    r = race(M, win_reasons=wr)
+    assert r.to_dict()['win_reasons'] == wr
+    back = race(M, win_reasons=r.to_dict()['win_reasons'])
+    assert back.win_reasons == wr
