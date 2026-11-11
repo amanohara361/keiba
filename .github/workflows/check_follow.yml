@@ -1,0 +1,56 @@
+name: 発走前の検算を起こす（目覚まし）
+
+# 検算（check.yml / nar_check.yml）が終わるたびに、このあと発走を迎える対象レースが
+# あれば起こされる。各レースの発走12分前まで眠り、元の検算を workflow_dispatch で
+# 起こすだけ。データには触らない（follow.py・docs/検算キック手順.md「発走前の検算」）。
+#
+# 眠るジョブを検算と分けているのは、検算の同時実行グループ（keiba-data）の中で眠ると、
+# その間ほかの収集・検算が全部待たされるため。
+
+on:
+  workflow_dispatch:
+    inputs:
+      org:
+        description: '対象 (jra / nar)'
+        type: choice
+        options: [jra, nar]
+        default: jra
+      date:
+        description: '対象日 (YYYY-MM-DD)。空なら実行日。'
+        required: false
+
+# 次の定時の検算が新しい目覚ましを起こしたら、古いほうは止める（同じレースを二重に
+# 起こさない）。新しいほうは、その時点から先のレースを数え直す。
+concurrency:
+  group: keiba-follow-${{ inputs.org }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  follow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 130
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 発走12分前まで待って検算を起こす
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          INPUT_ORG: ${{ inputs.org }}
+          INPUT_DATE: ${{ inputs.date }}
+        run: |
+          args=(run --org "$INPUT_ORG")
+          if [ -n "$INPUT_DATE" ]; then
+            args+=(--date "$INPUT_DATE")
+          fi
+          python follow.py "${args[@]}"
