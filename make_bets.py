@@ -51,6 +51,7 @@ from datetime import date
 
 import bets
 import nar
+import reason_check
 import unmarked_check
 from bets import Bet, BetSheet, BetsError, RaceBets
 
@@ -424,6 +425,10 @@ def show(day):
         for num, text in unmarked_check.check_race(
                 race, unmarked_check.load_card_race(day, race.race_id, race.org)):
             print(f'    ⚠ 無印{num}: {text}' if num else f'    ⚠ {text}')
+
+        # 勝率を動かした理由の区分の欠け（2026-11-11）。同じく知らせるだけ。
+        for num, text in reason_check.check_race(race):
+            print(f'    ⚠ 勝率理由{num}: {text}' if num else f'    ⚠ 勝率理由: {text}')
 
         if race.subjective_hit_rate:
             print(f'    （非推奨）subjective_hit_rate {race.subjective_hit_rate:.0%}'

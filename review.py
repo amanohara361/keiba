@@ -40,6 +40,7 @@ import edge_check
 import jockey_edge
 import nar as nar_module
 import nar_csv
+import reason_check
 import results as results_module
 import re
 import weight_going
@@ -1543,6 +1544,25 @@ def render_jockey_edge(jk_lines):
             + jk_lines + ['```', ''])
 
 
+def reason_report():
+    """勝率を動かした理由の区分別の集計（reason_check.py）を週次レビューに載せるための行。
+
+    集計に失敗しても週次レビュー全体を落とさないよう、例外はここで止めて None を返す。
+    """
+    try:
+        records = reason_check.collect(all_bet_days(), cached_result)
+        return reason_check.render_lines(reason_check.analyze(records))
+    except Exception:  # noqa: BLE001 - 付録の集計なので本体を止めない
+        logger.exception('勝率の理由の区分別の集計に失敗しました')
+        return None
+
+
+def render_reasons(reason_lines):
+    if not reason_lines:
+        return []
+    return (['## 勝率を動かした理由の区分別（観察中・2026-11-11〜）', ''] + reason_lines)
+
+
 def render_edge(edge_lines):
     if not edge_lines:
         return []
@@ -1555,7 +1575,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
            week_by_org=None, total_by_org=None, wide_since_summary=None,
            wg_lines=None, edge_lines=None, pending=None, nar_bias_lines=None,
            since_counts=None, jk_lines=None, gate_lines=None, map_lines=None,
-           fixed_form=None, filters=None):
+           fixed_form=None, filters=None, reason_lines=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -1647,6 +1667,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
     lines += render_weight_going(wg_lines)
     lines += render_jockey_edge(jk_lines)
     lines += render_edge(edge_lines)
+    lines += render_reasons(reason_lines)
     lines += render_pending(pending)
 
     # --- しきい値カウンタ ---
@@ -1922,6 +1943,7 @@ def main(argv=None):
     fixed_form = fixed_form_tracking(history, end)
     filters = filter_tracking(history)
     map_lines = bet_type_map_report()
+    reason_lines = reason_report()
     text = render(week, week_summary, total_summary, (start, end),
                   since_summary=since_summary,
                   week_by_org=week_by_org, total_by_org=total_by_org,
@@ -1929,7 +1951,7 @@ def main(argv=None):
                   wg_lines=wg_lines, edge_lines=edge_lines, pending=pending,
                   nar_bias_lines=nar_bias_lines, since_counts=since_counts,
                   jk_lines=jk_lines, gate_lines=gate_lines, map_lines=map_lines,
-                  fixed_form=fixed_form, filters=filters)
+                  fixed_form=fixed_form, filters=filters, reason_lines=reason_lines)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)

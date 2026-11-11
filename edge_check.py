@@ -27,6 +27,14 @@
 - オッズのずれ：検算のたびに、◎の「確定オッズ ÷ その検算で見たオッズ」を、
   発走の何分前の検算だったかで分けて出す。1未満なら発走までに売れた（オッズが下がった）。
 
+## 2026-11-11 の追加（混ぜた勝率・中央地方別・強さ β の当てはめ）
+
+主観を市場に混ぜる（`bet_builder.blend_subjective`、org ごとの `SUBJECTIVE_WEIGHT`、
+市場より上げた側だけ）ことにしたので、その勝率の対数尤度を4つ目として出す。
+あわせて中央・地方別の内訳と、org ごとに「検算時の市場を足場に混ぜた勝率」の
+対数尤度が最大になる強さ β（0.0〜1.5の0.05刻み）を、上げだけ版と両方向版で出す。
+`SUBJECTIVE_WEIGHT` を見直す材料であって、判定も自動変更もしない。
+
 使い方: python edge_check.py
 """
 
@@ -50,6 +58,14 @@ READY_RACES = 200
 # ◎のオッズのずれを期待値に織り込むか（改善案3の本体）を検討してよい頭数の目安
 # （最後の検算の◎。2026-10-16 決定ログ）
 READY_DRIFT = 100
+
+# 強さ β の当てはめを出すレース数の下限（これ未満は「判定しない」）
+MIN_FIT_RACES = 30
+
+# β の格子（0.0〜1.5、0.05刻み）
+BETA_GRID = tuple(round(i * 0.05, 2) for i in range(31))
+
+ORG_LABELS = (('jra', '中央'), ('nar', '地方'))
 
 # 発走の何分前の検算か。(下限, 上限, ラベル)
 BUCKETS = ((120, None, '発走120分以上前'),
@@ -154,8 +170,8 @@ def _normalize(raw):
     return {k: v / total for k, v in raw.items()} if total > 0 else {}
 
 
-def race_logliks(record):
-    """1レースの (市場・検算時, 主観, 市場・確定) の対数尤度。使えなければ None。
+def _race_parts(record):
+    """1レースの (勝ち馬, 検算時の市場, 確定の市場, 検算時の主観上書き)。使えなければ None。
 
     取消などで検算時と確定時の出走馬がずれるので、両方にいる馬だけで確率を作り直す。
     """
@@ -167,23 +183,73 @@ def race_logliks(record):
     m_seen = _normalize({k: 1.0 / seen[k] for k in keys})
     m_final = _normalize({k: 1.0 / record['final'][k] for k in keys})
     overrides = {k: v for k, v in record['win_probabilities'].items() if k in m_seen}
+    return winner, m_seen, m_final, overrides
+
+
+def blend_weight(org):
+    return bet_builder.SUBJECTIVE_WEIGHT.get(org, 0.5)
+
+
+def race_logliks(record):
+    """1レースの (市場・検算時, 主観, 市場・確定) の対数尤度。使えなければ None。"""
+    parts = _race_parts(record)
+    if parts is None:
+        return None
+    winner, m_seen, m_final, overrides = parts
     p_subj = _normalize(bet_builder.apply_subjective(m_seen, overrides))
     if not (m_seen.get(winner) and p_subj.get(winner) and m_final.get(winner)):
         return None
     return (math.log(m_seen[winner]), math.log(p_subj[winner]), math.log(m_final[winner]))
 
 
+def race_blend_loglik(record):
+    """混ぜた勝率（検算時の市場を足場に、org ごとの強さで市場より上げた側だけ混ぜる）の対数尤度。"""
+    parts = _race_parts(record)
+    if parts is None:
+        return None
+    winner, m_seen, _m_final, overrides = parts
+    p = bet_builder.blend_subjective(m_seen, overrides, blend_weight(record.get('org')),
+                                     raise_only=True)
+    return math.log(p[winner]) if p.get(winner) else None
+
+
 def loglik_summary(records):
     """レース数・各対数尤度の合計・「主観 − 確定」の平均と標準誤差。"""
-    rows = [x for x in (race_logliks(r) for r in records) if x is not None]
+    pairs = [(race_logliks(r), race_blend_loglik(r)) for r in records]
+    pairs = [(x, y) for x, y in pairs if x is not None and y is not None]
+    rows = [x for x, _ in pairs]
     n = len(rows)
     out = {'races': n, 'seen': sum(r[0] for r in rows), 'subjective': sum(r[1] for r in rows),
-           'final': sum(r[2] for r in rows), 'diff_mean': None, 'diff_se': None}
+           'final': sum(r[2] for r in rows), 'blend': sum(y for _, y in pairs),
+           'diff_mean': None, 'diff_se': None}
     diffs = [r[1] - r[2] for r in rows]
     if n >= 1:
         out['diff_mean'] = statistics.mean(diffs)
     if n >= 2:
         out['diff_se'] = statistics.stdev(diffs) / math.sqrt(n)
+    return out
+
+
+def fit_beta(records, raise_only):
+    """強さ β の当てはめ。検算時の市場を足場に混ぜた勝率の対数尤度が最大の β。
+
+    戻り値 {'races', 'beta', 'gain'}（gain は β=0 = 市場からの対数尤度の改善幅の合計）。
+    レースが MIN_FIT_RACES 未満なら beta・gain は None（判定しない）。
+    """
+    parts = [p for p in (_race_parts(r) for r in records) if p is not None]
+    out = {'races': len(parts), 'beta': None, 'gain': None}
+    if len(parts) < MIN_FIT_RACES:
+        return out
+    totals = {}
+    for beta in BETA_GRID:
+        total = 0.0
+        for winner, m_seen, _m_final, overrides in parts:
+            p = bet_builder.blend_subjective(m_seen, overrides, beta, raise_only=raise_only)
+            total += math.log(p[winner])
+        totals[beta] = total
+    best = max(BETA_GRID, key=lambda b: totals[b])
+    out['beta'] = best
+    out['gain'] = totals[best] - totals[0.0]
     return out
 
 
@@ -239,6 +305,13 @@ def analyze(days, cached_result, week_days=()):
     return {
         'total': loglik_summary(records),
         'week': loglik_summary([r for r in records if r['day'] in week]),
+        'by_org': {org: {'total': loglik_summary([r for r in records if r['org'] == org]),
+                         'week': loglik_summary([r for r in records
+                                                 if r['org'] == org and r['day'] in week])}
+                   for org, _ in ORG_LABELS},
+        'beta': {org: {'raise': fit_beta([r for r in records if r['org'] == org], True),
+                       'both': fit_beta([r for r in records if r['org'] == org], False)}
+                 for org, _ in ORG_LABELS},
         'drift': {label: describe(v) for label, v in drift_summary(records).items()},
     }
 
@@ -266,6 +339,8 @@ def render_lines(summary):
         f"| 市場（検算時の単勝オッズ） | {t['seen']:.2f} | {w['seen']:.2f} |",
         f"| 主観（`win_probabilities` を当てたもの） | {t['subjective']:.2f} | {w['subjective']:.2f} |",
         f"| 市場（確定オッズ） | {t['final']:.2f} | {w['final']:.2f} |",
+        f"| 混ぜた勝率（市場に主観を org 別の強さで混ぜたもの） | "
+        f"{t.get('blend', 0.0):.2f} | {w.get('blend', 0.0):.2f} |",
         f"| レース数 | {t['races']} | {w['races']} |",
         '',
         f"- **主観 − 確定（1レースあたり）：通算 {_diff_text(t)} ／ 今週 {_diff_text(w)}**",
@@ -273,6 +348,46 @@ def render_lines(summary):
         '平均が標準誤差の2倍を超えて続けば、偶然ではない差と見てよい。',
         f"  - 主観と市場の混ぜ方（改善案2）の検討は {READY_RACES} レースが目安"
         f"（いま {t['races']}）。",
+        '',
+        '### 中央・地方別（対数尤度の合計。通算 / 今週）',
+        '',
+        '混ぜた勝率の強さは中央0.5・地方0（市場のまま）。',
+        '',
+        '| | レース数 | 市場（検算時） | 主観 | 市場（確定） | 混ぜた勝率 | 主観 − 確定（1Rあたり） |',
+        '|---|---|---|---|---|---|---|',
+    ]
+    for org, label in ORG_LABELS:
+        o = (summary.get('by_org') or {}).get(org)
+        if not o:
+            continue
+        for term, key in (('通算', 'total'), ('今週', 'week')):
+            x = o[key]
+            lines.append(
+                f"| {label}・{term} | {x['races']} | {x['seen']:.2f} | {x['subjective']:.2f} | "
+                f"{x['final']:.2f} | {x.get('blend', 0.0):.2f} | {_diff_text(x)} |")
+    lines += [
+        '',
+        '### 主観を混ぜる強さ β の当てはめ（通算）',
+        '',
+        '検算時の市場を足場に、勝率 ∝ 市場 ×（主観÷市場）^β と混ぜたときの対数尤度が最大になる β'
+        '（0.0〜1.5の0.05刻み）。改善幅は β=0（市場のまま）からの対数尤度の合計の増分。'
+        f'{MIN_FIT_RACES}レース未満は判定しない。`SUBJECTIVE_WEIGHT` を見直す材料で、自動では変えない。',
+        '',
+        '| | 方向 | レース数 | 最適な β | 改善幅（β=0から） |',
+        '|---|---|---|---|---|',
+    ]
+    for org, label in ORG_LABELS:
+        fits = (summary.get('beta') or {}).get(org)
+        if not fits:
+            continue
+        for key, name in (('raise', '上げた側だけ'), ('both', '両方向')):
+            f = fits[key]
+            if f['beta'] is None:
+                lines.append(f"| {label} | {name} | {f['races']} | 判定しない | — |")
+            else:
+                lines.append(f"| {label} | {name} | {f['races']} | {f['beta']:.2f} | "
+                             f"{f['gain']:+.2f} |")
+    lines += [
         '',
         '### ◎の単勝オッズのずれ（確定オッズ ÷ 検算で見たオッズ・通算）',
         '',

@@ -113,7 +113,7 @@ class RaceBets:
     def __init__(self, race_id, name, start_time, marks, bets,
                  confidence=None, subjective_hit_rate=None, venue=None, race_no=None,
                  note='', org='jra', partners=None, win_probabilities=None,
-                 revisions=None, skip_reason=None, unmarked=None):
+                 revisions=None, skip_reason=None, unmarked=None, win_reasons=None):
         self.race_id = str(race_id)
         self.name = name
         self.start_time = start_time          # "15:25"
@@ -166,6 +166,11 @@ class RaceBets:
         # 理由を note の地の文に埋めると、着差の数字や条件を書かないまま切る形が
         # 注意点に2度昇格させても止まらなかった（検証ノート 2026-11-09週：深掘り10件中8件）。
         self.unmarked = unmarked or []
+        # 勝率を動かした理由の区分（2026-11-11 ユーザー承認）。win_probabilities に書いた馬ごとの
+        # [{'umaban': 13, 'category': '馬場', 'reason': '...'}, ...]。1頭に複数行でよく、
+        # 主な理由を先頭に置く。区分は WIN_REASON_CATEGORIES。後で「どの区分の理由が
+        # 市場に勝っているか」を測るための欄（reason_check.py）。欠けは make_bets.py --show が知らせる。
+        self.win_reasons = win_reasons or []
 
         if org not in self.ORGS:
             raise BetsError(f'org は {"／".join(self.ORGS)} のいずれかです: {org}')
@@ -249,6 +254,7 @@ class RaceBets:
             **({'revisions': self.revisions} if self.revisions else {}),
             **({'skip_reason': self.skip_reason} if self.skip_reason else {}),
             **({'unmarked': self.unmarked} if self.unmarked else {}),
+            **({'win_reasons': self.win_reasons} if self.win_reasons else {}),
         }
 
 
@@ -327,6 +333,30 @@ def _parse_unmarked(raw, context):
     return out
 
 
+WIN_REASON_CATEGORIES = ('馬場', '展開', '条件', '相手', '騎手陣営', '状態', '不利', 'その他')
+
+
+def _parse_win_reasons(raw, context):
+    """win_reasons（勝率を動かした理由の区分）を読む。category は WIN_REASON_CATEGORIES のどれか。"""
+    if raw is None:
+        return []
+    if not isinstance(raw, list):
+        raise BetsError(f'{context}: win_reasons はリストです'
+                        '（[{"umaban": 13, "category": "馬場", "reason": "..."}]）')
+    out = []
+    for w in raw:
+        if not isinstance(w, dict):
+            raise BetsError(f'{context}: win_reasons の各要素は {{"umaban", "category", "reason"}} の形です')
+        umaban = int(_require(w, 'umaban', f'{context}の勝率理由'))
+        category = _require(w, 'category', f'{context}の勝率理由{umaban}')
+        if category not in WIN_REASON_CATEGORIES:
+            raise BetsError(f'{context}の勝率理由{umaban}: category は '
+                            f'{"／".join(WIN_REASON_CATEGORIES)} のいずれかです: {category}')
+        out.append({'umaban': umaban, 'category': category,
+                    'reason': str(w.get('reason', ''))})
+    return out
+
+
 def parse_sheet(payload):
     """辞書を BetSheet にする。契約違反はここで全部はじく。"""
     from datetime import date as _date
@@ -387,6 +417,7 @@ def parse_sheet(payload):
             revisions=_parse_revisions(raw.get('revisions'), context),
             skip_reason=_parse_skip_reason(raw.get('skip_reason'), context),
             unmarked=_parse_unmarked(raw.get('unmarked'), context),
+            win_reasons=_parse_win_reasons(raw.get('win_reasons'), context),
         ))
 
     return BetSheet(

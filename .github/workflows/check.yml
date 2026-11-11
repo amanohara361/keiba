@@ -44,6 +44,14 @@ on:
         description: 'メールを送らずログだけ出す'
         type: boolean
         default: false
+      from_follow:
+        description: '目覚まし（check_follow.yml）が起こした回。目覚ましをもう一度起こさない'
+        type: boolean
+        default: false
+      quiet:
+        description: '問題なしのメールを送らない（発走前の検算）'
+        type: boolean
+        default: false
 
 concurrency:
   group: keiba-data
@@ -51,6 +59,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write   # 発走前の検算の目覚まし（check_follow.yml）を起こすため（2026-11-11）
 
 jobs:
   check:
@@ -93,6 +102,7 @@ jobs:
           INPUT_NO_EMAIL: ${{ inputs.no_email }}
           IS_PUSH: ${{ github.event_name == 'push' }}
           EVENT_NAME: ${{ github.event_name }}
+          QUIET: ${{ inputs.quiet }}
         run: |
           args=()
           if [ -n "$INPUT_DATE" ]; then
@@ -117,6 +127,12 @@ jobs:
             # push起因のときだけ「問題なし」の通知を黙らせる（2026-09-09）。
             # 発注を止めた／入力欠落のメールはこのフラグの影響を受けず、
             # 通常どおり即時に届く。
+            args+=(--quiet-if-clean)
+          fi
+          if [ "$QUIET" = 'true' ]; then
+            # 発走12分前の検算（2026-11-11）。目的は、買う判断と記録を確定オッズに
+            # 近づけること。毎レース「問題なし」を送ると1日6通増えるので黙らせる。
+            # 買い目が変わった・発注を止めた回は、このフラグでも届く。
             args+=(--quiet-if-clean)
           fi
           # 終了コード3＝要確認の事象を検知して正常に通知できた状態。
@@ -145,6 +161,22 @@ jobs:
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
+
+      # このあと発走を迎える対象レースがあれば、発走12分前に検算をもう一度起こす
+      # 目覚まし（check_follow.yml）を起こす。無ければ何もしない。目覚ましが起こした回
+      # （from_follow）からは起こさない。失敗しても検算は成功のまま（follow.py）。
+      - name: 発走前の検算の目覚ましを起こす
+        if: always() && inputs.from_follow != true
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          INPUT_DATE: ${{ inputs.date }}
+        run: |
+          args=(kick --org jra)
+          if [ -n "$INPUT_DATE" ]; then
+            args+=(--date "$INPUT_DATE")
+          fi
+          python follow.py "${args[@]}"
 
       - name: ダッシュボードへ最新データを通知
         if: success()
