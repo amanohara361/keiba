@@ -562,6 +562,118 @@ def prestart_filter(race, prestart_check):
     return {'cond': 'B', 'applies': 2.0 <= fav_odds < 3.0 and honmei[0] != fav}
 
 
+# **買い目構成の仮想記録（2026-11-11・決定ログ「引き継ぎ」の2）。** 中央の固定形（◎単勝＋◎複勝）の
+# 4週判定（12-01）の材料。実際の買い方は変えず、同じ◎を別の配分で買っていたら、を並べる。
+# 帯やしきい値は 2026-08-08〜11-08 の数字を見比べて決めたものなので、STAKE_FORMS_SINCE 以降を分けて出す。
+#   ◎単勝のみ／単勝2：複勝1／◎の検算時の単勝が STAKE_BAND のときだけ（単勝・単複）／
+#   払戻が同額になる配分（賭け金＝STAKE_TARGET÷検算時の単勝オッズ）／
+#   朝の主観勝率が検算時の市場勝率の STAKE_RAISE 倍以上の馬の単勝（◎・◎以外）
+# 検算時の単勝オッズが要る形は、発走前の検算が無いレースでは数えない。
+STAKE_FORMS_SINCE = date(2026, 11, 11)
+STAKE_BAND = (3.0, 5.0)      # 以上・未満
+STAKE_TARGET = 1000          # 円。当たったときの払戻をこの額にそろえる
+STAKE_RAISE = 1.6
+STAKE_FORMS = [
+    ('fixed', '◎単勝＋◎複勝（今の固定形）'),
+    ('win', '(a) ◎単勝のみ'),
+    ('win2_place1', '(b) ◎単勝2：複勝1'),
+    ('band_win', '(c) ◎が検算時3〜5倍のときだけ・単勝'),
+    ('band_fixed', '(c) ◎が検算時3〜5倍のときだけ・単複'),
+    ('even_payout', '(d) 払戻が同額になる配分の◎単勝'),
+    ('raised_honmei', '(e) 主観が市場の1.6倍以上・◎の単勝'),
+    ('raised_other', '(e) 主観が市場の1.6倍以上・◎以外の単勝'),
+]
+
+
+def stake_forms(race, result, prestart_check):
+    """STAKE_FORMS を確定払戻で精算する。{名前: {'bets', 'hits', 'staked', 'returned', 'max'}}。
+
+    買わなかった形（条件に当たらない・材料が無い）は入れない。max は1点の最大払戻。
+    """
+    payouts = result.get('payouts') or {}
+    win_odds = {int(k): v for k, v in ((prestart_check or {}).get('win_odds') or {}).items() if v}
+    out = {}
+
+    def add(name, legs):
+        """legs は [(券種, 馬番, 賭け金)]。"""
+        returned = [results_module.payout_for(payouts, t, [h]) * stake / 100 for t, h, stake in legs]
+        s = out.setdefault(name, {'bets': 0, 'hits': 0, 'staked': 0, 'returned': 0, 'max': 0})
+        s['bets'] += len(legs)
+        s['hits'] += sum(1 for y in returned if y > 0)
+        s['staked'] += sum(stake for _, _, stake in legs)
+        s['returned'] += sum(returned)
+        s['max'] = max([s['max']] + returned)
+
+    honmei = race.horses_for('◎')
+    if honmei:
+        h = honmei[0]
+        add('fixed', [('単勝', h, 100), ('複勝', h, 100)])
+        add('win', [('単勝', h, 100)])
+        add('win2_place1', [('単勝', h, 200), ('複勝', h, 100)])
+        odds = win_odds.get(h)
+        if odds:
+            if STAKE_BAND[0] <= odds < STAKE_BAND[1]:
+                add('band_win', [('単勝', h, 100)])
+                add('band_fixed', [('単勝', h, 100), ('複勝', h, 100)])
+            add('even_payout', [('単勝', h, STAKE_TARGET / odds)])
+
+    market = bet_builder.market_win_probabilities(win_odds)
+    subjective = getattr(race, 'win_probabilities', None) or {}
+    for h, prob in sorted(subjective.items()):
+        if market.get(h) and prob >= STAKE_RAISE * market[h]:
+            add('raised_honmei' if h in honmei else 'raised_other', [('単勝', h, 100)])
+    return out
+
+
+def stake_form_tracking(history, org='jra'):
+    """STAKE_FORMS を、後の期間（STAKE_FORMS_SINCE 以降）と通算に分けて足し上げる。"""
+    def side(since):
+        rows = [e['stake_forms'] for day in history if since is None or day['date'] >= since
+                for e in day['entries']
+                if e['org'] == org and e['category'] != UNSETTLED and e.get('stake_forms') is not None]
+        out = {'races': len(rows)}
+        for name, _ in STAKE_FORMS:
+            picked = [r[name] for r in rows if name in r]
+            staked = sum(v['staked'] for v in picked)
+            returned = sum(v['returned'] for v in picked)
+            biggest = max((v['max'] for v in picked), default=0)
+            out[name] = {
+                'races': len(picked), 'bets': sum(v['bets'] for v in picked),
+                'hits': sum(v['hits'] for v in picked), 'staked': staked, 'returned': returned,
+                'roi': (returned / staked) if staked else None,
+                'roi_drop_max': ((returned - biggest) / staked) if staked else None,
+            }
+        return out
+    return {'after': side(STAKE_FORMS_SINCE), 'all': side(None)}
+
+
+def render_stake_forms(t):
+    """週次レビュー .md の節。判定はしない、数字だけ。"""
+    if not t:
+        return []
+    lines = [
+        f'## 仮想：中央の◎の買い目構成（{STAKE_FORMS_SINCE.isoformat()}〜・観察中、実際には買っていない）', '',
+        '見送りも含めた中央の全レースで、同じ◎を別の配分で買っていたら、の成績。確定払戻で精算。'
+        f'(c)(d)(e) は発走前の最後の検算の単勝オッズで決める（検算が無いレースは数えない）。'
+        f'(d) は当たったときの払戻が{STAKE_TARGET:,}円になるように賭け金を決める（賭け金＝{STAKE_TARGET:,}円÷単勝オッズ）。'
+        f'(e) は朝の主観勝率が検算時の市場勝率の{STAKE_RAISE}倍以上の馬の単勝を100円ずつ。'
+        f'帯としきい値は 2026-08-08〜11-08 の数字から選んだので、「通算」は参考。見るのは {STAKE_FORMS_SINCE.isoformat()} 以降。'
+        '固定形の4週判定（12-01）の材料で、根拠は決定ログ 2026-11-11。', '',
+        f'| 買い方 | {STAKE_FORMS_SINCE.isoformat()}〜 | 通算（参考） |', '|---|---|---|',
+    ]
+
+    def cell(v):
+        if not v['staked']:
+            return '0R'
+        return (f"{v['races']}R {v['hits']}/{v['bets']}点 {v['staked']:,.0f}円→{v['returned']:,.0f}円 "
+                f"{_pct_or_dash(v['roi'])}（最大除く{_pct_or_dash(v['roi_drop_max'])}）")
+    for name, label in STAKE_FORMS:
+        lines.append(f"| {label} | {cell(t['after'][name])} | {cell(t['all'][name])} |")
+    lines += ['', f"対象は中央の確定レース：{STAKE_FORMS_SINCE.isoformat()} 以降 {t['after']['races']}R／通算 {t['all']['races']}R。"
+              'セルは「買ったレース数 当たり/点数 賭け金→払戻 回収率（最大払戻1点を除いた回収率）」。', '']
+    return lines
+
+
 def review_race(race, result, check, prestart_check=None):
     """1レース分の評価をまとめる。結果が未確定なら分類だけ空にする。"""
     entry = {
@@ -612,6 +724,7 @@ def review_race(race, result, check, prestart_check=None):
         'partner_popularity': partner_popularity(race, result),
         'hedge_compare': hedge_partner_compare(race, result, prestart_check),
         'prestart_filter': prestart_filter(race, prestart_check),
+        'stake_forms': stake_forms(race, result, prestart_check),
         # 券種の解禁条件（bet_gates）の材料。印・人気・着順・単勝オッズを全馬分
         'horse_rows': bet_gates.horse_rows(race, result),
     })
@@ -1575,7 +1688,8 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
            week_by_org=None, total_by_org=None, wide_since_summary=None,
            wg_lines=None, edge_lines=None, pending=None, nar_bias_lines=None,
            since_counts=None, jk_lines=None, gate_lines=None, map_lines=None,
-           fixed_form=None, filters=None, reason_lines=None):
+           fixed_form=None, filters=None, reason_lines=None,
+           stake_form_report=None):
     lines = []
     start, end = period
     lines.append(f'# 週次レビュー {start.isoformat()} 〜 {end.isoformat()}')
@@ -1658,6 +1772,7 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
         lines += render_by_org(week_by_org, total_by_org)
         lines += render_fixed_form(fixed_form)
         lines += render_filters(filters)
+        lines += render_stake_forms(stake_form_report)
         lines += render_simple_bets(week_by_org, total_by_org)
     lines += render_virtual_wide(week_summary, wide_since_summary, total_summary)
     lines += render_partner_popularity(week_summary, total_summary)
@@ -1942,6 +2057,7 @@ def main(argv=None):
     gate_lines, gate_line = gate_report(history, start)
     fixed_form = fixed_form_tracking(history, end)
     filters = filter_tracking(history)
+    stake_form_report = stake_form_tracking(history)
     map_lines = bet_type_map_report()
     reason_lines = reason_report()
     text = render(week, week_summary, total_summary, (start, end),
@@ -1951,7 +2067,8 @@ def main(argv=None):
                   wg_lines=wg_lines, edge_lines=edge_lines, pending=pending,
                   nar_bias_lines=nar_bias_lines, since_counts=since_counts,
                   jk_lines=jk_lines, gate_lines=gate_lines, map_lines=map_lines,
-                  fixed_form=fixed_form, filters=filters, reason_lines=reason_lines)
+                  fixed_form=fixed_form, filters=filters, reason_lines=reason_lines,
+                  stake_form_report=stake_form_report)
     path = write_review(text, end)
     logger.info('レビューを書き出しました: %s', path)
     print(text)
