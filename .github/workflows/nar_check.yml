@@ -50,7 +50,11 @@ on:
         type: boolean
         default: false
       from_follow:
-        description: '発走前の検算（check_follow.yml が起こした回）。問題なしのメールを送らない'
+        description: '目覚まし（check_follow.yml）が起こした回。目覚ましをもう一度起こさない'
+        type: boolean
+        default: false
+      quiet:
+        description: '問題なしのメールを送らない（発走前の検算）'
         type: boolean
         default: false
 
@@ -148,13 +152,13 @@ jobs:
           RACE_DATE: ${{ steps.gate.outputs.date }}
           INPUT_NOW: ${{ inputs.now }}
           INPUT_NO_EMAIL: ${{ inputs.no_email }}
-          FROM_FOLLOW: ${{ inputs.from_follow }}
+          QUIET: ${{ inputs.quiet }}
         run: |
           args=(--date "$RACE_DATE")
           if [ -n "$INPUT_NOW" ];   then args+=(--now "$INPUT_NOW"); fi
           if [ "$INPUT_NO_EMAIL" = 'true' ]; then args+=(--no-email); fi
           # 発走12分前の検算（2026-11-11）は「問題なし」を送らない（check.yml と同じ）。
-          if [ "$FROM_FOLLOW" = 'true' ]; then args+=(--quiet-if-clean); fi
+          if [ "$QUIET" = 'true' ]; then args+=(--quiet-if-clean); fi
           # 終了コード3＝要確認だが通知できた。役目は果たしているので緑にする。
           # 赤は「知らせられなかった」ときだけ（check.yml と同じ規約）。
           set +e

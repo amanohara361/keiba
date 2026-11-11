@@ -17,8 +17,12 @@
    `check_follow.yml` を workflow_dispatch で起こす。無ければ何もしない。
 2. `check_follow.yml` は `python follow.py run` を回す。各レースの発走 LEAD 分前まで
    眠り、起きたら元の検算ワークフローを workflow_dispatch で起こす（`from_follow=true`）。
-3. `from_follow=true` の検算は「問題なし」のメールを送らず（買い目が変わった・
-   止めたときは送る）、目覚ましをもう一度起こさない。
+3. 目覚ましが起こした検算（`from_follow=true`）は、目覚ましをもう一度起こさない。
+   発走前の検算は `quiet=true` で、「問題なし」のメールを送らない（買い目が変わった・
+   止めたときは送る）。
+
+`FIXED_TIMES_ENABLED` を True にすると、定時の検算（12:07 など）も同じ目覚ましが起こす。
+Routine が起こすのは、その日の最初の1回だけで足りるようになる（既定は False）。
 
 眠るジョブを検算と分けているのは、検算の同時実行グループ（keiba-data）の中で
 眠ると、その間ほかの収集・検算が全部待たされるため。目覚ましはデータに触らない。
@@ -38,9 +42,21 @@ JST = timezone(timedelta(hours=9))
 BETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'bets')
 
 LEAD_MINUTES = 12      # 発走の何分前に検算を起こすか。起動〜オッズ取得に1〜2分かかる
-WINDOW_MINUTES = 110   # 1回の目覚ましが受け持つ長さ。次の定時の検算（最長2時間半後）までをつなぐ
+WINDOW_MINUTES = 110   # 1回の目覚ましが受け持つ長さ（定時の検算を Routine が起こしている間）
 MERGE_MINUTES = 4      # これ以内に並ぶ起床時刻は1回にまとめる
 MIN_WAIT_MINUTES = 5   # いまからこれ以内に来る起床時刻は入れない（いま走った検算で足りる）
+RELAY_MINUTES = 300    # 1つのジョブが待つ上限。超える分は次の目覚ましに引き継ぐ（ジョブの上限は6時間）
+
+# **定時の検算も目覚ましが起こすか（2026-11-11。既定は False＝まだ Routine が起こす）。**
+# True にすると、その日の最初の検算（中央 10:07・地方 14:07。Routine が起こす）のあとは、
+# 下の FIXED_TIMES の検算も目覚ましが起こす。Routine の cron を最初の1回だけに減らすのと
+# 同時に True にする（両方が起こすと「問題なし」のメールが二重に届く）。
+# 切り替えの手順は docs/検算キック手順.md「定時の検算を目覚ましに移す」。
+FIXED_TIMES_ENABLED = False
+FIXED_TIMES = {'jra': ('12:07', '13:07', '14:07', '15:07'),
+               'nar': ('16:07', '18:37', '19:37')}
+
+FIXED, POST = 'fixed', 'post'   # 起こす検算の種類。POST（発走前）は「問題なし」を送らない
 
 CHECK_WORKFLOW = {'jra': 'check.yml', 'nar': 'nar_check.yml'}
 FOLLOW_WORKFLOW = 'check_follow.yml'
@@ -70,24 +86,41 @@ def _post_time(day, text):
         return None
 
 
-def plan(races, now, org, lead=LEAD_MINUTES, window=WINDOW_MINUTES,
-         merge=MERGE_MINUTES, min_wait=MIN_WAIT_MINUTES):
-    """これから検算を起こす時刻の一覧（昇順）。
+def plan(races, now, org, lead=LEAD_MINUTES, window=None,
+         merge=MERGE_MINUTES, min_wait=MIN_WAIT_MINUTES, fixed=None):
+    """これから検算を起こす [(時刻, 種類), ...]（昇順）。種類は FIXED か POST。
 
-    対象は org のレースで、「発走 lead 分前」が now+min_wait 以降・now+window 以内のもの。
-    lead 分前を過ぎた、またはすぐ迎えるレースは入れない（いま走った検算がその役を果たしている）。
-    近い時刻（merge 分以内）は早いほうにまとめる。
+    POST：org のレースの「発走 lead 分前」。lead 分前を過ぎた、またはすぐ迎えるレースは
+    入れない（いま走った検算がその役を果たしている）。
+    FIXED：fixed が真のときだけ。FIXED_TIMES のうち、その時刻より後に発走する org の
+    レースが残っているもの（対象レースの無い日・全レース発走後には起こさない）。
+    fixed が真なら当日の終わりまで、偽なら now+window 分までを受け持つ。
+    近い時刻（merge 分以内）は早いほうにまとめ、FIXED を含めば FIXED とする
+    （「問題なし」のメールを送る回を消さないため）。
     """
-    lead_delta = timedelta(minutes=lead)
-    limit = now + timedelta(minutes=window)
+    fixed = FIXED_TIMES_ENABLED if fixed is None else fixed
+    window = WINDOW_MINUTES if window is None else window
+    posts = [post for o, post in races if o == org]
     start = now + timedelta(minutes=min_wait)
-    times = sorted({post - lead_delta for o, post in races
-                    if o == org and start <= post - lead_delta <= limit})
+    limit = (now.replace(hour=23, minute=59, second=0, microsecond=0) if fixed
+             else now + timedelta(minutes=window))
+    wanted = {}
+    for post in posts:
+        wanted[post - timedelta(minutes=lead)] = POST
+    if fixed:
+        for text in FIXED_TIMES.get(org, ()):
+            t = _post_time(now.date(), text)
+            if t is not None and any(post > t for post in posts):
+                wanted[t] = FIXED
     out = []
-    for t in times:
-        if out and t - out[-1] <= timedelta(minutes=merge):
+    for t in sorted(wanted):
+        if not start <= t <= limit:
             continue
-        out.append(t)
+        if out and t - out[-1][0] <= timedelta(minutes=merge):
+            if wanted[t] == FIXED:
+                out[-1] = (out[-1][0], FIXED)
+            continue
+        out.append((t, wanted[t]))
     return out
 
 
@@ -116,26 +149,45 @@ def dispatch(workflow, inputs, repo=None, ref=None, token=None, opener=None):
         return False
 
 
+def _describe(times):
+    return ', '.join(t.strftime('%H:%M') + ('（定時）' if kind == FIXED else '') for t, kind in times)
+
+
 def kick(day, now, org, dispatcher=dispatch):
-    """受け持つレースがあれば目覚まし（check_follow.yml）を起こす。起こしたら True。"""
+    """受け持つ検算があれば目覚まし（check_follow.yml）を起こす。起こしたら True。"""
     times = plan(load_races(day), now, org)
     if not times:
-        print('このあと発走前の検算を足すレースはありません')
+        print('このあと目覚ましが起こす検算はありません')
         return False
-    print('目覚ましを起こします: ' + ', '.join(t.strftime('%H:%M') for t in times))
+    print('目覚ましを起こします: ' + _describe(times))
     return dispatcher(FOLLOW_WORKFLOW, {'org': org, 'date': day.isoformat()})
 
 
-def run(day, now, org, dispatcher=dispatch, sleep=time.sleep, clock=None):
-    """各時刻まで眠り、検算を起こす。起こした回数を返す。"""
+def run(day, now, org, dispatcher=dispatch, sleep=time.sleep, clock=None,
+        relay_minutes=RELAY_MINUTES):
+    """各時刻まで眠り、検算を起こす。起こした回数を返す。
+
+    待ちが relay_minutes を超える分は、そこまで眠ってから次の目覚ましを起こして終える
+    （1つのジョブは6時間までしか動けない。次の目覚ましが、その時点から数え直す）。
+    """
     clock = clock or (lambda: datetime.now(JST))
+    deadline = now + timedelta(minutes=relay_minutes)
     fired = 0
-    for t in plan(load_races(day), now, org):
+    for t, kind in plan(load_races(day), now, org):
+        if t > deadline:
+            wait = (deadline - clock()).total_seconds()
+            if wait > 0:
+                print(f'{deadline.strftime("%H:%M")} まで待って、次の目覚ましに引き継ぎます', flush=True)
+                sleep(wait)
+            dispatcher(FOLLOW_WORKFLOW, {'org': org, 'date': day.isoformat()})
+            return fired
         wait = (t - clock()).total_seconds()
         if wait > 0:
             print(f'{t.strftime("%H:%M")} まで待ちます（{wait / 60:.0f}分）', flush=True)
             sleep(wait)
-        if dispatcher(CHECK_WORKFLOW[org], {'date': day.isoformat(), 'from_follow': 'true'}):
+        inputs = {'date': day.isoformat(), 'from_follow': 'true',
+                  'quiet': 'true' if kind == POST else 'false'}
+        if dispatcher(CHECK_WORKFLOW[org], inputs):
             fired += 1
             print(f'{t.strftime("%H:%M")} の検算を起こしました', flush=True)
     return fired
@@ -154,8 +206,8 @@ def main(argv=None):
     day = date.fromisoformat(args.date) if args.date else now.date()
 
     if args.command == 'plan':
-        for t in plan(load_races(day), now, args.org):
-            print(t.strftime('%H:%M'))
+        for t, kind in plan(load_races(day), now, args.org):
+            print(t.strftime('%H:%M'), '定時' if kind == FIXED else '発走前')
     elif args.command == 'kick':
         kick(day, now, args.org)
     else:

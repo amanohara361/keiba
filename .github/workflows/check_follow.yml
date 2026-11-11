@@ -3,6 +3,8 @@ name: 発走前の検算を起こす（目覚まし）
 # 検算（check.yml / nar_check.yml）が終わるたびに、このあと発走を迎える対象レースが
 # あれば起こされる。各レースの発走12分前まで眠り、元の検算を workflow_dispatch で
 # 起こすだけ。データには触らない（follow.py・docs/検算キック手順.md「発走前の検算」）。
+# follow.py の FIXED_TIMES_ENABLED が True なら、定時の検算も同じように起こす。
+# 待ちが5時間を超える分は、次の目覚ましに引き継ぐ（ジョブの上限は6時間）。
 #
 # 眠るジョブを検算と分けているのは、検算の同時実行グループ（keiba-data）の中で眠ると、
 # その間ほかの収集・検算が全部待たされるため。
@@ -32,7 +34,7 @@ permissions:
 jobs:
   follow:
     runs-on: ubuntu-latest
-    timeout-minutes: 130
+    timeout-minutes: 330
 
     steps:
       - uses: actions/checkout@v4
@@ -43,7 +45,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: 発走12分前まで待って検算を起こす
+      - name: 時刻まで待って検算を起こす
         env:
           GITHUB_TOKEN: ${{ github.token }}
           INPUT_ORG: ${{ inputs.org }}

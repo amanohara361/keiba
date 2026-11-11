@@ -45,7 +45,11 @@ on:
         type: boolean
         default: false
       from_follow:
-        description: '発走前の検算（check_follow.yml が起こした回）。問題なしのメールを送らない'
+        description: '目覚まし（check_follow.yml）が起こした回。目覚ましをもう一度起こさない'
+        type: boolean
+        default: false
+      quiet:
+        description: '問題なしのメールを送らない（発走前の検算）'
         type: boolean
         default: false
 
@@ -98,7 +102,7 @@ jobs:
           INPUT_NO_EMAIL: ${{ inputs.no_email }}
           IS_PUSH: ${{ github.event_name == 'push' }}
           EVENT_NAME: ${{ github.event_name }}
-          FROM_FOLLOW: ${{ inputs.from_follow }}
+          QUIET: ${{ inputs.quiet }}
         run: |
           args=()
           if [ -n "$INPUT_DATE" ]; then
@@ -125,7 +129,7 @@ jobs:
             # 通常どおり即時に届く。
             args+=(--quiet-if-clean)
           fi
-          if [ "$FROM_FOLLOW" = 'true' ]; then
+          if [ "$QUIET" = 'true' ]; then
             # 発走12分前の検算（2026-11-11）。目的は、買う判断と記録を確定オッズに
             # 近づけること。毎レース「問題なし」を送ると1日6通増えるので黙らせる。
             # 買い目が変わった・発注を止めた回は、このフラグでも届く。
