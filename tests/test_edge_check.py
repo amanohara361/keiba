@@ -193,3 +193,59 @@ def test_競走中止の馬は確定オッズに含める():
     assert final == {1: 2.0, 3: 4.0, 2: 4.0} and winner == 1
     rec = _record([(_at(13, 7), {1: 2.0, 2: 4.0, 3: 4.0})], final=final, winner=1, wp={})
     assert edge_check.race_logliks(rec)[2] == pytest.approx(math.log(0.5))
+
+
+def _fit_records(n, org='jra'):
+    """主観が毎回勝ち馬を上げているレースを n 件。"""
+    seen = {1: 2.0, 2: 4.0, 3: 4.0}
+    return [_record([(_at(13, 7), seen)], final=dict(seen), winner=2, wp={2: 0.4})
+            | {'org': org} for _ in range(n)]
+
+
+def test_混ぜた勝率は中央で半分の強さ地方で市場のまま():
+    jra = _fit_records(1, 'jra')[0]
+    nar = _fit_records(1, 'nar')[0]
+    seen = edge_check.race_logliks(jra)[0]
+    blend_jra = edge_check.race_blend_loglik(jra)
+    full = edge_check.race_logliks(jra)[1]
+    assert seen < blend_jra < full
+    assert edge_check.race_blend_loglik(nar) == pytest.approx(seen)
+    s = edge_check.loglik_summary([jra])
+    assert s['blend'] == pytest.approx(blend_jra)
+
+
+def test_強さの当てはめは30レース未満なら判定しない():
+    fit = edge_check.fit_beta(_fit_records(29), raise_only=True)
+    assert fit['races'] == 29 and fit['beta'] is None and fit['gain'] is None
+
+
+def test_勝ち馬を毎回上げていれば強さは大きく改善幅はプラス():
+    fit = edge_check.fit_beta(_fit_records(30), raise_only=True)
+    assert fit['beta'] == edge_check.BETA_GRID[-1]   # 上限まで強いほど良い
+    assert fit['gain'] > 0
+    both = edge_check.fit_beta(_fit_records(30), raise_only=False)
+    assert both['beta'] > 0 and both['gain'] > 0
+
+
+def test_市場より下げた馬しか勝たなければ上げだけ版の強さは0():
+    seen = {1: 2.0, 2: 4.0, 3: 4.0}
+    recs = [_record([(_at(13, 7), seen)], final=dict(seen), winner=2, wp={1: 0.3})
+            for _ in range(30)]
+    assert edge_check.fit_beta(recs, raise_only=True)['beta'] == 0.0
+    assert edge_check.fit_beta(recs, raise_only=False)['beta'] > 0   # 下げも許せば効く
+
+
+def test_出力に中央地方別と強さの表が出る():
+    recs = _fit_records(30, 'jra') + _fit_records(5, 'nar')
+    summary = {'total': edge_check.loglik_summary(recs),
+               'week': edge_check.loglik_summary([]),
+               'by_org': {o: {'total': edge_check.loglik_summary([r for r in recs if r['org'] == o]),
+                              'week': edge_check.loglik_summary([])} for o in ('jra', 'nar')},
+               'beta': {o: {'raise': edge_check.fit_beta([r for r in recs if r['org'] == o], True),
+                            'both': edge_check.fit_beta([r for r in recs if r['org'] == o], False)}
+                        for o in ('jra', 'nar')},
+               'drift': {}}
+    text = '\n'.join(edge_check.render_lines(summary))
+    assert '混ぜた勝率' in text and '| 中央・通算 | 30 |' in text and '| 地方・通算 | 5 |' in text
+    assert '| 地方 | 上げた側だけ | 5 | 判定しない | — |' in text
+    assert '| 中央 | 両方向 | 30 |' in text

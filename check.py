@@ -384,6 +384,10 @@ def format_missing_sheet(day, now):
     ])
 
 
+def _verdict_win_odds(verdict):
+    return {n: v[0] for n, v in (verdict.win_table or {}).items() if v and v[0]}
+
+
 def format_verdict(verdict):
     race = verdict.race
     lines = []
@@ -409,6 +413,10 @@ def format_verdict(verdict):
         probs = sorted(race.win_probabilities.items(), key=lambda kv: -kv[1])
         lines.append('  朝の勝率: ' + ' '.join(
             f"{race.mark_of(u) or ''}{u}:{p:.0%}" for u, p in probs))
+        blend = bet_builder.blend_line(race, _verdict_win_odds(verdict),
+                                       discipline.weight_withdrawals(race, verdict.entries))
+        if blend:
+            lines.append('  ' + blend)
 
     going = (verdict.conditions or {}).get('going')
     for entry in race.marks:

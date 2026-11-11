@@ -14,6 +14,7 @@ report_html.py と同じ RaceVerdict から数字を取るだけで、判断に�
 
 import os
 
+import bet_builder
 import conditions as conditions_module
 import discipline
 import odds as odds_module
@@ -69,6 +70,12 @@ def _race_section(verdict, card_names):
         lines.append('朝の勝率: ' + ' '.join(
             f"{race.mark_of(u) or ''}{u}:{p:.0%}" for u, p in probs))
         lines.append('')
+        win_odds = {n: v[0] for n, v in (verdict.win_table or {}).items() if v and v[0]}
+        blend = bet_builder.blend_line(
+            race, win_odds, discipline.weight_withdrawals(race, verdict.entries))
+        if blend:
+            lines.append(blend)
+            lines.append('')
 
     if race.bets:
         lines.append('| 券種 | 組み合わせ | 実オッズ | 金額 |')

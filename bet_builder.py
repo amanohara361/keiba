@@ -129,6 +129,19 @@ convention変更になるため見送った）。
 自然に弾く。
 
 予想メソッド.md 第13章「相手の広げ方」も同時に更新した。
+
+## 2026-11-11 の追加（主観を市場に混ぜる）
+
+08-08〜11-08 の実測で、主観勝率が市場に足す情報の強さ β（勝率 ∝ 市場 ×（主観÷市場）^β
+の β を対数尤度で当てはめたもの）は、中央で 0.58（95%区間 0.02〜1.31、138R）だった。
+書いたとおり（β=1）では市場と同点で、半分の強さにすると良くなる。情報があるのは
+「市場より上げた側」だけ（上げ 1.17／下げ 0.10）。地方は β=−0.06（75R）で情報なし。
+また全頭書いて合計が1未満のレースが21件あり、`apply_subjective` は正規化しないまま
+使っていた。そこで `blend_subjective`（合計1に正規化）と `model_win_probabilities`
+（org ごとの強さ `SUBJECTIVE_WEIGHT`）を新設した。
+
+**従来の `apply_subjective`・`build_bets` は案Eの記録のため 12-01 の判定まで変えない。**
+新しい関数は足しただけで、買い目の組み立てにはまだ使っていない。
 """
 
 import itertools
@@ -205,6 +218,66 @@ def apply_subjective(market, overrides):
         for k in rest:
             out[k] = market[k] * (1.0 - used) / rest_total
     return out
+
+
+# 主観を市場に混ぜる強さ（2026-11-11 ユーザー承認）。1=書いたとおり、0=市場のまま。
+SUBJECTIVE_WEIGHT = {'jra': 0.5, 'nar': 0.0}
+
+
+def blend_subjective(market, overrides, weight, raise_only=True):
+    """勝率 ∝ 市場 ×（主観÷市場）^weight。最後に合計1へ正規化する。
+
+    raise_only=True なら、市場より下げた馬は市場のままにする。
+    market に無い馬番、0以下の主観、市場が0の馬は市場のまま。
+    """
+    raw = {}
+    for k, m in market.items():
+        v = m
+        o = (overrides or {}).get(k)
+        if o is not None and o > 0 and m > 0 and weight:
+            if not (raise_only and o < m):
+                v = m * (o / m) ** weight
+        raw[k] = v
+    total = sum(raw.values())
+    return {k: v / total for k, v in raw.items()} if total > 0 else {}
+
+
+def model_win_probabilities(race, win_odds, withdrawn=None):
+    """市場勝率を足場に、朝の主観勝率を org ごとの強さで混ぜた勝率。
+
+    withdrawn（馬体重±15kgの馬番）の上げは取り消す（build_bets の pulled と同じ）。
+    """
+    market = market_win_probabilities(win_odds or {})
+    if not market:
+        return {}
+    weight = SUBJECTIVE_WEIGHT.get(race.org, 0.5)
+    overrides = {int(k): v for k, v in (race.win_probabilities or {}).items()}
+    for u in (withdrawn or ()):
+        if u in overrides and u in market and overrides[u] > market[u]:
+            del overrides[u]
+    return blend_subjective(market, overrides, weight, raise_only=True)
+
+
+def blend_line(race, win_odds, withdrawn=None):
+    """検算メール・mdに出す「混ぜた勝率」の1行。出せなければ None。
+
+    中央：朝の勝率を書いた馬と◎を、混ぜた後の勝率の高い順に「印馬番 市場%→混ぜた後%」で。
+    地方：強さ0なので市場の勝率で評価する旨だけ。
+    """
+    if not race.win_probabilities:
+        return None
+    if SUBJECTIVE_WEIGHT.get(race.org, 0.5) == 0:
+        return '地方は市場の勝率で評価（主観は記録のみ）'
+    market = market_win_probabilities(win_odds or {})
+    model = model_win_probabilities(race, win_odds, withdrawn)
+    if not model:
+        return None
+    shown = {int(k) for k in race.win_probabilities} | set(race.horses_for('◎'))
+    shown = sorted((u for u in shown if u in model), key=lambda u: -model[u])
+    if not shown:
+        return None
+    return '混ぜた勝率（市場→混ぜた後）：' + '、'.join(
+        f"{race.mark_of(u) or ''}{u} {market[u]:.0%}→{model[u]:.0%}" for u in shown)
 
 
 def p_trio(p, trio):
