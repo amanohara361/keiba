@@ -588,7 +588,9 @@ STAKE_FORMS = [
 def stake_forms(race, result, prestart_check):
     """STAKE_FORMS を確定払戻で精算する。{名前: {'bets', 'hits', 'staked', 'returned', 'max'}}。
 
-    買わなかった形（条件に当たらない・材料が無い）は入れない。max は1点の最大払戻。
+    買わなかった形（条件に当たらない・材料が無い）は入れない。
+    max はこのレースでのその形の払戻合計（＝レース単位）。「最大払戻を除く」を
+    fixed_form_tracking（実運用の固定形）と同じくレース単位にそろえるため（決定ログ 2026-11-11 引き継ぎの直し2）。
     """
     payouts = result.get('payouts') or {}
     win_odds = {int(k): v for k, v in ((prestart_check or {}).get('win_odds') or {}).items() if v}
@@ -602,7 +604,6 @@ def stake_forms(race, result, prestart_check):
         s['hits'] += sum(1 for y in returned if y > 0)
         s['staked'] += sum(stake for _, _, stake in legs)
         s['returned'] += sum(returned)
-        s['max'] = max([s['max']] + returned)
 
     honmei = race.horses_for('◎')
     if honmei:
@@ -622,7 +623,27 @@ def stake_forms(race, result, prestart_check):
     for h, prob in sorted(subjective.items()):
         if market.get(h) and prob >= STAKE_RAISE * market[h]:
             add('raised_honmei' if h in honmei else 'raised_other', [('単勝', h, 100)])
+    for s in out.values():
+        s['max'] = s['returned']
     return out
+
+
+def _safe_stake_forms(race, result, prestart_check):
+    """stake_forms の失敗で週次レビュー全体を止めない。失敗したレースは None（集計から外れる）。"""
+    try:
+        return stake_forms(race, result, prestart_check)
+    except Exception:  # noqa: BLE001 - 付録の集計なので本体を止めない
+        logger.exception('%s: 買い目構成の仮想記録の精算に失敗しました', getattr(race, 'race_id', '?'))
+        return None
+
+
+def safe_stake_form_tracking(history, org='jra'):
+    """stake_form_tracking の失敗で週次レビュー全体を止めない。失敗したら None（節ごと出さない）。"""
+    try:
+        return stake_form_tracking(history, org)
+    except Exception:  # noqa: BLE001 - 付録の集計なので本体を止めない
+        logger.exception('買い目構成の仮想記録の集計に失敗しました')
+        return None
 
 
 def stake_form_tracking(history, org='jra'):
@@ -656,6 +677,7 @@ def render_stake_forms(t):
         '見送りも含めた中央の全レースで、同じ◎を別の配分で買っていたら、の成績。確定払戻で精算。'
         f'(c)(d)(e) は発走前の最後の検算の単勝オッズで決める（検算が無いレースは数えない）。'
         f'(d) は当たったときの払戻が{STAKE_TARGET:,}円になるように賭け金を決める（賭け金＝{STAKE_TARGET:,}円÷単勝オッズ）。'
+        '賭け金は端数のまま（例：3.3倍なら303円）で、実際は100円単位でしか買えないので、そのままは再現できない。'
         f'(e) は朝の主観勝率が検算時の市場勝率の{STAKE_RAISE}倍以上の馬の単勝を100円ずつ。'
         f'帯としきい値は 2026-08-08〜11-08 の数字から選んだので、「通算」は参考。見るのは {STAKE_FORMS_SINCE.isoformat()} 以降。'
         '固定形の4週判定（12-01）の材料で、根拠は決定ログ 2026-11-11。', '',
@@ -670,7 +692,8 @@ def render_stake_forms(t):
     for name, label in STAKE_FORMS:
         lines.append(f"| {label} | {cell(t['after'][name])} | {cell(t['all'][name])} |")
     lines += ['', f"対象は中央の確定レース：{STAKE_FORMS_SINCE.isoformat()} 以降 {t['after']['races']}R／通算 {t['all']['races']}R。"
-              'セルは「買ったレース数 当たり/点数 賭け金→払戻 回収率（最大払戻1点を除いた回収率）」。', '']
+              'セルは「買ったレース数 当たり/点数 賭け金→払戻 回収率（払戻が最大だった1レースを除いた回収率）」。'
+              '「最大除く」は上の固定形の節と同じくレース単位（そのレースの払戻合計が最大の1レースを除く）。', '']
     return lines
 
 
@@ -724,7 +747,7 @@ def review_race(race, result, check, prestart_check=None):
         'partner_popularity': partner_popularity(race, result),
         'hedge_compare': hedge_partner_compare(race, result, prestart_check),
         'prestart_filter': prestart_filter(race, prestart_check),
-        'stake_forms': stake_forms(race, result, prestart_check),
+        'stake_forms': _safe_stake_forms(race, result, prestart_check),
         # 券種の解禁条件（bet_gates）の材料。印・人気・着順・単勝オッズを全馬分
         'horse_rows': bet_gates.horse_rows(race, result),
     })
@@ -2057,7 +2080,7 @@ def main(argv=None):
     gate_lines, gate_line = gate_report(history, start)
     fixed_form = fixed_form_tracking(history, end)
     filters = filter_tracking(history)
-    stake_form_report = stake_form_tracking(history)
+    stake_form_report = safe_stake_form_tracking(history)
     map_lines = bet_type_map_report()
     reason_lines = reason_report()
     text = render(week, week_summary, total_summary, (start, end),
