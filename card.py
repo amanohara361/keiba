@@ -900,6 +900,13 @@ def main(argv=None):
         logger.error('%s', exc)
         return EXIT_ERROR
 
+    # 欄の空き具合（2026-11-14）。書き方の変化で全部空になった欄を、カードに残して知らせる。
+    # 直前検算がこれを読んでメールの件名に出す。カード作成自体は止めない。
+    import card_health
+    card['health'] = card_health.check(card)
+    for line in card_health.format_problems(card['health']):
+        logger.warning('%s', line)
+
     path = save_card(card)
     logger.info('カードを書き出しました: %s', path)
 
@@ -913,6 +920,10 @@ def main(argv=None):
         verdict = screening['excluded'] or ('候補' if race.get('candidate') else '—')
         print(f"| {race['venue']} | {race['race_no']} | {race['name']} "
               f"| {screening['race_class'] or ''} | {screening['score']} | {verdict} |")
+    health = card_health.format_problems(card['health'])
+    if health:
+        print('')
+        print('\n'.join(health))
     return EXIT_OK
 
 

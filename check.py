@@ -24,6 +24,7 @@ from datetime import date, datetime
 
 import bets
 import bet_builder
+import card_health
 import conditions as conditions_module
 import discipline
 import form as form_module
@@ -607,6 +608,19 @@ def format_clean_summary(verdicts, now, changed=()):
     return '\n'.join(lines)
 
 
+def health_problems(day, verdicts, card=None):
+    """カードと検算時の馬場・天候で、ほとんど空の欄を集める（2026-11-14）。
+
+    カードは前夜に作るので、カード作成のログだけでは誰も見ない。直前検算のメールに載せる。
+    """
+    if card is None:
+        card = card_health.load(day)
+    problems = list((card or {}).get('health') or [])
+    jra = [v.conditions for v in verdicts if getattr(v.race, 'org', 'jra') == 'jra']
+    problems += card_health.check_conditions(jra)
+    return problems
+
+
 def write_job_summary(body):
     path = os.environ.get('GITHUB_STEP_SUMMARY')
     if not path:
@@ -658,6 +672,9 @@ def main(argv=None):
     previous = bets.load_last_check(day)
     changed = _detect_bet_changes(verdicts, previous)
     body = format_report(sheet, verdicts, now, changed)
+    health = health_problems(day, verdicts)
+    if health:
+        body = '\n'.join(card_health.format_problems(health)) + '\n\n' + body
     print(body)
     write_job_summary(body)
 
@@ -721,11 +738,18 @@ def main(argv=None):
             # フルレポートは重いので、1行サマリだけ毎回送る。
             # ここを通るのは、まだ何かしら今日中に確認できる対象が残っている
             # 定時実行、または買い目が変わった回（quiet設定でも送る）。
-            if changed:
+            summary = format_clean_summary(verdicts, now, changed)
+            if health:
+                # 欄が読めていないのは「問題なし」ではない（2026-11-14）。件名で分かるようにする。
+                # 黙らせる条件（push起因・全レース発走済み）は「問題なし」と同じに扱う。
+                subject = (f'【要確認】カードの欄が読めていません'
+                           f'（{card_health.subject_labels(health)}）')
+                summary = '\n'.join(card_health.format_problems(health)) + '\n\n' + summary
+            elif changed:
                 subject = f'直前検算 買い目変更あり（{now:%H:%M}）'
             else:
                 subject = f'直前検算 問題なし（{now:%H:%M}）'
-            if not deliver(mailer, subject, format_clean_summary(verdicts, now, changed)):
+            if not deliver(mailer, subject, summary):
                 return EXIT_ERROR
 
     if any(v.blocked for v in verdicts) or missing:
