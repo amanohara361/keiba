@@ -444,6 +444,14 @@ def test_出馬表から所属を読む():
     assert form_module.parse_entries(page)[2]['affiliation'] == '栗東'
 
 
+def test_出馬表から騎手を読む():
+    """カードに騎手が無く、朝の予想がセッションから出馬表を見に行っていた（2026-11-14）。"""
+    entries = form_module.parse_entries(SHUTUBA_PAGE)
+    assert entries[2]['jockey'] == 'ダミー'
+    page = SHUTUBA_PAGE.replace('<a href="https://db.netkeiba.com/jockey/result/recent/00000/" target="_blank" title="ダミー"> ダミー</a>', '')
+    assert form_module.parse_entries(page)[2]['jockey'] is None
+
+
 def test_出馬表から性別を読む():
     """牝馬限定戦の判定と斤量の比較に使う（検証ノート 2026-10-12週・京都8R）。"""
     entries = form_module.parse_entries(SHUTUBA_PAGE)

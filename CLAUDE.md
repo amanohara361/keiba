@@ -77,6 +77,9 @@ Claude のセッション（Routine・対話）の外部通信は、環境の許
   `jra_bias.py live`・`bias` を回して結果を読むのはよいが、`data_jra/` と `data/bias/` はコミットしない。
 - 環境が違う（Routine が別の環境で動いている等）と届かないことがある。使う前に
   `curl -sS -o /dev/null -w '%{http_code}' https://race.netkeiba.com/` で 200 を確かめ、403 なら下の代替に回る。
+- **2026-11-14〜、race.netkeiba.com はセッションからのリクエストを大半 400 で弾く**（名乗り・ヘッダーに関係なく、同じ要求が200と400を行き来する。
+  nar.netkeiba.com・スポーツナビ・keiba.go.jp と Actions は通る）。400 も「届かない」と同じに扱い、代替に回る。
+  騎手・天候・コース区分はカードに入るので、出馬表を見に行かない（`docs/決定ログ.md` 2026-11-14）。
 
 ##代替：スポーツナビの手動保存（セッションから netkeiba に届かず、Actions も使えないときだけ）
 1. `python jra_bias.py urls YYYYMMDD <対象レースのrace_id> 1 8` でURLと保存先を一覧表示
