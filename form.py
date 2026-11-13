@@ -105,7 +105,7 @@ def strip_tags(html):
 # ----------------------------------------------------------------------
 
 def parse_entries(page):
-    """出馬表から {馬番: {horse_id, name, age, sex, affiliation, weight, weight_diff, kinryo}} を作る。"""
+    """出馬表から {馬番: {horse_id, name, age, sex, affiliation, weight, weight_diff, kinryo, jockey}} を作る。"""
     entries = {}
     for row in re.findall(r'<tr class="[^"]*HorseList[^"]*"[^>]*>(.*?)</tr>', page, re.S):
         umaban = re.search(r'<td[^>]*class="[^"]*Umaban[^"]*"[^>]*>\s*(\d+)\s*</td>', row)
@@ -165,6 +165,15 @@ def parse_entries(page):
         if label:
             affiliation = label.group(1)
 
+        # 騎手：Jockey セルの文字（2026-11-14〜）。カードに騎手が無く、朝の予想は
+        # 出馬表を直接見に行っていたが、セッションからは race.netkeiba.com が
+        # 大半 400 で弾かれて取れなかった（docs/決定ログ.md 2026-11-14）。
+        # 未確定（空欄）なら None。
+        jockey = None
+        jockey_cell = re.search(r'<td[^>]*class="[^"]*Jockey[^"]*"[^>]*>(.*?)</td>', row, re.S)
+        if jockey_cell:
+            jockey = strip_tags(jockey_cell.group(1)) or None
+
         entries[int(umaban.group(1))] = {
             'horse_id': horse.group(1),
             'age': age,
@@ -174,6 +183,7 @@ def parse_entries(page):
             'weight': weight,
             'weight_diff': weight_diff,
             'kinryo': kinryo,
+            'jockey': jockey,
         }
     return entries
 

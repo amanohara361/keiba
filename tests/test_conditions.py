@@ -107,3 +107,37 @@ def test_ダートはコース区分が付かない():
 def test_コースの欄が無ければNone():
     got = conditions.parse_course('<div class="RaceData02">2勝クラス</div>')
     assert got == {'turn': None, 'loop': None, 'rail': None, 'course_note': None}
+
+
+# 2026-11-14、出馬表の RaceData01 の書き方が変わった（括弧が消え、天候はアイコンの aria-label に）。
+# 11-01〜11-14 のカードはこれを読めず、turn・loop・rail・weather が全レース null だった。
+RACE_DATA01_2026_11_KYOTO_TURF = (
+    '<div class="RaceData01">\n15:45発走 /<!-- <span class="Turf"> --><span> 芝1600m</span> 右 外&nbsp;B\n\n'
+    '/ <span>予報</span><span class="Icon_Weather02 Icon_W02" role="img" aria-label="曇" title="曇"></span>\n\n'
+    '<span class="Item03"> 良</span>\n\n<span class="Item05">/ 直線：弱追風</span>\n</div>')  # デイリー杯2歳S 202608050311
+RACE_DATA01_2026_11_KYOTO_INNER = (
+    '<div class="RaceData01">\n15:05発走 /<!-- <span class="Turf"> --><span> 芝2000m</span> 右&nbsp;B\n\n'
+    '/ <span>予報</span><span class="Icon_Weather02 Icon_W02" role="img" aria-label="曇" title="曇"></span>\n\n'
+    '<span class="Item03"> 良</span>\n\n<span class="Item05">/ 直線：弱追風</span>\n</div>')  # アンドロメダS 202608050310
+RACE_DATA01_2026_11_TOKYO_DIRT = (
+    '<div class="RaceData01">\n15:30発走 /<!-- <span class="Turf"> --><span> ダ1600m</span> 左\n\n'
+    '/ <span>予報</span><span class="Icon_Weather02 Icon_W02" role="img" aria-label="曇" title="曇"></span>\n\n\n'
+    '<span class="Item04"> 良</span>\n<span class="Item05">/ 直線：弱横風</span>\n</div>')  # 武蔵野S 202605050311
+
+
+def test_括弧の無いコース表記を読む():
+    got = conditions.parse_course(RACE_DATA01_2026_11_KYOTO_TURF)
+    assert got == {'turn': '右', 'loop': '外', 'rail': 'B', 'course_note': '右 外 B'}
+    got = conditions.parse_course(RACE_DATA01_2026_11_KYOTO_INNER)
+    assert got == {'turn': '右', 'loop': None, 'rail': 'B', 'course_note': '右 B'}
+    got = conditions.parse_course(RACE_DATA01_2026_11_TOKYO_DIRT)
+    assert got == {'turn': '左', 'loop': None, 'rail': None, 'course_note': '左'}
+
+
+def test_天候をアイコンのラベルから読む():
+    got = conditions.parse(RACE_DATA01_2026_11_TOKYO_DIRT)
+    assert got == {'going': '良', 'weather': '曇', 'surface': 'ダート', 'distance': 1600}
+
+
+def test_旧い書き方の天候も従来どおり読む():
+    assert conditions.parse(RACE_DATA01_KYOTO_TURF)['weather'] == '晴'

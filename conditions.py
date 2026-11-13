@@ -81,6 +81,12 @@ def parse(page):
         text = strip_tags(intro.group(1)) if intro else strip_tags(page[:6000])
 
     weather = re.search(r'天候\s*[:：]\s*(\S+?)(?:\s|/|$)', text)
+    weather = weather.group(1) if weather else None
+    if weather is None and header:
+        # 2026-11-14 実物：「天候:晴」の文字が消え、「予報」の後ろの天気アイコンの
+        # aria-label に入るようになった（<span class="Icon_Weather02 …" aria-label="曇">）。
+        icon = re.search(r'Icon_Weather[^"]*"[^>]*aria-label="([^"]+)"', header.group(1))
+        weather = icon.group(1).strip() if icon else None
     distance = re.search(r'(\d{3,4})\s*m', text)
 
     surface = None
@@ -91,7 +97,7 @@ def parse(page):
 
     return {
         'going': find_going(text),
-        'weather': weather.group(1) if weather else None,
+        'weather': weather,
         'surface': surface,
         'distance': int(distance.group(1)) if distance else None,
     }
@@ -111,6 +117,11 @@ def parse_course(page):
     header = re.search(r'<div class="RaceData01"[^>]*>(.*?)</div>', page, re.S)
     text = strip_tags(header.group(1)) if header else ''
     found = re.search(r'(?:芝|ダ|障)[^\d(（]{0,3}\d{3,4}\s*m\s*[(（]([^)）]*)[)）]', text)
+    if not found:
+        # 2026-11-14 実物：括弧が消えた。「芝1600m 右 外 B / 予報 …」
+        # 「ダ1600m 左 / 予報 …」。次の「/」までを括弧の中身と同じに扱う。
+        # 11-01〜11-14 のカードはこの形を読めず、turn・loop・rail が全レース null だった。
+        found = re.search(r'(?:芝|ダ|障)[^\d(（]{0,3}\d{3,4}\s*m\s+((?:右|左|直線)[^/]*?)\s*(?:/|$)', text)
     if not found:
         return {'turn': None, 'loop': None, 'rail': None, 'course_note': None}
     note = found.group(1).strip()
