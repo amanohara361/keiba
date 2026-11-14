@@ -1,0 +1,96 @@
+{
+  "kaisai_info" : [ {
+    "sort" : "A",
+    "kai" : "5",
+    "day" : "3",
+    "decided" : "2ƒŒ[ƒX‚Ü‚ÅŠm’è",
+    "cancel_info" : "",
+    "weather" : "°",
+    "changes" : [ ],
+    "class" : "ajo",
+    "jyoname" : "“Œ‹",
+    "kaisai_ymd" : "20261114",
+    "youbi" : "“y—j“ú",
+    "decided_link_para" : "pw01drl00052026050320261114/CF",
+    "decided_link_para_sp" : "sw01drl00052026050320261114/5C",
+    "ba_s" : "—Ç",
+    "ba_d" : "—Ç",
+    "race" : [ ]
+  }, {
+    "sort" : "B",
+    "kai" : "5",
+    "day" : "3",
+    "decided" : "2ƒŒ[ƒX‚Ü‚ÅŠm’è",
+    "cancel_info" : "",
+    "weather" : "“Ü",
+    "changes" : [ {
+      "grade_change" : "0",
+      "course_change" : "0",
+      "start_change" : "2",
+      "entry_cancel" : "0",
+      "exclusion" : "0",
+      "jockey_change" : "0",
+      "weight_over" : "0",
+      "blinkers_cancel" : "0"
+    } ],
+    "class" : "bjo",
+    "jyoname" : "‹“s",
+    "kaisai_ymd" : "20261114",
+    "youbi" : "“y—j“ú",
+    "decided_link_para" : "pw01drl00082026050320261114/AD",
+    "decided_link_para_sp" : "sw01drl00082026050320261114/3A",
+    "ba_s" : "—Ç",
+    "ba_d" : "—Ç",
+    "race" : [ ]
+  }, {
+    "sort" : "C",
+    "kai" : "3",
+    "day" : "3",
+    "decided" : "2ƒŒ[ƒX‚Ü‚ÅŠm’è",
+    "cancel_info" : "",
+    "weather" : "°",
+    "changes" : [ {
+      "grade_change" : "0",
+      "course_change" : "0",
+      "start_change" : "2",
+      "entry_cancel" : "0",
+      "exclusion" : "0",
+      "jockey_change" : "0",
+      "weight_over" : "0",
+      "blinkers_cancel" : "0"
+    } ],
+    "class" : "cjo",
+    "jyoname" : "•Ÿ“‡",
+    "kaisai_ymd" : "20261114",
+    "youbi" : "“y—j“ú",
+    "decided_link_para" : "pw01drl00032026030320261114/D9",
+    "decided_link_para_sp" : "sw01drl00032026030320261114/66",
+    "ba_s" : "—Ç",
+    "ba_d" : "—Ç",
+    "race" : [ ]
+  }, {
+    "sort" : "E",
+    "kai" : "5",
+    "day" : "4",
+    "decided" : "",
+    "cancel_info" : "",
+    "weather" : "",
+    "changes" : [ ],
+    "class" : "ejo",
+    "jyoname" : "‹“s",
+    "kaisai_ymd" : "20261115",
+    "youbi" : "“ú—j“ú",
+    "decided_link_para" : "",
+    "decided_link_para_sp" : "",
+    "ba_s" : "",
+    "ba_d" : "",
+    "race" : [ {
+      "race_name" : "ƒGƒŠƒUƒxƒX—‰¤”t",
+      "grade" : "G1",
+      "race_no" : "11",
+      "para" : "pw01dde0108202605041120261115/4C",
+      "para_sp" : "sw01dde0108202605041120261115/D9"
+    } ]
+  } ]
+}
+                                                                                                    
