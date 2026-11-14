@@ -1,7 +1,7 @@
 {
   "date": "2026-11-14",
   "org": "nar",
-  "generated_at": "2026-11-14T04:08:15+09:00",
+  "generated_at": "2026-11-14T09:17:03+09:00",
   "source": "keiba.go.jp 公式データダウンロード",
   "levels": [
     "重賞",
@@ -25,8 +25,8 @@
       "distance": 1600,
       "field_size": 11,
       "condition": "サラブレッド系　２歳 定量",
-      "weather": "",
-      "going": "",
+      "weather": "曇",
+      "going": "稍重",
       "prize_1st": 4000000,
       "has_furlong_times": false,
       "candidate": true,
