@@ -47,6 +47,22 @@ def test_人気薄のオッズも読む():
     assert horses[2]['単勝'] == '2.6'
 
 
+# 2026-11-15 京都1R 実物（202608050401）。10-31〜「馬場:」のラベルが消え、span だけになった。
+NK_RESULT_2026_11 = (
+    '<div class="RaceData01">\n09:55発走 /<!-- <span class="Turf"> --><span> ダ1800m</span> 右\n'
+    '/ <span class="Icon_Weather02 Icon_W04" role="img" aria-label="雨" title="雨"></span>\n'
+    '<span class="Item04"> 稍</span>\n<span class="Item05">/ 直線：弱横風</span>\n</div>')
+
+
+def test_ラベルの無い馬場状態を読む():
+    with open(FIXTURE, encoding='utf-8') as f:
+        page = f.read()
+    import re
+    page = re.sub(r'<div class="RaceData01">.*?</div>', NK_RESULT_2026_11, page, count=1, flags=re.S)
+    r = jra_bias.parse_nk_result(page, '202608050401')
+    assert (r['馬場'], r['距離'], r['馬場状態']) == ('ダ', 1800, '稍重')
+
+
 def test_未確定のページは読まない():
     assert jra_bias.parse_nk_result('<html><div class="RaceData01">芝2000m</div></html>', 'x') is None
 

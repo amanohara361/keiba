@@ -42,6 +42,10 @@ def strip_tags(html):
     return re.sub(r'\s+', ' ', text).strip()
 
 
+# 出馬表・結果ページの RaceData01 で馬場状態が入る span（芝は Item03、ダートは Item04）
+ITEM_GOING = re.compile(r'<span class="Item0[34]">\s*(不良|稍重|不|稍|重|良)\s*</span>')
+
+
 def find_going(text):
     """テキストから馬場状態を拾う。
 
@@ -95,8 +99,16 @@ def parse(page):
     elif '芝' in text:
         surface = '芝'
 
+    going = find_going(text)
+    if header:
+        # 2026-11 実物：「馬場:稍」のラベルが消え、<span class="Item03"> 稍</span>
+        # （ダートは Item04）だけになった。ラベルの無い略記（稍・不）は find_going の
+        # 最後の手段では拾えず、稍重・不良が読めていなかった。span を優先して読む。
+        span = ITEM_GOING.search(header.group(1))
+        if span:
+            going = GOING_ABBR[span.group(1)]
     return {
-        'going': find_going(text),
+        'going': going,
         'weather': weather,
         'surface': surface,
         'distance': int(distance.group(1)) if distance else None,

@@ -141,3 +141,16 @@ def test_天候をアイコンのラベルから読む():
 
 def test_旧い書き方の天候も従来どおり読む():
     assert conditions.parse(RACE_DATA01_KYOTO_TURF)['weather'] == '晴'
+
+
+# 2026-11-15 実物：ラベルの無い略記（稍・不）。最後の手段の正規表現では拾えなかった。
+RACE_DATA01_2026_11_FUKUSHIMA_YAYA = (
+    '<div class="RaceData01">\n14:35発走 /<!-- <span class="Turf"> --><span> 芝2600m</span> 右&nbsp;A\n\n'
+    '/ <span>予報</span><span class="Icon_Weather02 Icon_W04" role="img" aria-label="雨" title="雨"></span>\n\n'
+    '<span class="Item03"> 稍</span>\n\n<span class="Item05">/ 直線：無風</span>\n</div>')  # 福島10R 202603030410
+
+
+def test_ラベルの無い略記の馬場状態を読む():
+    assert conditions.parse(RACE_DATA01_2026_11_FUKUSHIMA_YAYA)['going'] == '稍重'
+    fuller = RACE_DATA01_2026_11_TOKYO_DIRT.replace('Item04"> 良', 'Item04"> 不')
+    assert conditions.parse(fuller)['going'] == '不良'
