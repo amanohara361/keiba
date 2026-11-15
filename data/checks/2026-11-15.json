@@ -24085,5 +24085,460 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-11-15T17:53:10.204520+09:00",
+    "races": [
+      {
+        "race_id": "202605050409",
+        "name": "銀嶺S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "銀嶺S: 既に発走しています（発走 14:10 / 現在 17:53）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202603030410",
+        "name": "三陸特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "三陸特別: 既に発走しています（発走 14:35 / 現在 17:53）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202603030411",
+        "name": "福島民友C",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "福島民友C: 既に発走しています（発走 15:11 / 現在 17:53）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605050411",
+        "name": "オーロC",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "オーロC: 既に発走しています（発走 15:20 / 現在 17:53）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608050411",
+        "name": "エリザベス女王杯",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "エリザベス女王杯: 既に発走しています（発走 15:40 / 現在 17:53）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608050412",
+        "name": "ドンカスター",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "ドンカスター: 既に発走しています（発走 16:25 / 現在 17:53）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611155505",
+        "name": "第９回 ウインターチャンピオンオープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第９回 ウインターチャンピオンオープン: 既に発走しています（発走 17:25 / 現在 17:53）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611153612",
+        "name": "第５３回 南部駒賞（ジュンライトボルト賞）２歳",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 3.3,
+          "2": 14.4,
+          "3": 25.9,
+          "4": 8.2,
+          "5": 33.5,
+          "6": 3.1,
+          "7": 214.5,
+          "8": 87.6,
+          "9": 8.1,
+          "10": 47.5,
+          "11": 103.2,
+          "12": 4.8
+        },
+        "win_ninki": {
+          "1": 2,
+          "2": 6,
+          "3": 7,
+          "4": 5,
+          "5": 8,
+          "6": 1,
+          "7": 12,
+          "8": 10,
+          "9": 4,
+          "10": 9,
+          "11": 11,
+          "12": 3
+        },
+        "priced_odds": {
+          "ワイド": {
+            "1-2": 6.6
+          },
+          "馬連": {
+            "1-2": 23.3
+          }
+        },
+        "bet_note": "地方は当面買い目を出しません（2026-11-03 ユーザー承認。どの買い方でも回収率82%以下のため。印・検算・仮想成績は続けます）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。朝の予想が見送りと判断（混戦：1・6が一歩前でも抜けておらず、4・9・12・2との序列は他地区とのラインでしか比べられない（馬単の並びが描けない））。実オッズが規律を満たしても買い目を出しません（勝負度C）。",
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "第５３回 南部駒賞（ジュンライトボルト賞）２歳: 馬場が「不良」です（ダート1600m / 天候:雨 / 馬場:不良）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第５３回 南部駒賞（ジュンライトボルト賞）２歳: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1600,
+          "weather": "雨",
+          "going": "不良"
+        },
+        "weights": {
+          "1": {
+            "weight": 461,
+            "diff": 5,
+            "age": 2
+          },
+          "2": {
+            "weight": 488,
+            "diff": -12,
+            "age": 2
+          },
+          "4": {
+            "weight": 501,
+            "diff": 9,
+            "age": 2
+          },
+          "6": {
+            "weight": 511,
+            "diff": -3,
+            "age": 2
+          },
+          "9": {
+            "weight": 508,
+            "diff": -6,
+            "age": 2
+          },
+          "12": {
+            "weight": 491,
+            "diff": -2,
+            "age": 2
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 66
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 132
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 66
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 220
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-11-15 17:53:11"
+        }
+      },
+      {
+        "race_id": "202611154608",
+        "name": "第７４回 北國王冠３歳上（地方全国交流）",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 23.9,
+          "2": 5.7,
+          "3": 8.2,
+          "4": 14.1,
+          "5": 23.1,
+          "6": 57.4,
+          "7": 199.9,
+          "8": 38.1,
+          "9": 29.5,
+          "10": 31.0,
+          "11": 2.2,
+          "12": 4.1
+        },
+        "win_ninki": {
+          "1": 7,
+          "2": 3,
+          "3": 4,
+          "4": 5,
+          "5": 6,
+          "6": 11,
+          "7": 12,
+          "8": 10,
+          "9": 8,
+          "10": 9,
+          "11": 1,
+          "12": 2
+        },
+        "priced_odds": {
+          "ワイド": {
+            "10-12": 13.4,
+            "4-12": 13.1,
+            "1-12": 10.3
+          },
+          "馬連": {
+            "10-12": 52.0,
+            "4-12": 50.8,
+            "1-12": 46.7
+          }
+        },
+        "bet_note": "地方は当面買い目を出しません（2026-11-03 ユーザー承認。どの買い方でも回収率82%以下のため。印・検算・仮想成績は続けます）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。朝の予想が見送りと判断（◎12は抜けているが2600mと古馬相手は初めて。2番手は11・3・9・8・5が着差の比較で1秒以内に並ぶ混戦で、上位2頭が抜けず馬単の並びを説明できない）。実オッズが規律を満たしても買い目を出しません（勝負度C）。",
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "第７４回 北國王冠３歳上（地方全国交流）: 馬場が「不良」です（ダート2600m / 天候:雨 / 馬場:不良）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第７４回 北國王冠３歳上（地方全国交流）: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 2600,
+          "weather": "雨",
+          "going": "不良"
+        },
+        "weights": {
+          "1": {
+            "weight": 485,
+            "diff": -12,
+            "age": 7
+          },
+          "3": {
+            "weight": 480,
+            "diff": -10,
+            "age": 9
+          },
+          "4": {
+            "weight": 456,
+            "diff": -2,
+            "age": 5
+          },
+          "5": {
+            "weight": 486,
+            "diff": 5,
+            "age": 5
+          },
+          "8": {
+            "weight": 497,
+            "diff": -10,
+            "age": 7
+          },
+          "9": {
+            "weight": 506,
+            "diff": 4,
+            "age": 6
+          },
+          "10": {
+            "weight": 562,
+            "diff": 8,
+            "age": 5
+          },
+          "11": {
+            "weight": 545,
+            "diff": -5,
+            "age": 6
+          },
+          "12": {
+            "weight": 522,
+            "diff": 8,
+            "age": 3
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 66
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 132
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 66
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 220
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-11-15 17:53:11"
+        }
+      }
+    ]
   }
 ]
