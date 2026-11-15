@@ -861,6 +861,10 @@ def parse_nk_result(page, race_id):
     surface = {'芝': '芝', 'ダ': 'ダ'}.get(mcond.group(1), '障')
     dist = int(mcond.group(2))
     mgo = re.search(r'馬場\s*[:：]\s*(不良|稍重|不|稍|重|良)', head)
+    if not mgo and mdata:
+        # 2026-10-31〜「馬場:」のラベルが消え、<span class="Item04"> 稍</span>
+        # （芝は Item03）だけになった。これを読めず 10-31 以降の馬場状態が全て空だった。
+        mgo = re.search(r'<span class="Item0[34]">\s*(不良|稍重|不|稍|重|良)\s*</span>', mdata.group(1))
     going = GOING_ABBR[mgo.group(1)] if mgo else None
     mname = re.search(r'<h1 class="RaceName">(.*?)</h1>', page, re.S)
     name = _text(mname.group(1)) if mname else ''
