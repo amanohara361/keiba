@@ -40,23 +40,43 @@ def test_counts_only_central_after_since():
     assert t['legacy']['買う']['races'] == 1 and t['legacy']['買う']['◎単勝'] == 2.0
     assert t['legacy']['足切りなしなら見送る']['◎単勝＋◎複勝'] == 0.6
     assert t['honmei_after']['races'] == 2 and t['honmei_after']['win']['actual'] == 1
-    assert not t['review_due'] and not t['below_floor']
+    assert t['checkpoint']['reached'] is None and t['checkpoint']['next'][0] == 100
 
 
-def test_below_floor_after_four_weeks():
+def test_no_verdict_at_four_weeks_even_if_roi_low():
+    """4週・回収率80%未満でも判定しない（2026-11-17 決定ログ。節目は◎の全レース数で決める）。"""
     h = _history([(SINCE + timedelta(days=4), [_entry(200, 100), _entry(200, 0)])])
-    # 11-03 採用 → 12-01（火）の週次レビューは 11-30 締め＝28日目で判定する
-    early = review.fixed_form_tracking(h, SINCE + timedelta(days=review.FIXED_FORM_REVIEW_DAYS - 2))
-    assert not early['below_floor']
-    late = review.fixed_form_tracking(h, date(2026, 11, 30))
-    assert late['review_due'] and late['below_floor']
-    assert '見直しどき' in '\n'.join(review.render_fixed_form(late))
-    week = review.summarize([])
-    mail = review.render_mail(week, (SINCE, SINCE), 'x.md', fixed_form=late)
-    assert '中央の固定形の見直しどき' in mail
+    t = review.fixed_form_tracking(h, date(2026, 11, 30))
+    assert t['roi'] < 0.8 and t['checkpoint']['reached'] is None
+    text = '\n'.join(review.render_fixed_form(t))
+    assert '見直しどき' not in text and '次の節目は 100R' in text
+    mail = review.render_mail(review.summarize([]), (SINCE, SINCE), 'x.md', fixed_form=t)
+    assert '節目に届きました' not in mail
 
 
-def test_not_below_floor_when_roi_ok():
-    h = _history([(SINCE + timedelta(days=4), [_entry(200, 300)])])
-    t = review.fixed_form_tracking(h, SINCE + timedelta(days=60))
-    assert t['review_due'] and not t['below_floor']
+def _many(n, hit_every):
+    """◎の全レース n 本。hit_every 本に1本◎が勝つ（オッズ2.0倍・2頭立てなので見込みは0.667勝/R）。"""
+    return [_entry(200, 0, hit_win=(i % hit_every == 0)) for i in range(n)]
+
+
+def test_checkpoint_100_below_floor_alerts_once():
+    # 100R中◎50勝（見込み66.7勝）→ z は大きく負 → 100Rの節目で見直し
+    h = _history([(SINCE + timedelta(days=5), _many(60, 2)), (SINCE + timedelta(days=12), _many(40, 2))])
+    t = review.fixed_form_tracking(h, SINCE + timedelta(days=13))
+    cp = t['checkpoint']
+    assert cp['reached']['races'] == 100 and cp['new'] and cp['below']
+    mail = review.render_mail(review.summarize([]), (SINCE, SINCE), 'x.md', fixed_form=t)
+    assert '100R の節目に届きました' in mail and 'bet_builder）へは戻さない' in mail
+    # 翌週は同じ節目のままなので、メールの知らせは出さない
+    later = review.fixed_form_tracking(h, SINCE + timedelta(days=20))
+    assert not later['checkpoint']['new']
+    assert '節目に届きました' not in review.render_mail(review.summarize([]), (SINCE, SINCE), 'x.md', fixed_form=later)
+
+
+def test_checkpoint_200_above_floor_continues():
+    # 毎回◎が勝つ → z は大きく正 → 続ける
+    h = _history([(SINCE + timedelta(days=5), _many(200, 1))])
+    t = review.fixed_form_tracking(h, SINCE + timedelta(days=6))
+    cp = t['checkpoint']
+    assert cp['reached']['races'] == 200 and not cp['below'] and cp['next'] is None
+    assert '続ける' in '\n'.join(review.render_fixed_form(t))

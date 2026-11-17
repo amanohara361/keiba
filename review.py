@@ -949,12 +949,31 @@ def legacy_decision(day, entry, prestart_check, no_floor=False):
 
 
 # **中央の固定形（◎単勝＋◎複勝）の追跡（2026-11-04・ユーザー依頼）。** 採用日以降だけで3つを毎週出す。
-# 1. 固定形の実運用の回収率。採用後 FIXED_FORM_REVIEW_DAYS 日を過ぎて FIXED_FORM_FLOOR を下回ったら、
-#    メール冒頭で見直しどきと知らせる（決定ログ 2026-11-03「採用後4週の通算で80%を下回ったら見直す」）。
+# 1. 固定形の実運用の回収率（お金の記録。判定には使わない）。
 # 2. ◎の勝ち・3着内の市場比（bet_gates.honmei_since）。印の力そのものが保たれているか。
+#    **判定はこの「◎の勝ち」の z で、節目（FIXED_FORM_CHECKPOINTS）に1回ずつ行う**（2026-11-17・ユーザー承認）。
+#    数えるのは採用後の中央の◎の全レース（見送ったレースも含む）。
+#    以前の「採用後4週で回収率80%未満なら見直す」は、80%が◎に優位が無いときの水準（単勝の控除後）とほぼ同じで、
+#    4週（約48R）では優位があっても19%、毎週見ると27%の確率で誤って止めるため外した（docs/調査/改善点_2026-11-17.md の3）。
 # 3. 従来の組み立てが「買う」と判定したレースと「見送る」と判定したレースの◎単複（案E）。
-FIXED_FORM_REVIEW_DAYS = 28
-FIXED_FORM_FLOOR = 0.80
+# (◎の全レース数, z の下限, その節目で決めること)。z が下限を下回ったら見直す。
+FIXED_FORM_CHECKPOINTS = [
+    (100, 0.5, '形の見直し（複勝の足・単勝2.5倍未満の◎を外すか）'),
+    (200, 1.0, '本判定（続ける／形を変える／買うのをやめる）'),
+]
+
+
+def _checkpoint_status(n_now, n_prev, z):
+    """直近に到達した節目と、今週はじめて届いたか。届いていなければ次の節目だけ返す。"""
+    reached = [c for c in FIXED_FORM_CHECKPOINTS if n_now >= c[0]]
+    upcoming = next((c for c in FIXED_FORM_CHECKPOINTS if n_now < c[0]), None)
+    if not reached:
+        return {'reached': None, 'new': False, 'below': False, 'next': upcoming}
+    races, floor, what = reached[-1]
+    return {'reached': {'races': races, 'z_floor': floor, 'what': what},
+            'new': n_prev < races,
+            'below': z is not None and z < floor,
+            'next': upcoming}
 
 
 def fixed_form_tracking(history, end):
@@ -985,15 +1004,20 @@ def fixed_form_tracking(history, end):
         return out
 
     dated = [(day['date'], e['org'], e['horse_rows'])
-             for day in history for e in day['entries'] if e.get('horse_rows')]
+             for day in history for e in day['entries'] if e.get('horse_rows') and day['date'] <= end]
+    honmei_after = bet_gates.honmei_since(dated, 'jra', FIXED_FORM_SINCE)
+    win = (honmei_after or {}).get('win') or {}
+    win_z = win.get('z')
+    n_now = win.get('n', 0)
+    prev_end = end - timedelta(days=7)
+    n_prev = sum(1 for d, o, _ in dated if o == 'jra' and FIXED_FORM_SINCE <= d <= prev_end)
     return {
         'races': len(after), 'bought': len(kept), 'hits': sum(1 for e in kept if e['returned'] > 0),
         'staked': staked, 'returned': returned, 'roi': roi,
         'roi_drop_max': ((returned - biggest) / staked) if staked else None,
         'days': elapsed,
-        'review_due': elapsed >= FIXED_FORM_REVIEW_DAYS,
-        'below_floor': elapsed >= FIXED_FORM_REVIEW_DAYS and roi is not None and roi < FIXED_FORM_FLOOR,
-        'honmei_after': bet_gates.honmei_since(dated, 'jra', FIXED_FORM_SINCE),
+        'honmei_after': honmei_after,
+        'checkpoint': _checkpoint_status(n_now, n_prev, win_z),
         'honmei_before': bet_gates.honmei_since(
             [(d, o, r) for d, o, r in dated if d < FIXED_FORM_SINCE], 'jra', date.min),
         'legacy': {label: legacy(key, flag) for label, key, flag in (
@@ -1001,6 +1025,24 @@ def fixed_form_tracking(history, end):
             ('足切りなしなら買う', 'legacy_buy_no_floor', True),
             ('足切りなしなら見送る', 'legacy_buy_no_floor', False))},
     }
+
+
+def _checkpoint_text(t):
+    """節目までの進み具合と、届いた節目の判定。"""
+    cp = t.get('checkpoint') or {}
+    win = (t.get('honmei_after') or {}).get('win') or {}
+    n, z = win.get('n', 0), win.get('z')
+    z_txt = f"z{z:+.1f}" if z is not None else 'z—'
+    parts = [f"◎の全レース {n}R（{z_txt}）。"]
+    r = cp.get('reached')
+    if r:
+        verdict = (f"**z が {r['z_floor']} を下回った → {r['what']}を決める**" if cp['below']
+                   else f"z が {r['z_floor']} 以上 → 続ける")
+        parts.append(f"{r['races']}Rの節目：{verdict}。")
+    nxt = cp.get('next')
+    if nxt:
+        parts.append(f"次の節目は {nxt[0]}R（z {nxt[1]} 未満なら{nxt[2]}）。")
+    return ''.join(parts)
 
 
 def _ratio_text(st):
@@ -1015,24 +1057,22 @@ def _pct_or_dash(x):
 
 
 def render_fixed_form(t):
-    """週次レビュー .md の節。判定は「4週経過後に80%未満か」だけ。"""
+    """週次レビュー .md の節。判定は節目（◎の全レース100R・200R）での「◎の勝ち」の z。"""
     if not t:
         return []
     if not t['races']:
         return ['## 追跡：中央の固定形（◎単勝＋◎複勝、2026-11-03〜）', '',
                 f"採用から{t['days']}日。採用後の中央の確定レースはまだ無い。"
                 '固定形の回収率・◎の市場比・従来の判定別の◎単複を、レースが入りしだい出す（決定ログ 2026-11-04）。', '']
-    due = (f"採用から{t['days']}日。" + ('**4週を過ぎた。**' if t['review_due']
-                                        else f"4週（{FIXED_FORM_REVIEW_DAYS}日）を過ぎたら80%で判定する。"))
+    due = f"採用から{t['days']}日。" + _checkpoint_text(t)
     lines = [
         '## 追跡：中央の固定形（◎単勝＋◎複勝、2026-11-03〜）',
         '',
-        f'{due} 根拠は決定ログ 2026-11-03（固定形の採用）と 2026-11-04（この追跡）。',
+        f'{due} 根拠は決定ログ 2026-11-03（固定形の採用）と 2026-11-04（この追跡）・2026-11-17（判定を節目に）。',
         '',
         '| 指標 | 値 |', '|---|---|',
         f"| 1. 固定形の実運用 | {t['bought']}R 何か当たった{t['hits']}R、{t['staked']:,}円→{t['returned']:,}円、"
-        f"回収率{_pct_or_dash(t['roi'])}（最大払戻1回を除いて{_pct_or_dash(t['roi_drop_max'])}）"
-        + (' **← 80%を下回った。見直しどき**' if t['below_floor'] else '') + ' |',
+        f"回収率{_pct_or_dash(t['roi'])}（最大払戻1回を除いて{_pct_or_dash(t['roi_drop_max'])}）。お金の記録で、判定には使わない |",
     ]
     for label, key in (('勝ち', 'win'), ('3着内', 'place')):
         after = (t['honmei_after'] or {}).get(key)
@@ -1125,7 +1165,7 @@ def mail_filter_lines(t):
 
 
 def mail_fixed_form_lines(t):
-    """メールの「印の精度」欄に入れる3行。"""
+    """メールの「印の精度」欄に入れる4行。"""
     if not t:
         return []
     if not t['races']:
@@ -1134,7 +1174,8 @@ def mail_fixed_form_lines(t):
     buy, skip = t['legacy']['足切りなしなら買う'], t['legacy']['足切りなしなら見送る']
     return [
         f"固定形（中央◎単複・11-03〜{t['days']}日）：{t['bought']}R 回収率{_pct_or_dash(t['roi'])}"
-        f"（最大払戻除く{_pct_or_dash(t['roi_drop_max'])}）／4週後に80%で判定",
+        f"（最大払戻除く{_pct_or_dash(t['roi_drop_max'])}）",
+        _checkpoint_text(t),
         f"◎の市場比（採用後）：勝ち {_ratio_text(after.get('win'))}・3着内 {_ratio_text(after.get('place'))}",
         f"従来の判定別の◎単複（足切りなし）：買う{buy['races']}R {_pct_or_dash(buy['◎単勝＋◎複勝'])}"
         f" ／ 見送る{skip['races']}R {_pct_or_dash(skip['◎単勝＋◎複勝'])}",
@@ -1923,10 +1964,12 @@ def render_mail(week_summary, period, path, total_summary=None, collected=None,
                   '（決定ログ 2026-10-12）',
                   '']
 
-    if fixed_form and fixed_form.get('below_floor'):
-        lines += [f"■ 中央の固定形の見直しどきです（採用から{fixed_form['days']}日、"
-                  f"回収率{_pct_or_dash(fixed_form['roi'])}が80%を下回りました）",
-                  '  → 元に戻すか形を見直すかを決めてください（決定ログ 2026-11-03）',
+    cp = (fixed_form or {}).get('checkpoint') or {}
+    if cp.get('new') and cp.get('reached'):
+        r = cp['reached']
+        lines += [f"■ 中央の固定形が {r['races']}R の節目に届きました（{_checkpoint_text(fixed_form)}）",
+                  f"  → {r['what']}を会話で決めてください（決定ログ 2026-11-17）。"
+                  '従来の組み立て（bet_builder）へは戻さない',
                   '']
 
     ready = [p for p in (pending or []) if p['ready']]
