@@ -147,6 +147,14 @@ def test_印が1頭も来ていなければ予想ミス():
     assert classify(race, result) == review.PREDICT_MISS
 
 
+def test_固定形で本命が圏外なら予想ミス():
+    """◎単複の固定形は◎しか買わない。○・△が来ても買い方で拾えないので買い目構成ミスにしない。"""
+    race = make_race(marks=[('◎', 4), ('○', 11), ('▲', 2)],
+                     bet_list=[('単勝', [4], 100), ('複勝', [4], 100)])
+    result = make_result([(1, 11), (2, 2), (3, 9)])
+    assert classify(race, result) == review.PREDICT_MISS
+
+
 def test_買い目が無ければ見送り():
     race = make_race(marks=[('◎', 4)], bet_list=[])
     result = make_result([(1, 11), (2, 2), (3, 9)])

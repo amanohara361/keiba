@@ -36,6 +36,7 @@ import bet_builder
 import bet_gates
 import bet_type_map
 import bets
+import discipline
 import edge_check
 import jockey_edge
 import nar as nar_module
@@ -269,6 +270,11 @@ def classify(race, settlement, result):
         return SKIPPED
     if settlement['hit']:
         return HIT
+    # 中央の固定形（◎単勝＋◎複勝、2026-11-03〜）は◎しか買わないので、外れは「◎が馬券圏外」＝印の問題。
+    # ○・△が来ても買い方では拾えない形なので、買い目構成ミスと数えない（2026-11-17・ユーザー依頼）。
+    # 7頭以下で複勝が2着までのレースで◎が3着だった場合もここに入る。
+    if discipline.is_fixed_form(race):
+        return PREDICT_MISS
 
     top3 = top_finishers(result)
     honmei = race.horses_for('◎')
@@ -1849,6 +1855,8 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
     lines.append(_totals_line('規律適用後（BLOCKを除いた実運用）', week_summary['disciplined']))
     diff = week_summary['disciplined']['profit'] - week_summary['virtual']['profit']
     lines.append(f'- **差引：{diff:+,}円**（プラスなら規律が損を防いだ、マイナスなら上振れを逃した）')
+    lines.append('- 2026-11-03〜の中央の固定形（◎単複）には合成オッズ・期待値の規律を掛けないので、'
+                 '差引が動くのは馬体重などで止めたレースがあった週だけ（決定ログ 2026-11-17）。')
     if week_summary['blocked']['races']:
         lines.append(_totals_line('  うち止めた分', week_summary['blocked']))
     lines.append('')
