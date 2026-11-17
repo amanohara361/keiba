@@ -114,3 +114,18 @@ def test_bands_skip_races_without_full_odds():
     e = _band_entry(3.0, True, 300, 130)
     e['horse_rows'][1]['odds'] = None
     assert review.honmei_odds_bands(_history([(SINCE, [e])]), SINCE)['2.5〜7倍']['races'] == 0
+
+
+def test_skip_reason_tracking_splits_races():
+    skip = dict(_band_entry(3.0, False, 0, 0), skip_reason='混戦')
+    buy = dict(_band_entry(3.0, True, 300, 130), simple_bets={
+        '◎単勝': {'staked': 100, 'returned': 300}, '◎複勝': {'staked': 100, 'returned': 130},
+        '◎単勝＋◎複勝': {'staked': 200, 'returned': 430}})
+    skip['simple_bets']['◎単勝＋◎複勝'] = {'staked': 200, 'returned': 0}
+    old = dict(skip)  # 採用前は数えない
+    h = _history([(SINCE - timedelta(days=1), [old]), (SINCE + timedelta(days=4), [skip, buy])])
+    t = review.skip_reason_tracking(h, SINCE + timedelta(days=5))
+    assert (t['見送り']['races'], t['見送り']['wins'], t['見送り']['returned']) == (1, 0, 0)
+    assert (t['買う']['races'], t['買う']['wins'], t['買う']['returned']) == (1, 1, 430)
+    text = '\n'.join(review.render_skip_reason({'skip_reason': t}))
+    assert '| 買う | 1R | 1/0.5 | 215% |' in text

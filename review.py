@@ -710,6 +710,7 @@ def review_race(race, result, check, prestart_check=None):
         'org': race.org or 'jra',
         'name': race.name,
         'venue': race.venue,
+        'skip_reason': race.skip_reason,
         'confidence': race.confidence,
         'marks': race.marks,
         'blocked': bool(check.get('blocked')) if check else False,
@@ -1030,6 +1031,57 @@ def honmei_odds_bands(history, end, since=None):
     return out
 
 
+# **朝の「見送り」（skip_reason）の追跡（2026-11-17・ユーザー依頼）。** 固定形は毎レース買うのが前提だが、
+# 朝の予想が「混戦で確信が低い」等と skip_reason を書いたレースは買わない（第13章）。固定形の根拠になった仮想成績は
+# skip_reason の無い全レースで数えたので、この見送りは効き目を確かめていない絞り込みになっている
+# （11-07〜11-15 の中央24Rのうち7R。docs/調査/改善点_2026-11-17.md の2）。記録だけ。判定は節目の考え方
+# （◎の勝ちの z、100Rで見る）に合わせ、見送ったレースの◎が見込みを下回り続けるなら見送りは効いている、と読む。
+# 中央の skip_reason は今のところ全て主観の混戦判断（地方の「中央馬の近走欠落」のような客観条件は中央には無い）。
+
+
+def skip_reason_tracking(history, end, since=FIXED_FORM_SINCE):
+    """中央の確定レースを「朝の見送りあり／なし」に分け、◎の勝ち（実数/見込み）と◎単複の回収率を出す。"""
+    out = {k: {'races': 0, 'wins': 0, 'expected': 0.0, 'staked': 0, 'returned': 0}
+           for k in ('見送り', '買う')}
+    for day in history:
+        if day['date'] > end or day['date'] < since:
+            continue
+        for e in day['entries']:
+            if e['org'] != 'jra' or e['category'] == UNSETTLED:
+                continue
+            row = _honmei_band_row(e)
+            both = (e.get('simple_bets') or {}).get('◎単勝＋◎複勝')
+            if not row or not both:
+                continue
+            _, won, p, _, _ = row
+            c = out['見送り' if e.get('skip_reason') else '買う']
+            c['races'] += 1
+            c['wins'] += won
+            c['expected'] += p
+            c['staked'] += both['staked']
+            c['returned'] += both['returned']
+    return out
+
+
+def render_skip_reason(t):
+    """固定形の節に入れる「朝の見送り」の表（記録のみ）。"""
+    sk = t.get('skip_reason')
+    if not sk:
+        return []
+    lines = ['', '### 朝の見送り（skip_reason）の記録（11-03〜・記録のみ）', '',
+             '| 朝の判断 | レース | ◎の勝ち（実数/見込み） | ◎単複の回収率（仮想） |', '|---|---|---|---|']
+    for label, key in (('見送り（skip_reason あり）', '見送り'), ('買う', '買う')):
+        c = sk[key]
+        if c['races']:
+            lines.append(f"| {label} | {c['races']}R | {c['wins']}/{c['expected']:.1f} | "
+                         f"{c['returned'] / c['staked'] * 100:.0f}% |")
+        else:
+            lines.append(f'| {label} | 0R | — | — |')
+    lines += ['', '見送りが効いているなら、見送り側の◎が見込みを下回り、回収率も買う側より低くなる。'
+              '「買う」側には馬体重などで止めたレースも入る。根拠は決定ログ 2026-11-17。']
+    return lines
+
+
 def fixed_form_tracking(history, end):
     """中央の固定形を採用日（FIXED_FORM_SINCE）以降だけで追う。
 
@@ -1074,6 +1126,7 @@ def fixed_form_tracking(history, end):
         'checkpoint': _checkpoint_status(n_now, n_prev, win_z),
         'bands_after': honmei_odds_bands(history, end, FIXED_FORM_SINCE),
         'bands_total': honmei_odds_bands(history, end),
+        'skip_reason': skip_reason_tracking(history, end),
         'honmei_before': bet_gates.honmei_since(
             [(d, o, r) for d, o, r in dated if d < FIXED_FORM_SINCE], 'jra', date.min),
         'legacy': {label: legacy(key, flag) for label, key, flag in (
@@ -1160,6 +1213,7 @@ def render_fixed_form(t):
         lines.append(f"| 3. 従来の判定「{label}」 | {v['races']}R、◎単勝{_pct_or_dash(v['◎単勝'])}・"
                      f"◎単複{_pct_or_dash(v['◎単勝＋◎複勝'])} |")
     lines += render_honmei_bands(t)
+    lines += render_skip_reason(t)
     lines += ['', '2の見込みは、勝ちが確定単勝オッズを割り戻した市場の勝率、3着内が同じ人気の馬の実績率（bet_gates と同じ）。'
               '3は「買う」側が「見送る」側を後の期間で上回り続けたら、従来の組み立てをレースの選別に使う案（案E）を承認にかける。', '']
     return lines
