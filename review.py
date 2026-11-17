@@ -36,6 +36,7 @@ import bet_builder
 import bet_gates
 import bet_type_map
 import bets
+import discipline
 import edge_check
 import jockey_edge
 import nar as nar_module
@@ -109,14 +110,16 @@ THRESHOLD_COUNTERS = [
     {'label': '減点・原則で切った馬の好走（3着以内の無印馬）', 'key': 'unmarked_good_runs',
      'note': '参考の件数（しきい値では知らせない）。原則が厳しすぎるかは「印と人気上位の比較」の表で判断する',
      'alert': False, 'since': None},
+    # 下の2つは、従来の組み立てが組の馬券を買う前提の物差し。固定形（◎単複）の間は止める（知らせない）。
+    # 組の馬券を再開したら alert を True に戻し、since を再開日に進めて数え直す（2026-11-17・ユーザー承認）。
     {'label': '規律遵守により逃した上振れ（止めたが的中していた）', 'key': 'missed_upside',
-     'note': '基準値（合成3.0倍・期待値1.2）が厳しすぎないかを検討する',
-     'alert': True, 'since': None},
+     'note': '【止めている：組の馬券を再開したら数え直す】基準値（合成3.0倍・期待値1.2）が厳しすぎないかを検討する',
+     'alert': False, 'since': None},
     # 2026-09-08 に保険ワイド（bet_builder._axis_hedge）を入れた。2026-11-03 に、
     # 全滅の割合と保険が付いた数で効き目を見ることにして、ここから数え直す。
     {'label': '◎一極集中で全滅（◎着外・他の印は3着以内）', 'key': 'honmei_wipeout',
-     'note': '保険ワイド（2026-09-08〜）が効いているかを、全滅の割合と保険の付いた数で見直す',
-     'alert': True, 'since': date(2026, 11, 3)},
+     'note': '【止めている：組の馬券を再開したら数え直す】保険ワイド（2026-09-08〜）が効いているかを、全滅の割合と保険の付いた数で見直す',
+     'alert': False, 'since': date(2026, 11, 3)},
 ]
 
 
@@ -269,6 +272,11 @@ def classify(race, settlement, result):
         return SKIPPED
     if settlement['hit']:
         return HIT
+    # 中央の固定形（◎単勝＋◎複勝、2026-11-03〜）は◎しか買わないので、外れは「◎が馬券圏外」＝印の問題。
+    # ○・△が来ても買い方では拾えない形なので、買い目構成ミスと数えない（2026-11-17・ユーザー依頼）。
+    # 7頭以下で複勝が2着までのレースで◎が3着だった場合もここに入る。
+    if discipline.is_fixed_form(race):
+        return PREDICT_MISS
 
     top3 = top_finishers(result)
     honmei = race.horses_for('◎')
@@ -563,7 +571,7 @@ def prestart_filter(race, prestart_check):
 
 
 # **買い目構成の仮想記録（2026-11-11・決定ログ「引き継ぎ」の2）。** 中央の固定形（◎単勝＋◎複勝）の
-# 4週判定（12-01）の材料。実際の買い方は変えず、同じ◎を別の配分で買っていたら、を並べる。
+# 固定形の節目（100R）の材料（2026-11-17 に4週判定から読み替え）。実際の買い方は変えず、同じ◎を別の配分で買っていたら、を並べる。
 # 帯やしきい値は 2026-08-08〜11-08 の数字を見比べて決めたものなので、STAKE_FORMS_SINCE 以降を分けて出す。
 #   ◎単勝のみ／単勝2：複勝1／◎の検算時の単勝が STAKE_BAND のときだけ（単勝・単複）／
 #   払戻が同額になる配分（賭け金＝STAKE_TARGET÷検算時の単勝オッズ）／
@@ -680,7 +688,7 @@ def render_stake_forms(t):
         '賭け金は端数のまま（例：3.3倍なら303円）で、実際は100円単位でしか買えないので、そのままは再現できない。'
         f'(e) は朝の主観勝率が検算時の市場勝率の{STAKE_RAISE}倍以上の馬の単勝を100円ずつ。'
         f'帯としきい値は 2026-08-08〜11-08 の数字から選んだので、「通算」は参考。見るのは {STAKE_FORMS_SINCE.isoformat()} 以降。'
-        '固定形の4週判定（12-01）の材料で、根拠は決定ログ 2026-11-11。', '',
+        '固定形の節目（100R）の材料で、根拠は決定ログ 2026-11-11・2026-11-17。', '',
         f'| 買い方 | {STAKE_FORMS_SINCE.isoformat()}〜 | 通算（参考） |', '|---|---|---|',
     ]
 
@@ -704,6 +712,7 @@ def review_race(race, result, check, prestart_check=None):
         'org': race.org or 'jra',
         'name': race.name,
         'venue': race.venue,
+        'skip_reason': race.skip_reason,
         'confidence': race.confidence,
         'marks': race.marks,
         'blocked': bool(check.get('blocked')) if check else False,
@@ -976,7 +985,119 @@ def _checkpoint_status(n_now, n_prev, z):
             'next': upcoming}
 
 
-def fixed_form_tracking(history, end):
+# **◎のオッズ帯別の追跡（2026-11-17・ユーザー承認）。** 中央の◎179Rでは、優位が単勝2.5〜7倍の◎に集中し、
+# 2.5倍未満の◎は見込みどおり（12勝/13.1）、2.5倍以上では複勝が単勝を下回った（docs/調査/改善点_2026-11-17.md の5）。
+# 区切りは同じデータを見て決めたので仮説。**区切りは 2026-11-17 の値で固定し、後から動かさない**
+# （結果を見て動かすと、また「良く見える帯」を選ぶことになる）。判定は 100R の節目（FIXED_FORM_CHECKPOINTS）で、
+# 通算（固定した区切り）で見て、後の期間（11-03〜）が逆を向いていないことを条件にする。買い方は変えない。
+HONMEI_ODDS_BANDS = [(None, 2.5, '2.5倍未満'), (2.5, 7.0, '2.5〜7倍'), (7.0, None, '7倍以上')]
+
+
+def _honmei_band_row(entry):
+    """中央の1レースを (帯, 勝ったか, 市場の勝率, 単勝の払戻, 複勝の払戻) にする。比べられなければ None。"""
+    rows = entry.get('horse_rows') or []
+    bets_ = entry.get('simple_bets') or {}
+    honmei = [r for r in rows if r['group'] == '◎']
+    if len(honmei) != 1 or not all(r['odds'] for r in rows):
+        return None
+    win_b, place_b = bets_.get('◎単勝'), bets_.get('◎複勝')
+    if not win_b or not place_b:
+        return None
+    h = honmei[0]
+    band = next(label for lo, hi, label in HONMEI_ODDS_BANDS
+                if (lo is None or h['odds'] >= lo) and (hi is None or h['odds'] < hi))
+    p = (1.0 / h['odds']) / sum(1.0 / r['odds'] for r in rows)
+    return band, h['rank'] == 1, p, win_b['returned'], place_b['returned']
+
+
+def honmei_odds_bands(history, end, since=None):
+    """◎のオッズ帯ごとに、勝ち（実数/見込み）と◎単勝・◎複勝の回収率を出す。見送ったレースも含む。"""
+    out = {label: {'races': 0, 'wins': 0, 'expected': 0.0, 'win_ret': 0, 'place_ret': 0}
+           for _, _, label in HONMEI_ODDS_BANDS}
+    for day in history:
+        if day['date'] > end or (since and day['date'] < since):
+            continue
+        for e in day['entries']:
+            if e['org'] != 'jra':
+                continue
+            row = _honmei_band_row(e)
+            if not row:
+                continue
+            band, won, p, win_ret, place_ret = row
+            c = out[band]
+            c['races'] += 1
+            c['wins'] += won
+            c['expected'] += p
+            c['win_ret'] += win_ret
+            c['place_ret'] += place_ret
+    return out
+
+
+# **朝の「見送り」（skip_reason）の追跡（2026-11-17・ユーザー依頼）。** 固定形は毎レース買うのが前提だが、
+# 朝の予想が「混戦で確信が低い」等と skip_reason を書いたレースは買わない（第13章）。固定形の根拠になった仮想成績は
+# skip_reason の無い全レースで数えたので、この見送りは効き目を確かめていない絞り込みになっている
+# （11-07〜11-15 の中央24Rのうち7R。docs/調査/改善点_2026-11-17.md の2）。記録だけ。判定は節目の考え方
+# （◎の勝ちの z、100Rで見る）に合わせ、見送ったレースの◎が見込みを下回り続けるなら見送りは効いている、と読む。
+# 中央の skip_reason は今のところ全て主観の混戦判断（地方の「中央馬の近走欠落」のような客観条件は中央には無い）。
+
+
+def skip_reason_tracking(history, end, since=FIXED_FORM_SINCE):
+    """中央の確定レースを「朝の見送りあり／なし」に分け、◎の勝ち（実数/見込み）と◎単複の回収率を出す。"""
+    out = {k: {'races': 0, 'wins': 0, 'expected': 0.0, 'staked': 0, 'returned': 0}
+           for k in ('見送り', '買う')}
+    for day in history:
+        if day['date'] > end or day['date'] < since:
+            continue
+        for e in day['entries']:
+            if e['org'] != 'jra' or e['category'] == UNSETTLED:
+                continue
+            row = _honmei_band_row(e)
+            both = (e.get('simple_bets') or {}).get('◎単勝＋◎複勝')
+            if not row or not both:
+                continue
+            _, won, p, _, _ = row
+            c = out['見送り' if e.get('skip_reason') else '買う']
+            c['races'] += 1
+            c['wins'] += won
+            c['expected'] += p
+            c['staked'] += both['staked']
+            c['returned'] += both['returned']
+    return out
+
+
+def render_skip_reason(t):
+    """固定形の節に入れる「朝の見送り」の表（記録のみ）。"""
+    sk = t.get('skip_reason')
+    if not sk:
+        return []
+    lines = ['', '### 朝の見送り（skip_reason）の記録（11-03〜・記録のみ）', '',
+             '| 朝の判断 | レース | ◎の勝ち（実数/見込み） | ◎単複の回収率（仮想） |', '|---|---|---|---|']
+    for label, key in (('見送り（skip_reason あり）', '見送り'), ('買う', '買う')):
+        c = sk[key]
+        if c['races']:
+            lines.append(f"| {label} | {c['races']}R | {c['wins']}/{c['expected']:.1f} | "
+                         f"{c['returned'] / c['staked'] * 100:.0f}% |")
+        else:
+            lines.append(f'| {label} | 0R | — | — |')
+    lines += ['', '見送りが効いているなら、見送り側の◎が見込みを下回り、回収率も買う側より低くなる。'
+              '「買う」側には馬体重などで止めたレースも入る。根拠は決定ログ 2026-11-17。']
+    return lines
+
+
+def load_jra_races(data_dir=None):
+    """data_jra/ のレースを全部読む。読めなければ空。"""
+    out = []
+    try:
+        for path in sorted(glob.glob(os.path.join(data_dir or os.path.join(ROOT, 'data_jra'), '*.json'))):
+            with open(path, encoding='utf-8') as f:
+                out.extend(json.load(f))
+    except Exception:  # noqa: BLE001 - 付録の集計なので本体を止めない
+        logger.exception('data_jra の読み込みに失敗しました')
+        return []
+    return out
+
+
+def fixed_form_tracking(history, end, jra_races=None):
     """中央の固定形を採用日（FIXED_FORM_SINCE）以降だけで追う。
 
     採用後の中央の確定レースがまだ無ければ {'races': 0, 'days': 経過日数} を返す
@@ -1006,6 +1127,16 @@ def fixed_form_tracking(history, end):
     dated = [(day['date'], e['org'], e['horse_rows'])
              for day in history for e in day['entries'] if e.get('horse_rows') and day['date'] <= end]
     honmei_after = bet_gates.honmei_since(dated, 'jra', FIXED_FORM_SINCE)
+    # 2つ目の見込み（オッズ帯の実際の勝率）。予想したレースは物差しから外す（2026-11-17）。
+    curve = bet_gates.empirical_win_curve(
+        jra_races or [], exclude_ids={e.get('race_id') for day in history for e in day['entries']})
+    jra_dated = [(d, o, r) for d, o, r in dated if o == 'jra']
+    win_empirical = {
+        'after': bet_gates.empirical_win_stat(jra_dated, 'jra', FIXED_FORM_SINCE, curve if jra_races else None),
+        'before': bet_gates.empirical_win_stat([x for x in jra_dated if x[0] < FIXED_FORM_SINCE], 'jra',
+                                               date.min, curve if jra_races else None),
+        'horses': sum(n for _, n in curve),
+    }
     win = (honmei_after or {}).get('win') or {}
     win_z = win.get('z')
     n_now = win.get('n', 0)
@@ -1017,7 +1148,11 @@ def fixed_form_tracking(history, end):
         'roi_drop_max': ((returned - biggest) / staked) if staked else None,
         'days': elapsed,
         'honmei_after': honmei_after,
+        'win_empirical': win_empirical,
         'checkpoint': _checkpoint_status(n_now, n_prev, win_z),
+        'bands_after': honmei_odds_bands(history, end, FIXED_FORM_SINCE),
+        'bands_total': honmei_odds_bands(history, end),
+        'skip_reason': skip_reason_tracking(history, end),
         'honmei_before': bet_gates.honmei_since(
             [(d, o, r) for d, o, r in dated if d < FIXED_FORM_SINCE], 'jra', date.min),
         'legacy': {label: legacy(key, flag) for label, key, flag in (
@@ -1043,6 +1178,28 @@ def _checkpoint_text(t):
     if nxt:
         parts.append(f"次の節目は {nxt[0]}R（z {nxt[1]} 未満なら{nxt[2]}）。")
     return ''.join(parts)
+
+
+def _band_cell(c):
+    if not c['races']:
+        return '—'
+    n = c['races']
+    return (f"{n}R 勝ち{c['wins']}/{c['expected']:.1f}・単{c['win_ret'] / n:.0f}%・"
+            f"複{c['place_ret'] / n:.0f}%")
+
+
+def render_honmei_bands(t):
+    """固定形の節に入れる「◎のオッズ帯別」の表（観察のみ）。"""
+    after, total = t.get('bands_after'), t.get('bands_total')
+    if not after or not total:
+        return []
+    lines = ['', '### ◎のオッズ帯別（観察のみ・区切りは 2026-11-17 で固定）', '',
+             '| ◎の確定単勝 | 採用後（11-03〜） | 通算（参考） |', '|---|---|---|']
+    for _, _, label in HONMEI_ODDS_BANDS:
+        lines.append(f'| {label} | {_band_cell(after[label])} | {_band_cell(total[label])} |')
+    lines += ['', '「勝ち」は実数/市場の見込み、「単」「複」は◎単勝・◎複勝の回収率（見送ったレースも含む全レース）。'
+              '100Rの節目で、通算で2.5倍未満の◎・複勝の足を外すかを見る。採用後が逆を向いていたら見送る（決定ログ 2026-11-17）。']
+    return lines
 
 
 def _ratio_text(st):
@@ -1078,9 +1235,19 @@ def render_fixed_form(t):
         after = (t['honmei_after'] or {}).get(key)
         before = (t['honmei_before'] or {}).get(key)
         lines.append(f'| 2. ◎の{label}（実数/市場の見込み） | 採用後 {_ratio_text(after)} ／ 採用前 {_ratio_text(before)} |')
+        if key == 'win' and (t.get('win_empirical') or {}).get('horses'):
+            emp = t['win_empirical']
+            lines.append(f"| 2'. ◎の勝ち（実数/オッズ帯の実績の見込み） | 採用後 {_ratio_text(emp['after'])} ／ "
+                         f"採用前 {_ratio_text(emp['before'])} |")
     for label, v in t['legacy'].items():
         lines.append(f"| 3. 従来の判定「{label}」 | {v['races']}R、◎単勝{_pct_or_dash(v['◎単勝'])}・"
                      f"◎単複{_pct_or_dash(v['◎単勝＋◎複勝'])} |")
+    if (t.get('win_empirical') or {}).get('horses'):
+        lines += ['', f"2'は、data_jra の予想していないレースの全馬（{t['win_empirical']['horses']:,}頭）から確定単勝オッズの帯ごとの"
+                  '実際の勝率を出し、レース内で合計1に割り戻した見込み。比例配分（2）が人気馬を低く見積もるなら、2\'の倍率は2より小さく出る。'
+                  '判定（節目の z）は2のまま。並べて読むだけ（決定ログ 2026-11-17）。']
+    lines += render_honmei_bands(t)
+    lines += render_skip_reason(t)
     lines += ['', '2の見込みは、勝ちが確定単勝オッズを割り戻した市場の勝率、3着内が同じ人気の馬の実績率（bet_gates と同じ）。'
               '3は「買う」側が「見送る」側を後の期間で上回り続けたら、従来の組み立てをレースの選別に使う案（案E）を承認にかける。', '']
     return lines
@@ -1632,13 +1799,18 @@ def edge_report(week_days=()):
 
 # 記事由来の保留中の改善案（決定ログ 2026-10-16）。データが目安に届いたらメールで知らせる。
 # (キー, 見出し, 単位, 目安, 届いたらすること)
+# 案2（主観と市場の混ぜ合わせ）は 2026-11-11 に blend_subjective で採用したので外した（2026-11-17・ユーザー承認）。
 PENDING_PROPOSALS = (
-    ('blend', '案2 主観と市場の混ぜ合わせ', 'R', edge_check.READY_RACES,
-     '勝率の上限（CAP=1.5倍）を Benter 式の混ぜ合わせに置き換えるか、重みを当てはめて判断する'),
-    ('drift', '案3 ◎のオッズのずれを期待値に織り込む', '頭', edge_check.READY_DRIFT,
-     '検算の時刻別のずれを見て、割り引きを入れるか、買う判断を発走に近い検算に寄せるかを決める'),
     ('frame', '案5 枠順の減点をコース別にする', '鞍', 1500,
      '記事の枠順の判定（内有利・外有利がはっきりしたコース）と、手元の data_jra で向きが合うかを確かめてから実装する'),
+)
+
+# **止めている保留案（2026-11-17・ユーザー承認）。** 従来の組み立て（bet_builder）が実際に組の馬券を買う前提の物差しで、
+# 中央の固定形（◎単複、2026-11-03〜）の間は判断に使う場面が無い。量は数えず、知らせもしない。
+# 組の馬券を再開したら PENDING_PROPOSALS に戻し、再開日から数え直す（docs/追跡台帳.md）。
+DORMANT_PROPOSALS = (
+    ('drift', '案3 ◎のオッズのずれを期待値に織り込む', '頭', edge_check.READY_DRIFT,
+     '検算の時刻別のずれを見て、割り引きを入れるか、買う判断を発走に近い検算に寄せるかを決める'),
     ('hedge', '保険ワイドの相手を勝率の順にする', 'R', HEDGE_REVIEW_AT,
      '相手が違ったレースで、印の順と勝率の順の3着内・回収率（最大払戻を除いた値も）を比べて、どちらにするかを決める'),
 )
@@ -1659,12 +1831,8 @@ def count_jra_races(data_dir=None):
 
 def pending_status(edge_summary, jra_races, hedge_races=None):
     """保留中の改善案ごとに、いまの量と目安。量が取れないものは None。"""
-    drift = ((edge_summary or {}).get('drift') or {}).get('最後の検算') or {}
     now = {
-        'blend': edge_summary['total']['races'] if edge_summary else None,
-        'drift': drift.get('n') if edge_summary else None,
         'frame': jra_races,
-        'hedge': hedge_races,
     }
     return [{'key': key, 'label': label, 'unit': unit, 'target': target, 'todo': todo,
              'now': now[key], 'ready': now[key] is not None and now[key] >= target}
@@ -1681,7 +1849,8 @@ def render_pending(status):
         now = '—' if p['now'] is None else f"{p['now']}{p['unit']}"
         mark = ' **← 到達**' if p['ready'] else ''
         lines.append(f"| {p['label']} | {now}{mark} | {p['target']}{p['unit']} | {p['todo']} |")
-    lines.append('')
+    lines += ['', '止めている案（組の馬券を再開したら数え直す。決定ログ 2026-11-17）：'
+              + '、'.join(label for _, label, *_ in DORMANT_PROPOSALS), '']
     return lines
 
 
@@ -1776,6 +1945,8 @@ def render(collected, week_summary, total_summary, period, since_summary=None,
     lines.append(_totals_line('規律適用後（BLOCKを除いた実運用）', week_summary['disciplined']))
     diff = week_summary['disciplined']['profit'] - week_summary['virtual']['profit']
     lines.append(f'- **差引：{diff:+,}円**（プラスなら規律が損を防いだ、マイナスなら上振れを逃した）')
+    lines.append('- 2026-11-03〜の中央の固定形（◎単複）には合成オッズ・期待値の規律を掛けないので、'
+                 '差引が動くのは馬体重などで止めたレースがあった週だけ（決定ログ 2026-11-17）。')
     if week_summary['blocked']['races']:
         lines.append(_totals_line('  うち止めた分', week_summary['blocked']))
     lines.append('')
@@ -2121,7 +2292,7 @@ def main(argv=None):
     nar_bias_lines, _ = nar_bias_report(week)
     since_counts = since_counts_for(history)
     gate_lines, gate_line = gate_report(history, start)
-    fixed_form = fixed_form_tracking(history, end)
+    fixed_form = fixed_form_tracking(history, end, load_jra_races())
     filters = filter_tracking(history)
     stake_form_report = safe_stake_form_tracking(history)
     map_lines = bet_type_map_report()

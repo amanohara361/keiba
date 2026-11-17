@@ -80,3 +80,78 @@ def test_checkpoint_200_above_floor_continues():
     cp = t['checkpoint']
     assert cp['reached']['races'] == 200 and not cp['below'] and cp['next'] is None
     assert '続ける' in '\n'.join(review.render_fixed_form(t))
+
+
+def _band_entry(odds, won, win_ret, place_ret):
+    rows = [{'group': '◎', 'ninki': 1, 'rank': 1 if won else 2, 'odds': odds},
+            {'group': '', 'ninki': 2, 'rank': 2 if won else 1, 'odds': 3.0}]
+    return {'org': 'jra', 'category': review.SKIPPED, 'staked': 0, 'returned': 0, 'blocked': False,
+            'simple_bets': {'◎単勝': {'staked': 100, 'returned': win_ret},
+                            '◎複勝': {'staked': 100, 'returned': place_ret}},
+            'horse_rows': rows}
+
+
+def test_honmei_odds_bands_split_and_period():
+    h = _history([
+        (SINCE - timedelta(days=1), [_band_entry(2.0, True, 200, 110)]),     # 採用前・2.5倍未満
+        (SINCE + timedelta(days=4), [_band_entry(2.5, True, 250, 120),       # 境目の2.5倍は 2.5〜7倍
+                                     _band_entry(8.0, False, 0, 0),
+                                     dict(_band_entry(4.0, True, 400, 150), org='nar')]),  # 地方は数えない
+    ])
+    end = SINCE + timedelta(days=5)
+    total = review.honmei_odds_bands(h, end)
+    after = review.honmei_odds_bands(h, end, review.FIXED_FORM_SINCE)
+    assert total['2.5倍未満']['races'] == 1 and after['2.5倍未満']['races'] == 0
+    mid = after['2.5〜7倍']
+    assert (mid['races'], mid['wins'], mid['win_ret'], mid['place_ret']) == (1, 1, 250, 120)
+    assert abs(mid['expected'] - (1 / 2.5) / (1 / 2.5 + 1 / 3.0)) < 1e-9
+    assert after['7倍以上']['races'] == 1
+    text = '\n'.join(review.render_honmei_bands({'bands_after': after, 'bands_total': total}))
+    assert '| 2.5〜7倍 | 1R 勝ち1/0.5・単250%・複120% |' in text
+
+
+def test_bands_skip_races_without_full_odds():
+    e = _band_entry(3.0, True, 300, 130)
+    e['horse_rows'][1]['odds'] = None
+    assert review.honmei_odds_bands(_history([(SINCE, [e])]), SINCE)['2.5〜7倍']['races'] == 0
+
+
+def test_skip_reason_tracking_splits_races():
+    skip = dict(_band_entry(3.0, False, 0, 0), skip_reason='混戦')
+    buy = dict(_band_entry(3.0, True, 300, 130), simple_bets={
+        '◎単勝': {'staked': 100, 'returned': 300}, '◎複勝': {'staked': 100, 'returned': 130},
+        '◎単勝＋◎複勝': {'staked': 200, 'returned': 430}})
+    skip['simple_bets']['◎単勝＋◎複勝'] = {'staked': 200, 'returned': 0}
+    old = dict(skip)  # 採用前は数えない
+    h = _history([(SINCE - timedelta(days=1), [old]), (SINCE + timedelta(days=4), [skip, buy])])
+    t = review.skip_reason_tracking(h, SINCE + timedelta(days=5))
+    assert (t['見送り']['races'], t['見送り']['wins'], t['見送り']['returned']) == (1, 0, 0)
+    assert (t['買う']['races'], t['買う']['wins'], t['買う']['returned']) == (1, 1, 430)
+    text = '\n'.join(review.render_skip_reason({'skip_reason': t}))
+    assert '| 買う | 1R | 1/0.5 | 215% |' in text
+
+
+def test_empirical_win_curve_and_stat():
+    import bet_gates
+    races = [
+        {'race_id': 'A', 'horses': [{'着順': 1, '単勝': '2.0'}, {'着順': 2, '単勝': '4.0'}]},
+        {'race_id': 'B', 'horses': [{'着順': 2, '単勝': '2.0'}, {'着順': 1, '単勝': '4.0'},
+                                    {'着順': '中止', '単勝': '9.0'}]},
+        {'race_id': 'X', 'horses': [{'着順': 1, '単勝': '2.0'}]},  # 予想したレースは外す
+    ]
+    curve = bet_gates.empirical_win_curve(races, exclude_ids={'X'})
+    two, four = curve[bet_gates._odds_bin(2.0)], curve[bet_gates._odds_bin(4.0)]
+    assert two == [1, 2] and four == [1, 2]
+    rows = [{'group': '◎', 'ninki': 1, 'rank': 1, 'odds': 2.0}, {'group': '', 'ninki': 2, 'rank': 2, 'odds': 4.0}]
+    st = bet_gates.empirical_win_stat([(SINCE, 'jra', rows)], 'jra', SINCE, curve)
+    assert st['n'] == 1 and st['actual'] == 1 and abs(st['expected'] - 0.5) < 1e-9
+    assert bet_gates.empirical_win_stat([(SINCE, 'jra', rows)], 'jra', SINCE, None) is None
+
+
+def test_fixed_form_shows_empirical_row_only_with_data():
+    h = _history([(SINCE + timedelta(days=4), [_entry(200, 320, hit_win=True)])])
+    plain = review.fixed_form_tracking(h, SINCE + timedelta(days=5))
+    assert "2'." not in '\n'.join(review.render_fixed_form(plain))
+    races = [{'race_id': 'Z', 'horses': [{'着順': 1, '単勝': '2.0'}, {'着順': 2, '単勝': '4.0'}]}]
+    t = review.fixed_form_tracking(h, SINCE + timedelta(days=5), races)
+    assert "2'. ◎の勝ち（実数/オッズ帯の実績の見込み）" in '\n'.join(review.render_fixed_form(t))
