@@ -129,3 +129,29 @@ def test_skip_reason_tracking_splits_races():
     assert (t['買う']['races'], t['買う']['wins'], t['買う']['returned']) == (1, 1, 430)
     text = '\n'.join(review.render_skip_reason({'skip_reason': t}))
     assert '| 買う | 1R | 1/0.5 | 215% |' in text
+
+
+def test_empirical_win_curve_and_stat():
+    import bet_gates
+    races = [
+        {'race_id': 'A', 'horses': [{'着順': 1, '単勝': '2.0'}, {'着順': 2, '単勝': '4.0'}]},
+        {'race_id': 'B', 'horses': [{'着順': 2, '単勝': '2.0'}, {'着順': 1, '単勝': '4.0'},
+                                    {'着順': '中止', '単勝': '9.0'}]},
+        {'race_id': 'X', 'horses': [{'着順': 1, '単勝': '2.0'}]},  # 予想したレースは外す
+    ]
+    curve = bet_gates.empirical_win_curve(races, exclude_ids={'X'})
+    two, four = curve[bet_gates._odds_bin(2.0)], curve[bet_gates._odds_bin(4.0)]
+    assert two == [1, 2] and four == [1, 2]
+    rows = [{'group': '◎', 'ninki': 1, 'rank': 1, 'odds': 2.0}, {'group': '', 'ninki': 2, 'rank': 2, 'odds': 4.0}]
+    st = bet_gates.empirical_win_stat([(SINCE, 'jra', rows)], 'jra', SINCE, curve)
+    assert st['n'] == 1 and st['actual'] == 1 and abs(st['expected'] - 0.5) < 1e-9
+    assert bet_gates.empirical_win_stat([(SINCE, 'jra', rows)], 'jra', SINCE, None) is None
+
+
+def test_fixed_form_shows_empirical_row_only_with_data():
+    h = _history([(SINCE + timedelta(days=4), [_entry(200, 320, hit_win=True)])])
+    plain = review.fixed_form_tracking(h, SINCE + timedelta(days=5))
+    assert "2'." not in '\n'.join(review.render_fixed_form(plain))
+    races = [{'race_id': 'Z', 'horses': [{'着順': 1, '単勝': '2.0'}, {'着順': 2, '単勝': '4.0'}]}]
+    t = review.fixed_form_tracking(h, SINCE + timedelta(days=5), races)
+    assert "2'. ◎の勝ち（実数/オッズ帯の実績の見込み）" in '\n'.join(review.render_fixed_form(t))

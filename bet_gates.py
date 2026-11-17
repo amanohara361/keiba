@@ -239,3 +239,69 @@ def mail_line(analysis):
         return None
     return ('券種の解禁条件の目安に届いた：' + '、'.join(ready)
             + '（後の期間で数え直してから承認にかける。詳細は週次レビューの .md）')
+
+
+# ----------------------------------------------------------------------
+# 見込みの2つ目の出し方：オッズ帯ごとの実際の勝率（2026-11-17・ユーザー依頼）
+# ----------------------------------------------------------------------
+# 上の「勝ち」の見込みは、1/オッズをレース内で割り戻した比例配分。一般に人気馬ほど控除後の回収率が高い
+# （本命・大穴バイアス）ので、比例配分は人気馬の本当の勝率をやや低く見積もり、◎（多くは1〜3番人気）の
+# 「実勝/見込み」を高めに見せうる（docs/調査/改善点_2026-11-17.md の4）。そこで data_jra/ の全馬から、
+# 確定単勝オッズの帯ごとに実際の勝率を出し、それをレース内で合計1に割り戻した値を2つ目の見込みにする。
+# 予想した（印を打った）レースは物差しから外す（自分の成績で物差しを作らないため）。判定は比例配分のまま。並べて読むだけ。
+EMPIRICAL_ODDS_EDGES = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0, 50.0, 100.0]
+
+
+def _odds_bin(odds):
+    i = 0
+    for k, edge in enumerate(EMPIRICAL_ODDS_EDGES):
+        if odds >= edge:
+            i = k
+    return i
+
+
+def empirical_win_curve(jra_races, exclude_ids=()):
+    """data_jra の形のレース一覧から、オッズ帯ごとの (勝ち数, 頭数) を数える。
+
+    jra_races は [{'race_id', 'horses': [{'着順', '単勝'}]}]。単勝か着順が読めない馬は飛ばす
+    （取消・除外・中止）。exclude_ids のレースは数えない。
+    """
+    exclude = set(exclude_ids)
+    counts = [[0, 0] for _ in EMPIRICAL_ODDS_EDGES]
+    for race in jra_races:
+        if str(race.get('race_id')) in exclude:
+            continue
+        for h in race.get('horses') or []:
+            try:
+                odds = float(h.get('単勝'))
+                rank = int(h.get('着順'))
+            except (TypeError, ValueError):
+                continue
+            c = counts[_odds_bin(odds)]
+            c[0] += rank == 1
+            c[1] += 1
+    return counts
+
+
+def empirical_win_stat(dated_races, org, since, curve):
+    """◎の勝ちを、オッズ帯の実際の勝率（レース内で割り戻し）の見込みと比べる。比べられなければ None。"""
+    if not curve:
+        return None
+    rates = [(w / n) if n else None for w, n in curve]
+    c = {'n': 0, 'actual': 0, 'expected': 0.0, 'var': 0.0}
+    for d, o, rows in dated_races:
+        if o != org or d < since or not all(r['odds'] for r in rows):
+            continue
+        raw = [rates[_odds_bin(r['odds'])] for r in rows]
+        if any(x is None for x in raw) or not sum(raw):
+            continue
+        total = sum(raw)
+        for r, x in zip(rows, raw):
+            if r['group'] != '◎':
+                continue
+            p = x / total
+            c['n'] += 1
+            c['actual'] += r['rank'] == 1
+            c['expected'] += p
+            c['var'] += p * (1 - p)
+    return _stat(c) if c['n'] else None

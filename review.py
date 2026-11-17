@@ -1084,7 +1084,20 @@ def render_skip_reason(t):
     return lines
 
 
-def fixed_form_tracking(history, end):
+def load_jra_races(data_dir=None):
+    """data_jra/ のレースを全部読む。読めなければ空。"""
+    out = []
+    try:
+        for path in sorted(glob.glob(os.path.join(data_dir or os.path.join(ROOT, 'data_jra'), '*.json'))):
+            with open(path, encoding='utf-8') as f:
+                out.extend(json.load(f))
+    except Exception:  # noqa: BLE001 - 付録の集計なので本体を止めない
+        logger.exception('data_jra の読み込みに失敗しました')
+        return []
+    return out
+
+
+def fixed_form_tracking(history, end, jra_races=None):
     """中央の固定形を採用日（FIXED_FORM_SINCE）以降だけで追う。
 
     採用後の中央の確定レースがまだ無ければ {'races': 0, 'days': 経過日数} を返す
@@ -1114,6 +1127,16 @@ def fixed_form_tracking(history, end):
     dated = [(day['date'], e['org'], e['horse_rows'])
              for day in history for e in day['entries'] if e.get('horse_rows') and day['date'] <= end]
     honmei_after = bet_gates.honmei_since(dated, 'jra', FIXED_FORM_SINCE)
+    # 2つ目の見込み（オッズ帯の実際の勝率）。予想したレースは物差しから外す（2026-11-17）。
+    curve = bet_gates.empirical_win_curve(
+        jra_races or [], exclude_ids={e.get('race_id') for day in history for e in day['entries']})
+    jra_dated = [(d, o, r) for d, o, r in dated if o == 'jra']
+    win_empirical = {
+        'after': bet_gates.empirical_win_stat(jra_dated, 'jra', FIXED_FORM_SINCE, curve if jra_races else None),
+        'before': bet_gates.empirical_win_stat([x for x in jra_dated if x[0] < FIXED_FORM_SINCE], 'jra',
+                                               date.min, curve if jra_races else None),
+        'horses': sum(n for _, n in curve),
+    }
     win = (honmei_after or {}).get('win') or {}
     win_z = win.get('z')
     n_now = win.get('n', 0)
@@ -1125,6 +1148,7 @@ def fixed_form_tracking(history, end):
         'roi_drop_max': ((returned - biggest) / staked) if staked else None,
         'days': elapsed,
         'honmei_after': honmei_after,
+        'win_empirical': win_empirical,
         'checkpoint': _checkpoint_status(n_now, n_prev, win_z),
         'bands_after': honmei_odds_bands(history, end, FIXED_FORM_SINCE),
         'bands_total': honmei_odds_bands(history, end),
@@ -1211,9 +1235,17 @@ def render_fixed_form(t):
         after = (t['honmei_after'] or {}).get(key)
         before = (t['honmei_before'] or {}).get(key)
         lines.append(f'| 2. ◎の{label}（実数/市場の見込み） | 採用後 {_ratio_text(after)} ／ 採用前 {_ratio_text(before)} |')
+        if key == 'win' and (t.get('win_empirical') or {}).get('horses'):
+            emp = t['win_empirical']
+            lines.append(f"| 2'. ◎の勝ち（実数/オッズ帯の実績の見込み） | 採用後 {_ratio_text(emp['after'])} ／ "
+                         f"採用前 {_ratio_text(emp['before'])} |")
     for label, v in t['legacy'].items():
         lines.append(f"| 3. 従来の判定「{label}」 | {v['races']}R、◎単勝{_pct_or_dash(v['◎単勝'])}・"
                      f"◎単複{_pct_or_dash(v['◎単勝＋◎複勝'])} |")
+    if (t.get('win_empirical') or {}).get('horses'):
+        lines += ['', f"2'は、data_jra の予想していないレースの全馬（{t['win_empirical']['horses']:,}頭）から確定単勝オッズの帯ごとの"
+                  '実際の勝率を出し、レース内で合計1に割り戻した見込み。比例配分（2）が人気馬を低く見積もるなら、2\'の倍率は2より小さく出る。'
+                  '判定（節目の z）は2のまま。並べて読むだけ（決定ログ 2026-11-17）。']
     lines += render_honmei_bands(t)
     lines += render_skip_reason(t)
     lines += ['', '2の見込みは、勝ちが確定単勝オッズを割り戻した市場の勝率、3着内が同じ人気の馬の実績率（bet_gates と同じ）。'
@@ -2260,7 +2292,7 @@ def main(argv=None):
     nar_bias_lines, _ = nar_bias_report(week)
     since_counts = since_counts_for(history)
     gate_lines, gate_line = gate_report(history, start)
-    fixed_form = fixed_form_tracking(history, end)
+    fixed_form = fixed_form_tracking(history, end, load_jra_races())
     filters = filter_tracking(history)
     stake_form_report = safe_stake_form_tracking(history)
     map_lines = bet_type_map_report()
