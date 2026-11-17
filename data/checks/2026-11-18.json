@@ -1,0 +1,142 @@
+[
+  {
+    "checked_at": "2026-11-18T08:09:05.899457+09:00",
+    "races": [
+      {
+        "race_id": "202611184411",
+        "name": "第59回ハイセイコー記念",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 2.2,
+          "2": 65.0,
+          "3": 15.5,
+          "4": 36.8,
+          "5": 100.5,
+          "6": 7.5,
+          "7": 27.6,
+          "8": 18.4,
+          "9": 8.0,
+          "10": 24.0,
+          "11": 6.9,
+          "12": 6.3
+        },
+        "win_ninki": {
+          "1": 1,
+          "2": 11,
+          "3": 6,
+          "4": 10,
+          "5": 12,
+          "6": 4,
+          "7": 9,
+          "8": 7,
+          "9": 5,
+          "10": 8,
+          "11": 3,
+          "12": 2
+        },
+        "priced_odds": {
+          "ワイド": {
+            "1-10": 5.8,
+            "1-3": 6.7
+          },
+          "馬連": {
+            "1-10": 12.8,
+            "1-3": 13.0
+          }
+        },
+        "bet_note": "地方は当面買い目を出しません（2026-11-03 ユーザー承認。どの買い方でも回収率82%以下のため。印・検算・仮想成績は続けます）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。朝の予想が見送りと判断（◎1は抜けているが2番手（11・12・6・9）が拮抗し、上位2頭が抜けた形にならない（地方の絞り込み目安））。実オッズが規律を満たしても買い目を出しません（勝負度C）。",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第59回ハイセイコー記念: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第59回ハイセイコー記念: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1600,
+          "weather": null,
+          "going": null
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "11": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 12
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 66
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 132
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 66
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 220
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-11-18 08:09:07"
+        }
+      }
+    ]
+  }
+]
