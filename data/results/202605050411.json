@@ -1,0 +1,232 @@
+{
+  "race_id": "202605050411",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 15,
+      "name": "エコロアルバ",
+      "ninki": 1,
+      "odds": 3.5
+    },
+    {
+      "rank": 2,
+      "umaban": 14,
+      "name": "ロジケープ",
+      "ninki": 4,
+      "odds": 7.8
+    },
+    {
+      "rank": 3,
+      "umaban": 10,
+      "name": "セフィロ",
+      "ninki": 5,
+      "odds": 8.5
+    },
+    {
+      "rank": 4,
+      "umaban": 11,
+      "name": "アルテヴェローチェ",
+      "ninki": 12,
+      "odds": 43.8
+    },
+    {
+      "rank": 5,
+      "umaban": 18,
+      "name": "フォーチュンタイム",
+      "ninki": 3,
+      "odds": 6.5
+    },
+    {
+      "rank": 6,
+      "umaban": 8,
+      "name": "マサノカナリア",
+      "ninki": 11,
+      "odds": 43.2
+    },
+    {
+      "rank": 7,
+      "umaban": 3,
+      "name": "ラケマーダ",
+      "ninki": 17,
+      "odds": 114.6
+    },
+    {
+      "rank": 8,
+      "umaban": 5,
+      "name": "マイネルチケット",
+      "ninki": 2,
+      "odds": 5.4
+    },
+    {
+      "rank": 9,
+      "umaban": 16,
+      "name": "ミトノオルフェ",
+      "ninki": 9,
+      "odds": 27.9
+    },
+    {
+      "rank": 10,
+      "umaban": 13,
+      "name": "ブルクトーア",
+      "ninki": 15,
+      "odds": 63.8
+    },
+    {
+      "rank": 11,
+      "umaban": 7,
+      "name": "カンシン",
+      "ninki": 7,
+      "odds": 17.8
+    },
+    {
+      "rank": 12,
+      "umaban": 1,
+      "name": "レイベリング",
+      "ninki": 18,
+      "odds": 124.8
+    },
+    {
+      "rank": 13,
+      "umaban": 12,
+      "name": "ルシード",
+      "ninki": 13,
+      "odds": 52.5
+    },
+    {
+      "rank": 14,
+      "umaban": 4,
+      "name": "サンダーストラック",
+      "ninki": 6,
+      "odds": 10.0
+    },
+    {
+      "rank": 15,
+      "umaban": 9,
+      "name": "タマモブラックタイ",
+      "ninki": 14,
+      "odds": 62.5
+    },
+    {
+      "rank": 16,
+      "umaban": 2,
+      "name": "エイシンディード",
+      "ninki": 10,
+      "odds": 36.6
+    },
+    {
+      "rank": 17,
+      "umaban": 6,
+      "name": "メイショウチタン",
+      "ninki": 16,
+      "odds": 81.4
+    },
+    {
+      "rank": 18,
+      "umaban": 17,
+      "name": "タガノアラリア",
+      "ninki": 8,
+      "odds": 22.5
+    }
+  ],
+  "non_finishers": [],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          15
+        ],
+        "yen": 350
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          15
+        ],
+        "yen": 160
+      },
+      {
+        "combination": [
+          14
+        ],
+        "yen": 220
+      },
+      {
+        "combination": [
+          10
+        ],
+        "yen": 240
+      }
+    ],
+    "枠連": [
+      {
+        "combination": [
+          7,
+          7
+        ],
+        "yen": 1150
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          14,
+          15
+        ],
+        "yen": 1430
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          14,
+          15
+        ],
+        "yen": 600
+      },
+      {
+        "combination": [
+          10,
+          15
+        ],
+        "yen": 800
+      },
+      {
+        "combination": [
+          10,
+          14
+        ],
+        "yen": 1170
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          15,
+          14
+        ],
+        "yen": 2510
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          10,
+          14,
+          15
+        ],
+        "yen": 4300
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          15,
+          14,
+          10
+        ],
+        "yen": 17340
+      }
+    ]
+  }
+}
