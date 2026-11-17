@@ -976,6 +976,54 @@ def _checkpoint_status(n_now, n_prev, z):
             'next': upcoming}
 
 
+# **◎のオッズ帯別の追跡（2026-11-17・ユーザー承認）。** 中央の◎179Rでは、優位が単勝2.5〜7倍の◎に集中し、
+# 2.5倍未満の◎は見込みどおり（12勝/13.1）、2.5倍以上では複勝が単勝を下回った（docs/調査/改善点_2026-11-17.md の5）。
+# 区切りは同じデータを見て決めたので仮説。**区切りは 2026-11-17 の値で固定し、後から動かさない**
+# （結果を見て動かすと、また「良く見える帯」を選ぶことになる）。判定は 100R の節目（FIXED_FORM_CHECKPOINTS）で、
+# 通算（固定した区切り）で見て、後の期間（11-03〜）が逆を向いていないことを条件にする。買い方は変えない。
+HONMEI_ODDS_BANDS = [(None, 2.5, '2.5倍未満'), (2.5, 7.0, '2.5〜7倍'), (7.0, None, '7倍以上')]
+
+
+def _honmei_band_row(entry):
+    """中央の1レースを (帯, 勝ったか, 市場の勝率, 単勝の払戻, 複勝の払戻) にする。比べられなければ None。"""
+    rows = entry.get('horse_rows') or []
+    bets_ = entry.get('simple_bets') or {}
+    honmei = [r for r in rows if r['group'] == '◎']
+    if len(honmei) != 1 or not all(r['odds'] for r in rows):
+        return None
+    win_b, place_b = bets_.get('◎単勝'), bets_.get('◎複勝')
+    if not win_b or not place_b:
+        return None
+    h = honmei[0]
+    band = next(label for lo, hi, label in HONMEI_ODDS_BANDS
+                if (lo is None or h['odds'] >= lo) and (hi is None or h['odds'] < hi))
+    p = (1.0 / h['odds']) / sum(1.0 / r['odds'] for r in rows)
+    return band, h['rank'] == 1, p, win_b['returned'], place_b['returned']
+
+
+def honmei_odds_bands(history, end, since=None):
+    """◎のオッズ帯ごとに、勝ち（実数/見込み）と◎単勝・◎複勝の回収率を出す。見送ったレースも含む。"""
+    out = {label: {'races': 0, 'wins': 0, 'expected': 0.0, 'win_ret': 0, 'place_ret': 0}
+           for _, _, label in HONMEI_ODDS_BANDS}
+    for day in history:
+        if day['date'] > end or (since and day['date'] < since):
+            continue
+        for e in day['entries']:
+            if e['org'] != 'jra':
+                continue
+            row = _honmei_band_row(e)
+            if not row:
+                continue
+            band, won, p, win_ret, place_ret = row
+            c = out[band]
+            c['races'] += 1
+            c['wins'] += won
+            c['expected'] += p
+            c['win_ret'] += win_ret
+            c['place_ret'] += place_ret
+    return out
+
+
 def fixed_form_tracking(history, end):
     """中央の固定形を採用日（FIXED_FORM_SINCE）以降だけで追う。
 
@@ -1018,6 +1066,8 @@ def fixed_form_tracking(history, end):
         'days': elapsed,
         'honmei_after': honmei_after,
         'checkpoint': _checkpoint_status(n_now, n_prev, win_z),
+        'bands_after': honmei_odds_bands(history, end, FIXED_FORM_SINCE),
+        'bands_total': honmei_odds_bands(history, end),
         'honmei_before': bet_gates.honmei_since(
             [(d, o, r) for d, o, r in dated if d < FIXED_FORM_SINCE], 'jra', date.min),
         'legacy': {label: legacy(key, flag) for label, key, flag in (
@@ -1043,6 +1093,28 @@ def _checkpoint_text(t):
     if nxt:
         parts.append(f"次の節目は {nxt[0]}R（z {nxt[1]} 未満なら{nxt[2]}）。")
     return ''.join(parts)
+
+
+def _band_cell(c):
+    if not c['races']:
+        return '—'
+    n = c['races']
+    return (f"{n}R 勝ち{c['wins']}/{c['expected']:.1f}・単{c['win_ret'] / n:.0f}%・"
+            f"複{c['place_ret'] / n:.0f}%")
+
+
+def render_honmei_bands(t):
+    """固定形の節に入れる「◎のオッズ帯別」の表（観察のみ）。"""
+    after, total = t.get('bands_after'), t.get('bands_total')
+    if not after or not total:
+        return []
+    lines = ['', '### ◎のオッズ帯別（観察のみ・区切りは 2026-11-17 で固定）', '',
+             '| ◎の確定単勝 | 採用後（11-03〜） | 通算（参考） |', '|---|---|---|']
+    for _, _, label in HONMEI_ODDS_BANDS:
+        lines.append(f'| {label} | {_band_cell(after[label])} | {_band_cell(total[label])} |')
+    lines += ['', '「勝ち」は実数/市場の見込み、「単」「複」は◎単勝・◎複勝の回収率（見送ったレースも含む全レース）。'
+              '100Rの節目で、通算で2.5倍未満の◎・複勝の足を外すかを見る。採用後が逆を向いていたら見送る（決定ログ 2026-11-17）。']
+    return lines
 
 
 def _ratio_text(st):
@@ -1081,6 +1153,7 @@ def render_fixed_form(t):
     for label, v in t['legacy'].items():
         lines.append(f"| 3. 従来の判定「{label}」 | {v['races']}R、◎単勝{_pct_or_dash(v['◎単勝'])}・"
                      f"◎単複{_pct_or_dash(v['◎単勝＋◎複勝'])} |")
+    lines += render_honmei_bands(t)
     lines += ['', '2の見込みは、勝ちが確定単勝オッズを割り戻した市場の勝率、3着内が同じ人気の馬の実績率（bet_gates と同じ）。'
               '3は「買う」側が「見送る」側を後の期間で上回り続けたら、従来の組み立てをレースの選別に使う案（案E）を承認にかける。', '']
     return lines
