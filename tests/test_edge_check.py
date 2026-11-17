@@ -149,28 +149,27 @@ def _edge_summary(races, drift_n):
 def test_保留中の改善案は目安に届いたものだけ到達になる():
     status = review.pending_status(_edge_summary(edge_check.READY_RACES, 10), 1499)
     by_key = {p['key']: p for p in status}
-    assert by_key['blend']['ready'] and by_key['blend']['now'] == edge_check.READY_RACES
-    assert not by_key['drift']['ready']
+    assert set(by_key) == {'frame'}  # 案2は採用済み、案3・保険の相手は止めている（2026-11-17）
     assert not by_key['frame']['ready'] and by_key['frame']['now'] == 1499
+    assert review.pending_status(None, 1500)[0]['ready']
 
 
 def test_集計が無いときは量を出さず到達にもしない():
     status = review.pending_status(None, None)
     assert all(p['now'] is None and not p['ready'] for p in status)
-    assert '| 案2 主観と市場の混ぜ合わせ | — |' in '\n'.join(review.render_pending(status))
+    assert '| 案5 枠順の減点をコース別にする | — |' in '\n'.join(review.render_pending(status))
 
 
 def test_到達した案だけメール冒頭で知らせ進み具合は毎回1行出す():
     week = review.summarize([])
-    status = review.pending_status(_edge_summary(60, edge_check.READY_DRIFT), 729)
     body = review.render_mail(week, (date(2026, 10, 12), date(2026, 10, 18)), 'x.md',
-                              pending=status)
+                              pending=review.pending_status(None, 1500))
     assert '■ 保留中の改善案の検討どきです' in body
-    assert '  - 案3 ◎のオッズのずれを期待値に織り込む：' in body
-    assert '  - 案2 主観と市場の混ぜ合わせ：' not in body
-    assert f'保留中の改善案：案2 60/{edge_check.READY_RACES}R' in body
+    assert '  - 案5 枠順の減点をコース別にする：' in body
+    assert '保留中の改善案：案5 1500/1500鞍' in body
+    assert '案2' not in body
     quiet = review.render_mail(week, (date(2026, 10, 12), date(2026, 10, 18)), 'x.md',
-                               pending=review.pending_status(_edge_summary(60, 10), 729))
+                               pending=review.pending_status(None, 729))
     assert '検討どき' not in quiet
 
 

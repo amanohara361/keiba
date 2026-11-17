@@ -110,14 +110,16 @@ THRESHOLD_COUNTERS = [
     {'label': '減点・原則で切った馬の好走（3着以内の無印馬）', 'key': 'unmarked_good_runs',
      'note': '参考の件数（しきい値では知らせない）。原則が厳しすぎるかは「印と人気上位の比較」の表で判断する',
      'alert': False, 'since': None},
+    # 下の2つは、従来の組み立てが組の馬券を買う前提の物差し。固定形（◎単複）の間は止める（知らせない）。
+    # 組の馬券を再開したら alert を True に戻し、since を再開日に進めて数え直す（2026-11-17・ユーザー承認）。
     {'label': '規律遵守により逃した上振れ（止めたが的中していた）', 'key': 'missed_upside',
-     'note': '基準値（合成3.0倍・期待値1.2）が厳しすぎないかを検討する',
-     'alert': True, 'since': None},
+     'note': '【止めている：組の馬券を再開したら数え直す】基準値（合成3.0倍・期待値1.2）が厳しすぎないかを検討する',
+     'alert': False, 'since': None},
     # 2026-09-08 に保険ワイド（bet_builder._axis_hedge）を入れた。2026-11-03 に、
     # 全滅の割合と保険が付いた数で効き目を見ることにして、ここから数え直す。
     {'label': '◎一極集中で全滅（◎着外・他の印は3着以内）', 'key': 'honmei_wipeout',
-     'note': '保険ワイド（2026-09-08〜）が効いているかを、全滅の割合と保険の付いた数で見直す',
-     'alert': True, 'since': date(2026, 11, 3)},
+     'note': '【止めている：組の馬券を再開したら数え直す】保険ワイド（2026-09-08〜）が効いているかを、全滅の割合と保険の付いた数で見直す',
+     'alert': False, 'since': date(2026, 11, 3)},
 ]
 
 
@@ -1765,13 +1767,18 @@ def edge_report(week_days=()):
 
 # 記事由来の保留中の改善案（決定ログ 2026-10-16）。データが目安に届いたらメールで知らせる。
 # (キー, 見出し, 単位, 目安, 届いたらすること)
+# 案2（主観と市場の混ぜ合わせ）は 2026-11-11 に blend_subjective で採用したので外した（2026-11-17・ユーザー承認）。
 PENDING_PROPOSALS = (
-    ('blend', '案2 主観と市場の混ぜ合わせ', 'R', edge_check.READY_RACES,
-     '勝率の上限（CAP=1.5倍）を Benter 式の混ぜ合わせに置き換えるか、重みを当てはめて判断する'),
-    ('drift', '案3 ◎のオッズのずれを期待値に織り込む', '頭', edge_check.READY_DRIFT,
-     '検算の時刻別のずれを見て、割り引きを入れるか、買う判断を発走に近い検算に寄せるかを決める'),
     ('frame', '案5 枠順の減点をコース別にする', '鞍', 1500,
      '記事の枠順の判定（内有利・外有利がはっきりしたコース）と、手元の data_jra で向きが合うかを確かめてから実装する'),
+)
+
+# **止めている保留案（2026-11-17・ユーザー承認）。** 従来の組み立て（bet_builder）が実際に組の馬券を買う前提の物差しで、
+# 中央の固定形（◎単複、2026-11-03〜）の間は判断に使う場面が無い。量は数えず、知らせもしない。
+# 組の馬券を再開したら PENDING_PROPOSALS に戻し、再開日から数え直す（docs/追跡台帳.md）。
+DORMANT_PROPOSALS = (
+    ('drift', '案3 ◎のオッズのずれを期待値に織り込む', '頭', edge_check.READY_DRIFT,
+     '検算の時刻別のずれを見て、割り引きを入れるか、買う判断を発走に近い検算に寄せるかを決める'),
     ('hedge', '保険ワイドの相手を勝率の順にする', 'R', HEDGE_REVIEW_AT,
      '相手が違ったレースで、印の順と勝率の順の3着内・回収率（最大払戻を除いた値も）を比べて、どちらにするかを決める'),
 )
@@ -1792,12 +1799,8 @@ def count_jra_races(data_dir=None):
 
 def pending_status(edge_summary, jra_races, hedge_races=None):
     """保留中の改善案ごとに、いまの量と目安。量が取れないものは None。"""
-    drift = ((edge_summary or {}).get('drift') or {}).get('最後の検算') or {}
     now = {
-        'blend': edge_summary['total']['races'] if edge_summary else None,
-        'drift': drift.get('n') if edge_summary else None,
         'frame': jra_races,
-        'hedge': hedge_races,
     }
     return [{'key': key, 'label': label, 'unit': unit, 'target': target, 'todo': todo,
              'now': now[key], 'ready': now[key] is not None and now[key] >= target}
@@ -1814,7 +1817,8 @@ def render_pending(status):
         now = '—' if p['now'] is None else f"{p['now']}{p['unit']}"
         mark = ' **← 到達**' if p['ready'] else ''
         lines.append(f"| {p['label']} | {now}{mark} | {p['target']}{p['unit']} | {p['todo']} |")
-    lines.append('')
+    lines += ['', '止めている案（組の馬券を再開したら数え直す。決定ログ 2026-11-17）：'
+              + '、'.join(label for _, label, *_ in DORMANT_PROPOSALS), '']
     return lines
 
 

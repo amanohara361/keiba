@@ -388,8 +388,11 @@ def test_メール本文に収支と差引が入る():
     assert '差引' in body
 
 
-def test_しきい値到達はメール本文にも出す():
+def test_しきい値到達はメール本文にも出す(monkeypatch):
     # .md ファイルにしか出ないと、メールしか見ない運用では気づけない。
+    # 全滅のカウンタは固定形の間は止めている（2026-11-17）ので、知らせる設定に戻した場合で確かめる。
+    monkeypatch.setattr(review, 'THRESHOLD_COUNTERS', [
+        {**c, 'alert': True} if c['key'] == 'honmei_wipeout' else c for c in review.THRESHOLD_COUNTERS])
     week = review.summarize([])
     total = review.summarize(
         [entry(wipeout=True) for _ in range(review.COUNTER_THRESHOLD)])
@@ -400,8 +403,10 @@ def test_しきい値到達はメール本文にも出す():
     assert '◎一極集中で全滅' in body
 
 
-def test_判断した日より前の件数ではしきい値を知らせない():
+def test_判断した日より前の件数ではしきい値を知らせない(monkeypatch):
     # 2026-11-03：通算で判定していたので、判断した後も毎週通知が出続けていた。
+    monkeypatch.setattr(review, 'THRESHOLD_COUNTERS', [
+        {**c, 'alert': True} if c['key'] == 'honmei_wipeout' else c for c in review.THRESHOLD_COUNTERS])
     week = review.summarize([])
     total = review.summarize([entry(wipeout=True) for _ in range(32)])
     body = review.render_mail(week, (date(2026, 8, 3), date(2026, 8, 9)), 'x.md',
@@ -669,10 +674,18 @@ def test_発走前の検算は単勝オッズを持つ最後を採る(tmp_path, 
     assert got['202601020811']['win_odds'] == {'1': 2.5}
 
 
-def test_保険の相手の比較は保留中の改善案に載る():
+def test_組の馬券が前提の保留案とカウンタは止めている():
+    """固定形（◎単複）の間は判断に使えないので数えず知らせない（2026-11-17）。案2は採用済みなので外した。"""
     status = review.pending_status(None, None, review.HEDGE_REVIEW_AT)
-    hedge = next(p for p in status if p['key'] == 'hedge')
-    assert hedge['ready'] and hedge['now'] == review.HEDGE_REVIEW_AT
+    keys = {p['key'] for p in status}
+    assert not keys & {'blend', 'drift', 'hedge'}
+    text = '\n'.join(review.render_pending(status))
+    assert '止めている案' in text and '保険ワイドの相手' in text and '案3' in text
+    week = review.summarize([])
+    total = review.summarize([entry(wipeout=True) for _ in range(review.COUNTER_THRESHOLD)])
+    body = review.render_mail(week, (date(2026, 8, 3), date(2026, 8, 9)), 'x.md', total_summary=total,
+                              since_counts={'honmei_wipeout': review.COUNTER_THRESHOLD})
+    assert 'メソッド見直しの検討どきです' not in body
 
 
 # ----------------------------------------------------------------------
