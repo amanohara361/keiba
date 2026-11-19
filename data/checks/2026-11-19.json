@@ -1420,5 +1420,60 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-11-20T01:29:34.675053+09:00",
+    "races": [
+      {
+        "race_id": "202611194711",
+        "name": "第22回笠松グランプリ",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第22回笠松グランプリ: 既に発走しています（発走 15:45 / 現在 01:29）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611194411",
+        "name": "’26ローズベール賞",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "’26ローズベール賞: 既に発走しています（発走 20:10 / 現在 01:29）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
