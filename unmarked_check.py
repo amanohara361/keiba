@@ -15,6 +15,10 @@
   - 負けを理由に書いているのに `loss_date` が無い
 
 `make_bets.py --show`（朝の push 前の自己点検）が呼ぶ。知らせるだけで、push は止めない。
+
+2026-11-21〜、reason に「負け以外の理由」（下の OTHER_REASON）を見出しにして中身を書いた馬は、
+条件違いがあっても ⚠ ではなく ✓ で出す。理由を書き足した後も ⚠ が残り続け、1日30件ほど並んで
+本当に直すべき馬が埋もれたため（docs/決定ログ.md 2026-11-21）。理由の中身の良し悪しは判断しない。
 地方のカードの着差は「前の馬との差」（馬身）なので、勝ち馬との差は2着のときしか出せない。
 
 外部ライブラリは使わない。
@@ -33,6 +37,18 @@ DISTANCE_GAP = 400      # 距離が違うとみなす差（北野特別：1600m 
 # reason に負けを書いているかの目安。「着差」「前走1着」なども拾うが、
 # 知らせるだけなので取りこぼしより拾いすぎを選ぶ。
 LOSS_WORDS = re.compile(r'大敗|崩れ|凡走|負け|敗|\d+着|着差|秒差|\d\.\d差')
+
+# 負けのほかに切る理由を書いた印（docs/朝タスク手順.md「無印にした理由を書く」）。
+# 見出しだけで中身が無い書き方を通さないよう、後ろに OTHER_REASON_MIN 字以上を求める。
+OTHER_REASON = re.compile(r'負け以外の理由|負け以外に切る理由|実力不足の別の証拠|それでも(?:切る|下げる)理由')
+OTHER_REASON_MIN = 10
+
+WARN, OK, INFO = 'warn', 'ok', 'info'   # ⚠ 直す／✓ 負け以外の理由あり／基準どおり
+
+
+def has_other_reason(reason):
+    m = OTHER_REASON.search(reason or '')
+    return bool(m) and len(re.sub(r'[\s：:、。は]', '', reason[m.end():])) >= OTHER_REASON_MIN
 
 
 def _digits(date_text):
@@ -136,13 +152,18 @@ def loss_flags(run, today):
 
 
 def check_race(race, card_race):
-    """[(馬番 or None, 知らせる文), ...] を返す。"""
+    """[(馬番 or None, 知らせる文), ...] を返す（重さは check_race_levels）。"""
+    return [(num, text) for num, text, _ in check_race_levels(race, card_race)]
+
+
+def check_race_levels(race, card_race):
+    """[(馬番 or None, 知らせる文, WARN/OK/INFO), ...] を返す。"""
     notes = []
     if not race.marks:
         return notes
     if not race.unmarked:
         notes.append((None, 'unmarked（無印にした理由）がありません。'
-                            '個別に吟味して無印にした馬を書いてください（docs/朝タスク手順.md「無印にした理由を書く」）'))
+                            '個別に吟味して無印にした馬を書いてください（docs/朝タスク手順.md「無印にした理由を書く」）', WARN))
         return notes
 
     kept = race.marked_horses | {p['umaban'] for p in race.partners}
@@ -152,32 +173,35 @@ def check_race(race, card_race):
     for u in race.unmarked:
         num = u['umaban']
         if num in kept:
-            notes.append((num, '印か partners にも入っています。unmarked から外してください'))
+            notes.append((num, '印か partners にも入っています。unmarked から外してください', WARN))
             continue
         loss_date = _digits(u.get('loss_date'))
         if not loss_date:
             if LOSS_WORDS.search(u.get('reason', '')):
                 notes.append((num, '負けを理由にしているのに loss_date がありません。'
-                                   'どの走りの負けかを日付で書いてください'))
+                                   'どの走りの負けかを日付で書いてください', WARN))
             continue
         if card_race is None:
-            notes.append((num, 'カードが見つからず、loss_date の走りを確かめられません'))
+            notes.append((num, 'カードが見つからず、loss_date の走りを確かめられません', WARN))
             continue
         runs = runs_of(entries.get(num) or {})
         run = next((r for r in runs if r['date'] == loss_date), None)
         if run is None:
             have = '・'.join(r['date'] for r in runs) or 'なし'
-            notes.append((num, f'loss_date {u["loss_date"]} の走りがカードの近走にありません（近走：{have}）'))
+            notes.append((num, f'loss_date {u["loss_date"]} の走りがカードの近走にありません（近走：{have}）', WARN))
             continue
         flags = loss_flags(run, today)
         text = describe(run)
         if not flags and run['margin'] is None and run['rank'] not in (None, 1):
             notes.append((num, f'{text} → 勝ち馬との差がカードから出せません'
-                               '（地方は前の馬との差）。着差を確かめてから切ってください'))
+                               '（地方は前の馬との差）。着差を確かめてから切ってください', WARN))
+        elif flags and has_other_reason(u.get('reason')):
+            notes.append((num, f'{text} → ' + '／'.join(flags)
+                          + '。負け以外の理由あり（中身は reason を読んで確かめる）', OK))
         elif flags:
             notes.append((num, f'{text} → ' + '／'.join(flags)
                           + '。この負けだけでは切らない（検証ノート注意点 2026-10-27・11-03）。'
-                            'partners に残すか、それでも切る理由を reason に足してください'))
+                            'partners に残すか、「負け以外の理由：」に続けて切る理由を reason に足してください', WARN))
         else:
-            notes.append((num, f'{text}（基準どおりの負け）'))
+            notes.append((num, f'{text}（基準どおりの負け）', INFO))
     return notes
