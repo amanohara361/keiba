@@ -1025,6 +1025,8 @@
       "venue": "高知",
       "race_no": 5,
       "start_time": "17:15",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "10": 0.22,
         "3": 0.17,
