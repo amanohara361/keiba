@@ -125,3 +125,28 @@ def test_地方の3着以下は勝ち馬との差を確かめるよう知らせ�
              'going': '良', 'surface': 'ダート', 'distance': 1200, 'corners': [1, 1]}]}]}
     (_, text), = uc.check_race(race([{'umaban': 13, 'reason': '大敗', 'loss_date': '2026/07/30'}]), card)
     assert '前の馬との差' in text
+
+
+def test_負け以外の理由を書けば条件違いでも警告にしない():
+    r = race([{'umaban': 6, 'loss_date': '2026/10/04',
+               'reason': '京都大賞典12着。負け以外の理由：近5走の最初のコーナーがすべて10番手以下の追込で、前残りの想定では届かない'}])
+    (num, text, level), = uc.check_race_levels(r, jra_card())
+    assert num == 6 and level == uc.OK and '負け以外の理由あり' in text and '1.5秒未満' in text
+
+
+def test_見出しだけで中身が無ければ警告のまま():
+    r = race([{'umaban': 6, 'loss_date': '2026/10/04', 'reason': '京都大賞典12着。負け以外の理由：なし'}])
+    (_, text, level), = uc.check_race_levels(r, jra_card())
+    assert level == uc.WARN and 'この負けだけでは切らない' in text
+
+
+def test_負け以外の理由が無ければ警告():
+    r = race([{'umaban': 6, 'loss_date': '2026/10/04', 'reason': '京都大賞典12着'}])
+    (_, _, level), = uc.check_race_levels(r, jra_card())
+    assert level == uc.WARN
+
+
+def test_基準どおりの負けは警告にしない():
+    r = race([{'umaban': 6, 'reason': '1.8秒差', 'loss_date': '2025-11-02'}])
+    (_, _, level), = uc.check_race_levels(r, jra_card())
+    assert level == uc.INFO

@@ -421,10 +421,12 @@ def show(day):
             print('      書き方: docs/朝タスク手順.md「主観勝率の書き方」')
 
         # 無印にした理由とカードの近走の突き合わせ（2026-11-11）。知らせるだけで
-        # problems には数えない（push は止めない）。
-        for num, text in unmarked_check.check_race(
+        # problems には数えない（push は止めない）。直すべきものだけ ⚠、
+        # 負け以外の理由を書いた馬は ✓、基準どおりの負けは記号なし（2026-11-21）。
+        for num, text, level in unmarked_check.check_race_levels(
                 race, unmarked_check.load_card_race(day, race.race_id, race.org)):
-            print(f'    ⚠ 無印{num}: {text}' if num else f'    ⚠ {text}')
+            sign = {unmarked_check.WARN: '⚠', unmarked_check.OK: '✓'}.get(level, '・')
+            print(f'    {sign} 無印{num}: {text}' if num else f'    {sign} {text}')
 
         # 勝率を動かした理由の区分の欠け（2026-11-11）。同じく知らせるだけ。
         for num, text in reason_check.check_race(race):
