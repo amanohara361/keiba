@@ -952,11 +952,12 @@
     {
       "race_id": "202611225504",
       "org": "nar",
-      "source": "cloud-nar",
       "name": "サフラン賞Ｂ",
       "venue": "佐賀",
       "race_no": 4,
       "start_time": "17:00",
+      "confidence": "C",
+      "subjective_hit_rate": null,
       "win_probabilities": {
         "3": 0.3,
         "10": 0.17,
