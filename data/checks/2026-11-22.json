@@ -15149,5 +15149,415 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-11-22T16:09:40.332458+09:00",
+    "races": [
+      {
+        "race_id": "202605050510",
+        "name": "秋色S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "秋色S: 既に発走しています（発走 14:45 / 現在 16:09）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608050610",
+        "name": "西陣S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "西陣S: 既に発走しています（発走 15:00 / 現在 16:09）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605050511",
+        "name": "霜月S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "霜月S: 既に発走しています（発走 15:20 / 現在 16:09）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608050611",
+        "name": "マイルCS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "マイルCS: 既に発走しています（発走 15:40 / 現在 16:09）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605050512",
+        "name": "3歳以上2勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳以上2勝クラス: 既に発走しています（発走 16:05 / 現在 16:09）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608050612",
+        "name": "醍醐S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 44.1,
+          "2": 72.0,
+          "3": 25.1,
+          "4": 34.6,
+          "5": 125.6,
+          "6": 25.8,
+          "7": 82.7,
+          "8": 24.9,
+          "9": 18.3,
+          "10": 11.5,
+          "11": 1.5,
+          "12": 13.5,
+          "13": 5.5
+        },
+        "win_ninki": {
+          "1": 10,
+          "2": 11,
+          "3": 7,
+          "4": 9,
+          "5": 13,
+          "6": 8,
+          "7": 12,
+          "8": 6,
+          "9": 5,
+          "10": 3,
+          "11": 1,
+          "12": 4,
+          "13": 2
+        },
+        "priced_odds": {
+          "ワイド": {
+            "6-11": 6.1,
+            "1-11": 10.8
+          },
+          "馬連": {
+            "6-11": 17.3,
+            "1-11": 39.5
+          }
+        },
+        "bet_note": "朝の予想が見送りと判断（◎11は単勝2.2倍で、前走逃げ切り・昇級初戦の減点と外枠からの先行争いを考えると市場以上の勝率を置けない。2番人気13も良で勝ち切れず、3番手以下は先行争い次第の混戦）。見送り（勝負度C）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。朝の予想が見送りと判断（◎11は単勝2.2倍で、前走逃げ切り・昇級初戦の減点と外枠からの先行争いを考えると市場以上の勝率を置けない。2番人気13も良で勝ち切れず、3番手以下は先行争い次第の混戦）。実オッズが規律を満たしても買い目を出しません（勝負度C）。",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_ok",
+            "message": "醍醐S: 芝1200m / 天候:曇 / 馬場:良",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "醍醐S: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "going": "良",
+          "weather": "曇",
+          "surface": "芝",
+          "distance": 1200,
+          "female_only": false,
+          "weight_rule": "定量",
+          "race_terms": "5回 京都 6日目 サラ系３歳以上 ３勝クラス (混)(特指) 定量 13頭 本賞金:1870,750,470,280,187万円",
+          "turn": "右",
+          "loop": null,
+          "rail": "C",
+          "course_note": "右 C"
+        },
+        "weights": {
+          "1": {
+            "weight": 478,
+            "diff": -6,
+            "age": 5
+          },
+          "6": {
+            "weight": 510,
+            "diff": 2,
+            "age": 6
+          },
+          "8": {
+            "weight": 502,
+            "diff": 2,
+            "age": 5
+          },
+          "9": {
+            "weight": 480,
+            "diff": 10,
+            "age": 4
+          },
+          "10": {
+            "weight": 492,
+            "diff": 10,
+            "age": 6
+          },
+          "11": {
+            "weight": 450,
+            "diff": 6,
+            "age": 3
+          },
+          "13": {
+            "weight": 516,
+            "diff": 0,
+            "age": 5
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "3連複": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-11-22 16:09:26"
+            },
+            "ワイド": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-11-22 16:09:26"
+            },
+            "単勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-11-22 16:09:26"
+            },
+            "複勝": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-11-22 16:09:26"
+            },
+            "馬連": {
+              "status": "middle",
+              "reason": "result odds empty",
+              "official_datetime": "2026-11-22 16:09:26"
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-11-22 16:09:26"
+        }
+      },
+      {
+        "race_id": "202611225504",
+        "name": "サフラン賞Ｂ",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 9.6,
+          "2": 62.4,
+          "3": 2.7,
+          "4": 6.5,
+          "5": 9.3,
+          "6": 15.2,
+          "7": 7.4,
+          "8": 27.1,
+          "9": 13.2,
+          "10": 11.7,
+          "11": 9.3
+        },
+        "win_ninki": {
+          "1": 6,
+          "2": 11,
+          "3": 1,
+          "4": 2,
+          "5": 4,
+          "6": 9,
+          "7": 3,
+          "8": 10,
+          "9": 8,
+          "10": 7,
+          "11": 4
+        },
+        "priced_odds": {
+          "ワイド": {
+            "3-4": 4.2,
+            "3-5": 4.8,
+            "3-6": 12.3
+          },
+          "馬連": {
+            "3-4": 16.8,
+            "3-5": 12.9,
+            "3-6": 34.3
+          }
+        },
+        "bet_note": "地方は当面買い目を出しません（2026-11-03 ユーザー承認。どの買い方でも回収率82%以下のため。印・検算・仮想成績は続けます）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。朝の予想が見送りと判断（上位2頭が抜けた形ではない。3が少し上だが、10・7・1が0.1〜0.5秒圏に並ぶ。1と7のハナ争いの強さで先行と差しのどちらが来るかが変わり、馬単の並びを1つに決められない（地方の絞り込み目安））。実オッズが規律を満たしても買い目を出しません（勝負度C）。",
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "サフラン賞Ｂ: 馬場が「重」です（ダート1300m / 天候:曇 / 馬場:重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "サフラン賞Ｂ: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1300,
+          "weather": "曇",
+          "going": "重"
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 8
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 6
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 11
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 11
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 55
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 110
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 55
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 165
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-11-22 16:09:45"
+        }
+      }
+    ]
   }
 ]
