@@ -678,11 +678,14 @@ def main(argv=None):
     print(body)
     write_job_summary(body)
 
+    # 発走済みのレースは、発走前の最後の検算のオッズで買い目を見せる（2026-11-22）。
+    prestart = bets.load_prestart_snapshots(day)
+
     if not args.no_html:
-        report_html.save(report_html.render(sheet, verdicts, now))
+        report_html.save(report_html.render(sheet, verdicts, now, prestart))
 
     if not args.no_md:
-        report_md.save(report_md.render(sheet, verdicts, now), report_md.path_for(day))
+        report_md.save(report_md.render(sheet, verdicts, now, prestart), report_md.path_for(day))
 
     if not args.no_save:
         # 買い目（bet_builder が実オッズで組み直した bets・確定した confidence）

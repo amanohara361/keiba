@@ -303,3 +303,53 @@ def test_render_history_with_no_bets_file_shows_no_record(tmp_path, monkeypatch)
     out = report_html.render_history(date(2026, 8, 12))
 
     assert '記録が見つかりません' in out
+
+
+def test_render_history_発走後の検算が最後でも発走前のオッズで買い目を出す(tmp_path, monkeypatch):
+    """2026-11-22 マイルCS：発走後の検算（odds_meta.skipped）で買い目の表が空になっていた。"""
+    monkeypatch.setattr(bets, 'BETS_DIR', str(tmp_path / 'bets'))
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+
+    race = make_race(
+        name='発走済みテストS',
+        marks=[{'mark': '◎', 'umaban': 5}],
+        bets=[Bet('単勝', [5]), Bet('複勝', [5])],
+    )
+    bets.save_sheet(BetSheet(date=date(2026, 8, 12), races=[race], source='cloud'))
+    bets.save_check_result(date(2026, 8, 12), {
+        'checked_at': '2026-08-12T15:28:00+09:00',
+        'races': [{'race_id': race.race_id, 'blocked': False,
+                   'composite_odds': None, 'expected_value': None,
+                   'bet_odds': [{'bet': '単勝 5', 'odds': 7.4}, {'bet': '複勝 5', 'odds': 2.9}],
+                   'findings': [], 'conditions': {'going': '良'},
+                   'odds_meta': {'status': 'middle'}}],
+    })
+    bets.save_check_result(date(2026, 8, 12), {
+        'checked_at': '2026-08-12T15:53:00+09:00',
+        'races': [{'race_id': race.race_id, 'blocked': False,
+                   'composite_odds': None, 'expected_value': None,
+                   'bet_odds': [], 'findings': [], 'conditions': {},
+                   'odds_meta': {'skipped': '発走済みのため取得せず'}}],
+    })
+
+    out = report_html.render_history(date(2026, 8, 12))
+
+    assert '7.4倍' in out and '2.9倍' in out
+    assert '発走済み（発走前の最後の検算 15:28 のオッズ）' in out
+    assert '馬場 良' in out
+
+
+def test_load_prestart_snapshotsは発走後の検算を飛ばす(tmp_path, monkeypatch):
+    monkeypatch.setattr(bets, 'CHECKS_DIR', str(tmp_path / 'checks'))
+    day = date(2026, 8, 12)
+    assert bets.load_prestart_snapshots(day) == {}
+
+    bets.save_check_result(day, {'checked_at': '2026-08-12T15:00:00+09:00',
+                                 'races': [{'race_id': 'A', 'odds_meta': {'status': 'middle'}}]})
+    bets.save_check_result(day, {'checked_at': '2026-08-12T15:28:00+09:00',
+                                 'races': [{'race_id': 'A', 'odds_meta': {'status': 'middle'}}]})
+    bets.save_check_result(day, {'checked_at': '2026-08-12T15:53:00+09:00',
+                                 'races': [{'race_id': 'A', 'odds_meta': {'skipped': '発走済み'}}]})
+
+    snap = bets.load_prestart_snapshots(day)
+    assert snap['A']['checked_at'] == '2026-08-12T15:28:00+09:00'

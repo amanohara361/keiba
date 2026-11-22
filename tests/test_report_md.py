@@ -104,3 +104,48 @@ def test_path_for_and_save_roundtrip(tmp_path, monkeypatch):
     report_md.save('# hello', path)
     with open(path, encoding='utf-8') as f:
         assert f.read() == '# hello'
+
+
+# ----------------------------------------------------------------------
+# 発走済みのレース（2026-11-22 マイルCS：発走後の検算で買い目の表が空になった）
+# ----------------------------------------------------------------------
+
+def _started_verdict():
+    race = make_race(
+        name='マイルCS', venue='京都', race_no=11, start_time='15:40',
+        marks=[{'mark': '◎', 'umaban': 5}],
+        bets=[Bet('単勝', [5]), Bet('複勝', [5])],
+    )
+    verdict = review(race, meta={'skipped': '発走済みのため取得せず'},
+                     now=datetime(2026, 8, 12, 15, 53, tzinfo=JST))
+    return race, verdict
+
+
+def test_発走済みでも買い目の行は消えず発走前の最後の検算のオッズで出る():
+    race, verdict = _started_verdict()
+    prestart = {race.race_id: {
+        'checked_at': '2026-08-12T15:28:00+09:00',
+        'bet_odds': [{'bet': str(race.bets[0]), 'odds': 7.4},
+                     {'bet': str(race.bets[1]), 'odds': 2.9}],
+        'conditions': {'surface': '芝', 'distance': 1600, 'going': '良'},
+    }}
+
+    out = report_md.render(FakeSheet([race]), [verdict],
+                           datetime(2026, 8, 12, 15, 53, tzinfo=JST), prestart)
+
+    assert '| 単勝 | 5 | 7.4倍 | 100円 |' in out
+    assert '| 複勝 | 5 | 2.9倍 | 100円 |' in out
+    assert '発走済み（発走前の最後の検算 15:28 のオッズ）' in out
+    assert '芝1600m' in out and '馬場: 良' in out
+    assert '未取得' not in out
+
+
+def test_発走前の記録が無くても買い目の行は残る():
+    race, verdict = _started_verdict()
+
+    out = report_md.render(FakeSheet([race]), [verdict],
+                           datetime(2026, 8, 12, 15, 53, tzinfo=JST))
+
+    assert '| 単勝 | 5 | オッズ取得できず | 100円 |' in out
+    assert '| 複勝 | 5 | オッズ取得できず | 100円 |' in out
+    assert '発走済み（発走前の検算記録なし）' in out

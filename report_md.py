@@ -17,7 +17,6 @@ import os
 import bet_builder
 import conditions as conditions_module
 import discipline
-import odds as odds_module
 import report_html
 
 CHECKS_MD_DIR = os.path.join('data', 'checks_md')
@@ -33,14 +32,14 @@ def _status_label(verdict):
     return 'クリア'
 
 
-def _race_section(verdict, card_names):
+def _race_section(verdict, card_names, prestart=None):
     race = verdict.race
     name_of = report_html._horse_name(verdict, card_names)
+    shown_odds, odds_label, cond = report_html.bets_view(verdict, prestart)
 
     meta_bits = []
     if race.venue and race.race_no:
         meta_bits.append(f'{race.venue}{race.race_no}R')
-    cond = verdict.conditions or {}
     if cond.get('surface') and cond.get('distance'):
         meta_bits.append(f"{cond['surface']}{cond['distance']}m")
     if race.start_time:
@@ -80,11 +79,11 @@ def _race_section(verdict, card_names):
     if race.bets:
         lines.append('| 券種 | 組み合わせ | 実オッズ | 金額 |')
         lines.append('|---|---|---|---|')
-        for bet, odds_value in zip(race.bets, verdict.bet_odds):
+        for bet, odds_value in zip(race.bets, shown_odds):
             shown = f'{odds_value:.1f}倍' if odds_value else 'オッズ取得できず'
             lines.append(f'| {bet.type} | {bet.combination} | {shown} | {bet.stake}円 |')
         lines.append('')
-        if verdict.composite is not None:
+        if odds_label is None:
             ev = verdict.expected_value
             ev_text = f'{ev:.2f}' if ev is not None else '-'
             lines.append(
@@ -92,9 +91,7 @@ def _race_section(verdict, card_names):
                 f' / 期待値 {ev_text}（基準{discipline.MIN_EXPECTED_VALUE}）'
             )
         else:
-            status = (verdict.meta or {}).get('status')
-            label = odds_module.STATUS_LABELS.get(status, status or '未取得')
-            lines.append(f'実オッズ: {label}（合成オッズ・期待値は未計算）')
+            lines.append(odds_label)
         lines.append('')
     else:
         lines.append('買い目なし（勝負度Cまたは印のみ）')
@@ -121,7 +118,7 @@ def _race_section(verdict, card_names):
     return '\n'.join(lines)
 
 
-def render(sheet, verdicts, now):
+def render(sheet, verdicts, now, prestart=None):
     day = sheet.date
     card_names = report_html._horse_names(sheet)
 
@@ -135,7 +132,7 @@ def render(sheet, verdicts, now):
         '', '本検算は買い目設計の規律のみを見ています。印の判断には関与しません。', '',
     ]
     for v in verdicts:
-        lines.append(_race_section(v, card_names))
+        lines.append(_race_section(v, card_names, prestart))
     return '\n'.join(lines)
 
 

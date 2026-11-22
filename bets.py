@@ -479,3 +479,26 @@ def load_last_check(day):
     with open(path, encoding='utf-8') as f:
         history = json.load(f)
     return history[-1] if history else None
+
+
+def load_prestart_snapshots(day):
+    """レースごとに「発走前の最後の検算」を返す（{race_id: 保存済みの1レース分 + checked_at}）。
+
+    発走後の検算はオッズを取りに行かない（odds_meta.skipped）ので、bet_odds が空になる。
+    報告ページ（report_md / report_html）がそれをそのまま描くと、買い目の表が空になり
+    「購入したのに何も買っていない」ように見えていた（2026-11-22 マイルCSで発覚、
+    11/3 以降の土日に毎回起きていた）。発走済みのレースは、購入を決めた時点＝発走前の
+    最後の検算のオッズで見せるために使う。保存データ自体は書き換えない。
+    """
+    path = os.path.join(CHECKS_DIR, f'{day.isoformat()}.json')
+    if not os.path.exists(path):
+        return {}
+    with open(path, encoding='utf-8') as f:
+        history = json.load(f)
+    latest = {}
+    for entry in history:
+        for race in entry.get('races') or []:
+            if (race.get('odds_meta') or {}).get('skipped'):
+                continue
+            latest[str(race.get('race_id'))] = dict(race, checked_at=entry.get('checked_at'))
+    return latest
