@@ -213,6 +213,46 @@ def _gauge(label, value, threshold, unit=''):
       </div>'''
 
 
+def bets_view(verdict, prestart=None):
+    """買い目の表に出すオッズと、表の下の注記を決める（report_md と共用）。
+
+    戻り値は (オッズのリスト（race.bets と同じ長さ）, 注記 or None, 馬場などの条件)。
+    注記が None なのは、合成オッズ・期待値を表示できるとき。
+
+    発走済みのレースは検算がオッズを取りに行かず bet_odds が空なので、
+    発走前の最後の検算（bets.load_prestart_snapshots）のオッズを当てる。
+    以前は zip(race.bets, verdict.bet_odds) で組んでいたため、オッズが0件だと
+    買い目の行まで消えていた（2026-11-22 マイルCS）。
+    """
+    race = verdict.race
+    meta = verdict.meta or {}
+    cond = verdict.conditions or {}
+    odds = list(verdict.bet_odds or [])
+    note = None
+
+    if meta.get('skipped'):
+        snap = (prestart or {}).get(race.race_id)
+        if snap:
+            by_bet = {b.get('bet'): b.get('odds') for b in snap.get('bet_odds') or []}
+            odds = [by_bet.get(str(bet)) for bet in race.bets]
+            cond = cond or snap.get('conditions') or {}
+            at = snap.get('checked_at') or ''
+            try:
+                at = datetime.fromisoformat(at).strftime('%H:%M')
+            except ValueError:
+                pass
+            note = f'発走済み（発走前の最後の検算 {at} のオッズ）' if at else '発走済み（発走前の最後の検算のオッズ）'
+        else:
+            note = '発走済み（発走前の検算記録なし）'
+    elif verdict.composite is None:
+        status = meta.get('status')
+        label = odds_module.STATUS_LABELS.get(status, status or '未取得')
+        note = f'実オッズ: {label}（合成オッズ・期待値は未計算）'
+
+    odds = (odds + [None] * len(race.bets))[:len(race.bets)]
+    return odds, note, cond
+
+
 def _status_pill(verdict):
     if verdict.blocked:
         return '<span class="pill pill-critical">見送り（BLOCK）</span>'
@@ -223,14 +263,14 @@ def _status_pill(verdict):
     return '<span class="pill pill-good">クリア</span>'
 
 
-def _race_block(verdict, card_names):
+def _race_block(verdict, card_names, prestart=None):
     race = verdict.race
     name_of = _horse_name(verdict, card_names)
+    shown_odds, odds_label, cond = bets_view(verdict, prestart)
 
     meta_bits = []
     if race.venue and race.race_no:
         meta_bits.append(f'{race.venue}{race.race_no}R')
-    cond = verdict.conditions or {}
     if cond.get('surface') and cond.get('distance'):
         meta_bits.append(f"{cond['surface']}{cond['distance']}m")
     if race.start_time:
@@ -262,7 +302,7 @@ def _race_block(verdict, card_names):
     odds_note = ''
     if race.bets:
         rows = []
-        for bet, odds_value in zip(race.bets, verdict.bet_odds):
+        for bet, odds_value in zip(race.bets, shown_odds):
             shown = f'{odds_value:.1f}倍' if odds_value else 'オッズ取得できず'
             rows.append(
                 f'<tr><td>{_esc(bet.type)}</td><td>{_esc(bet.combination)}</td>'
@@ -276,7 +316,7 @@ def _race_block(verdict, card_names):
             + ''.join(rows) + '</tbody></table></div>'
         )
 
-        if verdict.composite is not None:
+        if odds_label is None:
             ev = verdict.expected_value
             gauges_html = '<div class="gauges">' + _gauge(
                 '合成オッズ', verdict.composite, discipline.MIN_COMPOSITE_ODDS, '倍')
@@ -284,9 +324,7 @@ def _race_block(verdict, card_names):
                 gauges_html += _gauge('期待値', ev, discipline.MIN_EXPECTED_VALUE)
             gauges_html += '</div>'
         else:
-            status = (verdict.meta or {}).get('status')
-            label = odds_module.STATUS_LABELS.get(status, status or '未取得')
-            odds_note = f'<div class="odds-note">実オッズ: {_esc(label)}（合成オッズ・期待値は未計算）</div>'
+            odds_note = f'<div class="odds-note">{_esc(odds_label)}</div>'
     else:
         bets_html = '<div class="no-bets">買い目なし（勝負度Cまたは印のみ）</div>'
 
@@ -351,7 +389,7 @@ def _race_block(verdict, card_names):
   </div>'''
 
 
-def render(sheet, verdicts, now):
+def render(sheet, verdicts, now, prestart=None):
     day = sheet.date
     card_names = _horse_names(sheet)
 
@@ -372,7 +410,7 @@ def render(sheet, verdicts, now):
       <div class="stat-note">買い目作成 {_esc(sheet.generated_at or "-")}</div></div>
   </div>'''
 
-    races_html = ''.join(_race_block(v, card_names) for v in verdicts)
+    races_html = ''.join(_race_block(v, card_names, prestart) for v in verdicts)
 
     return _page(
         eyebrow='直前検算（予想メソッド 第13章）',
@@ -502,7 +540,7 @@ def render_history(day):
 
     verdicts = [_SavedVerdict(race, saved_by_id.get(race.race_id, {})) for race in sheet.races]
     now = datetime.fromisoformat(checked_at) if checked_at else datetime.now(bets.JST)
-    return render(sheet, verdicts, now)
+    return render(sheet, verdicts, now, bets.load_prestart_snapshots(day))
 
 
 def _page(eyebrow, title, subtitle, body, footer):
