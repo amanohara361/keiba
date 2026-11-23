@@ -5995,5 +5995,210 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-11-24T06:38:04.555466+09:00",
+    "races": [
+      {
+        "race_id": "202611233612",
+        "name": "第２４回 トウケイニセイ記念オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第２４回 トウケイニセイ記念オープン: 既に発走しています（発走 18:05 / 現在 06:38）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611234609",
+        "name": "第７０回 ＭＲＯ金賞（コパノリッキー賞）３歳",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第７０回 ＭＲＯ金賞（コパノリッキー賞）３歳: 既に発走しています（発走 18:15 / 現在 06:38）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605050608",
+        "name": "3歳以上2勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳以上2勝クラス: 既に発走しています（発走 13:50 / 現在 06:38）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605050609",
+        "name": "ジョッキーズC（2勝クラス）",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "ジョッキーズC（2勝クラス）: 既に発走しています（発走 14:20 / 現在 06:38）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202603030610",
+        "name": "五色沼特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "五色沼特別: 既に発走しています（発走 14:40 / 現在 06:38）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605050610",
+        "name": "トレーナーズC（3勝クラス）",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "トレーナーズC（3勝クラス）: 既に発走しています（発走 14:55 / 現在 06:38）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202603030611",
+        "name": "奥羽S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "奥羽S: 既に発走しています（発走 15:15 / 現在 06:38）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605050611",
+        "name": "東スポ2歳S（G2）",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "東スポ2歳S（G2）: 既に発走しています（発走 15:30 / 現在 06:38）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
