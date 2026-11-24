@@ -601,17 +601,20 @@ def parse_horse_search(page, name, sire=None, birth_year=None):
     return narrowed[0] if len(narrowed) == 1 else None
 
 
-def horse_search_url(name):
-    """馬名検索のURL。**検索語は EUC-JP でパーセントエンコードする。**
+def horse_search_url(name, encoding='utf-8'):
+    """馬名検索のURL。検索語は `encoding` でパーセントエンコードする。
 
-    db.netkeiba.com は EUC-JP のサイトで、UTF-8 で渡すと検索語が化けて
-    1件も当たらない（ページの title に化けた馬名が出る）。2026-10-06 の
-    レディスプレリュードで、JRA所属の5頭すべてが「1頭に絞れない」になり、
-    中央の近走がカードから抜けていた。EUC-JP で渡すと、1頭に決まる馬は
-    その馬のページへそのまま転送される。
+    db.netkeiba.com の検索語の文字コードは2度変わっている。
+    - 2026-10-06：EUC-JP でないと化けて1件も当たらなかった（レディスプレリュードの5頭）。
+    - 2026-11-25：UTF-8 で渡さないと化けるようになった
+      （浦和記念の JRA所属4頭すべてが「1頭に絞れない」になり、中央の近走がカードから抜けた）。
+    また変わっても拾えるよう、search_horse_id は UTF-8 → EUC-JP の順に両方試す。
     """
     import urllib.parse
-    return HORSE_SEARCH_URL.format(word=urllib.parse.quote(name.encode('euc_jp', errors='replace')))
+    return HORSE_SEARCH_URL.format(word=urllib.parse.quote(name.encode(encoding, errors='replace')))
+
+
+SEARCH_ENCODINGS = ('utf-8', 'euc_jp')
 
 
 HORSE_PAGE_URL = re.compile(r'https?://db\.netkeiba\.com/horse/(\d+)/?')
@@ -636,12 +639,16 @@ def _fetch_with_url(url, timeout=30, opener=None):
 
 
 def search_horse_id(name, opener=None, sire=None, birth_year=None):
-    page, final = _fetch_with_url(horse_search_url(name), opener=opener)
-    # 1頭に決まると馬のページへ転送される。転送先のURLで決まる。
-    moved = HORSE_PAGE_URL.match(final or '')
-    if moved:
-        return moved.group(1)
-    return parse_horse_search(page, name, sire=sire, birth_year=birth_year)
+    for encoding in SEARCH_ENCODINGS:
+        page, final = _fetch_with_url(horse_search_url(name, encoding), opener=opener)
+        # 1頭に決まると馬のページへ転送される。転送先のURLで決まる。
+        moved = HORSE_PAGE_URL.match(final or '')
+        if moved:
+            return moved.group(1)
+        found = parse_horse_search(page, name, sire=sire, birth_year=birth_year)
+        if found:
+            return found
+    return None
 
 
 def fetch_jra_recent_runs(name, opener=None, limit=5, sire=None, birth_year=None):

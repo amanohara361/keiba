@@ -541,11 +541,32 @@ def test_search_horse_idはfetchしたページをparse_horse_searchに渡す(mo
     assert 'word=' in calls[0]
 
 
-def test_馬名検索の検索語はEUC_JPでエンコードする():
+def test_馬名検索の検索語はEUC_JPでもエンコードできる():
     """2026-10-06：UTF-8 で渡すと db.netkeiba.com で化けて1件も当たらず、
     JRA所属馬の中央の近走がカードから抜けていた（レディスプレリュードの5頭）。"""
-    url = form_module.horse_search_url('ダブルハートボンド')
+    url = form_module.horse_search_url('ダブルハートボンド', 'euc_jp')
     assert url.endswith('word=%A5%C0%A5%D6%A5%EB%A5%CF%A1%BC%A5%C8%A5%DC%A5%F3%A5%C9')
+
+
+def test_馬名検索の既定はUTF_8():
+    """2026-11-25：db.netkeiba.com が UTF-8 になり、EUC-JP だと化けた（浦和記念の4頭）。"""
+    url = form_module.horse_search_url('ナルカミ')
+    assert url.endswith('word=%E3%83%8A%E3%83%AB%E3%82%AB%E3%83%9F')
+
+
+def test_UTF_8で当たらなければEUC_JPでも探す(monkeypatch):
+    calls = []
+
+    def fake_fetch(url, opener=None):
+        calls.append(url)
+        if len(calls) == 1:
+            return '<html>化けた検索結果</html>', url
+        return SINGLE_MATCH_PAGE, url
+
+    monkeypatch.setattr(form_module, '_fetch_with_url', fake_fetch)
+    assert form_module.search_horse_id('ラッキーキッド') == '2023101148'
+    assert len(calls) == 2
+    assert '%E3%83' in calls[0] and '%A5' in calls[1]
 
 
 def test_1頭に決まって馬のページへ転送されたらそのIDを使う(monkeypatch):
