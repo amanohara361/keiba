@@ -28,6 +28,11 @@ on:
     # 夜：開催終了後に全レースを蓄積する。21:00 JST = 12:00 UTC。
     - cron: '0 12 * * 6'
     - cron: '0 12 * * 0'
+    # 平日の夜：祝日・振替開催の結果を拾う。21:37 JST = 12:37 UTC。
+    # その日のカード（spot-predict が card.yml で作る）が無ければ何もしない。
+    # 2026-11-23（祝）は spot-predict の手順6「後で手動で起こす」が実行されず、
+    # 24鞍が data_jra/ から抜けた（docs/決定ログ.md 2026-11-24）。
+    - cron: '37 12 * * 1-5'
   workflow_dispatch:
     inputs:
       date:
@@ -56,7 +61,23 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: その日の中央開催があるか（カードの有無）
+        id: card
+        env:
+          INPUT_DATE: ${{ inputs.date }}
+        run: |
+          date_arg="${INPUT_DATE:-$(TZ=Asia/Tokyo date +%Y%m%d)}"
+          day="${date_arg:0:4}-${date_arg:4:2}-${date_arg:6:2}"
+          echo "day=$day" >> "$GITHUB_OUTPUT"
+          if [ -f "data/cards/$day.json" ]; then
+            echo "has_card=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_card=false" >> "$GITHUB_OUTPUT"
+            echo "data/cards/$day.json が無いので、この日は中央の開催なし（または未取得）として何もしない"
+          fi
+
       - name: レース結果を取得して蓄積
+        if: steps.card.outputs.has_card == 'true'
         env:
           INPUT_DATE: ${{ inputs.date }}
           INPUT_VENUE: ${{ inputs.venue }}
@@ -68,6 +89,7 @@ jobs:
           python jra_bias.py live "$date_arg" "$venue_arg"
 
       - name: バイアスを判定して実行ログに残す
+        if: steps.card.outputs.has_card == 'true'
         env:
           INPUT_DATE: ${{ inputs.date }}
           INPUT_VENUE: ${{ inputs.venue }}
@@ -83,7 +105,7 @@ jobs:
           { echo '```'; cat "data/bias/$day.txt"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
       - name: 蓄積をコミット
-        if: always()
+        if: always() && steps.card.outputs.has_card == 'true'
         run: |
           git config user.name  'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -91,7 +113,7 @@ jobs:
           if git diff --staged --quiet; then
             echo '新しい蓄積はありません（開催なし、または取得できず）'
           else
-            git commit -m "バイアスデータを蓄積: $(TZ=Asia/Tokyo date +%Y-%m-%d)"
+            git commit -m "バイアスデータを蓄積: ${{ steps.card.outputs.day }}"
             git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
