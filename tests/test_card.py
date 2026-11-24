@@ -1069,3 +1069,53 @@ def test_前走で中止なら着順に居ないので推測しない(monkeypatc
     past = {6: {'horse_id': 'HZ', 'prev_race_id': '202608040408'}}
     card.attach_prev_opponents(entries, past, sleep=lambda s: None)
     assert '見当たりません' in entries[0]['prev_opponents']['error']
+
+
+# --- 逃げ候補一覧の下書き（2026-11-24） ---
+
+def _pace_entry(umaban, passings, distance=1600, blinker_change=None, field_size=16):
+    return {'umaban': umaban, 'name': f'馬{umaban}', 'blinker_change': blinker_change,
+            'recent': [{'passing': p, 'field_size': field_size, 'distance': distance}
+                       for p in passings]}
+
+
+def test_逃げ候補は直近の位置を重く見る():
+    race = {'distance': 1600, 'entries': [
+        _pace_entry(1, ['8-8', '1-1', '1-1', '1-1', '1-1']),   # 昔は逃げていたが直近は中団
+        _pace_entry(2, ['1-1', '2-2', '9-9', '10-10', '12-12']),  # 直近2走で前へ
+    ]}
+    got = card.pace_candidates(race, top=1)
+    # これまでの数え方（近5走で2回以上1〜2番手）なら両方とも該当するが、順位は直近が上
+    assert [r['umaban'] for r in got['top']] == [2]
+    assert got['top'][0]['first_corners'] == ['1/16', '2/16', '9/16']
+
+
+def test_逃げ候補の重みは3対2対1():
+    entry = _pace_entry(1, ['1-1', '16-16', '16-16'])
+    # (0*3 + 1*2 + 1*1) / 6
+    assert card.pace_score(entry) == 0.5
+
+
+def test_通過順の無い馬はunknownに分ける():
+    race = {'distance': 1600, 'entries': [
+        _pace_entry(1, ['3-3']),
+        {'umaban': 2, 'name': '新馬', 'recent': []},
+        _pace_entry(3, ['']),
+    ]}
+    got = card.pace_candidates(race)
+    assert [r['umaban'] for r in got['top']] == [1]
+    assert [r['umaban'] for r in got['unknown']] == [2, 3]
+
+
+def test_距離延長とブリンカーは順位に入れず注記だけ():
+    race = {'distance': 1400, 'entries': [
+        _pace_entry(u, ['2-2']) for u in range(1, 6)
+    ] + [
+        _pace_entry(6, ['12-12'], distance=1200),
+        _pace_entry(7, ['14-14'], blinker_change='on'),
+        _pace_entry(8, ['13-13']),
+    ]}
+    got = card.pace_candidates(race)
+    assert [r['umaban'] for r in got['top']] == [1, 2, 3, 4, 5]
+    assert [(r['umaban'], r['notes']) for r in got['watch']] == [
+        (6, ['1200からの距離延長']), (7, ['ブリンカー着用'])]

@@ -588,6 +588,82 @@ def close_rivals(race, day):
     return sorted(best.values(), key=lambda r: (r['gap'], r['umaban']))
 
 
+# 逃げ候補一覧の下書き（予想メソッド 第1章 手順4。2026-11-24 ユーザー承認）。
+#
+# 朝の手順は「近5走のうち2走以上で先頭〜2番手」の馬を候補にしていたが、
+# 2026-08-09〜11-23 の中央191レースで、実際に初角を先頭で通った馬の4割を
+# 一覧から落としていた（拾えたのは60%、一覧は平均3.4頭）。直近3走の初角位置を
+# 新しい順に 3:2:1 で重み付けして上位5頭を取ると 82%（前半・後半とも同じ水準）。
+# 重みは合わせ込んでいない。距離延長（1200以下から）とブリンカー着用は、拾った馬が
+# 実際に前へ行った割合が全馬の平均とほぼ同じだったので順位には入れず、注記だけにする。
+# 根拠：data/review/pace_candidates_backtest_2026-11-24.md、docs/決定ログ.md 2026-11-24。
+PACE_WEIGHTS = (3, 2, 1)
+PACE_TOP = 5
+PACE_SHORT_DISTANCE = 1200
+
+
+def _first_corner(passing):
+    m = re.match(r'^\s*(\d+)', str(passing or ''))
+    return int(m.group(1)) if m else None
+
+
+def pace_score(entry):
+    """直近3走の初角位置（0＝先頭、1＝最後方）の重み付き平均。材料が無ければ None。"""
+    total = weight_sum = 0.0
+    for weight, run in zip(PACE_WEIGHTS, (entry.get('recent') or [])[:len(PACE_WEIGHTS)]):
+        pos = _first_corner(run.get('passing'))
+        size = run.get('field_size')
+        if not pos or not isinstance(size, int) or size < 2:
+            continue
+        total += weight * min(pos - 1, size - 1) / (size - 1)
+        weight_sum += weight
+    return round(total / weight_sum, 3) if weight_sum else None
+
+
+def pace_notes(race, entry):
+    """順位には入れない注記（前へ行く可能性の材料）。"""
+    notes = []
+    recent = entry.get('recent') or []
+    last = recent[0] if recent else {}
+    distance = race.get('distance')
+    if (last.get('distance') and distance and last['distance'] <= PACE_SHORT_DISTANCE
+            and distance > last['distance']):
+        notes.append(f"{last['distance']}からの距離延長")
+    if entry.get('blinker_change') == 'on':
+        notes.append('ブリンカー着用')
+    return notes
+
+
+def pace_candidates(race, top=PACE_TOP):
+    """逃げ候補一覧の下書き。判断はしない（誰がハナかは朝の手順4で決める）。
+
+    top: 重み付き初角位置の上位 top 頭（同点は馬番順）。
+    watch: 上位の外で、注記（距離延長・ブリンカー着用）が付いた馬。
+    unknown: 近3走に通過順が無い馬（新馬・地方/海外帰りなど）。朝に個別に判断する。
+    """
+    rows, unknown = [], []
+    for entry in race.get('entries') or []:
+        row = {
+            'umaban': entry.get('umaban'),
+            'name': entry.get('name'),
+            'first_corners': [
+                f"{_first_corner(run.get('passing'))}/{run.get('field_size')}"
+                for run in (entry.get('recent') or [])[:len(PACE_WEIGHTS)]
+                if _first_corner(run.get('passing'))
+            ],
+            'score': pace_score(entry),
+            'notes': pace_notes(race, entry),
+        }
+        (unknown if row['score'] is None else rows).append(row)
+    rows.sort(key=lambda r: (r['score'], r['umaban'] or 0))
+    return {
+        'method': '直近3走の初角位置（0＝先頭、1＝最後方）を新しい順に3:2:1で重み付けした平均の小さい順',
+        'top': rows[:top],
+        'watch': [r for r in rows[top:] if r['notes']],
+        'unknown': unknown,
+    }
+
+
 def build_card(day, limit=DEFAULT_CANDIDATES, opener=None, sleep=time.sleep,
                with_entries=True):
     import conditions as conditions_module
@@ -631,6 +707,7 @@ def build_card(day, limit=DEFAULT_CANDIDATES, opener=None, sleep=time.sleep,
                                             day=day)
             race['all_female'] = all_female(race['entries'])
             race['close_rivals'] = close_rivals(race, day)
+            race['pace_candidates'] = pace_candidates(race)
 
     if with_entries:
         # 手順2の材料。重賞だけ、スポーツ紙の追い切り談話を各馬に付ける（comments.py）。
