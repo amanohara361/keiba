@@ -1,0 +1,180 @@
+{
+  "race_id": "202611194711",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 10,
+      "name": "チカッパ",
+      "ninki": 7,
+      "odds": 13.9
+    },
+    {
+      "rank": 2,
+      "umaban": 3,
+      "name": "ゴールドボンド",
+      "ninki": 5,
+      "odds": 6.2
+    },
+    {
+      "rank": 3,
+      "umaban": 5,
+      "name": "ルコルセール",
+      "ninki": 6,
+      "odds": 8.7
+    },
+    {
+      "rank": 4,
+      "umaban": 2,
+      "name": "ジョージテソーロ",
+      "ninki": 2,
+      "odds": 4.5
+    },
+    {
+      "rank": 5,
+      "umaban": 9,
+      "name": "ファーンヒル",
+      "ninki": 4,
+      "odds": 5.2
+    },
+    {
+      "rank": 6,
+      "umaban": 11,
+      "name": "ストリーム",
+      "ninki": 1,
+      "odds": 3.9
+    },
+    {
+      "rank": 7,
+      "umaban": 7,
+      "name": "ベント",
+      "ninki": 3,
+      "odds": 4.5
+    },
+    {
+      "rank": 8,
+      "umaban": 1,
+      "name": "ヴィントミューレ",
+      "ninki": 8,
+      "odds": 125.8
+    },
+    {
+      "rank": 9,
+      "umaban": 6,
+      "name": "マルヨハルキ",
+      "ninki": 12,
+      "odds": 379.7
+    },
+    {
+      "rank": 10,
+      "umaban": 12,
+      "name": "ヴェッツラー",
+      "ninki": 10,
+      "odds": 218.9
+    },
+    {
+      "rank": 11,
+      "umaban": 4,
+      "name": "ゴーゴーバースデイ",
+      "ninki": 9,
+      "odds": 189.5
+    },
+    {
+      "rank": 12,
+      "umaban": 8,
+      "name": "チュウワスプリング",
+      "ninki": 11,
+      "odds": 341.8
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          10
+        ],
+        "yen": 1390
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          10
+        ],
+        "yen": 380
+      },
+      {
+        "combination": [
+          3
+        ],
+        "yen": 200
+      },
+      {
+        "combination": [
+          5
+        ],
+        "yen": 190
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          3,
+          10
+        ],
+        "yen": 7080
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          10,
+          3
+        ],
+        "yen": 12790
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          3,
+          10
+        ],
+        "yen": 1260
+      },
+      {
+        "combination": [
+          5,
+          10
+        ],
+        "yen": 1420
+      },
+      {
+        "combination": [
+          3,
+          5
+        ],
+        "yen": 810
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          3,
+          5,
+          10
+        ],
+        "yen": 14750
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          10,
+          3,
+          5
+        ],
+        "yen": 121960
+      }
+    ]
+  }
+}

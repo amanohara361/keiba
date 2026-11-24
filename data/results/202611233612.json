@@ -1,0 +1,166 @@
+{
+  "race_id": "202611233612",
+  "finishing_order": [
+    {
+      "rank": 1,
+      "umaban": 11,
+      "name": "ヒロシクン",
+      "ninki": 1,
+      "odds": 1.3
+    },
+    {
+      "rank": 2,
+      "umaban": 3,
+      "name": "フォースメン",
+      "ninki": 2,
+      "odds": 3.1
+    },
+    {
+      "rank": 3,
+      "umaban": 1,
+      "name": "トーセンマッシモ",
+      "ninki": 3,
+      "odds": 14.5
+    },
+    {
+      "rank": 4,
+      "umaban": 2,
+      "name": "ミナトミナイト",
+      "ninki": 9,
+      "odds": 342.0
+    },
+    {
+      "rank": 5,
+      "umaban": 4,
+      "name": "ビップアクア",
+      "ninki": 5,
+      "odds": 37.8
+    },
+    {
+      "rank": 6,
+      "umaban": 5,
+      "name": "クリナッチ",
+      "ninki": 4,
+      "odds": 19.1
+    },
+    {
+      "rank": 7,
+      "umaban": 10,
+      "name": "ヤマニンリーリオ",
+      "ninki": 6,
+      "odds": 39.1
+    },
+    {
+      "rank": 8,
+      "umaban": 8,
+      "name": "サラサワン",
+      "ninki": 7,
+      "odds": 92.2
+    },
+    {
+      "rank": 9,
+      "umaban": 6,
+      "name": "ドンカポノ",
+      "ninki": 10,
+      "odds": 357.2
+    },
+    {
+      "rank": 10,
+      "umaban": 9,
+      "name": "ブラックバトラー",
+      "ninki": 8,
+      "odds": 115.0
+    }
+  ],
+  "payouts": {
+    "単勝": [
+      {
+        "combination": [
+          11
+        ],
+        "yen": 130
+      }
+    ],
+    "複勝": [
+      {
+        "combination": [
+          11
+        ],
+        "yen": 100
+      },
+      {
+        "combination": [
+          3
+        ],
+        "yen": 110
+      },
+      {
+        "combination": [
+          1
+        ],
+        "yen": 160
+      }
+    ],
+    "馬連": [
+      {
+        "combination": [
+          3,
+          11
+        ],
+        "yen": 130
+      }
+    ],
+    "馬単": [
+      {
+        "combination": [
+          11,
+          3
+        ],
+        "yen": 200
+      }
+    ],
+    "ワイド": [
+      {
+        "combination": [
+          3,
+          11
+        ],
+        "yen": 110
+      },
+      {
+        "combination": [
+          1,
+          11
+        ],
+        "yen": 200
+      },
+      {
+        "combination": [
+          1,
+          3
+        ],
+        "yen": 250
+      }
+    ],
+    "3連複": [
+      {
+        "combination": [
+          1,
+          3,
+          11
+        ],
+        "yen": 270
+      }
+    ],
+    "3連単": [
+      {
+        "combination": [
+          11,
+          3,
+          1
+        ],
+        "yen": 500
+      }
+    ]
+  }
+}
