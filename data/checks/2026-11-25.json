@@ -586,5 +586,35 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-11-26T00:28:49.070888+09:00",
+    "races": [
+      {
+        "race_id": "202611254211",
+        "name": "第４７回 浦和記念［指定交流］JpnII３上オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "第４７回 浦和記念［指定交流］JpnII３上オープン: 既に発走しています（発走 17:45 / 現在 00:28）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
