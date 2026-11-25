@@ -1,3 +1,4 @@
+import urllib.parse
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """カード作成（方針B の取得側）の検証。ネットワークには接続しない。
@@ -541,11 +542,32 @@ def test_search_horse_idはfetchしたページをparse_horse_searchに渡す(mo
     assert 'word=' in calls[0]
 
 
-def test_馬名検索の検索語はEUC_JPでエンコードする():
-    """2026-10-06：UTF-8 で渡すと db.netkeiba.com で化けて1件も当たらず、
-    JRA所属馬の中央の近走がカードから抜けていた（レディスプレリュードの5頭）。"""
+def test_馬名検索の検索語は既定でUTF_8でエンコードする():
+    """2026-11-26：db.netkeiba.com が UTF-8 に切り替わり、EUC-JP で渡すと
+    1件も当たらなくなった（兵庫ジュニアグランプリのJRA所属5頭）。"""
     url = form_module.horse_search_url('ダブルハートボンド')
+    assert url.endswith('word=' + urllib.parse.quote('ダブルハートボンド'.encode('utf-8')))
+
+
+def test_馬名検索の検索語はEUC_JPでもエンコードできる():
+    """2026-10-06：当時は EUC-JP のサイトだった。戻ったときのための経路。"""
+    url = form_module.horse_search_url('ダブルハートボンド', 'euc_jp')
     assert url.endswith('word=%A5%C0%A5%D6%A5%EB%A5%CF%A1%BC%A5%C8%A5%DC%A5%F3%A5%C9')
+
+
+def test_UTF_8で当たらなければEUC_JPで引き直す(monkeypatch):
+    calls = []
+
+    def fake_fetch(url, opener=None):
+        calls.append(url)
+        if len(calls) == 1:
+            return '<html>該当なし</html>', url
+        return '<html>馬のページ</html>', 'https://db.netkeiba.com/horse/2021105700/'
+
+    monkeypatch.setattr(form_module, '_fetch_with_url', fake_fetch)
+    assert form_module.search_horse_id('ダブルハートボンド') == '2021105700'
+    assert calls[0] == form_module.horse_search_url('ダブルハートボンド', 'utf-8')
+    assert calls[1] == form_module.horse_search_url('ダブルハートボンド', 'euc_jp')
 
 
 def test_1頭に決まって馬のページへ転送されたらそのIDを使う(monkeypatch):
