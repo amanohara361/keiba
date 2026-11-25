@@ -1,0 +1,318 @@
+[
+  {
+    "checked_at": "2026-11-26T08:13:19.598078+09:00",
+    "races": [
+      {
+        "race_id": "202611265011",
+        "name": "第28回 兵庫ジュニアグランプリ JpnII",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": "地方は当面買い目を出しません（2026-11-03 ユーザー承認。どの買い方でも回収率82%以下のため。印・検算・仮想成績は続けます）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。朝の予想が見送りと判断（2番手以下（12・3・8）が拮抗し上位2頭が抜けていない。中央勢は全馬初の地方・初コースで、比べる材料が時計の推定頼み）。実オッズが規律を満たしても買い目を出しません（勝負度C）。",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第28回 兵庫ジュニアグランプリ JpnII: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第28回 兵庫ジュニアグランプリ JpnII: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": null,
+          "going": null
+        },
+        "weights": {
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "11": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          }
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-11-26 08:13:21"
+        }
+      },
+      {
+        "race_id": "202611264211",
+        "name": "第１回 サザンスタースプリント３歳オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 17.9,
+          "2": 43.5,
+          "3": 38.0,
+          "4": 6.4,
+          "5": 13.8,
+          "6": 19.4,
+          "7": 8.7,
+          "8": 2.5,
+          "9": 101.5,
+          "10": 6.6,
+          "11": 65.2,
+          "12": 19.4,
+          "13": 9.7,
+          "14": 39.7
+        },
+        "win_ninki": {
+          "1": 7,
+          "2": 12,
+          "3": 10,
+          "4": 2,
+          "5": 6,
+          "6": 8,
+          "7": 4,
+          "8": 1,
+          "9": 14,
+          "10": 3,
+          "11": 13,
+          "12": 8,
+          "13": 5,
+          "14": 11
+        },
+        "priced_odds": {
+          "ワイド": {
+            "8-12": 11.0,
+            "3-8": 10.7,
+            "5-8": 14.1
+          },
+          "馬連": {
+            "8-12": 34.8,
+            "3-8": 58.0,
+            "5-8": 29.3
+          }
+        },
+        "bet_note": "地方は当面買い目を出しません（2026-11-03 ユーザー承認。どの買い方でも回収率82%以下のため。印・検算・仮想成績は続けます）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。朝の予想が見送りと判断（◎8以外の2番手（4・10・7・13）が拮抗し、上位2頭が抜けていない）。実オッズが規律を満たしても買い目を出しません（勝負度C）。",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第１回 サザンスタースプリント３歳オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第１回 サザンスタースプリント３歳オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": null,
+          "going": null
+        },
+        "weights": {
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "4": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          },
+          "13": {
+            "weight": null,
+            "diff": null,
+            "age": 3
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 14
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 14
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 91
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 182
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 91
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 364
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-11-26 08:13:21"
+        }
+      },
+      {
+        "race_id": "202611264811",
+        "name": "第６５回 ゴールドウィング賞２歳オープン",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": "地方は当面買い目を出しません（2026-11-03 ユーザー承認。どの買い方でも回収率82%以下のため。印・検算・仮想成績は続けます）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。単勝オッズが揃わず勝率を推定できません（要・時間を置いて再検算）",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "第６５回 ゴールドウィング賞２歳オープン: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "第６５回 ゴールドウィング賞２歳オープン: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1700,
+          "weather": null,
+          "going": null
+        },
+        "weights": {
+          "3": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "8": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "9": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "10": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "11": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          },
+          "12": {
+            "weight": null,
+            "diff": null,
+            "age": 2
+          }
+        },
+        "odds_meta": {
+          "per_type": {},
+          "errors": [],
+          "status": "yoso",
+          "official_datetime": "2026-11-26 08:13:21"
+        }
+      }
+    ]
+  }
+]
