@@ -691,6 +691,29 @@ def test_相手が今回の人気上位3頭でなければ拾わない():
     assert card.close_rivals(race, date(2026, 9, 27)) == []
 
 
+
+def test_同じ日の同じ名前でも別の場のレースとは比べない():
+    """2026-11-28 京都2歳S：中山の新馬戦と阪神の新馬戦を同じレースとして -9.5秒と出した。"""
+    a = dict(_run('2026/09/26', '2歳新馬', 113.8, distance=1800), meeting='4中山8', race_no=5)
+    b = dict(_run('2026/09/26', '2歳新馬', 123.3, distance=2000), meeting='4阪神8', race_no=5)
+    race = _rival_race({4: [a], 9: [b]}, {9: 4.8, 4: 41.3}, distance=2000)
+    assert card.close_rivals(race, date(2026, 11, 28)) == []
+
+
+def test_同じ場の同じ名前でもレース番号が違えば比べない():
+    a = dict(_run('2026/09/26', '2歳新馬', 69.4), meeting='4中山8', race_no=4)
+    b = dict(_run('2026/09/26', '2歳新馬', 69.5, rank=2), meeting='4中山8', race_no=6)
+    race = _rival_race({15: [a], 16: [b]}, {15: 7.0, 16: 17.2})
+    assert card.close_rivals(race, date(2026, 9, 27)) == []
+
+
+def test_同じ開催の同じレースなら拾う():
+    a = dict(_run('2026/08/09', '2歳新馬', 123.6, distance=2000), meeting='2中京6', race_no=5)
+    b = dict(_run('2026/08/09', '2歳新馬', 123.8, distance=2000, rank=2), meeting='2中京6', race_no=5)
+    race = _rival_race({10: [a], 3: [b]}, {10: 4.2, 3: 8.4}, distance=2000)
+    got = card.close_rivals(race, date(2026, 11, 28))
+    assert [(r['umaban'], r['vs_umaban'], r['gap']) for r in got] == [(3, 10, 0.2)]
+
 # ----------------------------------------------------------------------
 # 装備（ブリンカー）と追い切り（第1章 手順2）
 # fixtures は 2026-10-01 に probe entries-raw でシリウスS（202609040811）から採った実物。

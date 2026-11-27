@@ -564,12 +564,16 @@ def close_rivals(race, day):
                     or run.get('surface') != surface
                     or abs((run.get('distance') or 0) - distance) > RIVAL_DIST_TOL):
                 continue
-            shared.setdefault((run['date'], run.get('race') or ''), []).append(
-                (entry['umaban'], entry.get('name'), seconds))
+            # 同じ日に同じ名前のレースは何鞍もある（「2歳新馬」「1勝クラス」）。
+            # 名前と日付だけで突き合わせると、別の場の別のレースを同じレースとして
+            # 比べてしまう（2026-11-28 京都2歳S：中山芝1800と阪神芝2000の新馬戦で -9.5秒）。
+            # 開催（「4中山8」）とレース番号も鍵に入れる。
+            key = (run['date'], run.get('meeting'), run.get('race_no'), run.get('race') or '')
+            shared.setdefault(key, []).append((entry['umaban'], entry.get('name'), seconds))
 
     favourites = set(sorted(odds, key=odds.get)[:RIVAL_VS_TOP])
     best = {}
-    for (ran, name), runners in shared.items():
+    for (ran, _meeting, _race_no, name), runners in shared.items():
         for horse, rival in ((a, b) for a in runners for b in runners if a is not b):
             if horse[0] not in odds or rival[0] not in favourites:
                 continue
