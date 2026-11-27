@@ -578,5 +578,35 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-11-27T19:38:07.460486+09:00",
+    "races": [
+      {
+        "race_id": "202611274211",
+        "name": "’２６まがたま盃（準重賞）Ａ２下選抜馬",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "’２６まがたま盃（準重賞）Ａ２下選抜馬: 既に発走しています（発走 17:45 / 現在 19:38）。買い目は直近の検算結果のとおりです（勝負度C）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      }
+    ]
   }
 ]
