@@ -152,3 +152,26 @@ def test_地方も出馬表CSVの馬体重で警告する(monkeypatch):
     # 地方は買わない（2026-11-03）が、従来の組み立ての説明は参考として残る
     assert verdict.bet_note.startswith(bet_builder.NAR_STOPPED)
     assert '【馬体重】1番' in verdict.bet_note
+
+
+# ----------------------------------------------------------------------
+# 馬体重は JRA 公式が正本、netkeiba は予備（2026-11-28）
+# ----------------------------------------------------------------------
+
+def test_馬体重はJRA公式から読む(monkeypatch):
+    import check
+    import pytest
+    import jra_official
+    monkeypatch.setattr(jra_official, 'fetch_win', lambda race_id, opener=None: {'horses': {
+        7: {'name': 'テスト', 'sex_age': '牡5', 'weight_text': '520 (+18)'}}})
+    monkeypatch.setattr(check.form_module, 'fetch_entries',
+                        lambda race_id, opener=None: pytest.fail('netkeiba を読みに行った'))
+    got = check.fetch_entries_jra_first('202605050711')
+    assert got[7]['weight'] == 520 and got[7]['weight_diff'] == 18 and got[7]['age'] == 5
+
+
+def test_JRA公式が取れなければnetkeibaの出馬表を読む(monkeypatch):
+    import check
+    netkeiba = {7: {'name': 'テスト', 'age': 5, 'weight': 520, 'weight_diff': 18}}
+    monkeypatch.setattr(check.form_module, 'fetch_entries', lambda race_id, opener=None: netkeiba)
+    assert check.fetch_entries_jra_first('202605050711') == netkeiba

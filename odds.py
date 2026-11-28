@@ -157,20 +157,10 @@ def tables_from_jra_official(parsed):
     return {'単勝': win, '複勝': place}
 
 
-# JRA 公式に通信そのものが届かなかったら、その実行の残りのレースでは叩かない。
-# 届かない先にレースの数だけ待たされると、発走直前の検算が間に合わなくなる。
-_official_down = []
-
-
 def _jra_official_fetch(race_id):
+    # 通信が届かないときに残りのレースで叩かない仕組みと、馬体重との共用は jra_official 側にある。
     import jra_official
-    if _official_down:
-        raise jra_official.JraError(f'この実行では JRA 公式に届かないため省略（{_official_down[0]}）')
-    try:
-        return jra_official.fetch_win(race_id)
-    except jra_official.JraFetchError as exc:
-        _official_down.append(str(exc))
-        raise
+    return jra_official.fetch_win_once(race_id)
 
 
 def fetch_tables(race_id, bet_types, fetcher=None, official=_DEFAULT):

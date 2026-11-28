@@ -28,6 +28,7 @@ import card_health
 import conditions as conditions_module
 import discipline
 import form as form_module
+import jra_official
 import nar as nar_module
 import odds as odds_module
 import report_html
@@ -159,6 +160,21 @@ def _price_axis_partner_pairs(race, lookup):
             lookup(bet_type, [axis, umaban])
 
 
+def fetch_entries_jra_first(race_id):
+    """馬体重は JRA 公式を正本にし、取れなければ netkeiba の出馬表を読む（2026-11-28）。
+
+    11-28 12:07 に netkeiba が 400 を返したとき、馬体重が空になって ±15kg の
+    上乗せ取り消しが効かないまま買い目が出る状態だった。JRA 公式の単勝・複勝ページに
+    馬体重も載っていて、単勝・複勝（odds.py）と同じ1ページを使い回す。
+    """
+    try:
+        return jra_official.entries_from_win(jra_official.fetch_win_once(race_id))
+    except jra_official.JraError as exc:
+        logger.warning('%s の馬体重を JRA 公式から取得できませんでした（netkeiba で取り直します）: %s',
+                       race_id, exc)
+    return form_module.fetch_entries(race_id)
+
+
 def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
                  forms_fetcher=None, nar_fetcher=None, entries_fetcher=None):
     """買い目ファイル全体を検算して、レースごとの判定を返す。
@@ -170,7 +186,7 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
     fetcher = fetcher or odds_module.fetch
     conditions_fetcher = conditions_fetcher or conditions_module.fetch
     forms_fetcher = forms_fetcher or form_module.collect
-    entries_fetcher = entries_fetcher or form_module.fetch_entries
+    entries_fetcher = entries_fetcher or fetch_entries_jra_first
 
     # 地方の公式CSVは1回のダウンロードで全場・全レース・全券種が入る。
     # レースごとに叩き直さない（サーバへの配慮であり、速度の話ではない）。

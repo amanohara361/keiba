@@ -71,11 +71,6 @@ import jra_official  # noqa: E402
 _FIX = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fixtures')
 
 
-@pytest.fixture(autouse=True)
-def _reset_official_down(monkeypatch):
-    monkeypatch.setattr(odds, '_official_down', [])
-
-
 def _musashino():
     """2026-11-14 に取った武蔵野S（202605050311）の JRA 公式・単勝複勝ページ。"""
     with open(os.path.join(_FIX, 'jra_odds_tanpuku_202605050311.html'), 'rb') as f:

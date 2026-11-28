@@ -183,6 +183,79 @@ def fetch_win(race_id, opener=None):
     return parse_win(_post('accessO.html', race_cname(race_id, opener=opener), opener=opener))
 
 
+# 直前検算（check.py）は同じレースの単勝・複勝（odds.py）と馬体重（entries）を
+# この1ページから読む。1回の実行の中では1度だけ取りに行く。
+# 通信そのものが届かなかったら、その実行の残りのレースでは叩かない（届かない先に
+# レースの数だけ待たされると、発走直前の検算が間に合わなくなる）。
+_WIN_ONCE = {}
+_DOWN = []
+
+
+def fetch_win_once(race_id):
+    race_id = str(race_id)
+    if race_id in _WIN_ONCE:
+        return _WIN_ONCE[race_id]
+    if _DOWN:
+        raise JraError(f'この実行では JRA 公式に届かないため省略（{_DOWN[0]}）')
+    try:
+        got = fetch_win(race_id)
+    except JraFetchError as exc:
+        _DOWN.append(str(exc))
+        raise
+    _WIN_ONCE[race_id] = got
+    return got
+
+
+# ----------------------------------------------------------------------
+# 馬体重（2026-11-28〜。直前検算の ±15kg ルール用）
+# ----------------------------------------------------------------------
+
+WEIGHT_RE = re.compile(r'(\d{3})\s*(?:\(\s*([-+±]?\s*\d+)\s*\))?')
+
+
+def parse_weight(text):
+    """'490 (+6)' → (490, 6)。'490 (0)'・'(±0)' は 0。前走比が無い（初出走など）なら差は None。
+
+    発表前・取消で空なら (None, None)。推測で埋めない。
+    """
+    m = WEIGHT_RE.search(text or '')
+    if not m:
+        return None, None
+    diff = None
+    if m.group(2):
+        raw = m.group(2).replace(' ', '').replace('±', '')
+        try:
+            diff = int(raw)
+        except ValueError:
+            diff = None
+    return int(m.group(1)), diff
+
+
+def entries_from_win(parsed):
+    """parse_win の結果を form.parse_entries と同じ形（直前検算が読む項目だけ）にする。
+
+    horse_id・所属は JRA 公式のこのページに無いので None。直前検算は使っていない。
+    """
+    out = {}
+    for number, h in (parsed.get('horses') or {}).items():
+        weight, diff = parse_weight(h.get('weight_text'))
+        sex_age = h.get('sex_age') or ''
+        age = re.search(r'(\d+)', sex_age)
+        sex = re.match(r'(牡|牝|セ)', sex_age)
+        out[int(number)] = {
+            'horse_id': None,
+            'age': int(age.group(1)) if age else None,
+            'sex': sex.group(1) if sex else None,
+            'affiliation': None,
+            'name': h.get('name') or '',
+            'weight': weight,
+            'weight_diff': diff,
+            'kinryo': h.get('kinryo'),
+            'jockey': h.get('jockey'),
+        }
+    return out
+
+
 # ----------------------------------------------------------------------
 # 馬場発表（JSON）
 # ----------------------------------------------------------------------
@@ -232,13 +305,47 @@ def fetch_baba(opener=None):
 
 # ----------------------------------------------------------------------
 
+def ping():
+    """JRA 公式に届くかを確かめる（Actions のランナーから届くかの確認用。2026-11-28）。
+
+    終了コードは「通信が届いたか」だけで決める。開催の無い日はメニューにレースが無いが、
+    それは届かないのとは違うので成功にする。
+    """
+    try:
+        menu = _post('accessO.html', ODDS_MENU)
+        venues = parse_menu(menu)
+        print(f'オッズのメニュー：届いた（開催 {len(venues)} 場）')
+        races = parse_races(menu)
+        for venue in list(venues.values())[:1]:
+            races.update(parse_races(_post('accessO.html', venue)))
+        if not races:
+            print('レースのリンクなし（開催の無い日・発売前）。通信は届いている。')
+            return 0
+        race_id, cname = sorted(races.items())[0]
+        got = parse_win(_post('accessO.html', cname))
+        print(f"{race_id} の単勝・複勝：{len(got['horses'])}頭（{got['updated'] or '時刻の表示なし。発売終了のレース'}現在）")
+        weights = sum(1 for h in got['horses'].values() if h['weight_text'])
+        print(f'馬体重が出ている馬：{weights}頭')
+    except JraFetchError as exc:
+        print(f'届かない: {exc}', file=sys.stderr)
+        return 1
+    except JraError as exc:
+        print(f'届いたがページを読めない: {exc}', file=sys.stderr)
+        return 2
+    return 0
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description='JRA 公式から当日の単勝・騎手・馬場発表を読む')
     sub = parser.add_subparsers(dest='command', required=True)
     odds = sub.add_parser('odds', help='単勝・複勝・騎手（馬番順）')
     odds.add_argument('race_id', help='12桁（netkeiba と同じ。例 202605050311）')
     sub.add_parser('baba', help='開催場ごとの天候・馬場・変更')
+    sub.add_parser('ping', help='届くかだけ確かめる（オッズのメニュー → 載っていれば1レースの単勝・複勝）')
     args = parser.parse_args(argv)
+
+    if args.command == 'ping':
+        return ping()
 
     try:
         if args.command == 'odds':
