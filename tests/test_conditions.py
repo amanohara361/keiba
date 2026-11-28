@@ -154,3 +154,65 @@ def test_ラベルの無い略記の馬場状態を読む():
     assert conditions.parse(RACE_DATA01_2026_11_FUKUSHIMA_YAYA)['going'] == '稍重'
     fuller = RACE_DATA01_2026_11_TOKYO_DIRT.replace('Item04"> 良', 'Item04"> 不')
     assert conditions.parse(fuller)['going'] == '不良'
+
+
+# ----------------------------------------------------------------------
+# 馬場は JRA 公式の馬場発表が正本、netkeiba は予備（2026-11-28）
+# ----------------------------------------------------------------------
+
+import check  # noqa: E402
+import jra_official  # noqa: E402
+
+BABA = [
+    {'venue': '東京', 'date': '20261128', 'kai': '5', 'day': '7', 'weather': '雨',
+     'going_turf': '稍重', 'going_dirt': '重', 'decided': None, 'cancel_info': None, 'changes': {}},
+    {'venue': '京都', 'date': '20261128', 'kai': '5', 'day': '7', 'weather': '晴',
+     'going_turf': '良', 'going_dirt': '稍重', 'decided': None, 'cancel_info': None, 'changes': {}},
+    {'venue': '東京', 'date': '20261129', 'kai': '5', 'day': '8', 'weather': None,
+     'going_turf': None, 'going_dirt': None, 'decided': None, 'cancel_info': None, 'changes': {}},
+]
+
+
+def test_レースの芝ダに合わせて開催場の馬場発表を引く():
+    assert jra_official.going_for_race(BABA, '202605050708', '芝') == {'going': '稍重', 'weather': '雨'}
+    assert jra_official.going_for_race(BABA, '202605050708', 'ダート') == {'going': '重', 'weather': '雨'}
+    assert jra_official.going_for_race(BABA, '202608050711', '芝')['going'] == '良'
+    assert jra_official.going_for_race(BABA, '202605050708', '障害')['going'] == '稍重'
+
+
+def test_芝ダ不明や未発表や開催違いは推測で埋めない():
+    assert jra_official.going_for_race(BABA, '202605050708', None)['going'] is None
+    assert jra_official.going_for_race(BABA, '202605050808', '芝')['going'] is None   # 翌日・未発表
+    assert jra_official.going_for_race(BABA, '202609050708', '芝')['going'] is None   # 阪神は開催なし
+
+
+def test_直前検算の馬場はJRA公式から読む(monkeypatch):
+    monkeypatch.setattr(jra_official, 'fetch_baba', lambda opener=None: BABA)
+    monkeypatch.setattr(conditions, 'fetch', lambda race_id, **k: pytest.fail('netkeiba を読みに行った'))
+    got = check.fetch_conditions_jra_first('202605050708', {'surface': '芝', 'distance': 1600})
+    assert got['going'] == '稍重' and got['weather'] == '雨'
+    assert got['surface'] == '芝' and got['distance'] == 1600
+    assert conditions.is_heavy(got)
+
+
+def test_JRA公式で未発表ならnetkeibaを読む(monkeypatch):
+    monkeypatch.setattr(jra_official, 'fetch_baba', lambda opener=None: BABA)
+    netkeiba = {'going': '良', 'weather': '晴', 'surface': '芝', 'distance': 2000}
+    monkeypatch.setattr(conditions, 'fetch', lambda race_id, **k: netkeiba)
+    assert check.fetch_conditions_jra_first('202605050808', {'surface': '芝'}) == netkeiba
+
+
+def test_両方取れなければ未発表として検算を続ける(monkeypatch):
+    def down(race_id, **k):
+        raise conditions.ConditionsError('HTTP Error 400')
+    monkeypatch.setattr(conditions, 'fetch', down)   # JRA 公式は conftest で取れない扱い
+    got = check.fetch_conditions_jra_first('202605050708', {'surface': '芝', 'distance': 1600})
+    assert got['going'] is None and got['surface'] == '芝'
+
+
+def test_馬場発表は1回の実行で1度だけ取りに行く(monkeypatch):
+    calls = []
+    monkeypatch.setattr(jra_official, 'fetch_baba', lambda opener=None: calls.append(1) or BABA)
+    jra_official.fetch_baba_once()
+    jra_official.fetch_baba_once()
+    assert calls == [1]

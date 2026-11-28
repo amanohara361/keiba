@@ -303,6 +303,59 @@ def fetch_baba(opener=None):
     return parse_baba(_post('accessJ.html', BABA_CNAME, field='CNAME', opener=opener))
 
 
+_BABA_ONCE = []
+
+
+def fetch_baba_once():
+    """直前検算用。馬場発表は全場1つの JSON なので、1回の実行で1度だけ取りに行く。"""
+    if _BABA_ONCE:
+        return _BABA_ONCE[0]
+    if _DOWN:
+        raise JraError(f'この実行では JRA 公式に届かないため省略（{_DOWN[0]}）')
+    try:
+        got = fetch_baba()
+    except JraFetchError as exc:
+        _DOWN.append(str(exc))
+        raise
+    _BABA_ONCE.append(got)
+    return got
+
+
+# race_id の5・6桁目（場コード）→ 馬場発表の jyoname
+JYO_NAMES = {'01': '札幌', '02': '函館', '03': '福島', '04': '新潟', '05': '東京',
+             '06': '中山', '07': '中京', '08': '京都', '09': '阪神', '10': '小倉'}
+GOING_NAMES = {'良': '良', '稍': '稍重', '稍重': '稍重', '重': '重', '不': '不良', '不良': '不良'}
+
+
+def going_for_race(venues, race_id, surface):
+    """馬場発表（parse_baba）から、そのレースの馬場状態と天候を引く。
+
+    馬場発表は開催場ごと（芝・ダート別）なので、レースの芝ダは呼び出し側（カード）から渡す。
+    障害は芝の発表を使う。開催が見つからない・芝ダが分からない・未発表なら going は None。
+    戻り値：{'going': ..., 'weather': ...}
+    """
+    race_id = str(race_id)
+    name = JYO_NAMES.get(race_id[4:6])
+    try:
+        kai, day = int(race_id[6:8]), int(race_id[8:10])
+    except ValueError:
+        return {'going': None, 'weather': None}
+    for v in venues or []:
+        try:
+            same = v['venue'] == name and int(v['kai']) == kai and int(v['day']) == day
+        except (TypeError, ValueError):
+            same = False
+        if not same:
+            continue
+        raw = None
+        if surface in ('芝', '障害'):
+            raw = v.get('going_turf')
+        elif surface == 'ダート':
+            raw = v.get('going_dirt')
+        return {'going': GOING_NAMES.get((raw or '').strip()), 'weather': v.get('weather')}
+    return {'going': None, 'weather': None}
+
+
 # ----------------------------------------------------------------------
 
 def ping():

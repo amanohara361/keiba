@@ -20,13 +20,15 @@ def _no_live_entries(monkeypatch):
 
 @pytest.fixture(autouse=True)
 def _no_live_jra_official(monkeypatch):
-    """直前検算は単勝・複勝と馬体重を JRA 公式から読む（2026-11-28〜）。テストから
+    """直前検算は単勝・複勝・馬体重・馬場を JRA 公式から読む（2026-11-28〜）。テストから
     JRA 公式に繋がないよう、既定では「取れなかった」扱いにして netkeiba 側（上で空）に回す。"""
     import jra_official
 
     def _fail(race_id, opener=None):
         raise jra_official.JraError('テストでは取りに行かない')
     monkeypatch.setattr(jra_official, 'fetch_win', _fail)
+    monkeypatch.setattr(jra_official, 'fetch_baba', lambda opener=None: _fail(None))
+    monkeypatch.setattr(jra_official, '_BABA_ONCE', [])
     monkeypatch.setattr(jra_official, '_WIN_ONCE', {})
     monkeypatch.setattr(jra_official, '_DOWN', [])
 
