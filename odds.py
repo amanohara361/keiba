@@ -9,6 +9,12 @@ CLAUDE.md「オッズの情報源」の方針に従う:
 判定条件は「発走時刻を過ぎているか」の一点のみ。経過時間は数えない
 （旧「5時間ルール」は2026-08-02に反証済み）。
 
+netkeiba が単勝・複勝を返さなかったとき（2026-11-28 12:07 の検算で、Actions からの
+要求が全券種 HTTP 400 になり、中央6レースが全部見送りになった）は、JRA 公式の
+単勝・複勝ページ（jra_official.py）から取り直す。固定形（◎の単勝＋複勝）はこの2つで
+成り立つので、全レース見送りを防げる。馬連・ワイド・3連複は JRA 公式から取らない
+（参考の組み立てが空になるだけで、買い目には影響しない）。
+
 本モジュールが担うのは発走前のAPI取得まで。直前検算（14:30）は必ず発走前なので
 これで足りる。発走後の確定オッズが要る場面は jra_bias.py の ingest 系を使う。
 
@@ -31,7 +37,13 @@ STATUS_LABELS = {
     'yoso': '予想オッズ（発売前）',
     'middle': '発売中の途中経過',
     'result': '確定オッズ',
+    'jra_official': '発売中の途中経過（JRA公式。netkeiba が取れなかったため）',
 }
+
+# JRA 公式から取り直す券種（jra_official.parse_win の1ページに両方載っている）
+FALLBACK_TYPES = ('単勝', '複勝')
+
+_DEFAULT = object()
 
 # 出走取消・除外の馬に API が返す値
 SCRATCHED = '-3.0'
@@ -117,7 +129,38 @@ def win_odds_table(table):
     return out
 
 
-def fetch_tables(race_id, bet_types, fetcher=None):
+def tables_from_jra_official(parsed):
+    """jra_official.parse_win の結果を、netkeiba API と同じ形の単勝・複勝表にする。
+
+    netkeiba の形は 単勝 {'07': [オッズ, '', 人気]}、複勝 {'07': [下限, 上限, 人気]}。
+    同じ形にそろえれば、odds_for・win_odds_table・bet_builder を一切変えずに済む。
+    JRA 公式のページに人気は無いので、単勝オッズの低い順で付ける（同じオッズは同じ人気）。
+    オッズが数字でない馬（取消など）は取消の印（SCRATCHED）を入れ、買い目から外れるようにする。
+    """
+    horses = parsed.get('horses') or {}
+    prices = [h['win'] for h in horses.values() if h.get('win') is not None]
+    win, place = {}, {}
+    for number, h in sorted(horses.items()):
+        key = f'{int(number):02d}'
+        if h.get('win') is None:
+            win[key] = [SCRATCHED, '', '']
+            place[key] = [SCRATCHED, '', '']
+            continue
+        ninki = str(1 + sum(1 for p in prices if p < h['win']))
+        win[key] = [f"{h['win']:.1f}", '', ninki]
+        if h.get('place_min') is not None:
+            pmax = h.get('place_max')
+            place[key] = [f"{h['place_min']:.1f}",
+                          f'{pmax:.1f}' if pmax is not None else '', ninki]
+    return {'単勝': win, '複勝': place}
+
+
+def _jra_official_fetch(race_id):
+    import jra_official
+    return jra_official.fetch_win(race_id)
+
+
+def fetch_tables(race_id, bet_types, fetcher=None, fallback=_DEFAULT):
     """指定した券種ぶんのオッズ表をまとめて取得する。
 
     買い目がまだ確定していない段階（bet_builder が候補の組み合わせを
@@ -125,7 +168,13 @@ def fetch_tables(race_id, bet_types, fetcher=None):
     照会できるので、買い目を先に決めておく必要が無い。
 
     戻り値は (券種ごとのオッズ表, メタ情報)。`collect()` はこれの薄いラッパー。
+
+    単勝・複勝が netkeiba から取れなければ fallback（既定は JRA 公式）で取り直す。
+    fetcher を差し替えたとき（テスト）は、本物の JRA 公式を叩かないよう既定では取り直さない。
+    check.py は本物の `fetch` をそのまま渡してくるので、それは差し替えに数えない。
     """
+    if fallback is _DEFAULT:
+        fallback = _jra_official_fetch if fetcher in (None, fetch) else None
     fetcher = fetcher or fetch
     needed = set(bet_types) | {'単勝'}
     tables = {}
@@ -144,6 +193,25 @@ def fetch_tables(race_id, bet_types, fetcher=None):
             'reason': result['reason'],
             'official_datetime': result['official_datetime'],
         }
+
+    # 空の表は「取れた」に数えない（発売前・応答の異常）。
+    missing = [t for t in FALLBACK_TYPES if t in needed and not tables.get(t)]
+    if missing and fallback:
+        try:
+            parsed = fallback(race_id)
+        except Exception as exc:   # JRA 公式の失敗で検算全体を止めない
+            errors.append(f'{race_id} の単勝・複勝を JRA 公式からも取得できませんでした: {exc}')
+        else:
+            jra = tables_from_jra_official(parsed)
+            for bet_type in missing:
+                if not jra.get(bet_type):
+                    continue
+                tables[bet_type] = jra[bet_type]
+                meta[bet_type] = {
+                    'status': 'jra_official',
+                    'reason': 'netkeiba から取れず JRA 公式で取り直し',
+                    'official_datetime': parsed.get('updated'),
+                }
 
     return tables, {
         'per_type': meta,
