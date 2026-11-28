@@ -17,6 +17,7 @@
 
 import argparse
 import itertools
+import json
 import logging
 import os
 import sys
@@ -28,6 +29,7 @@ import card_health
 import conditions as conditions_module
 import discipline
 import form as form_module
+import jra_official
 import nar as nar_module
 import odds as odds_module
 import report_html
@@ -159,6 +161,62 @@ def _price_axis_partner_pairs(race, lookup):
             lookup(bet_type, [axis, umaban])
 
 
+def fetch_entries_jra_first(race_id):
+    """馬体重は JRA 公式を正本にし、取れなければ netkeiba の出馬表を読む（2026-11-28）。
+
+    11-28 12:07 に netkeiba が 400 を返したとき、馬体重が空になって ±15kg の
+    上乗せ取り消しが効かないまま買い目が出る状態だった。JRA 公式の単勝・複勝ページに
+    馬体重も載っていて、単勝・複勝（odds.py）と同じ1ページを使い回す。
+    """
+    try:
+        return jra_official.entries_from_win(jra_official.fetch_win_once(race_id))
+    except jra_official.JraError as exc:
+        logger.warning('%s の馬体重を JRA 公式から取得できませんでした（netkeiba で取り直します）: %s',
+                       race_id, exc)
+    return form_module.fetch_entries(race_id)
+
+
+CARDS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'cards')
+
+
+def load_card_races(day):
+    """その日の中央カード（data/cards/YYYY-MM-DD.json）を {race_id: レース} で返す。無ければ空。"""
+    path = os.path.join(CARDS_DIR, f'{day.isoformat()}.json')
+    try:
+        with open(path, encoding='utf-8') as f:
+            data = json.load(f)
+    except (OSError, ValueError):
+        return {}
+    races = data.get('races', []) if isinstance(data, dict) else data
+    return {str(r.get('race_id')): r for r in races if isinstance(r, dict)}
+
+
+def fetch_conditions_jra_first(race_id, card_race=None):
+    """馬場状態・天候は JRA 公式の馬場発表を正本にし、取れなければ netkeiba を読む（2026-11-28）。
+
+    馬場発表は開催場ごと（芝・ダート別）なので、レースの芝ダと距離はカードから取る。
+    未発表・芝ダ不明・JRA 公式に届かないときは netkeiba の出馬表に回る。
+    netkeiba も駄目なら、JRA 公式で読めた分（天候など）だけ返す。
+    """
+    card_race = card_race or {}
+    surface = card_race.get('surface')
+    jra = {}
+    try:
+        jra = jra_official.going_for_race(jra_official.fetch_baba_once(), race_id, surface)
+    except jra_official.JraError as exc:
+        logger.warning('%s の馬場状態を JRA 公式から取得できませんでした: %s', race_id, exc)
+    if jra.get('going'):
+        return {'going': jra['going'], 'weather': jra.get('weather'),
+                'surface': surface, 'distance': card_race.get('distance'),
+                'source': 'jra_official'}
+    try:
+        return conditions_module.fetch(race_id)
+    except conditions_module.ConditionsError as exc:
+        logger.warning('%s の馬場状態を netkeiba からも取得できませんでした: %s', race_id, exc)
+    return {'going': None, 'weather': jra.get('weather'),
+            'surface': surface, 'distance': card_race.get('distance')}
+
+
 def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
                  forms_fetcher=None, nar_fetcher=None, entries_fetcher=None):
     """買い目ファイル全体を検算して、レースごとの判定を返す。
@@ -168,9 +226,12 @@ def review_sheet(sheet, now, fetcher=None, conditions_fetcher=None,
     部分（discipline）も完全に同じコードが通る。**
     """
     fetcher = fetcher or odds_module.fetch
-    conditions_fetcher = conditions_fetcher or conditions_module.fetch
+    if conditions_fetcher is None:
+        cards = load_card_races(sheet.date)
+        conditions_fetcher = lambda race_id: fetch_conditions_jra_first(  # noqa: E731
+            race_id, cards.get(str(race_id)))
     forms_fetcher = forms_fetcher or form_module.collect
-    entries_fetcher = entries_fetcher or form_module.fetch_entries
+    entries_fetcher = entries_fetcher or fetch_entries_jra_first
 
     # 地方の公式CSVは1回のダウンロードで全場・全レース・全券種が入る。
     # レースごとに叩き直さない（サーバへの配慮であり、速度の話ではない）。

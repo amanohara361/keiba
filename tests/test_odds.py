@@ -57,3 +57,142 @@ def test_collectは従来通りraceのbetsに絞って返す():
     assert bet_odds == [11.2]
     assert win_table[7] == (2.9, 1)
     assert meta['status'] == 'middle'
+
+
+# ----------------------------------------------------------------------
+# 単勝・複勝は JRA 公式が正本、netkeiba は予備（2026-11-28）
+# 12:07 の検算で netkeiba の要求が全券種 HTTP 400 になり、中央6レースが全部見送りになった。
+# ----------------------------------------------------------------------
+
+import pytest  # noqa: E402
+
+import jra_official  # noqa: E402
+
+_FIX = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fixtures')
+
+
+def _musashino():
+    """2026-11-14 に取った武蔵野S（202605050311）の JRA 公式・単勝複勝ページ。"""
+    with open(os.path.join(_FIX, 'jra_odds_tanpuku_202605050311.html'), 'rb') as f:
+        return jra_official.parse_win(f.read().decode('shift_jis', errors='replace'))
+
+
+def _fetch_400(race_id, bet_type):
+    raise odds.OddsError(f'{race_id} の{bet_type}オッズを取得できませんでした: HTTP Error 400: Bad Request')
+
+
+def _recording(tables):
+    calls = []
+    inner = _fetcher(tables)
+
+    def fetch(race_id, bet_type):
+        calls.append(bet_type)
+        return inner(race_id, bet_type)
+    return fetch, calls
+
+
+def test_JRA公式の単勝複勝をnetkeibaと同じ形の表にする():
+    parsed = _musashino()
+    tables = odds.tables_from_jra_official(parsed)
+    win = odds.win_odds_table(tables['単勝'])
+    assert len(win) == 16
+    assert win[1][0] == 17.1
+    # 人気は単勝オッズの低い順。1番人気はいちばん低いオッズの馬
+    lowest = min(h['win'] for h in parsed['horses'].values())
+    assert [n for n, (o, k) in win.items() if k == 1] == [
+        n for n, h in parsed['horses'].items() if h['win'] == lowest]
+    # 複勝は下限を使う（netkeiba の表と同じ）
+    assert odds.odds_for(tables['複勝'], [1], '複勝') == 4.8
+
+
+def test_取消の馬は買い目から外れる():
+    tables = odds.tables_from_jra_official({'horses': {
+        1: {'win': 3.0, 'place_min': 1.2, 'place_max': 1.5},
+        2: {'win': None, 'win_text': '取消', 'place_min': None, 'place_max': None},
+        3: {'win': 3.0, 'place_min': 1.3, 'place_max': 1.6},
+    }})
+    win = odds.win_odds_table(tables['単勝'])
+    assert set(win) == {1, 3}
+    assert win[1][1] == win[3][1] == 1          # 同じオッズは同じ人気
+    assert odds.odds_for(tables['単勝'], [2], '単勝') is None
+    assert odds.odds_for(tables['複勝'], [2], '複勝') is None
+
+
+def test_単勝複勝はJRA公式を先に読みnetkeibaは叩かない():
+    fetch, calls = _recording({'単勝': {'01': ['99.9', '', '1']}, '馬連': {'0102': ['5.0', '', '1']}})
+    tables, meta = odds.fetch_tables('202605050311', ['複勝', '馬連'], fetch,
+                                     official=lambda race_id: _musashino())
+    assert calls == ['馬連']                     # 単勝・複勝は netkeiba に聞かない
+    assert odds.win_odds_table(tables['単勝'])[1][0] == 17.1   # JRA 公式の値
+    assert odds.odds_for(tables['馬連'], [1, 2], '馬連') == 5.0
+    assert meta['status'] == 'jra_official'
+    assert meta['official_datetime'] == '10時38分'
+    assert meta['per_type']['馬連']['status'] == 'middle'
+    assert meta['errors'] == []
+
+
+def test_netkeibaが400でも単勝複勝は取れる():
+    """11-28 12:07 の再現。馬連・ワイド・3連複は空になるが、固定形の買い目は出せる。"""
+    tables, meta = odds.fetch_tables('202605050311', ['複勝', '馬連', 'ワイド', '3連複'],
+                                     _fetch_400, official=lambda race_id: _musashino())
+    assert set(tables) == {'単勝', '複勝'}
+    assert meta['status'] == 'jra_official'
+    assert any('HTTP Error 400' in e for e in meta['errors'])
+
+
+def test_JRA公式が取れなければnetkeibaで取り直す():
+    def broken(race_id):
+        raise jra_official.JraError('開催がオッズのメニューにありません')
+    fetch, calls = _recording({'単勝': {'07': ['2.9', '', '1']}, '複勝': {'07': ['1.3', '1.6', '1']}})
+    tables, meta = odds.fetch_tables('202601020811', ['複勝'], fetch, official=broken)
+    assert sorted(calls) == ['単勝', '複勝']
+    assert meta['status'] == 'middle'
+    assert odds.odds_for(tables['複勝'], [7], '複勝') == 1.3
+    assert any('netkeiba で取り直します' in e for e in meta['errors'])
+
+
+def test_JRA公式が空の表ならnetkeibaで取り直す():
+    fetch, calls = _recording({'単勝': {'07': ['2.9', '', '1']}})
+    tables, meta = odds.fetch_tables('202601020811', [], fetch,
+                                     official=lambda race_id: {'horses': {}})
+    assert calls == ['単勝']
+    assert meta['status'] == 'middle'
+
+
+def test_両方取れなければ理由を残して検算は続ける():
+    def broken(race_id):
+        raise jra_official.JraError('開催がオッズのメニューにありません')
+    tables, meta = odds.fetch_tables('202605050311', ['複勝'], _fetch_400, official=broken)
+    assert tables == {}
+    assert len(meta['errors']) == 3              # JRA 公式1件＋netkeiba の単勝・複勝
+
+
+def test_JRA公式に届かなければその実行の残りでは叩かない(monkeypatch):
+    calls = []
+
+    def unreachable(race_id, opener=None):
+        calls.append(race_id)
+        raise jra_official.JraFetchError('timed out')
+    monkeypatch.setattr(jra_official, 'fetch_win', unreachable)
+    fetch = _fetcher({'単勝': {'07': ['2.9', '', '1']}})
+    for race_id in ('202605050708', '202605050710', '202605050711'):
+        _, meta = odds.fetch_tables(race_id, [], fetch, official=odds._jra_official_fetch)
+        assert meta['status'] == 'middle'
+    assert calls == ['202605050708']
+
+
+def test_差し替えたfetcherでは既定で本物のJRA公式を叩かない(monkeypatch):
+    def boom(race_id):
+        raise AssertionError('テストが本物の JRA 公式を叩こうとした')
+    monkeypatch.setattr(odds, '_jra_official_fetch', boom)
+    tables, _ = odds.fetch_tables('202605050311', ['複勝'], _fetch_400)
+    assert tables == {}
+
+
+def test_本物のfetchを渡されたときは既定でJRA公式を使う(monkeypatch):
+    """check.py は `fetcher or odds.fetch` で本物の fetch を渡してくる。それでも JRA 公式が正本になること。"""
+    monkeypatch.setattr(odds, 'fetch', _fetch_400)
+    monkeypatch.setattr(odds, '_jra_official_fetch', lambda race_id: _musashino())
+    tables, meta = odds.fetch_tables('202605050311', ['複勝'], odds.fetch)
+    assert meta['status'] == 'jra_official'
+    assert len(tables['単勝']) == 16

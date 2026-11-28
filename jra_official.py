@@ -41,6 +41,10 @@ class JraError(RuntimeError):
     pass
 
 
+class JraFetchError(JraError):
+    """通信そのものの失敗（ページの中身の問題ではない）。呼び出し側が続けて叩くかを決めるのに使う。"""
+
+
 def _post(page, value, field='cname', timeout=20, opener=None):
     data = urllib.parse.urlencode({field: value}).encode('ascii')
     request = urllib.request.Request(BASE + page, data=data, headers={'User-Agent': UA})
@@ -49,7 +53,7 @@ def _post(page, value, field='cname', timeout=20, opener=None):
         with open_url(request, timeout=timeout) as response:
             return response.read().decode(ENCODING, errors='replace')
     except (urllib.error.URLError, OSError) as exc:
-        raise JraError(f'JRA 公式の {page}（{value}）を取得できませんでした: {exc}')
+        raise JraFetchError(f'JRA 公式の {page}（{value}）を取得できませんでした: {exc}')
 
 
 def _text(html):
@@ -86,12 +90,25 @@ def parse_races(html):
     return found
 
 
+# メニューと開催場のページはリンク（cname）の一覧で、オッズは載っていない。1回の実行の中では
+# 変わらないので、レースごとに取り直さない（6レースで POST が18回→9回になる）。オッズのページは控えない。
+_LINK_PAGES = {}
+
+
+def _link_page(value, opener=None):
+    if opener is not None:            # テストの差し替えでは控えを使わない
+        return _post('accessO.html', value, opener=opener)
+    if value not in _LINK_PAGES:
+        _LINK_PAGES[value] = _post('accessO.html', value)
+    return _LINK_PAGES[value]
+
+
 def race_cname(race_id, opener=None):
     """race_id の単勝ページの cname を、メニュー → 開催場の順に拾う。"""
     race_id = str(race_id)
     if not re.fullmatch(r'\d{12}', race_id):
         raise JraError(f'race_id は12桁の数字です: {race_id}')
-    menu = _post('accessO.html', ODDS_MENU, opener=opener)
+    menu = _link_page(ODDS_MENU, opener=opener)
     races = parse_races(menu)        # メニューに重賞などが直接載っていることがある
     if race_id in races:
         return races[race_id]
@@ -99,7 +116,7 @@ def race_cname(race_id, opener=None):
     venue = parse_menu(menu).get(key)
     if not venue:
         raise JraError(f'{race_id} の開催がオッズのメニューにありません（発売前・終了後の可能性）')
-    races = parse_races(_post('accessO.html', venue, opener=opener))
+    races = parse_races(_link_page(venue, opener=opener))
     if race_id not in races:
         raise JraError(f'{race_id} のレースが開催場のページにありません')
     return races[race_id]
@@ -166,6 +183,79 @@ def fetch_win(race_id, opener=None):
     return parse_win(_post('accessO.html', race_cname(race_id, opener=opener), opener=opener))
 
 
+# 直前検算（check.py）は同じレースの単勝・複勝（odds.py）と馬体重（entries）を
+# この1ページから読む。1回の実行の中では1度だけ取りに行く。
+# 通信そのものが届かなかったら、その実行の残りのレースでは叩かない（届かない先に
+# レースの数だけ待たされると、発走直前の検算が間に合わなくなる）。
+_WIN_ONCE = {}
+_DOWN = []
+
+
+def fetch_win_once(race_id):
+    race_id = str(race_id)
+    if race_id in _WIN_ONCE:
+        return _WIN_ONCE[race_id]
+    if _DOWN:
+        raise JraError(f'この実行では JRA 公式に届かないため省略（{_DOWN[0]}）')
+    try:
+        got = fetch_win(race_id)
+    except JraFetchError as exc:
+        _DOWN.append(str(exc))
+        raise
+    _WIN_ONCE[race_id] = got
+    return got
+
+
+# ----------------------------------------------------------------------
+# 馬体重（2026-11-28〜。直前検算の ±15kg ルール用）
+# ----------------------------------------------------------------------
+
+WEIGHT_RE = re.compile(r'(\d{3})\s*(?:\(\s*([-+±]?\s*\d+)\s*\))?')
+
+
+def parse_weight(text):
+    """'490 (+6)' → (490, 6)。'490 (0)'・'(±0)' は 0。前走比が無い（初出走など）なら差は None。
+
+    発表前・取消で空なら (None, None)。推測で埋めない。
+    """
+    m = WEIGHT_RE.search(text or '')
+    if not m:
+        return None, None
+    diff = None
+    if m.group(2):
+        raw = m.group(2).replace(' ', '').replace('±', '')
+        try:
+            diff = int(raw)
+        except ValueError:
+            diff = None
+    return int(m.group(1)), diff
+
+
+def entries_from_win(parsed):
+    """parse_win の結果を form.parse_entries と同じ形（直前検算が読む項目だけ）にする。
+
+    horse_id・所属は JRA 公式のこのページに無いので None。直前検算は使っていない。
+    """
+    out = {}
+    for number, h in (parsed.get('horses') or {}).items():
+        weight, diff = parse_weight(h.get('weight_text'))
+        sex_age = h.get('sex_age') or ''
+        age = re.search(r'(\d+)', sex_age)
+        sex = re.match(r'(牡|牝|セ)', sex_age)
+        out[int(number)] = {
+            'horse_id': None,
+            'age': int(age.group(1)) if age else None,
+            'sex': sex.group(1) if sex else None,
+            'affiliation': None,
+            'name': h.get('name') or '',
+            'weight': weight,
+            'weight_diff': diff,
+            'kinryo': h.get('kinryo'),
+            'jockey': h.get('jockey'),
+        }
+    return out
+
+
 # ----------------------------------------------------------------------
 # 馬場発表（JSON）
 # ----------------------------------------------------------------------
@@ -213,7 +303,90 @@ def fetch_baba(opener=None):
     return parse_baba(_post('accessJ.html', BABA_CNAME, field='CNAME', opener=opener))
 
 
+_BABA_ONCE = []
+
+
+def fetch_baba_once():
+    """直前検算用。馬場発表は全場1つの JSON なので、1回の実行で1度だけ取りに行く。"""
+    if _BABA_ONCE:
+        return _BABA_ONCE[0]
+    if _DOWN:
+        raise JraError(f'この実行では JRA 公式に届かないため省略（{_DOWN[0]}）')
+    try:
+        got = fetch_baba()
+    except JraFetchError as exc:
+        _DOWN.append(str(exc))
+        raise
+    _BABA_ONCE.append(got)
+    return got
+
+
+# race_id の5・6桁目（場コード）→ 馬場発表の jyoname
+JYO_NAMES = {'01': '札幌', '02': '函館', '03': '福島', '04': '新潟', '05': '東京',
+             '06': '中山', '07': '中京', '08': '京都', '09': '阪神', '10': '小倉'}
+GOING_NAMES = {'良': '良', '稍': '稍重', '稍重': '稍重', '重': '重', '不': '不良', '不良': '不良'}
+
+
+def going_for_race(venues, race_id, surface):
+    """馬場発表（parse_baba）から、そのレースの馬場状態と天候を引く。
+
+    馬場発表は開催場ごと（芝・ダート別）なので、レースの芝ダは呼び出し側（カード）から渡す。
+    障害は芝の発表を使う。開催が見つからない・芝ダが分からない・未発表なら going は None。
+    戻り値：{'going': ..., 'weather': ...}
+    """
+    race_id = str(race_id)
+    name = JYO_NAMES.get(race_id[4:6])
+    try:
+        kai, day = int(race_id[6:8]), int(race_id[8:10])
+    except ValueError:
+        return {'going': None, 'weather': None}
+    for v in venues or []:
+        try:
+            same = v['venue'] == name and int(v['kai']) == kai and int(v['day']) == day
+        except (TypeError, ValueError):
+            same = False
+        if not same:
+            continue
+        raw = None
+        if surface in ('芝', '障害'):
+            raw = v.get('going_turf')
+        elif surface == 'ダート':
+            raw = v.get('going_dirt')
+        return {'going': GOING_NAMES.get((raw or '').strip()), 'weather': v.get('weather')}
+    return {'going': None, 'weather': None}
+
+
 # ----------------------------------------------------------------------
+
+def ping():
+    """JRA 公式に届くかを確かめる（Actions のランナーから届くかの確認用。2026-11-28）。
+
+    終了コードは「通信が届いたか」だけで決める。開催の無い日はメニューにレースが無いが、
+    それは届かないのとは違うので成功にする。
+    """
+    try:
+        menu = _post('accessO.html', ODDS_MENU)
+        venues = parse_menu(menu)
+        print(f'オッズのメニュー：届いた（開催 {len(venues)} 場）')
+        races = parse_races(menu)
+        for venue in list(venues.values())[:1]:
+            races.update(parse_races(_post('accessO.html', venue)))
+        if not races:
+            print('レースのリンクなし（開催の無い日・発売前）。通信は届いている。')
+            return 0
+        race_id, cname = sorted(races.items())[0]
+        got = parse_win(_post('accessO.html', cname))
+        print(f"{race_id} の単勝・複勝：{len(got['horses'])}頭（{got['updated'] or '時刻の表示なし。発売終了のレース'}現在）")
+        weights = sum(1 for h in got['horses'].values() if h['weight_text'])
+        print(f'馬体重が出ている馬：{weights}頭')
+    except JraFetchError as exc:
+        print(f'届かない: {exc}', file=sys.stderr)
+        return 1
+    except JraError as exc:
+        print(f'届いたがページを読めない: {exc}', file=sys.stderr)
+        return 2
+    return 0
+
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description='JRA 公式から当日の単勝・騎手・馬場発表を読む')
@@ -221,7 +394,11 @@ def main(argv=None):
     odds = sub.add_parser('odds', help='単勝・複勝・騎手（馬番順）')
     odds.add_argument('race_id', help='12桁（netkeiba と同じ。例 202605050311）')
     sub.add_parser('baba', help='開催場ごとの天候・馬場・変更')
+    sub.add_parser('ping', help='届くかだけ確かめる（オッズのメニュー → 載っていれば1レースの単勝・複勝）')
     args = parser.parse_args(argv)
+
+    if args.command == 'ping':
+        return ping()
 
     try:
         if args.command == 'odds':

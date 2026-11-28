@@ -1,0 +1,29 @@
+name: JRA公式に届くか
+
+# 直前検算は単勝・複勝と馬体重を JRA 公式から読む（2026-11-28〜。docs/決定ログ.md）。
+# Actions のランナーから JRA 公式に届くかを確かめる。届かなくても検算は netkeiba に回るが、
+# それが続くなら JRA 公式を正本にした意味が無いので、関係するファイルを変えたときに毎回見る。
+on:
+  pull_request:
+    paths:
+      - 'jra_official.py'
+      - 'odds.py'
+      - 'check.py'
+      - '.github/workflows/jra_reach.yml'
+  workflow_dispatch:
+
+jobs:
+  reach:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: JRA 公式に届くか
+        run: python jra_official.py ping
+
+      - name: 馬場発表（参考）
+        run: python jra_official.py baba || true

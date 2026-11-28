@@ -119,3 +119,97 @@ def test_馬場発表を読む():
     assert got[0]['changes'] == {}
     nxt = got[3]                                   # 翌日分は未発表
     assert (nxt['weather'], nxt['going_turf'], nxt['going_dirt']) == (None, None, None)
+
+
+def test_メニューと開催場のページは1回の実行で控えて使い回す(monkeypatch):
+    posts = []
+    pages = {jra_official.ODDS_MENU: 'MENU', 'VENUE': 'VENUE_PAGE'}
+
+    def fake_post(page, value, field='cname', timeout=20, opener=None):
+        posts.append(value)
+        return pages.get(value, 'ODDS')
+    monkeypatch.setattr(jra_official, '_post', fake_post)
+    monkeypatch.setattr(jra_official, '_LINK_PAGES', {})
+    assert jra_official._link_page(jra_official.ODDS_MENU) == 'MENU'
+    assert jra_official._link_page(jra_official.ODDS_MENU) == 'MENU'
+    assert jra_official._link_page('VENUE') == 'VENUE_PAGE'
+    assert posts == [jra_official.ODDS_MENU, 'VENUE']
+
+
+def test_通信の失敗はJraFetchErrorで伝える():
+    def opener(request, timeout=20):
+        raise OSError('timed out')
+    with pytest.raises(jra_official.JraFetchError):
+        jra_official._post('accessO.html', 'x', opener=opener)
+
+
+# ----------------------------------------------------------------------
+# 馬体重（2026-11-28〜）
+# ----------------------------------------------------------------------
+
+@pytest.mark.parametrize('text,expected', [
+    ('490 (+6)', (490, 6)),
+    ('486 (-3)', (486, -3)),
+    ('488(+14)', (488, 14)),
+    ('500 (0)', (500, 0)),
+    ('500 (±0)', (500, 0)),
+    ('470', (470, None)),          # 前走比が無い（初出走など）
+    (None, (None, None)),          # 発表前
+    ('', (None, None)),
+])
+def test_馬体重を読む(text, expected):
+    assert jra_official.parse_weight(text) == expected
+
+
+def test_単勝複勝ページから直前検算用の出馬表を作る():
+    parsed = {'horses': {
+        2: {'name': 'ミッキーダムール', 'sex_age': '牡3', 'weight_text': '490 (+6)',
+            'kinryo': 57.0, 'jockey': '騎手A'},
+        3: {'name': 'タッセルノット', 'sex_age': '牝3', 'weight_text': None,
+            'kinryo': 55.0, 'jockey': '騎手B'},
+    }}
+    got = jra_official.entries_from_win(parsed)
+    assert got[2]['weight'] == 490 and got[2]['weight_diff'] == 6
+    assert got[2]['age'] == 3 and got[2]['sex'] == '牡'
+    assert got[3]['weight'] is None and got[3]['weight_diff'] is None   # 推測で埋めない
+    assert got[3]['sex'] == '牝'
+
+
+def test_同じレースは1回の実行で1度だけ取りに行く(monkeypatch):
+    calls = []
+
+    def fake(race_id, opener=None):
+        calls.append(race_id)
+        return {'horses': {}}
+    monkeypatch.setattr(jra_official, 'fetch_win', fake)
+    jra_official.fetch_win_once('202605050708')
+    jra_official.fetch_win_once('202605050708')
+    jra_official.fetch_win_once('202605050710')
+    assert calls == ['202605050708', '202605050710']
+
+
+def test_通信が届かなければその実行の残りでは叩かない(monkeypatch):
+    calls = []
+
+    def unreachable(race_id, opener=None):
+        calls.append(race_id)
+        raise jra_official.JraFetchError('timed out')
+    monkeypatch.setattr(jra_official, 'fetch_win', unreachable)
+    for race_id in ('202605050708', '202605050710'):
+        with pytest.raises(jra_official.JraError):
+            jra_official.fetch_win_once(race_id)
+    assert calls == ['202605050708']
+
+
+def test_ページの中身の問題では止めない(monkeypatch):
+    """開催がメニューに無い等はそのレースだけの話。他のレースは JRA 公式を読みに行く。"""
+    calls = []
+
+    def missing(race_id, opener=None):
+        calls.append(race_id)
+        raise jra_official.JraError('開催がオッズのメニューにありません')
+    monkeypatch.setattr(jra_official, 'fetch_win', missing)
+    for race_id in ('202605050708', '202605050710'):
+        with pytest.raises(jra_official.JraError):
+            jra_official.fetch_win_once(race_id)
+    assert calls == ['202605050708', '202605050710']
