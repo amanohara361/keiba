@@ -12558,5 +12558,266 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-11-28T16:08:18.193549+09:00",
+    "races": [
+      {
+        "race_id": "202605050708",
+        "name": "3歳以上2勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "3歳以上2勝クラス: 既に発走しています（発走 13:40 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608050709",
+        "name": "栂尾特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "栂尾特別: 既に発走しています（発走 14:30 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605050710",
+        "name": "シャングリラ",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "シャングリラ: 既に発走しています（発走 14:50 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608050710",
+        "name": "東山S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "東山S: 既に発走しています（発走 15:05 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202605050711",
+        "name": "キャピタルS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "キャピタルS: 既に発走しています（発走 15:25 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202608050711",
+        "name": "京都2歳S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": null,
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "already_started",
+            "message": "京都2歳S: 既に発走しています（発走 15:40 / 現在 16:08）。買い目は直近の検算結果のとおりです（勝負度B）。",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "skipped": "発走済みのため取得せず"
+        }
+      },
+      {
+        "race_id": "202611285505",
+        "name": "嘉瀬川（かせがわ）賞Ａ１",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "1": 4.3,
+          "2": 10.3,
+          "3": 32.7,
+          "4": 39.0,
+          "5": 1.7,
+          "6": 4.9,
+          "7": 11.9
+        },
+        "win_ninki": {
+          "1": 2,
+          "2": 4,
+          "3": 6,
+          "4": 7,
+          "5": 1,
+          "6": 3,
+          "7": 5
+        },
+        "priced_odds": {},
+        "bet_note": "地方は当面買い目を出しません（2026-11-03 ユーザー承認。どの買い方でも回収率82%以下のため。印・検算・仮想成績は続けます）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。朝の予想が見送りと判断（◎5・○6・▲7の3頭が直近2戦で先着を入れ替え（差0.1〜0.6秒）、上位2頭が抜けていない。馬単の並びを説明できない）。実オッズが規律を満たしても買い目を出しません（勝負度C）。",
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "嘉瀬川（かせがわ）賞Ａ１: 馬場が「稍重」です（ダート1400m / 天候:小雨 / 馬場:稍重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "嘉瀬川（かせがわ）賞Ａ１: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "小雨",
+          "going": "稍重"
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 8
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 7
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 7
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 21
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 42
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 21
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 35
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-11-28 16:08:20"
+        }
+      }
+    ]
   }
 ]
