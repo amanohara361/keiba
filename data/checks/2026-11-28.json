@@ -3701,5 +3701,352 @@
         }
       }
     ]
+  },
+  {
+    "checked_at": "2026-11-28T12:07:48.643220+09:00",
+    "races": [
+      {
+        "race_id": "202605050708",
+        "name": "3歳以上2勝クラス",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": "◎2の単勝オッズが取れません（取消・除外の可能性。要・再検算）。見送り（勝負度C）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。単勝オッズが揃わず勝率を推定できません（要・時間を置いて再検算）",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "3歳以上2勝クラス: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "3歳以上2勝クラス: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "per_type": {},
+          "errors": [
+            "202605050708 の3連複オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202605050708 のワイドオッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202605050708 の単勝オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202605050708 の複勝オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202605050708 の馬連オッズを取得できませんでした: HTTP Error 400: Bad Request"
+          ],
+          "status": null,
+          "official_datetime": null
+        }
+      },
+      {
+        "race_id": "202608050709",
+        "name": "栂尾特別",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": "◎11の単勝オッズが取れません（取消・除外の可能性。要・再検算）。見送り（勝負度C）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。単勝オッズが揃わず勝率を推定できません（要・時間を置いて再検算）",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "栂尾特別: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "栂尾特別: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "per_type": {},
+          "errors": [
+            "202608050709 の3連複オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202608050709 のワイドオッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202608050709 の単勝オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202608050709 の複勝オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202608050709 の馬連オッズを取得できませんでした: HTTP Error 400: Bad Request"
+          ],
+          "status": null,
+          "official_datetime": null
+        }
+      },
+      {
+        "race_id": "202605050710",
+        "name": "シャングリラ",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": "◎6の単勝オッズが取れません（取消・除外の可能性。要・再検算）。見送り（勝負度C）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。単勝オッズが揃わず勝率を推定できません（要・時間を置いて再検算）",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "シャングリラ: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "シャングリラ: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "per_type": {},
+          "errors": [
+            "202605050710 の3連複オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202605050710 のワイドオッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202605050710 の単勝オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202605050710 の複勝オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202605050710 の馬連オッズを取得できませんでした: HTTP Error 400: Bad Request"
+          ],
+          "status": null,
+          "official_datetime": null
+        }
+      },
+      {
+        "race_id": "202608050710",
+        "name": "東山S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": "◎3の単勝オッズが取れません（取消・除外の可能性。要・再検算）。見送り（勝負度C）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。単勝オッズが揃わず勝率を推定できません（要・時間を置いて再検算）",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "東山S: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "東山S: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "per_type": {},
+          "errors": [
+            "202608050710 の3連複オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202608050710 のワイドオッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202608050710 の単勝オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202608050710 の複勝オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202608050710 の馬連オッズを取得できませんでした: HTTP Error 400: Bad Request"
+          ],
+          "status": null,
+          "official_datetime": null
+        }
+      },
+      {
+        "race_id": "202605050711",
+        "name": "キャピタルS",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": "◎3の単勝オッズが取れません（取消・除外の可能性。要・再検算）。見送り（勝負度C）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。単勝オッズが揃わず勝率を推定できません（要・時間を置いて再検算）",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "キャピタルS: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "キャピタルS: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "per_type": {},
+          "errors": [
+            "202605050711 の3連複オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202605050711 のワイドオッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202605050711 の単勝オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202605050711 の複勝オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202605050711 の馬連オッズを取得できませんでした: HTTP Error 400: Bad Request"
+          ],
+          "status": null,
+          "official_datetime": null
+        }
+      },
+      {
+        "race_id": "202608050711",
+        "name": "京都2歳S",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {},
+        "win_ninki": {},
+        "priced_odds": {},
+        "bet_note": "◎10の単勝オッズが取れません（取消・除外の可能性。要・再検算）。見送り（勝負度C）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。単勝オッズが揃わず勝率を推定できません（要・時間を置いて再検算）",
+        "findings": [
+          {
+            "severity": "INFO",
+            "code": "going_unknown",
+            "message": "京都2歳S: 馬場状態がまだ発表されていません",
+            "remedy": ""
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "京都2歳S: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {},
+        "weights": {},
+        "odds_meta": {
+          "per_type": {},
+          "errors": [
+            "202608050711 の3連複オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202608050711 のワイドオッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202608050711 の単勝オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202608050711 の複勝オッズを取得できませんでした: HTTP Error 400: Bad Request",
+            "202608050711 の馬連オッズを取得できませんでした: HTTP Error 400: Bad Request"
+          ],
+          "status": null,
+          "official_datetime": null
+        }
+      },
+      {
+        "race_id": "202611285505",
+        "name": "嘉瀬川（かせがわ）賞Ａ１",
+        "blocked": false,
+        "composite_odds": null,
+        "expected_value": null,
+        "bet_odds": [],
+        "win_odds": {
+          "5": 1.0,
+          "6": 25.6,
+          "7": 25.6
+        },
+        "win_ninki": {
+          "1": 4,
+          "2": 4,
+          "3": 4,
+          "4": 4,
+          "5": 1,
+          "6": 2,
+          "7": 2
+        },
+        "priced_odds": {},
+        "bet_note": "地方は当面買い目を出しません（2026-11-03 ユーザー承認。どの買い方でも回収率82%以下のため。印・検算・仮想成績は続けます）。 【参考：従来の組み立て】買い目なし（勝負度C／足切りなしなら勝負度C）。朝の予想が見送りと判断（◎5・○6・▲7の3頭が直近2戦で先着を入れ替え（差0.1〜0.6秒）、上位2頭が抜けていない。馬単の並びを説明できない）。実オッズが規律を満たしても買い目を出しません（勝負度C）。",
+        "findings": [
+          {
+            "severity": "WARN",
+            "code": "heavy_going",
+            "message": "嘉瀬川（かせがわ）賞Ａ１: 馬場が「稍重」です（ダート1400m / 天候:晴 / 馬場:稍重）",
+            "remedy": "ダートは道悪で高速化し前有利が強まり、芝は時計がかかりパワー型が浮きます（第5章）。◎と相手の脚質・血統がこの馬場に合っているか確認してください（第10章）。"
+          },
+          {
+            "severity": "INFO",
+            "code": "no_bets",
+            "message": "嘉瀬川（かせがわ）賞Ａ１: 買い目なし（勝負度C）",
+            "remedy": ""
+          }
+        ],
+        "conditions": {
+          "surface": "ダート",
+          "distance": 1400,
+          "weather": "晴",
+          "going": "稍重"
+        },
+        "weights": {
+          "1": {
+            "weight": null,
+            "diff": null,
+            "age": 4
+          },
+          "2": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          },
+          "5": {
+            "weight": null,
+            "diff": null,
+            "age": 8
+          },
+          "6": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          },
+          "7": {
+            "weight": null,
+            "diff": null,
+            "age": 7
+          }
+        },
+        "odds_meta": {
+          "per_type": {
+            "単勝": {
+              "status": "middle",
+              "count": 7
+            },
+            "複勝": {
+              "status": "middle",
+              "count": 7
+            },
+            "馬連": {
+              "status": "middle",
+              "count": 21
+            },
+            "馬単": {
+              "status": "middle",
+              "count": 42
+            },
+            "ワイド": {
+              "status": "middle",
+              "count": 21
+            },
+            "3連複": {
+              "status": "middle",
+              "count": 35
+            }
+          },
+          "errors": [],
+          "status": "middle",
+          "official_datetime": "2026-11-28 12:07:57"
+        }
+      }
+    ]
   }
 ]
