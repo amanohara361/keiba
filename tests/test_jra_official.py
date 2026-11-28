@@ -119,3 +119,25 @@ def test_馬場発表を読む():
     assert got[0]['changes'] == {}
     nxt = got[3]                                   # 翌日分は未発表
     assert (nxt['weather'], nxt['going_turf'], nxt['going_dirt']) == (None, None, None)
+
+
+def test_メニューと開催場のページは1回の実行で控えて使い回す(monkeypatch):
+    posts = []
+    pages = {jra_official.ODDS_MENU: 'MENU', 'VENUE': 'VENUE_PAGE'}
+
+    def fake_post(page, value, field='cname', timeout=20, opener=None):
+        posts.append(value)
+        return pages.get(value, 'ODDS')
+    monkeypatch.setattr(jra_official, '_post', fake_post)
+    monkeypatch.setattr(jra_official, '_LINK_PAGES', {})
+    assert jra_official._link_page(jra_official.ODDS_MENU) == 'MENU'
+    assert jra_official._link_page(jra_official.ODDS_MENU) == 'MENU'
+    assert jra_official._link_page('VENUE') == 'VENUE_PAGE'
+    assert posts == [jra_official.ODDS_MENU, 'VENUE']
+
+
+def test_通信の失敗はJraFetchErrorで伝える():
+    def opener(request, timeout=20):
+        raise OSError('timed out')
+    with pytest.raises(jra_official.JraFetchError):
+        jra_official._post('accessO.html', 'x', opener=opener)

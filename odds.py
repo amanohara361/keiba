@@ -9,11 +9,13 @@ CLAUDE.md「オッズの情報源」の方針に従う:
 判定条件は「発走時刻を過ぎているか」の一点のみ。経過時間は数えない
 （旧「5時間ルール」は2026-08-02に反証済み）。
 
-netkeiba が単勝・複勝を返さなかったとき（2026-11-28 12:07 の検算で、Actions からの
-要求が全券種 HTTP 400 になり、中央6レースが全部見送りになった）は、JRA 公式の
-単勝・複勝ページ（jra_official.py）から取り直す。固定形（◎の単勝＋複勝）はこの2つで
-成り立つので、全レース見送りを防げる。馬連・ワイド・3連複は JRA 公式から取らない
-（参考の組み立てが空になるだけで、買い目には影響しない）。
+単勝・複勝は JRA 公式（jra_official.py）を正本にし、netkeiba は予備にする（2026-11-28）。
+- JRA 公式は JRA が発表する元の数字。11-14 に武蔵野Sの単勝16頭が netkeiba と一致し、
+  11-28 には中央6レースの◎の単勝が5レースで一致した（残り1レースは5分間の変動）。
+- 11-28 12:07 の検算で netkeiba が全券種 HTTP 400 を返し、中央6レースが全部見送りになった。
+  固定形（◎の単勝＋複勝）はこの2つで成り立つので、ここを netkeiba に頼らないようにする。
+- JRA 公式が取れなければ netkeiba で取り直す。馬連・ワイド・3連複は JRA 公式から読む道具が
+  無いので、今までどおり netkeiba（参考の組み立てにしか使わない）。
 
 本モジュールが担うのは発走前のAPI取得まで。直前検算（14:30）は必ず発走前なので
 これで足りる。発走後の確定オッズが要る場面は jra_bias.py の ingest 系を使う。
@@ -37,11 +39,11 @@ STATUS_LABELS = {
     'yoso': '予想オッズ（発売前）',
     'middle': '発売中の途中経過',
     'result': '確定オッズ',
-    'jra_official': '発売中の途中経過（JRA公式。netkeiba が取れなかったため）',
+    'jra_official': '発売中の途中経過（JRA公式）',
 }
 
-# JRA 公式から取り直す券種（jra_official.parse_win の1ページに両方載っている）
-FALLBACK_TYPES = ('単勝', '複勝')
+# JRA 公式を正本にする券種（jra_official.parse_win の1ページに両方載っている）
+OFFICIAL_TYPES = ('単勝', '複勝')
 
 _DEFAULT = object()
 
@@ -155,12 +157,23 @@ def tables_from_jra_official(parsed):
     return {'単勝': win, '複勝': place}
 
 
+# JRA 公式に通信そのものが届かなかったら、その実行の残りのレースでは叩かない。
+# 届かない先にレースの数だけ待たされると、発走直前の検算が間に合わなくなる。
+_official_down = []
+
+
 def _jra_official_fetch(race_id):
     import jra_official
-    return jra_official.fetch_win(race_id)
+    if _official_down:
+        raise jra_official.JraError(f'この実行では JRA 公式に届かないため省略（{_official_down[0]}）')
+    try:
+        return jra_official.fetch_win(race_id)
+    except jra_official.JraFetchError as exc:
+        _official_down.append(str(exc))
+        raise
 
 
-def fetch_tables(race_id, bet_types, fetcher=None, fallback=_DEFAULT):
+def fetch_tables(race_id, bet_types, fetcher=None, official=_DEFAULT):
     """指定した券種ぶんのオッズ表をまとめて取得する。
 
     買い目がまだ確定していない段階（bet_builder が候補の組み合わせを
@@ -169,19 +182,38 @@ def fetch_tables(race_id, bet_types, fetcher=None, fallback=_DEFAULT):
 
     戻り値は (券種ごとのオッズ表, メタ情報)。`collect()` はこれの薄いラッパー。
 
-    単勝・複勝が netkeiba から取れなければ fallback（既定は JRA 公式）で取り直す。
-    fetcher を差し替えたとき（テスト）は、本物の JRA 公式を叩かないよう既定では取り直さない。
+    単勝・複勝は official（既定は JRA 公式）を先に読み、取れなかった分だけ netkeiba で取る。
+    fetcher を差し替えたとき（テスト）は、本物の JRA 公式を叩かないよう既定では使わない。
     check.py は本物の `fetch` をそのまま渡してくるので、それは差し替えに数えない。
     """
-    if fallback is _DEFAULT:
-        fallback = _jra_official_fetch if fetcher in (None, fetch) else None
+    if official is _DEFAULT:
+        official = _jra_official_fetch if fetcher in (None, fetch) else None
     fetcher = fetcher or fetch
     needed = set(bet_types) | {'単勝'}
     tables = {}
     meta = {}
     errors = []
 
-    for bet_type in sorted(needed):
+    wanted = [t for t in OFFICIAL_TYPES if t in needed]
+    if wanted and official:
+        try:
+            parsed = official(race_id)
+        except Exception as exc:   # JRA 公式の失敗で検算全体を止めない（netkeiba へ回る）
+            errors.append(f'{race_id} の単勝・複勝を JRA 公式から取得できませんでした'
+                          f'（netkeiba で取り直します）: {exc}')
+        else:
+            jra = tables_from_jra_official(parsed)
+            for bet_type in wanted:
+                if not jra.get(bet_type):   # 空の表は取れたに数えない（発売前など）
+                    continue
+                tables[bet_type] = jra[bet_type]
+                meta[bet_type] = {
+                    'status': 'jra_official',
+                    'reason': None,
+                    'official_datetime': parsed.get('updated'),
+                }
+
+    for bet_type in sorted(needed - set(tables)):
         try:
             result = fetcher(race_id, bet_type)
         except OddsError as exc:
@@ -193,25 +225,6 @@ def fetch_tables(race_id, bet_types, fetcher=None, fallback=_DEFAULT):
             'reason': result['reason'],
             'official_datetime': result['official_datetime'],
         }
-
-    # 空の表は「取れた」に数えない（発売前・応答の異常）。
-    missing = [t for t in FALLBACK_TYPES if t in needed and not tables.get(t)]
-    if missing and fallback:
-        try:
-            parsed = fallback(race_id)
-        except Exception as exc:   # JRA 公式の失敗で検算全体を止めない
-            errors.append(f'{race_id} の単勝・複勝を JRA 公式からも取得できませんでした: {exc}')
-        else:
-            jra = tables_from_jra_official(parsed)
-            for bet_type in missing:
-                if not jra.get(bet_type):
-                    continue
-                tables[bet_type] = jra[bet_type]
-                meta[bet_type] = {
-                    'status': 'jra_official',
-                    'reason': 'netkeiba から取れず JRA 公式で取り直し',
-                    'official_datetime': parsed.get('updated'),
-                }
 
     return tables, {
         'per_type': meta,

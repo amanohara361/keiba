@@ -41,6 +41,10 @@ class JraError(RuntimeError):
     pass
 
 
+class JraFetchError(JraError):
+    """通信そのものの失敗（ページの中身の問題ではない）。呼び出し側が続けて叩くかを決めるのに使う。"""
+
+
 def _post(page, value, field='cname', timeout=20, opener=None):
     data = urllib.parse.urlencode({field: value}).encode('ascii')
     request = urllib.request.Request(BASE + page, data=data, headers={'User-Agent': UA})
@@ -49,7 +53,7 @@ def _post(page, value, field='cname', timeout=20, opener=None):
         with open_url(request, timeout=timeout) as response:
             return response.read().decode(ENCODING, errors='replace')
     except (urllib.error.URLError, OSError) as exc:
-        raise JraError(f'JRA 公式の {page}（{value}）を取得できませんでした: {exc}')
+        raise JraFetchError(f'JRA 公式の {page}（{value}）を取得できませんでした: {exc}')
 
 
 def _text(html):
@@ -86,12 +90,25 @@ def parse_races(html):
     return found
 
 
+# メニューと開催場のページはリンク（cname）の一覧で、オッズは載っていない。1回の実行の中では
+# 変わらないので、レースごとに取り直さない（6レースで POST が18回→9回になる）。オッズのページは控えない。
+_LINK_PAGES = {}
+
+
+def _link_page(value, opener=None):
+    if opener is not None:            # テストの差し替えでは控えを使わない
+        return _post('accessO.html', value, opener=opener)
+    if value not in _LINK_PAGES:
+        _LINK_PAGES[value] = _post('accessO.html', value)
+    return _LINK_PAGES[value]
+
+
 def race_cname(race_id, opener=None):
     """race_id の単勝ページの cname を、メニュー → 開催場の順に拾う。"""
     race_id = str(race_id)
     if not re.fullmatch(r'\d{12}', race_id):
         raise JraError(f'race_id は12桁の数字です: {race_id}')
-    menu = _post('accessO.html', ODDS_MENU, opener=opener)
+    menu = _link_page(ODDS_MENU, opener=opener)
     races = parse_races(menu)        # メニューに重賞などが直接載っていることがある
     if race_id in races:
         return races[race_id]
@@ -99,7 +116,7 @@ def race_cname(race_id, opener=None):
     venue = parse_menu(menu).get(key)
     if not venue:
         raise JraError(f'{race_id} の開催がオッズのメニューにありません（発売前・終了後の可能性）')
-    races = parse_races(_post('accessO.html', venue, opener=opener))
+    races = parse_races(_link_page(venue, opener=opener))
     if race_id not in races:
         raise JraError(f'{race_id} のレースが開催場のページにありません')
     return races[race_id]
